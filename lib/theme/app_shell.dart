@@ -12,7 +12,7 @@ class AppShell extends StatelessWidget {
         // 🔹 BACKGROUND IMAGE
         Positioned.fill(
           child: Image.asset(
-            'lib/assets/cyber_bg.png',
+            'lib/assets/background.png',
             fit: BoxFit.cover,
           ),
         ),

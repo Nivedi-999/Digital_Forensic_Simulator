@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/screens/home_screen.dart'; //
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const CyberInvestigatorApp());
@@ -14,7 +14,7 @@ class CyberInvestigatorApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Cyber Investigator',
       theme: ThemeData.dark(useMaterial3: true),
-      home: const HomeScreen(), // 👈 THIS runs your home screen
+      home: const MainMenuScreen(),
     );
   }
 }

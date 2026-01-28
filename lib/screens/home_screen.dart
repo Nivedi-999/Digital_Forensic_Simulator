@@ -1,74 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../theme/app_shell.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class MainMenuScreen extends StatelessWidget {
+  const MainMenuScreen({super.key});
+
+  final Color neonCyan = const Color(0xFF00E5FF);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: AppShell(
-        child: SafeArea(
-          child: Column(
-            children: [
-              _appBar(context),
-              _divider(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Select an option to start or continue your investigation.',
-                      style: GoogleFonts.sofiaSans(
-                        color: Colors.white70,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    _button(
-                      icon: Icons.search,
-                      label: 'Start New Investigation',
-                      color: const Color(0xFF4EEBCA),
-                      primary: true,
-                    ),
-                    const SizedBox(height: 18),
-                    _button(
-                      icon: Icons.folder_open_outlined,
-                      label: 'Continue Ongoing Investigation',
-                      color: const Color(0xFF2F6F8F),
-                      primary: false,
-                    ),
-                    const SizedBox(height: 36),
-                    _rankSection(),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              _bottomNav(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ───────────────── APP BAR ─────────────────
-
-  Widget _appBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      child: Row(
+      backgroundColor: Colors.black,
+      body: Stack(
         children: [
-          const SizedBox(width: 14),
-          Expanded(
-            child: Text(
-              'Cyber Investigator\nSimulation',
-              style: GoogleFonts.robotoSerif(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+          // Background Image
+          Positioned.fill(
+            child: Image.asset(
+              'lib/assets/background.png',
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // Decorative Cyber Lines
+          CustomPaint(
+            size: MediaQuery.of(context).size,
+            painter: LinePainter(neonCyan),
+          ),
+
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 50),
+
+                  // Title
+                  Text(
+                    'Cyber Investigator',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: neonCyan,
+                      fontSize: 35,
+                      fontFamily: 'DotMatrix',
+                      letterSpacing: 1,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Simulation',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: neonCyan,
+                      fontSize: 35,
+                      fontFamily: 'DotMatrix',
+                      letterSpacing: 4,
+                    ),
+                  ),
+
+                  const SizedBox(height: 100),
+
+                  // Start Investigation
+                  _buildCyberButton(
+                    context,
+                    "New Investigation",
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  // Continue Investigation
+                  _buildCyberButton(
+                    context,
+                    "Continue Investigation",
+                  ),
+
+                  const Spacer(),
+
+                  // Rank & XP
+                  _buildRankBox(),
+
+                  const SizedBox(height: 60),
+                ],
               ),
             ),
           ),
@@ -77,187 +88,132 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-
-  // ───────────────── UI PARTS ─────────────────
-
-  Widget _divider() {
-    return Container(
-      height: 1,
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      color: Colors.white.withOpacity(0.06),
+  // Cyber Button
+  Widget _buildCyberButton(BuildContext context, String label) {
+    return GestureDetector(
+      onTap: () {
+        // TODO: Navigator.push to Case List screen
+      },
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 25),
+        decoration: BoxDecoration(
+          border: Border.all(color: neonCyan.withOpacity(0.5), width: 2),
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: neonCyan.withOpacity(0.15),
+              blurRadius: 10,
+              spreadRadius: 2,
+            )
+          ],
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              color: neonCyan,
+              fontSize: 28,
+              fontFamily: 'DotMatrix',
+            ),
+          ),
+        ),
+      ),
     );
   }
 
-  Widget _button({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required bool primary,
-  }) {
+  // Rank & XP Box
+  Widget _buildRankBox() {
     return Container(
-      height: 64,
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        border: Border.all(color: color.withOpacity(0.6)),
-        boxShadow: primary
-            ? [
-          BoxShadow(
-            color: color.withOpacity(0.25),
-            blurRadius: 12,
-            spreadRadius: -8,
-          ),
-        ]
-            : [],
+        border: Border.all(color: neonCyan.withOpacity(0.5), width: 2),
+        borderRadius: BorderRadius.circular(35),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 18),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 30),
-          const SizedBox(width: 18),
-          Expanded(
-            child: Text(
-              label,
-              style: GoogleFonts.sofiaSans(
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-                color: Colors.white.withOpacity(0.9),
-              ),
+          Text(
+            "Rank: Junior Analyst",
+            style: TextStyle(
+              color: neonCyan,
+              fontSize: 28,
+              fontFamily: 'DotMatrix',
             ),
           ),
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white24),
-        ],
-      ),
-    );
-  }
-
-  Widget _rankSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _divider(),
-        const SizedBox(height: 18),
-        Text(
-          'Rank: Junior Analyst',
-          style: GoogleFonts.rajdhani(
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 10),
-        Row(
-          children: [
-            Text(
-              'XP: 275 / 500',
-              style: GoogleFonts.rajdhani(color: Colors.white60, fontSize: 20),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Container(
-                height: 10,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white12),
+          const SizedBox(height: 15),
+          Row(
+            children: [
+              Text(
+                "XP: ",
+                style: TextStyle(
+                  color: neonCyan,
+                  fontSize: 28,
+                  fontFamily: 'DotMatrix',
                 ),
-                child: FractionallySizedBox(
-                  widthFactor: 0.55,
-                  alignment: Alignment.centerLeft,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF4EEBCA),
-                          Color(0xFF2EC4B6),
+              ),
+              Expanded(
+                child: Container(
+                  height: 12,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: neonCyan.withOpacity(0.5)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: FractionallySizedBox(
+                    alignment: Alignment.centerLeft,
+                    widthFactor: 0.6,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: neonCyan,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(color: neonCyan, blurRadius: 8),
                         ],
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 18),
-        _divider(),
-      ],
-    );
-  }
-
-  Widget _bottomNav() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: Colors.white.withOpacity(0.06)),
-        ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: const [
-          _ProfileNavItem(),
-          _NavItem(Icons.folder_copy_outlined, 'Case History'),
-          _NavItem(Icons.emoji_events_outlined, 'Leaderboard'),
-          _NavItem(Icons.settings_outlined, 'Settings'),
+            ],
+          ),
         ],
       ),
     );
   }
 }
 
-// ───────────────── NAV ITEMS ─────────────────
-
-class _NavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _NavItem(this.icon, this.label);
+// Cyber Decorative Lines Painter
+class LinePainter extends CustomPainter {
+  final Color color;
+  LinePainter(this.color);
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, color: Colors.white38, size: 24),
-        const SizedBox(height: 6),
-        Text(
-          label,
-          style: GoogleFonts.rajdhani(
-            fontSize: 12,
-            color: Colors.white38,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color.withOpacity(0.3)
+      ..strokeWidth = 1.5
+      ..style = PaintingStyle.stroke;
+
+    final path = Path();
+    path.moveTo(20, 0);
+    path.lineTo(20, 40);
+    path.lineTo(60, 40);
+    canvas.drawPath(path, paint);
+
+    canvas.drawLine(
+      Offset(size.width * 0.7, 0),
+      Offset(size.width, 100),
+      paint,
+    );
+
+    canvas.drawLine(
+      Offset(size.width * 0.7, 0),
+      Offset(size.width * 0.7, 50),
+      paint,
     );
   }
-}
-
-class _ProfileNavItem extends StatelessWidget {
-  const _ProfileNavItem();
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white24),
-          ),
-          child: Image.network(
-            'https://i.pravatar.cc/150?u=cyber',
-            fit: BoxFit.cover,
-          ),
-        ),
-        const SizedBox(height: 6),
-        Text(
-          'Profile',
-          style: GoogleFonts.rajdhani(
-            fontSize: 12,
-            color: Colors.white38,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
