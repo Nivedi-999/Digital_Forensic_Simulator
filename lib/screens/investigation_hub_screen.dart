@@ -2,8 +2,25 @@ import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../case_data/ghosttrace_case_data.dart';
 
-class InvestigationHubScreen extends StatelessWidget {
+class InvestigationHubScreen extends StatefulWidget {
   const InvestigationHubScreen({super.key});
+
+  @override
+  State<InvestigationHubScreen> createState() => _InvestigationHubScreenState();
+}
+
+class _InvestigationHubScreenState extends State<InvestigationHubScreen> {
+  final TextEditingController _solutionController = TextEditingController();
+  bool _unlocked = false;
+  String? _feedback;
+
+  String _activeFeed = 'chat';
+
+  @override
+  void dispose() {
+    _solutionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,86 +30,151 @@ class InvestigationHubScreen extends StatelessWidget {
       title: 'Investigation Hub',
       child: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 40),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const SizedBox(height: 40),
 
-            Text(
-              'Case #${caseData.caseId} • Status: ${caseData.status} • Time: ${caseData.duration}',
-              style: TextStyle(color: Colors.white.withOpacity(0.6)),
+          Text(
+            'Case #${caseData.caseId} • Status: ${caseData.status} • Time: ${caseData.duration}',
+            style: TextStyle(color: Colors.white.withOpacity(0.6)),
+          ),
+
+          const SizedBox(height: 30),
+
+          _sectionTitle('Evidence Feed'),
+          _panel(
+            child: Wrap(
+              spacing: 12,
+              children: [
+                _feedButton('Chat Logs', 'chat'),
+                _feedButton('Files', 'files'),
+                _feedButton('Metadata', 'meta'),
+                _feedButton('IP Traces', 'ip'),
+              ],
             ),
+          ),
 
-            const SizedBox(height: 30),
+          const SizedBox(height: 20),
 
-            _sectionTitle('Evidence Feed'),
-            _panel(
-              child: Column(
-                children: caseData.evidenceFeed
-                    .map((e) => _feedItem(e.label, e.count))
-                    .toList(),
-              ),
-            ),
+          _sectionTitle('Evidence Viewer'),
+          _panel(child: _buildEvidenceContent()),
 
-            const SizedBox(height: 30),
+          const SizedBox(height: 30),
 
-            _sectionTitle('Actual Evidence Preview'),
-            _panel(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(caseData.preview.message,
-                      style: const TextStyle(color: Colors.white)),
-                  const SizedBox(height: 10),
-                  Text(
-                    'IP: ${caseData.preview.ip}\n${caseData.preview.time}',
-                    style: const TextStyle(color: Colors.yellowAccent),
+          _sectionTitle('Encrypted Attachment'),
+          _panel(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Cipher: ${caseData.attachmentPuzzle.cipherText}',
+                  style: const TextStyle(color: Colors.white)),
+              const SizedBox(height: 8),
+              Text(caseData.attachmentPuzzle.hint,
+                  style: TextStyle(color: Colors.white.withOpacity(0.7))),
+              const SizedBox(height: 16),
+              TextField(
+                controller: _solutionController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Enter decrypted phrase',
+                  labelStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: AppShell.neonCyan),
                   ),
-                ],
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white),
+                  ),
+                ),
               ),
-            ),
-
-            const SizedBox(height: 30),
-
-            _sectionTitle('Suspects'),
-            _panel(
-              child: Column(
-                children: caseData.suspects
-                    .map((s) => _suspectTile(
-                  s.name,
-                  s.risk,
-                  _riskColor(s.riskLevel),
-                ))
-                    .toList(),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                onPressed: _unlocked ? null : () => _checkSolution(caseData),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppShell.neonCyan,
+                  foregroundColor: Colors.black,
+                ),
+                child: Text(_unlocked ? 'Unlocked' : 'Decrypt'),
               ),
-            ),
-
-            const SizedBox(height: 30),
-
-            _sectionTitle('Digital Footprint Timeline'),
-            _panel(
-              child: Column(
-                children: caseData.timeline
-                    .map((t) =>
-                    _timelineItem(t.time, t.title, t.description))
-                    .toList(),
-              ),
-            ),
-          ],
-        ),
+              if (_feedback != null) ...[
+                const SizedBox(height: 8),
+                Text(_feedback!,
+                    style: TextStyle(
+                        color:
+                        _unlocked ? Colors.greenAccent : Colors.redAccent)),
+              ]
+            ]),
+          ),
+        ]),
       ),
     );
   }
 
-  Color _riskColor(String level) {
-    switch (level) {
-      case "high":
-        return Colors.redAccent;
-      case "medium":
-        return Colors.orangeAccent;
+  Widget _feedButton(String label, String key) {
+    return OutlinedButton(
+      onPressed: () => setState(() => _activeFeed = key),
+      style: OutlinedButton.styleFrom(
+        foregroundColor: _activeFeed == key ? Colors.black : AppShell.neonCyan,
+        backgroundColor:
+        _activeFeed == key ? AppShell.neonCyan : Colors.transparent,
+        side: const BorderSide(color: AppShell.neonCyan),
+      ),
+      child: Text(label),
+    );
+  }
+
+  Widget _buildEvidenceContent() {
+    switch (_activeFeed) {
+      case 'chat':
+        return Column(children: const [
+          _LogLine('Admin', 'Patch deployed successfully.'),
+          _LogLine('Ghost', 'I noticed.'),
+          _LogLine('Admin', 'You shouldn’t be here.'),
+          _LogLine('Ghost', 'You left a door open.'),
+          _LogLine('Admin', 'Who are you?'),
+          _LogLine('Ghost', 'Just a shadow.'),
+          _LogLine('Ghost', 'Check your finance workstation.'),
+        ]);
+
+      case 'files':
+        return Column(children: const [
+          _LogLine('finance_report_q3.pdf', '12 MB'),
+          _LogLine('system_patch.exe', '4.2 MB'),
+          _LogLine('debug_log.txt', '1.1 MB'),
+          _LogLine('cache_dump.bin', '88 MB'),
+          _LogLine('Attachment.pdf', 'encrypted'),
+        ]);
+
+      case 'meta':
+        return Column(children: const [
+          _LogLine('Device', 'FIN-WS-114'),
+          _LogLine('OS', 'Windows 11 Pro'),
+          _LogLine('Hash', 'd41d8cd98f00b204e9800998ecf8427e'),
+          _LogLine('Timestamp', '02:14 AM'),
+          _LogLine('Session', 'Signed Update Package'),
+        ]);
+
+      case 'ip':
+        return Column(children: const [
+          _LogLine('Origin', '172.16.44.21'),
+          _LogLine('VPN Hop', '185.193.127.44'),
+          _LogLine('Proxy', 'TOR Exit Node'),
+          _LogLine('Geo', 'Romania → Iceland'),
+          _LogLine('ISP Mask', 'Yes'),
+        ]);
+
       default:
-        return Colors.greenAccent;
+        return const SizedBox();
     }
+  }
+
+  void _checkSolution(CaseData caseData) {
+    final attempt = _solutionController.text.trim().toLowerCase();
+    final expected = caseData.attachmentPuzzle.solution.toLowerCase();
+    setState(() {
+      if (attempt == expected) {
+        _unlocked = true;
+        _feedback = 'Decryption successful. Filename revealed.';
+      } else {
+        _feedback = 'Decryption failed. Try shifting each letter by -3.';
+      }
+    });
   }
 
   Widget _sectionTitle(String title) => Text(
@@ -107,39 +189,31 @@ class InvestigationHubScreen extends StatelessWidget {
   Widget _panel({required Widget child}) => Container(
     width: double.infinity,
     padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      border: Border.all(color: AppShell.neonCyan, width: 2),
-    ),
+    decoration:
+    BoxDecoration(border: Border.all(color: AppShell.neonCyan, width: 2)),
     child: child,
   );
 }
 
-Widget _feedItem(String label, int count) => Padding(
-  padding: const EdgeInsets.symmetric(vertical: 6),
-  child: Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Text(label, style: const TextStyle(color: Colors.white)),
-      Text(count.toString(),
-          style: TextStyle(color: AppShell.neonCyan.withOpacity(0.8))),
-    ],
-  ),
-);
+class _LogLine extends StatelessWidget {
+  final String left;
+  final String right;
 
-Widget _suspectTile(String name, String risk, Color color) => ListTile(
-  title: Text(name, style: const TextStyle(color: Colors.white)),
-  trailing: Text(risk, style: TextStyle(color: color)),
-);
+  const _LogLine(this.left, this.right);
 
-Widget _timelineItem(String time, String title, String description) => Padding(
-  padding: const EdgeInsets.only(bottom: 12),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text('$time • $title',
-          style: const TextStyle(color: Colors.white)),
-      Text(description,
-          style: TextStyle(color: Colors.white.withOpacity(0.6))),
-    ],
-  ),
-);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(left, style: const TextStyle(color: Colors.white)),
+          Text(right,
+              style:
+              TextStyle(color: AppShell.neonCyan.withOpacity(0.8))),
+        ],
+      ),
+    );
+  }
+}

@@ -1,4 +1,3 @@
-// models.dart (if you already have models, match these fields exactly)
 class EvidenceItem {
   final String label;
   final int count;
@@ -42,6 +41,20 @@ class TimelineEvent {
   });
 }
 
+class DecryptionPuzzle {
+  final String cipherText;
+  final String hint;
+  final String solution;
+  final String unlockedFilename;
+
+  DecryptionPuzzle({
+    required this.cipherText,
+    required this.hint,
+    required this.solution,
+    required this.unlockedFilename,
+  });
+}
+
 class CaseData {
   final String caseId;
   final String status;
@@ -50,6 +63,7 @@ class CaseData {
   final EvidencePreview preview;
   final List<Suspect> suspects;
   final List<TimelineEvent> timeline;
+  final DecryptionPuzzle attachmentPuzzle;
 
   CaseData({
     required this.caseId,
@@ -59,6 +73,7 @@ class CaseData {
     required this.preview,
     required this.suspects,
     required this.timeline,
+    required this.attachmentPuzzle,
   });
 }
 
@@ -103,4 +118,10 @@ final ghostTraceCase = CaseData(
       description: "Files removed on system 4D-32",
     ),
   ],
+  attachmentPuzzle: DecryptionPuzzle(
+    cipherText: "Dwwdfkphqw",
+    hint: "Caesar shift by -3. Decode to unlock the filename.",
+    solution: "Attachment",
+    unlockedFilename: "ghosttrace_briefing.pdf",
+  ),
 );
