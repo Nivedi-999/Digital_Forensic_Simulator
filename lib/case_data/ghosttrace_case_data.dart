@@ -125,3 +125,15 @@ final ghostTraceCase = CaseData(
     unlockedFilename: "ghosttrace_briefing.pdf",
   ),
 );
+
+class GameProgress {
+  static bool isBriefingUnlocked = false;
+
+  static void unlockBriefing() {
+    isBriefingUnlocked = true;
+  }
+
+  static void reset() {
+    isBriefingUnlocked = false;
+  }
+}

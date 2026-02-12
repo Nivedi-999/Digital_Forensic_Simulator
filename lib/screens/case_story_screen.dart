@@ -19,15 +19,14 @@ class _StorylineScreenState extends State<StorylineScreen>
 
   final String shortStory =
       'A classified internal database was accessed illegally.\n\n'
-      'Sensitive employee credentials were leaked through an unknown proxy.\n\n'
-      'The breach went unnoticed for 48 hours.';
+      'Suspicions say the database was infiltrated internally';
 
   final String missionText =
       'Your mission is:\n\n'
-      '• Trace the source of the breach\n'
-      '• Analyze system logs\n'
-      '• Correlate timestamps\n'
-      '• Use evidence wisely — some data may be misleading';
+      '• Find the Culprit\n'
+      '• Use evidence wisely — some data may be misleading\n'
+      '• Find at least 5 correct evidences to\n '
+      ' catch the culprit';
 
   String get currentText => step == 0 ? shortStory : missionText;
 

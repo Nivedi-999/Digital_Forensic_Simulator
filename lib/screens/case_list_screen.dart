@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import 'case_story_screen.dart';
+import '../widgets/main_scaffold.dart';
 
 
 class CaseListScreen extends StatelessWidget {
@@ -10,6 +11,7 @@ class CaseListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppShell(
       title: 'Available Cases',
+      showBack: true,
       child: Scrollbar(
         thumbVisibility: true,
         child: SingleChildScrollView(
@@ -51,6 +53,7 @@ class CaseListScreen extends StatelessWidget {
           ),
         ),
       ),
+
     );
   }
 
