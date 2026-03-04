@@ -57,7 +57,10 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
     _isCorrectSuspect = widget.flaggedSuspectName == 'Ankita E';
     _isWin = _isCorrectSuspect && _correctCount >= 3;
 
-    if (_isWin) GameProgress.addXp(10);
+    if (_isWin) {
+      GameProgress.addXp(10);
+      GameProgress.incrementCasesSolved();
+    }
 
     // Entry animation
     _entryCtrl = AnimationController(
@@ -85,7 +88,7 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
     );
     _barProgress = Tween<double>(
       begin: 0.0,
-      end: (GameProgress.xp / 100.0).clamp(0.0, 1.0),
+      end: GameProgress.rankProgress,
     ).animate(CurvedAnimation(parent: _barCtrl, curve: Curves.easeOutCubic));
 
     Future.delayed(const Duration(milliseconds: 400), () {
@@ -278,18 +281,63 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Header with +10 XP badge
                       Row(
                         children: [
-                          const Icon(Icons.stars,
-                              color: CyberColors.neonCyan, size: 24),
+                          const Icon(Icons.stars, color: CyberColors.neonCyan, size: 24),
                           const SizedBox(width: 10),
-                          Text(
-                            '+10 XP Awarded',
-                            style: CyberText.sectionTitle,
+                          Expanded(
+                            child: Text('XP Awarded', style: CyberText.sectionTitle),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              gradient: CyberColors.neonCyanGradient,
+                              borderRadius: CyberRadius.pill,
+                              boxShadow: CyberShadows.neonCyan(intensity: 0.6),
+                            ),
+                            child: const Text(
+                              '+ 10 XP',
+                              style: TextStyle(
+                                fontFamily: 'DotMatrix',
+                                fontSize: 14,
+                                color: CyberColors.textOnNeon,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 14),
+                      // Title badge
+                      Row(
+                        children: [
+                          Text('Title: ', style: CyberText.bodySmall),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: CyberColors.neonPurple.withOpacity(0.12),
+                              borderRadius: CyberRadius.pill,
+                              border: Border.all(
+                                color: CyberColors.neonPurple.withOpacity(0.4),
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              GameProgress.title.toUpperCase(),
+                              style: const TextStyle(
+                                color: CyberColors.neonPurple,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                letterSpacing: 0.8,
+                              ),
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
+                      // Progress bar within current rank band
                       AnimatedBuilder(
                         animation: _barProgress,
                         builder: (_, __) => CyberProgressBar(
@@ -303,12 +351,11 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                         children: [
                           Text(
                             'Total XP: ${GameProgress.xp}',
-                            style: CyberText.bodySmall.copyWith(
-                                color: CyberColors.neonCyan),
+                            style: CyberText.bodySmall.copyWith(color: CyberColors.neonCyan),
                           ),
                           Text(
-                            GameProgress.rankName.toUpperCase(),
-                            style: CyberText.label,
+                            '${GameProgress.xpToNextRank} XP → ${GameProgress.nextRankName}',
+                            style: CyberText.caption,
                           ),
                         ],
                       ),
@@ -316,7 +363,6 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                   ),
                 ),
               ],
-
               const SizedBox(height: 36),
 
               // ── Return Home ──

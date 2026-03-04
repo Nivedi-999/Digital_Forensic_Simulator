@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
+import '../services/game_progress.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,12 +21,9 @@ class _ProfileScreenState extends State<ProfileScreen>
   late AnimationController _entryCtrl;
   late Animation<double> _fadeIn;
 
-  // Hardcoded for now — wire to GameProgress later
-  static const String _rank = 'Junior Analyst';
-  static const double _xpProgress = 0.45;
-  static const int _cases = 3;
-  static const double _accuracy = 78.5;
-  static const int _totalXp = 1420;
+  get _accuracy => null;
+
+
 
   @override
   void initState() {
@@ -93,13 +91,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      _rank.toUpperCase(),
+                      GameProgress.title.toUpperCase(),
                       style: CyberText.displaySmall.copyWith(
                           letterSpacing: 2, fontSize: 20),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Cyber Investigator Division',
+                      'Operation GhostTrace — Case #1',
                       style: CyberText.bodySmall,
                     ),
                     const SizedBox(height: 12),
@@ -124,7 +122,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       subtitle: 'Progress to next rank',
                     ),
                     CyberProgressBar(
-                      value: _xpProgress,
+                      value: GameProgress.rankProgress,
                       height: 14,
                     ),
                     const SizedBox(height: 10),
@@ -132,12 +130,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${(_xpProgress * 100).toInt()}% complete',
+                          '${(GameProgress.rankProgress * 100).toInt()}% complete',
                           style: CyberText.bodySmall.copyWith(
                               color: CyberColors.neonCyan),
                         ),
                         Text(
-                          '${((1 - _xpProgress) * 100).toInt()} XP to Analyst',
+                          '${GameProgress.xpToNextRank} XP to ${GameProgress.nextRankName}',
                           style: CyberText.caption,
                         ),
                       ],
@@ -154,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   Expanded(
                     child: MetricTile(
                       label: 'Cases Solved',
-                      value: '$_cases',
+                      value: '${GameProgress.casesSolved}',
                       icon: Icons.cases_outlined,
                       color: CyberColors.neonBlue,
                     ),
@@ -173,7 +171,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               const SizedBox(height: 12),
               MetricTile(
                 label: 'Total XP Earned',
-                value: '$_totalXp',
+                value: '${GameProgress.xp}',
                 icon: Icons.stars,
                 color: CyberColors.neonCyan,
               ),

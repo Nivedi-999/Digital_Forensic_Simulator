@@ -8,6 +8,7 @@ import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
 import '../services/evidence_collector.dart';
+import '../services/game_progress.dart';
 import '../services/tutorial_service.dart';
 import '../widgets/aria_guide.dart';
 import '../widgets/aria_controller.dart';
@@ -95,81 +96,82 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isAlreadyUnlocked = GameProgress.isBriefingUnlocked;
+
     return AppShell(
       title: 'Evidence Analysis',
       showBack: true,
+      showBottomNav: false,
       child: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // ── Type header ──
-                      _TypeHeader(
-                        type: widget.evidenceType,
-                        title: _getCategoryTitle(widget.evidenceType),
-                        icon: _getCategoryIcon(widget.evidenceType),
-                        selectedItem: widget.selectedItem,
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // ── Content panel ──
-                      NeonContainer(
-                        padding: const EdgeInsets.all(16),
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(
-                              minHeight: 200, maxHeight: 440),
-                          child: SingleChildScrollView(
-                            child: _buildContent(
-                              widget.evidenceType,
-                              widget.selectedItem,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // ── Hidden clue button ──
-                      Center(
-                        child: CyberButton(
-                          label: 'Unlock Hidden Clue',
-                          icon: Icons.lock_open_outlined,
-                          accentColor: CyberColors.neonPurple,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const DecryptionMiniGameScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-
-                      const SizedBox(height: 32),
-                    ],
-                  ),
-                ),
-              ),
-
-              // ── Add Evidence Bottom Bar ──
-              // Pad bottom to stay above the floating nav bar (extendBody: true)
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom,
-                ),
-                child: _AddEvidenceBar(
-                  onAdd: _handleAddEvidence,
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Type header ──
+                _TypeHeader(
+                  type: widget.evidenceType,
+                  title: _getCategoryTitle(widget.evidenceType),
+                  icon: _getCategoryIcon(widget.evidenceType),
                   selectedItem: widget.selectedItem,
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 20),
+
+                // ── Content panel ──
+                NeonContainer(
+                  padding: const EdgeInsets.all(16),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                        minHeight: 200, maxHeight: 440),
+                    child: SingleChildScrollView(
+                      child: _buildContent(
+                        widget.evidenceType,
+                        widget.selectedItem,
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // ── Unlock Hidden Clue button ──
+                SizedBox(
+                  width: double.infinity,
+                  child: isAlreadyUnlocked
+                      ? _AlreadyUnlockedBanner()
+                      : CyberButton(
+                    label: 'Unlock Hidden Clue',
+                    icon: Icons.lock_open_outlined,
+                    accentColor: CyberColors.neonPurple,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const DecryptionMiniGameScreen(),
+                        ),
+                      ).then((_) => setState(() {}));
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // ── Add Evidence button (directly below Unlock) ──
+                SizedBox(
+                  width: double.infinity,
+                  child: CyberButton(
+                    label: 'Mark as Evidence',
+                    icon: Icons.add_circle_outline,
+                    accentColor: CyberColors.neonGreen,
+                    onTap: _handleAddEvidence,
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+              ],
+            ),
           ),
 
           // ── ARIA Guide ──
@@ -251,6 +253,66 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
                 color: CyberColors.neonRed),
             _DataEntry('Dump Timestamp', '10:44–10:46 AM'),
             _DataEntry('Exfil Path', 'FIN-WS-114 → 172.16.44.21'),
+          ],
+        );
+      }
+      // ── UNLOCKED via decryption mini-game ──
+      if (selected == 'credentials.pdf') {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Unlocked badge
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              margin: const EdgeInsets.only(bottom: 16),
+              decoration: BoxDecoration(
+                color: CyberColors.neonGreen.withOpacity(0.08),
+                borderRadius: CyberRadius.small,
+                border: Border.all(
+                    color: CyberColors.neonGreen.withOpacity(0.4), width: 1),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.lock_open, color: CyberColors.neonGreen, size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    'DECRYPTED — Unlocked via Caesar Cipher analysis',
+                    style: TextStyle(
+                      color: CyberColors.neonGreen,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            _FileReport(
+              filename: 'credentials.pdf',
+              modifier: 'Ankita E',
+              modTime: '10:43 AM',
+              entries: const [
+                _DataEntry('Document Type', 'Internal Credential Export',
+                    color: CyberColors.neonRed),
+                _DataEntry('Exported By', 'Ankita E — Employee ID AE-4471',
+                    color: CyberColors.neonRed),
+                _DataEntry('Workstation', 'FIN-WS-114'),
+                _DataEntry('Export Time', '10:43:22 AM'),
+                _DataEntry('Contents', 'DB admin credentials for FINDB-PROD-01',
+                    color: CyberColors.neonAmber),
+                _DataEntry('Target Account', 'offshore ACC-4482-X',
+                    color: CyberColors.neonAmber),
+                _DataEntry('Auth Token', 'ghst_tkn_8f2d91cc4b7a...  [REDACTED]',
+                    color: CyberColors.neonRed),
+                _DataEntry('Destination IP', '202.56.23.101 (External)',
+                    color: CyberColors.neonRed),
+                _DataEntry('File Hash', 'SHA256: 3f4a1b9c... [truncated]'),
+                _DataEntry('Note',
+                    'This file was found in the exfiltration cache. It directly links Ankita E to the data breach.',
+                    color: CyberColors.neonAmber),
+              ],
+            ),
           ],
         );
       }
@@ -376,6 +438,64 @@ class _TypeHeader extends StatelessWidget {
             ),
           ),
           Text('Case #2047', style: CyberText.caption),
+        ],
+      ),
+    );
+  }
+}
+
+
+// ── Already Unlocked Banner ──
+class _AlreadyUnlockedBanner extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: CyberColors.neonGreen.withOpacity(0.08),
+        borderRadius: CyberRadius.medium,
+        border: Border.all(
+          color: CyberColors.neonGreen.withOpacity(0.5),
+          width: 1.5,
+        ),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: CyberColors.neonGreen.withOpacity(0.12),
+              borderRadius: CyberRadius.small,
+            ),
+            child: const Icon(
+              Icons.lock_open,
+              color: CyberColors.neonGreen,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Hidden Clue Already Unlocked',
+                  style: TextStyle(
+                    color: CyberColors.neonGreen,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  'credentials.pdf is now available in your file feed.',
+                  style: CyberText.bodySmall.copyWith(fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          StatusChip(label: 'UNLOCKED', color: CyberColors.neonGreen),
         ],
       ),
     );

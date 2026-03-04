@@ -198,7 +198,7 @@ class _StorylineScreenState extends State<StorylineScreen>
                                 : CyberButton(
                               label: step == 0
                                   ? 'Continue'
-                                  : 'Begin Investigation',
+                                  : 'Begin',
                               icon: step == 0
                                   ? Icons.arrow_forward
                                   : Icons.play_arrow,
