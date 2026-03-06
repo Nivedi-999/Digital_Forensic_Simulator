@@ -30,6 +30,27 @@ class GameProgress {
 
   static void incrementCasesSolved() => _casesSolved++;
 
+  // ── Accuracy ─────────────────────────────────────────────────
+  static int _totalFlags = 0;
+  static int _correctFlags = 0;
+
+  /// Call this whenever the player flags a suspect.
+  /// Pass [correct: true] if they flagged the right person.
+  static void recordFlag({required bool correct}) {
+    _totalFlags++;
+    if (correct) _correctFlags++;
+  }
+
+  /// Accuracy as a percentage (0.0 – 100.0).
+  /// Returns 0.0 if no flags have been made yet.
+  static double get accuracy {
+    if (_totalFlags == 0) return 0.0;
+    return (_correctFlags / _totalFlags) * 100;
+  }
+
+  static int get totalFlags   => _totalFlags;
+  static int get correctFlags => _correctFlags;
+
   // ── Title & Rank ─────────────────────────────────────────────
   /// The player's current title based on XP.
   ///
@@ -103,6 +124,6 @@ class GameProgress {
   /// Reset all state (called when returning to home after case ends).
   static void resetForNewCase() {
     _briefingUnlocked = false;
-    // XP and cases solved persist across sessions intentionally.
+    // XP, cases solved, and accuracy persist across sessions intentionally.
   }
 }

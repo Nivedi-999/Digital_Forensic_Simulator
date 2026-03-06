@@ -277,7 +277,7 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
                   const Icon(Icons.lock_open, color: CyberColors.neonGreen, size: 16),
                   const SizedBox(width: 8),
                   Text(
-                    'DECRYPTED — Unlocked via Caesar Cipher analysis',
+                    'DECRYPTED — Hidden Clue Unlocked',
                     style: TextStyle(
                       color: CyberColors.neonGreen,
                       fontSize: 11,

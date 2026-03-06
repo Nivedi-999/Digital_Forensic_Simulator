@@ -8,6 +8,7 @@ import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
 import '../services/game_progress.dart';
+import 'case_list_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,8 +21,6 @@ class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _entryCtrl;
   late Animation<double> _fadeIn;
-
-  get _accuracy => null;
 
 
 
@@ -95,11 +94,6 @@ class _ProfileScreenState extends State<ProfileScreen>
                       style: CyberText.displaySmall.copyWith(
                           letterSpacing: 2, fontSize: 20),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Operation GhostTrace — Case #1',
-                      style: CyberText.bodySmall,
-                    ),
                     const SizedBox(height: 12),
                     StatusChip(
                       label: 'AGENT ONLINE',
@@ -161,7 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                   Expanded(
                     child: MetricTile(
                       label: 'Accuracy',
-                      value: '${_accuracy.toStringAsFixed(1)}%',
+                      value: '${GameProgress.accuracy.toStringAsFixed(1)}%',
                       icon: Icons.gps_fixed,
                       color: CyberColors.neonPurple,
                     ),
@@ -182,12 +176,15 @@ class _ProfileScreenState extends State<ProfileScreen>
               SizedBox(
                 width: double.infinity,
                 child: CyberButton(
-                  label: 'Settings',
-                  icon: Icons.settings_outlined,
+                  label: 'Home',
+                  icon: Icons.home,
                   isOutlined: true,
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Settings coming soon')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const CaseListScreen(),
+                      ),
                     );
                   },
                 ),

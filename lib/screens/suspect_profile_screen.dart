@@ -7,8 +7,11 @@ import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
-import '../case_data/ghosttrace_case_data.dart';
+import '../case_data/ghosttrace_case_data.dart' hide GameProgress;
 import 'case_outcome_screen.dart';
+import '../services/game_progress.dart';
+
+/// Suspect profile screen.'
 
 class SuspectProfileScreen extends StatefulWidget {
   final Suspect suspect;
@@ -282,6 +285,7 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
       builder: (_) => _ConfirmFlagDialog(
         suspectName: widget.suspect.name,
         onConfirm: () {
+          GameProgress.recordFlag(correct: widget.suspect.name == 'Ankita E');
           Navigator.pop(context); // close dialog
           Navigator.pushReplacement(
             context,

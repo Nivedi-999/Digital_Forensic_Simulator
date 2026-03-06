@@ -9,6 +9,7 @@ import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
 import '../services/evidence_collector.dart';
 import '../services/game_progress.dart';
+import 'profile_screen.dart';
 
 class CaseOutcomeScreen extends StatefulWidget {
   final String? flaggedSuspectName;
@@ -369,11 +370,14 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
               SizedBox(
                 width: double.infinity,
                 child: CyberButton(
-                  label: 'Return to Home',
+                  label: 'Check Profile',
                   icon: Icons.home_outlined,
                   onTap: () {
                     EvidenceCollector().clearAll();
-                    Navigator.popUntil(context, (route) => route.isFirst);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                    );
                   },
                 ),
               ),
