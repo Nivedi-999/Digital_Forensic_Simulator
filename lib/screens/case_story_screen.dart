@@ -1,6 +1,8 @@
 // lib/screens/case_story_screen.dart
 // ═══════════════════════════════════════════════════════════════
-//  REDESIGNED STORYLINE / BRIEFING SCREEN
+//  STORYLINE / BRIEFING SCREEN
+//  Loads the case from CaseRepository, creates the CaseEngine,
+//  and wraps InvestigationHubScreen with CaseEngineProvider.
 // ═══════════════════════════════════════════════════════════════
 
 import 'dart:async';
@@ -8,10 +10,17 @@ import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
+import '../models/case.dart';
+import '../logic/game_engine.dart';
+import '../state/case_engine_provider.dart';
+import '../services/case_repository.dart';
 import 'investigation_hub_screen.dart';
 
 class StorylineScreen extends StatefulWidget {
-  const StorylineScreen({super.key});
+  /// Pass a specific case id, or null to load the first available case.
+  final String? caseId;
+
+  const StorylineScreen({super.key, this.caseId});
 
   @override
   State<StorylineScreen> createState() => _StorylineScreenState();
@@ -22,25 +31,21 @@ class _StorylineScreenState extends State<StorylineScreen>
   int step = 0;
   int visibleChars = 0;
   Timer? _timer;
-  bool loading = false;
+  bool _loading = false;
+
+  CaseFile? _caseFile;
+  bool _caseLoading = true;
 
   late AnimationController _entryCtrl;
   late Animation<double> _fadeIn;
   late Animation<Offset> _slideUp;
 
-  final String shortStory =
-      'A classified internal database was accessed illegally.\n\n'
-      'Suspicions point to an internal breach — someone with inside access and motive.\n\n'
-      'All systems were live. The attacker knew the layout.';
-
-  final String missionText =
-      'Your Mission:\n\n'
-      '› Identify the culprit\n\n'
-      '› Use evidence wisely — some data may be misleading\n\n'
-      '› Collect at least 5 correct evidences\n\n'
-      '› Flag the right suspect to close the case';
-
-  String get currentText => step == 0 ? shortStory : missionText;
+  String get currentText {
+    if (_caseFile == null) return '';
+    return step == 0
+        ? _caseFile!.briefing.incidentSummary
+        : _caseFile!.briefing.missionText;
+  }
 
   @override
   void initState() {
@@ -50,14 +55,29 @@ class _StorylineScreenState extends State<StorylineScreen>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     )..forward();
-
     _fadeIn = CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut);
     _slideUp = Tween<Offset>(
       begin: const Offset(0, 0.06),
       end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOutCubic));
+    ).animate(
+        CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOutCubic));
 
-    _startTyping();
+    _loadCase();
+  }
+
+  Future<void> _loadCase() async {
+    await CaseRepository.instance.loadAll();
+    final caseFile = widget.caseId != null
+        ? CaseRepository.instance.byId(widget.caseId!)
+        : CaseRepository.instance.first;
+
+    if (mounted) {
+      setState(() {
+        _caseFile = caseFile;
+        _caseLoading = false;
+      });
+      _startTyping();
+    }
   }
 
   void _startTyping() {
@@ -84,10 +104,55 @@ class _StorylineScreenState extends State<StorylineScreen>
     super.dispose();
   }
 
+  void _launchInvestigation() async {
+    if (_caseFile == null) return;
+    setState(() => _loading = true);
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+
+    final engine = CaseEngine(_caseFile!);
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => CaseEngineProvider(
+          engine: engine,
+          child: const InvestigationHubScreen(),
+        ),
+        transitionsBuilder: (_, anim, __, child) =>
+            FadeTransition(opacity: anim, child: child),
+        transitionDuration: const Duration(milliseconds: 500),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_caseLoading) {
+      return AppShell(
+        title: 'Loading...',
+        showBack: true,
+        showBottomNav: false,
+        child: const Center(
+          child: CircularProgressIndicator(color: CyberColors.neonCyan),
+        ),
+      );
+    }
+
+    if (_caseFile == null) {
+      return AppShell(
+        title: 'Error',
+        showBack: true,
+        showBottomNav: false,
+        child: Center(
+          child: Text('Case not found.',
+              style: CyberText.bodyMedium),
+        ),
+      );
+    }
+
     return AppShell(
-      title: 'Operation\nGhostTrace',
+      title: '${_caseFile!.title}',
       showBack: true,
       showBottomNav: false,
       child: FadeTransition(
@@ -99,11 +164,9 @@ class _StorylineScreenState extends State<StorylineScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ── Step indicator ──
                 _StepIndicator(currentStep: step),
                 const SizedBox(height: 24),
 
-                // ── Story card ──
                 GestureDetector(
                   onTap: _skipTyping,
                   child: NeonContainer(
@@ -114,59 +177,51 @@ class _StorylineScreenState extends State<StorylineScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Step label
-                        Row(
-                          children: [
-                            Icon(
-                              step == 0
-                                  ? Icons.info_outline
-                                  : Icons.assignment_outlined,
+                        Row(children: [
+                          Icon(
+                            step == 0
+                                ? Icons.info_outline
+                                : Icons.assignment_outlined,
+                            color: step == 0
+                                ? CyberColors.neonCyan
+                                : CyberColors.neonPurple,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            step == 0
+                                ? 'INCIDENT BRIEFING'
+                                : 'MISSION PARAMETERS',
+                            style: TextStyle(
+                              fontFamily: 'DotMatrix',
+                              fontSize: 12,
                               color: step == 0
                                   ? CyberColors.neonCyan
                                   : CyberColors.neonPurple,
-                              size: 18,
+                              letterSpacing: 1.5,
                             ),
-                            const SizedBox(width: 8),
-                            Text(
-                              step == 0
-                                  ? 'INCIDENT BRIEFING'
-                                  : 'MISSION PARAMETERS',
-                              style: TextStyle(
-                                fontFamily: 'DotMatrix',
-                                fontSize: 12,
-                                color: step == 0
-                                    ? CyberColors.neonCyan
-                                    : CyberColors.neonPurple,
-                                letterSpacing: 1.5,
-                              ),
-                            ),
-                            if (visibleChars < currentText.length) ...[
-                              const Spacer(),
-                              Text(
-                                'TAP TO SKIP',
+                          ),
+                          if (visibleChars < currentText.length) ...[
+                            const Spacer(),
+                            Text('TAP TO SKIP',
                                 style: CyberText.caption.copyWith(
-                                    color:
-                                    CyberColors.neonCyan.withOpacity(0.5)),
-                              ),
-                            ],
+                                    color: CyberColors.neonCyan
+                                        .withOpacity(0.5))),
                           ],
-                        ),
+                        ]),
 
                         const SizedBox(height: 20),
 
-                        // Typewriter text
                         Text(
                           currentText.substring(0, visibleChars),
                           style: CyberText.bodyLarge.copyWith(height: 1.7),
                         ),
 
-                        // Blinking cursor
                         if (visibleChars < currentText.length)
                           const _BlinkingCursorInline(),
 
                         const SizedBox(height: 28),
 
-                        // Navigation
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -183,7 +238,7 @@ class _StorylineScreenState extends State<StorylineScreen>
                               ),
                               const SizedBox(width: 12),
                             ],
-                            loading
+                            _loading
                                 ? Container(
                               padding: const EdgeInsets.all(12),
                               child: const SizedBox(
@@ -196,9 +251,7 @@ class _StorylineScreenState extends State<StorylineScreen>
                               ),
                             )
                                 : CyberButton(
-                              label: step == 0
-                                  ? 'Continue'
-                                  : 'Begin',
+                              label: step == 0 ? 'Continue' : 'Begin',
                               icon: step == 0
                                   ? Icons.arrow_forward
                                   : Icons.play_arrow,
@@ -212,25 +265,7 @@ class _StorylineScreenState extends State<StorylineScreen>
                                   setState(() => step = 1);
                                   _startTyping();
                                 } else {
-                                  setState(() => loading = true);
-                                  await Future.delayed(
-                                      const Duration(seconds: 3));
-                                  if (mounted) {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) =>
-                                        const InvestigationHubScreen(),
-                                        transitionsBuilder:
-                                            (_, anim, __, child) =>
-                                            FadeTransition(
-                                                opacity: anim,
-                                                child: child),
-                                        transitionDuration:
-                                        const Duration(milliseconds: 500),
-                                      ),
-                                    );
-                                  }
+                                  _launchInvestigation();
                                 }
                               },
                             ),
@@ -249,33 +284,30 @@ class _StorylineScreenState extends State<StorylineScreen>
   }
 }
 
-// ── Step indicator ──
+// ── Step indicator ──────────────────────────────────────────
+
 class _StepIndicator extends StatelessWidget {
   final int currentStep;
   const _StepIndicator({required this.currentStep});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        _Dot(label: '01', isActive: currentStep == 0, title: 'Briefing'),
-        Expanded(
-          child: Container(
-            height: 1.5,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  CyberColors.neonCyan.withOpacity(0.5),
-                  CyberColors.neonPurple.withOpacity(0.5),
-                ],
-              ),
-            ),
+    return Row(children: [
+      _Dot(label: '01', isActive: currentStep == 0, title: 'Briefing'),
+      Expanded(
+        child: Container(
+          height: 1.5,
+          margin: const EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              CyberColors.neonCyan.withOpacity(0.5),
+              CyberColors.neonPurple.withOpacity(0.5),
+            ]),
           ),
         ),
-        _Dot(label: '02', isActive: currentStep == 1, title: 'Mission'),
-      ],
-    );
+      ),
+      _Dot(label: '02', isActive: currentStep == 1, title: 'Mission'),
+    ]);
   }
 }
 
@@ -283,59 +315,51 @@ class _Dot extends StatelessWidget {
   final String label;
   final bool isActive;
   final String title;
-
-  const _Dot({
-    required this.label,
-    required this.isActive,
-    required this.title,
-  });
+  const _Dot(
+      {required this.label, required this.isActive, required this.title});
 
   @override
   Widget build(BuildContext context) {
     final color = isActive ? CyberColors.neonCyan : CyberColors.textMuted;
-    return Column(
-      children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: isActive
-                ? CyberColors.neonCyan.withOpacity(0.15)
-                : Colors.transparent,
-            border: Border.all(color: color, width: isActive ? 2 : 1),
-            boxShadow: isActive ? CyberShadows.neonCyan(intensity: 0.6) : null,
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                color: color,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+    return Column(children: [
+      Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: isActive
+              ? CyberColors.neonCyan.withOpacity(0.15)
+              : Colors.transparent,
+          border: Border.all(
+              color: color, width: isActive ? 2 : 1),
+          boxShadow:
+          isActive ? CyberShadows.neonCyan(intensity: 0.6) : null,
         ),
-        const SizedBox(height: 4),
-        Text(title, style: CyberText.caption.copyWith(color: color)),
-      ],
-    );
+        child: Center(
+          child: Text(label,
+              style: TextStyle(
+                  color: color,
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold)),
+        ),
+      ),
+      const SizedBox(height: 4),
+      Text(title,
+          style: CyberText.caption.copyWith(color: color)),
+    ]);
   }
 }
 
-// ── Inline blinking cursor ──
 class _BlinkingCursorInline extends StatefulWidget {
   const _BlinkingCursorInline();
-
   @override
-  State<_BlinkingCursorInline> createState() => _BlinkingCursorInlineState();
+  State<_BlinkingCursorInline> createState() =>
+      _BlinkingCursorInlineState();
 }
 
 class _BlinkingCursorInlineState extends State<_BlinkingCursorInline>
     with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
-
   @override
   void initState() {
     super.initState();
@@ -364,9 +388,8 @@ class _BlinkingCursorInlineState extends State<_BlinkingCursorInline>
           borderRadius: const BorderRadius.all(Radius.circular(2)),
           boxShadow: [
             BoxShadow(
-              color: CyberColors.neonCyan.withOpacity(0.6),
-              blurRadius: 6,
-            ),
+                color: CyberColors.neonCyan.withOpacity(0.6),
+                blurRadius: 6)
           ],
         ),
       ),

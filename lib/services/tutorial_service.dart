@@ -81,7 +81,7 @@ class TutorialService {
         );
       case TutorialStep.flagSuspect:
         return const AriaMessage(
-          text: "You have enough.\nThe suspect list awaits.\nChoose carefully — a wrong accusation leaves the real ghost in the shadows.",
+          text: "A trace is forming.\nYou're on to something — keep pulling the thread.\nRemember- at least 3 solid evidences.\nDon't stop now.",
           step: TutorialStep.flagSuspect,
         );
       default:

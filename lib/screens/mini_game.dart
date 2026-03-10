@@ -1,26 +1,31 @@
-// lib/screens/decryption_mini_game_screen.dart
+// lib/screens/mini_game.dart
 // ═══════════════════════════════════════════════════════════════
-//  REDESIGNED DECRYPTION MINI GAME SCREEN
+//  DECRYPTION MINI GAME — reads puzzle from CaseEngine / JSON
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
-import '../case_data/ghosttrace_case_data.dart';
+import '../models/evidence.dart';
+import '../logic/game_engine.dart';
+import '../state/case_engine_provider.dart';
 import '../services/tutorial_service.dart';
-import '../widgets/aria_guide.dart';
 import '../widgets/aria_controller.dart';
 
 class DecryptionMiniGameScreen extends StatefulWidget {
-  const DecryptionMiniGameScreen({super.key});
+  /// The panel that owns this mini-game (e.g. 'files').
+  final String panelId;
+
+  const DecryptionMiniGameScreen({super.key, required this.panelId});
 
   @override
   State<DecryptionMiniGameScreen> createState() =>
       _DecryptionMiniGameScreenState();
 }
 
-class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen>
+class _DecryptionMiniGameScreenState
+    extends State<DecryptionMiniGameScreen>
     with AriaMixin, TickerProviderStateMixin {
   final TextEditingController _controller = TextEditingController();
   String _feedback = '';
@@ -33,11 +38,8 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen>
   late Animation<double> _successScale;
   late Animation<double> _successGlow;
 
-  final List<String> _hints = [
-    'It\'s a simple shift cipher. Try moving letters backward.',
-    'The shift is exactly 3 positions back in the alphabet.',
-    'Dwwdfkphqw → subtract 3 → becomes A...',
-  ];
+  // Resolved from the case JSON in initState / first build
+  MinigameConfig? _minigame;
 
   @override
   void initState() {
@@ -70,42 +72,65 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen>
     super.dispose();
   }
 
-  void _checkAnswer() {
+  void _checkAnswer(CaseEngine engine) {
+    if (_minigame == null) return;
     final input = _controller.text.trim().toLowerCase();
-    final solution = ghostTraceCase.attachmentPuzzle.solution.toLowerCase();
+    final solution = (_minigame!.solution ?? '').toLowerCase();
 
     if (input == solution) {
       setState(() {
         _success = true;
         _feedback = '';
-        GameProgress.unlockBriefing();
       });
+      // Notify the engine — this unlocks the hidden evidence item
+      engine.solveMinigame(_minigame!.id);
       _successCtrl.forward();
     } else {
-      setState(() {
-        _feedback = 'Incorrect decryption. Try again.';
-      });
+      setState(() => _feedback = 'Incorrect decryption. Try again.');
     }
   }
 
   void _showHint() {
-    if (_hintsUsed < 3) {
+    if (_minigame == null) return;
+    if (_hintsUsed < _minigame!.hints.length) {
       setState(() {
-        _feedback = _hints[_hintsUsed];
+        _feedback = _minigame!.hints[_hintsUsed];
         _hintsUsed++;
       });
     } else {
-      setState(() {
-        _feedback = 'No more hints available.';
-      });
+      setState(() => _feedback = 'No more hints available.');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final engine = CaseEngineProvider.of(context);
+    final panel = engine.caseFile.panelById(widget.panelId);
+    _minigame ??= panel?.minigame;
+
+    if (_minigame == null) {
+      return AppShell(
+        title: 'Hidden Clue',
+        showBack: true,
+        child: Center(
+          child: Text('No mini-game found for this panel.',
+              style: CyberText.bodySmall),
+        ),
+      );
+    }
+
+    final mg = _minigame!;
+    final maxHints = mg.hints.length;
+    final alreadySolved = engine.isMinigameSolved(mg.id);
+    if (alreadySolved && !_success) {
+      // Reflect existing solved state without animation re-trigger
+      _success = true;
+    }
+
     return AppShell(
       title: 'Hidden Clue',
       showBack: true,
+      showBottomNav: false,
       child: Stack(
         children: [
           FadeTransition(
@@ -126,184 +151,161 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                color: CyberColors.neonPurple.withOpacity(0.12),
-                                borderRadius: CyberRadius.small,
-                                border: Border.all(
-                                  color: CyberColors.neonPurple.withOpacity(0.4),
-                                  width: 1,
-                                ),
-                              ),
-                              child: const Icon(
-                                Icons.lock_outline,
-                                color: CyberColors.neonPurple,
-                                size: 20,
+                        Row(children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: CyberColors.neonPurple.withOpacity(0.12),
+                              borderRadius: CyberRadius.small,
+                              border: Border.all(
+                                color: CyberColors.neonPurple.withOpacity(0.4),
+                                width: 1,
                               ),
                             ),
-                            const SizedBox(width: 14),
-                            Text(
-                              'Dwwdfkphqw',
-                              style: TextStyle(
-                                fontFamily: 'DotMatrix',
-                                fontSize: 26,
-                                color: CyberColors.neonPurple,
-                                letterSpacing: 4,
-                                shadows: [
-                                  Shadow(
+                            child: const Icon(Icons.lock_outline,
+                                color: CyberColors.neonPurple, size: 20),
+                          ),
+                          const SizedBox(width: 14),
+                          Text(
+                            mg.cipherText ?? '',
+                            style: TextStyle(
+                              fontFamily: 'DotMatrix',
+                              fontSize: 26,
+                              color: CyberColors.neonPurple,
+                              letterSpacing: 4,
+                              shadows: [
+                                Shadow(
                                     color: CyberColors.neonPurple,
-                                    blurRadius: 12,
-                                  ),
-                                ],
-                              ),
+                                    blurRadius: 12)
+                              ],
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        Divider(
-                          color: CyberColors.borderSubtle,
-                          thickness: 1,
-                        ),
-                        const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.info_outline,
-                              color: CyberColors.neonAmber,
-                              size: 16,
-                            ),
+                          ),
+                        ]),
+                        if (mg.hint != null) ...[
+                          const SizedBox(height: 16),
+                          Divider(color: CyberColors.borderSubtle, thickness: 1),
+                          const SizedBox(height: 12),
+                          Row(children: [
+                            const Icon(Icons.info_outline,
+                                color: CyberColors.neonAmber, size: 16),
                             const SizedBox(width: 8),
-                            Text(
-                              'Clue: Common filename related to documents...',
-                              style: CyberText.bodySmall.copyWith(
-                                color: CyberColors.neonAmber,
+                            Expanded(
+                              child: Text(
+                                mg.hint!,
+                                style: CyberText.bodySmall
+                                    .copyWith(color: CyberColors.neonAmber),
                               ),
                             ),
-                          ],
-                        ),
+                          ]),
+                        ],
                       ],
                     ),
                   ),
 
                   const SizedBox(height: 28),
 
-                  // ── Hints remaining ──
+                  // ── Input ──
                   const CyberSectionHeader(title: 'Decryption Input'),
                   NeonContainer(
                     padding: const EdgeInsets.all(18),
-                    child: Column(
-                      children: [
-                        // Input field
-                        TextField(
-                          controller: _controller,
-                          enabled: !_success,
-                          style: const TextStyle(
-                            color: CyberColors.textPrimary,
-                            fontSize: 16,
-                            fontFamily: 'DotMatrix',
-                            letterSpacing: 1,
-                          ),
-                          decoration: InputDecoration(
-                            labelText: 'Enter your decryption',
-                            labelStyle: CyberText.bodySmall,
-                            prefixIcon: const Icon(
-                              Icons.terminal,
-                              color: CyberColors.neonCyan,
-                              size: 20,
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: CyberRadius.medium,
-                              borderSide: BorderSide(
+                    child: Column(children: [
+                      TextField(
+                        controller: _controller,
+                        enabled: !_success,
+                        style: const TextStyle(
+                          color: CyberColors.textPrimary,
+                          fontSize: 16,
+                          fontFamily: 'DotMatrix',
+                          letterSpacing: 1,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: 'Enter your decryption',
+                          labelStyle: CyberText.bodySmall,
+                          prefixIcon: const Icon(Icons.terminal,
+                              color: CyberColors.neonCyan, size: 20),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: CyberRadius.medium,
+                            borderSide: BorderSide(
                                 color: CyberColors.neonCyan.withOpacity(0.4),
-                                width: 1.5,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: CyberRadius.medium,
-                              borderSide: const BorderSide(
-                                color: CyberColors.neonCyan,
-                                width: 1.5,
-                              ),
-                            ),
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: CyberRadius.medium,
-                              borderSide: BorderSide(
-                                color: CyberColors.neonGreen.withOpacity(0.4),
-                                width: 1.5,
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: CyberColors.bgMid,
+                                width: 1.5),
                           ),
-                          onSubmitted: (_) {
-                            if (!_success) _checkAnswer();
-                          },
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: CyberRadius.medium,
+                            borderSide: const BorderSide(
+                                color: CyberColors.neonCyan, width: 1.5),
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: CyberRadius.medium,
+                            borderSide: BorderSide(
+                                color: CyberColors.neonGreen.withOpacity(0.4),
+                                width: 1.5),
+                          ),
+                          filled: true,
+                          fillColor: CyberColors.bgMid,
                         ),
+                        onSubmitted: (_) {
+                          if (!_success) _checkAnswer(engine);
+                        },
+                      ),
 
-                        const SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                        // Action buttons
-                        Row(
-                          children: [
-                            // Hint button
-                            Expanded(
-                              child: CyberButton(
-                                label: 'Hint (${3 - _hintsUsed})',
-                                icon: Icons.lightbulb_outline,
-                                accentColor: CyberColors.neonAmber,
-                                isOutlined: true,
-                                isSmall: true,
-                                onTap: _hintsUsed < 3 && !_success
-                                    ? _showHint
-                                    : null,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            // Decrypt button
-                            Expanded(
-                              child: CyberButton(
-                                label: _success ? 'Solved!' : 'Decrypt',
-                                icon: _success
-                                    ? Icons.check_circle_outline
-                                    : Icons.lock_open_outlined,
-                                accentColor: _success
-                                    ? CyberColors.neonGreen
-                                    : CyberColors.neonCyan,
-                                isSmall: true,
-                                onTap: _success ? null : _checkAnswer,
-                              ),
-                            ),
-                          ],
+                      Row(children: [
+                        Expanded(
+                          child: CyberButton(
+                            label: 'Hint (${maxHints - _hintsUsed})',
+                            icon: Icons.lightbulb_outline,
+                            accentColor: CyberColors.neonAmber,
+                            isOutlined: true,
+                            isSmall: true,
+                            onTap: _hintsUsed < maxHints && !_success
+                                ? _showHint
+                                : null,
+                          ),
                         ),
-                      ],
-                    ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CyberButton(
+                            label: _success ? 'Solved!' : 'Decrypt',
+                            icon: _success
+                                ? Icons.check_circle_outline
+                                : Icons.lock_open_outlined,
+                            accentColor: _success
+                                ? CyberColors.neonGreen
+                                : CyberColors.neonCyan,
+                            isSmall: true,
+                            onTap: _success ? null : () => _checkAnswer(engine),
+                          ),
+                        ),
+                      ]),
+                    ]),
                   ),
 
-                  // ── Feedback message ──
+                  // ── Feedback ──
                   if (_feedback.isNotEmpty && !_success) ...[
                     const SizedBox(height: 16),
                     _FeedbackBanner(
                       message: _feedback,
                       isHint: _hintsUsed > 0 &&
-                          _hints.contains(_feedback),
+                          mg.hints.contains(_feedback),
                     ),
                   ],
 
-                  // ── Hints used indicator ──
                   if (_hintsUsed > 0) ...[
                     const SizedBox(height: 16),
-                    _HintProgress(used: _hintsUsed, total: 3),
+                    _HintProgress(used: _hintsUsed, total: maxHints),
                   ],
 
-                  // ── Success panel ──
+                  // ── Success ──
                   if (_success) ...[
                     const SizedBox(height: 28),
                     _SuccessPanel(
                       scaleAnim: _successScale,
                       glowAnim: _successGlow,
+                      unlockedFilename:
+                      mg.unlocksHiddenItemId ?? 'credentials.pdf',
+                      successMessage: mg.successMessage ??
+                          'Return to the Evidence Hub to access this file.',
                     ),
                   ],
 
@@ -313,7 +315,6 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen>
             ),
           ),
 
-          // ── ARIA Guide ──
           buildAriaLayer(),
         ],
       ),
@@ -321,18 +322,17 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen>
   }
 }
 
-// ── Feedback Banner ──
+// ── Feedback Banner ───────────────────────────────────────────
+
 class _FeedbackBanner extends StatelessWidget {
   final String message;
   final bool isHint;
-
   const _FeedbackBanner({required this.message, required this.isHint});
 
   @override
   Widget build(BuildContext context) {
     final color = isHint ? CyberColors.neonAmber : CyberColors.neonRed;
     final icon = isHint ? Icons.lightbulb_outline : Icons.error_outline;
-
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
@@ -341,222 +341,179 @@ class _FeedbackBanner extends StatelessWidget {
         borderRadius: CyberRadius.medium,
         border: Border.all(color: color.withOpacity(0.4), width: 1.5),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: color, size: 18),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              message,
-              style: TextStyle(
-                color: color,
-                fontSize: 13,
-                height: 1.5,
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Icon(icon, color: color, size: 18),
+        const SizedBox(width: 10),
+        Expanded(
+            child: Text(message,
+                style: TextStyle(color: color, fontSize: 13, height: 1.5))),
+      ]),
     );
   }
 }
 
-// ── Hint Progress Indicator ──
+// ── Hint Progress ─────────────────────────────────────────────
+
 class _HintProgress extends StatelessWidget {
   final int used;
   final int total;
-
   const _HintProgress({required this.used, required this.total});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text('Hints used: ', style: CyberText.caption),
-        ...List.generate(total, (i) {
-          final active = i < used;
-          return Padding(
-            padding: const EdgeInsets.only(left: 4),
-            child: Container(
-              width: 10,
-              height: 10,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: active
-                    ? CyberColors.neonAmber
-                    : CyberColors.borderSubtle,
-                boxShadow: active
-                    ? [
-                  BoxShadow(
+    return Row(children: [
+      Text('Hints used: ', style: CyberText.caption),
+      ...List.generate(total, (i) {
+        final active = i < used;
+        return Padding(
+          padding: const EdgeInsets.only(left: 4),
+          child: Container(
+            width: 10,
+            height: 10,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: active
+                  ? CyberColors.neonAmber
+                  : CyberColors.borderSubtle,
+              boxShadow: active
+                  ? [
+                BoxShadow(
                     color: CyberColors.neonAmber.withOpacity(0.5),
-                    blurRadius: 6,
-                  ),
-                ]
-                    : null,
-              ),
+                    blurRadius: 6)
+              ]
+                  : null,
             ),
-          );
-        }),
-        const Spacer(),
-        if (used >= total)
-          Text(
-            'No hints remaining',
-            style: CyberText.caption.copyWith(
-                color: CyberColors.neonRed.withOpacity(0.7)),
           ),
-      ],
-    );
+        );
+      }),
+      const Spacer(),
+      if (used >= total)
+        Text('No hints remaining',
+            style: CyberText.caption
+                .copyWith(color: CyberColors.neonRed.withOpacity(0.7))),
+    ]);
   }
 }
 
-// ── Success Panel ──
+// ── Success Panel ─────────────────────────────────────────────
+
 class _SuccessPanel extends StatelessWidget {
   final Animation<double> scaleAnim;
   final Animation<double> glowAnim;
+  final String unlockedFilename;
+  final String successMessage;
 
   const _SuccessPanel({
     required this.scaleAnim,
     required this.glowAnim,
+    required this.unlockedFilename,
+    required this.successMessage,
   });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: scaleAnim,
-      builder: (_, __) {
-        return Transform.scale(
-          scale: scaleAnim.value,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  CyberColors.neonGreen.withOpacity(0.08),
-                  CyberColors.bgCard,
+      builder: (_, __) => Transform.scale(
+        scale: scaleAnim.value,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                CyberColors.neonGreen.withOpacity(0.08),
+                CyberColors.bgCard,
+              ],
+            ),
+            borderRadius: CyberRadius.large,
+            border: Border.all(
+                color: CyberColors.neonGreen.withOpacity(0.6), width: 1.5),
+            boxShadow: [
+              BoxShadow(
+                color: CyberColors.neonGreen
+                    .withOpacity(0.25 * glowAnim.value),
+                blurRadius: 28,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: Column(children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(colors: [
+                  CyberColors.neonGreen.withOpacity(0.2),
+                  Colors.transparent,
+                ]),
+                border: Border.all(color: CyberColors.neonGreen, width: 2),
+                boxShadow: [
+                  BoxShadow(
+                      color: CyberColors.neonGreen.withOpacity(0.4),
+                      blurRadius: 20,
+                      spreadRadius: 2),
                 ],
               ),
-              borderRadius: CyberRadius.large,
-              border: Border.all(
-                color: CyberColors.neonGreen.withOpacity(0.6),
-                width: 1.5,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: CyberColors.neonGreen
-                      .withOpacity(0.25 * glowAnim.value),
-                  blurRadius: 28,
-                  spreadRadius: 2,
-                ),
-              ],
+              child: const Icon(Icons.lock_open,
+                  color: CyberColors.neonGreen, size: 34),
             ),
-            child: Column(
-              children: [
-                // Icon
-                Container(
-                  width: 72,
-                  height: 72,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        CyberColors.neonGreen.withOpacity(0.2),
-                        Colors.transparent,
-                      ],
-                    ),
-                    border: Border.all(
-                      color: CyberColors.neonGreen,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: CyberColors.neonGreen.withOpacity(0.4),
-                        blurRadius: 20,
-                        spreadRadius: 2,
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.lock_open,
-                    color: CyberColors.neonGreen,
-                    size: 34,
-                  ),
-                ),
-
-                const SizedBox(height: 18),
-
-                StatusChip(
-                  label: 'DECRYPTION SUCCESSFUL',
-                  color: CyberColors.neonGreen,
-                  pulsing: true,
-                ),
-
-                const SizedBox(height: 14),
-
+            const SizedBox(height: 18),
+            const StatusChip(
+              label: 'DECRYPTION SUCCESSFUL',
+              color: CyberColors.neonGreen,
+              pulsing: true,
+            ),
+            const SizedBox(height: 14),
+            Text(
+              'Clue Unlocked',
+              style: TextStyle(
+                fontFamily: 'DotMatrix',
+                fontSize: 22,
+                color: CyberColors.neonGreen,
+                letterSpacing: 1,
+                shadows: const [
+                  Shadow(color: CyberColors.neonGreen, blurRadius: 12)
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: CyberColors.neonGreen.withOpacity(0.08),
+                borderRadius: CyberRadius.medium,
+                border: Border.all(
+                    color: CyberColors.neonGreen.withOpacity(0.4), width: 1),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.insert_drive_file_outlined,
+                    color: CyberColors.neonGreen, size: 20),
+                const SizedBox(width: 10),
                 Text(
-                  'Clue Unlocked',
-                  style: TextStyle(
+                  unlockedFilename,
+                  style: const TextStyle(
                     fontFamily: 'DotMatrix',
-                    fontSize: 22,
+                    fontSize: 15,
                     color: CyberColors.neonGreen,
                     letterSpacing: 1,
-                    shadows: const [
-                      Shadow(color: CyberColors.neonGreen, blurRadius: 12),
-                    ],
                   ),
                 ),
-
-                const SizedBox(height: 16),
-
-                // Unlocked file display
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: CyberColors.neonGreen.withOpacity(0.08),
-                    borderRadius: CyberRadius.medium,
-                    border: Border.all(
-                      color: CyberColors.neonGreen.withOpacity(0.4),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.insert_drive_file_outlined,
-                        color: CyberColors.neonGreen,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        'credentials.pdf',
-                        style: const TextStyle(
-                          fontFamily: 'DotMatrix',
-                          fontSize: 15,
-                          color: CyberColors.neonGreen,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                Text(
-                  'Return to the Evidence Hub to access this file.',
-                  style: CyberText.caption.copyWith(height: 1.5),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+              ]),
             ),
-          ),
-        );
-      },
+            const SizedBox(height: 10),
+            Text(
+              successMessage,
+              style: CyberText.caption.copyWith(height: 1.5),
+              textAlign: TextAlign.center,
+            ),
+          ]),
+        ),
+      ),
     );
   }
 }

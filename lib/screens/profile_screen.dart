@@ -1,6 +1,6 @@
 // lib/screens/profile_screen.dart
 // ═══════════════════════════════════════════════════════════════
-//  REDESIGNED PROFILE SCREEN
+//  PROFILE SCREEN — live rank, title and initials from GameProgress
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
@@ -22,8 +22,6 @@ class _ProfileScreenState extends State<ProfileScreen>
   late AnimationController _entryCtrl;
   late Animation<double> _fadeIn;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -42,6 +40,12 @@ class _ProfileScreenState extends State<ProfileScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Read live values every build so navigating here after winning shows
+    // the updated XP, title and initials immediately.
+    final initials = GameProgress.avatarInitials;
+    final titleText = GameProgress.title;
+    final rankProgress = GameProgress.rankProgress;
+
     return AppShell(
       title: 'Analyst Profile',
       showBack: true,
@@ -57,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                 padding: const EdgeInsets.all(28),
                 child: Column(
                   children: [
-                    // Avatar
+                    // Avatar — initials derived from current rank
                     Container(
                       width: 96,
                       height: 96,
@@ -73,16 +77,17 @@ class _ProfileScreenState extends State<ProfileScreen>
                             color: CyberColors.neonCyan, width: 2.5),
                         boxShadow: CyberShadows.neonCyan(),
                       ),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          'JA',
-                          style: TextStyle(
+                          initials,
+                          style: const TextStyle(
                             fontFamily: 'DotMatrix',
-                            fontSize: 36,
+                            fontSize: 32,
                             color: CyberColors.neonCyan,
                             shadows: [
                               Shadow(
-                                  color: CyberColors.neonCyan, blurRadius: 12),
+                                  color: CyberColors.neonCyan,
+                                  blurRadius: 12),
                             ],
                           ),
                         ),
@@ -90,12 +95,12 @@ class _ProfileScreenState extends State<ProfileScreen>
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      GameProgress.title.toUpperCase(),
-                      style: CyberText.displaySmall.copyWith(
-                          letterSpacing: 2, fontSize: 20),
+                      titleText.toUpperCase(),
+                      style: CyberText.displaySmall
+                          .copyWith(letterSpacing: 2, fontSize: 20),
                     ),
                     const SizedBox(height: 12),
-                    StatusChip(
+                    const StatusChip(
                       label: 'AGENT ONLINE',
                       color: CyberColors.neonGreen,
                       pulsing: true,
@@ -116,7 +121,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       subtitle: 'Progress to next rank',
                     ),
                     CyberProgressBar(
-                      value: GameProgress.rankProgress,
+                      value: rankProgress,
                       height: 14,
                     ),
                     const SizedBox(height: 10),
@@ -124,7 +129,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${(GameProgress.rankProgress * 100).toInt()}% complete',
+                          '${(rankProgress * 100).toInt()}% complete',
                           style: CyberText.bodySmall.copyWith(
                               color: CyberColors.neonCyan),
                         ),
@@ -155,7 +160,8 @@ class _ProfileScreenState extends State<ProfileScreen>
                   Expanded(
                     child: MetricTile(
                       label: 'Accuracy',
-                      value: '${GameProgress.accuracy.toStringAsFixed(1)}%',
+                      value:
+                      '${GameProgress.accuracy.toStringAsFixed(1)}%',
                       icon: Icons.gps_fixed,
                       color: CyberColors.neonPurple,
                     ),
@@ -176,8 +182,8 @@ class _ProfileScreenState extends State<ProfileScreen>
               SizedBox(
                 width: double.infinity,
                 child: CyberButton(
-                  label: 'Home',
-                  icon: Icons.home,
+                  label: 'Browse Cases',
+                  icon: Icons.folder_outlined,
                   isOutlined: true,
                   onTap: () {
                     Navigator.push(

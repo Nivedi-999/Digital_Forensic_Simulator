@@ -23,8 +23,12 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/background.png
-    - assets/videos/cyber_intro.mp4
+    # ── Case data files (one JSON per case) ──
+    - assets/cases/case_ghosttrace.json
+    - assets/cases/case_lastlogin.json
+    - assets/cases/case_deaddropsignal.json
+    - assets/cases/case_echoesoftomorrow.json
+    - assets/cases/case_echowithoutavoice.json
 
   fonts:
     - family: DotMatrix

@@ -1,0 +1,300 @@
+{
+  "id": "echoes_of_tomorrow",
+  "title": "Echoes of Tomorrow",
+  "shortDescription": "A secure system prepares fixes before issues are logged, moves files before they are requested, and replies before questions are asked. As you investigate, it begins adapting to you.",
+  "difficulty": "Hard",
+  "theme": "Predictive Behavioral Modeling / Psychological Manipulation",
+  "estimatedDuration": "3h 00m",
+  "caseNumber": "2050",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A secure internal system begins behaving strangely.\nEngineers report fixes being prepared before issues are logged.\nFiles move before anyone asks for them.\nDiagnostics are queued before alerts are raised.\n\nNo malware is detected. No accounts are compromised.\nEvery action is signed, logged, and approved.\n\nChat conversations sound normal, yet replies arrive too early.\nSystem files reposition themselves quietly.\nNetwork traffic pretends to leave the system — but never does.\n\nThe environment feels like it is rehearsing incidents.\nPreparing responses in advance.\nOptimizing reactions.\n\nAs you investigate, the system begins adjusting itself — based on your own investigative behavior.",
+    "missionText": "Your Mission:\n\n› Determine whether this is sabotage, insider abuse, or a new class of threat\n\n› Analyze chat timing, file movement, and IP routing\n\n› Collect at least 3 correct evidence items\n\n› Identify who built the behavioral simulation\n\n› Flag the correct suspect to close the case"
+  },
+
+  "suspects": [
+    {
+      "id": "dhruv_a",
+      "name": "Dhruv A",
+      "role": "Senior Systems Engineer",
+      "department": "Infrastructure Division",
+      "riskLevel": "high",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.2.11.5 — standard engineer access",
+        "deviceUsage": "Engineering workstation — normal logs",
+        "locationTrace": "Infrastructure Wing",
+        "vpnCheck": "Internal VPN"
+      },
+      "profileNotes": "High access and infrastructure skills. However, has no knowledge of behavioral modeling systems. Suspicion drops sharply after the metadata phase confirms the behavior requires prediction algorithms, not infrastructure control alone."
+    },
+    {
+      "id": "aniket_b",
+      "name": "Aniket B",
+      "role": "Data Analyst",
+      "department": "Analytics Division",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.2.14.9 — analytics cluster",
+        "deviceUsage": "Data workstation — query logs only",
+        "locationTrace": "Analytics Floor",
+        "vpnCheck": "Internal only"
+      },
+      "profileNotes": "Skilled in pattern analysis. Partial false lead — can read the behavioral data but has no execution authority to deploy or activate the simulation system. Suspicion partial and unconfirmed."
+    },
+    {
+      "id": "manav_r",
+      "name": "Manav R",
+      "role": "Behavioral Research Consultant",
+      "department": "External Consultant — Research Division",
+      "riskLevel": "medium",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "10.2.99.1 — consultant terminal",
+        "deviceUsage": "Consultant workstation — indirect access",
+        "locationTrace": "Research Division, consultant bay",
+        "vpnCheck": "Research VPN — elevated"
+      },
+      "profileNotes": "Reads chat summaries and advises on response optimization. Specializes in human decision modeling. Suspicion only rises when chat logs AND metadata are cross-linked — the system anticipation pattern matches his behavioral modeling research exactly. He built the simulation to study how investigators respond to anomalies. You are the dataset."
+    },
+    {
+      "id": "ayon_r",
+      "name": "Ayon R",
+      "role": "Automation Vendor",
+      "department": "External Vendor — Systems Integration",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Vendor portal — logged entry/exit",
+        "deviceUsage": "Integration tools only",
+        "locationTrace": "Vendor access terminal",
+        "vpnCheck": "Vendor VPN — restricted"
+      },
+      "profileNotes": "Has systems access but no behavioral modeling layer knowledge. Could deploy tools but cannot explain the anticipation pattern in the chat timing data. Suspicion weakens after IP analysis confirms purely internal routing."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "minigame": {
+        "id": "intent_patterning",
+        "type": "pattern_match",
+        "title": "Intent Pattern Analysis",
+        "description": "Compare sentence structure, phrasing repetition, and emotional variation across engineer conversations.",
+        "hint": "Look for responses that arrive before the question they answer was fully formed.",
+        "solution": "templated_responses",
+        "maxHints": 3,
+        "hints": [
+          "Compare sentence length across Eng-B's replies — is there natural variation?",
+          "Check the timestamp gap between Eng-A's message and Eng-B's reply.",
+          "Humans pause to think. If replies arrive before decisions are made, the responses are pre-generated."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "files",
+          "message": "File Access Records now accessible. Chat responses confirmed as templated."
+        }
+      },
+      "items": [
+        {
+          "id": "chat_preemptive_reply",
+          "label": "Eng-B: 'Already queued the workaround.'",
+          "sender": "Eng-B",
+          "isKeyEvidence": true,
+          "isSuspectMessage": true,
+          "detail": "Eng-A sent 'We might need diagnostics later today' at 10:21. Eng-B replied 'Already queued the workaround' at 10:22 — one minute later. The workaround could not have been queued in that time unless the decision was anticipated in advance.",
+          "pointsToSuspect": "manav_r"
+        },
+        {
+          "id": "chat_confusion",
+          "label": "Eng-A: 'Queued? We didn't ask yet.'",
+          "sender": "Eng-A",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Eng-A expresses surprise at the preemptive action. This is the moment the anomaly becomes visible — the system prepared a response before the request existed.",
+          "pointsToSuspect": "manav_r"
+        },
+        {
+          "id": "chat_normal",
+          "label": "Eng-A: 'We might need diagnostics later today.'",
+          "sender": "Eng-A",
+          "isKeyEvidence": false,
+          "isSuspectMessage": false,
+          "detail": "Normal operational message. No anomaly. Serves as the baseline — the action that was anticipated before it was made.",
+          "pointsToSuspect": null
+        }
+      ]
+    },
+    {
+      "id": "files",
+      "label": "File Access",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": "intent_patterning",
+      "minigame": {
+        "id": "sequence_reconstruction",
+        "type": "sequence_order",
+        "title": "Sequence Reconstruction",
+        "description": "Arrange file events in correct chronological order. Detect the anticipation window — how far in advance were files moved?",
+        "hint": "A file archived before it is requested suggests the system knew it would be needed.",
+        "solution": "2_to_4_minute_anticipation",
+        "maxHints": 3,
+        "hints": [
+          "Sort the file events: Archive → Request → Use. Which comes first?",
+          "The archive action happens before any user request. How much earlier?",
+          "2–4 minutes of anticipation is consistent across all events. That is a prediction window, not a coincidence."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "ip",
+          "message": "IP Traces now accessible. System confirmed predicting actions 2–4 minutes ahead."
+        }
+      },
+      "items": [
+        {
+          "id": "file_preemptive_archive",
+          "label": "diag_cache.sys — Archived Before Request",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "diag_cache.sys was archived at 09:58 — before any engineer requested diagnostics. At 10:01 Eng-A requested the file. The system had positioned it in advance. Anticipation window: 3 minutes.",
+          "metadata": {
+            "size": "18.4 MB",
+            "modifier": "System — automated",
+            "modifiedAt": "09:58"
+          },
+          "rows": [
+            { "key": "Archived", "value": "09:58 — no user request", "highlight": true },
+            { "key": "Requested", "value": "10:01 — by Eng-A" },
+            { "key": "Anticipation Window", "value": "3 minutes", "highlight": true },
+            { "key": "Authorized By", "value": "Trusted internal process — signed" }
+          ],
+          "pointsToSuspect": "manav_r"
+        },
+        {
+          "id": "file_response_model",
+          "label": "response_model.bin — Moved Preemptively",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "response_model.bin was moved to the active processing directory at 10:00 — before any engineer triggered the diagnostic workflow that requires it. No malware. No breach. A trusted process moved a legitimate file in advance of its need.",
+          "metadata": {
+            "size": "4.2 MB",
+            "modifier": "System — automated",
+            "modifiedAt": "10:00"
+          },
+          "rows": [
+            { "key": "Action", "value": "Moved to /active/ at 10:00", "highlight": true },
+            { "key": "Required By Workflow", "value": "Diagnostic triggered at 10:01" },
+            { "key": "Anticipation", "value": "60 seconds before use", "highlight": true },
+            { "key": "File Type", "value": "Behavioral response model binary" }
+          ],
+          "pointsToSuspect": "manav_r"
+        }
+      ]
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": "sequence_reconstruction",
+      "minigame": null,
+      "items": [
+        {
+          "id": "ip_simulated_external",
+          "label": "Simulated External Traffic",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Network hops between Internal-A, Internal-B, and Internal-C show latency of 208–210ms — suggestive of geographic distance. However, all three nodes are internal campus addresses. The distance is simulated. External traffic is an illusion.",
+          "rows": [
+            { "key": "Internal-A → Internal-B", "value": "210ms latency", "highlight": true },
+            { "key": "Internal-B → Internal-C", "value": "208ms latency" },
+            { "key": "All Nodes", "value": "Internal campus IPs — no external routing", "highlight": true },
+            { "key": "Verdict", "value": "Latency artificially inflated to mimic external hops" }
+          ],
+          "pointsToSuspect": "manav_r"
+        },
+        {
+          "id": "ip_no_external_exit",
+          "label": "No External Traffic",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Despite routing that mimics exfiltration, no data ever leaves the campus. The network illusion is designed to draw investigators toward an external attacker assumption — and away from an internal behavioral modeling project.",
+          "rows": [
+            { "key": "External Exits", "value": "None detected", "highlight": true },
+            { "key": "Data Exfiltrated", "value": "Zero bytes" },
+            { "key": "Purpose", "value": "Misdirection — simulates external threat", "highlight": true }
+          ],
+          "pointsToSuspect": "manav_r"
+        }
+      ]
+    }
+  ],
+
+  "timeline": [
+    { "time": "09:58", "title": "File Archived Preemptively", "description": "diag_cache.sys moved to archive before any engineer request.", "severity": "medium" },
+    { "time": "10:00", "title": "Response Model Repositioned", "description": "response_model.bin moved to active directory 60 seconds before use.", "severity": "high" },
+    { "time": "10:21", "title": "Eng-A Sends Diagnostic Message", "description": "'We might need diagnostics later today.' — standard message.", "severity": "low" },
+    { "time": "10:22", "title": "Preemptive Reply Sent", "description": "Eng-B: 'Already queued the workaround.' — before request was finalized.", "severity": "high" },
+    { "time": "10:23", "title": "Anomaly Recognized", "description": "Eng-A expresses confusion: 'Queued? We didn't ask yet.'", "severity": "medium" }
+  ],
+
+  "winCondition": {
+    "guiltySuspectId": "manav_r",
+    "minCorrectEvidence": 3
+  },
+
+  "correctEvidenceIds": [
+    "chat_preemptive_reply",
+    "chat_confusion",
+    "file_preemptive_archive",
+    "file_response_model",
+    "ip_simulated_external",
+    "ip_no_external_exit"
+  ],
+
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Simulation Exposed",
+      "subtitle": "Manav R built a behavioral simulation. No malware. No breach. The system studied investigators to bypass them in future attacks. You were the dataset.",
+      "label": "CASE CLOSED",
+      "xp": 15
+    },
+    "partial": {
+      "condition": "correct_suspect_evidence_lt_3",
+      "title": "Partially Resolved",
+      "subtitle": "Correct conclusion, but the behavioral chain was not fully documented.",
+      "label": "PARTIAL",
+      "xp": 5
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Investigation Compromised",
+      "subtitle": "Wrong assumption. The simulation predicted your conclusion. Manav R's model continues operating — now with data from your investigation.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "no_evidence",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The behavioral system continues learning from every investigator it encounters.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+
+  "aria": {
+    "welcomeToHub": "...Systems nominal. Everything approved. Everything signed.\nAnd yet — the system knew what you were going to do before you did it.\nInvestigate carefully. It may be watching.",
+    "exploreFeeds": "Four panels. The answer lives in the gap between them.\nStart with the chat logs — the timing is the first tell.\nIf replies arrive before decisions are made, something is predicting you.",
+    "viewEvidence": "You found an early reply.\nThat is not efficiency. That is anticipation.\nMark everything that arrived before it was asked for.",
+    "markEvidence": "Good instinct.\nNow find the files. Were they moved before they were requested?\nTwo data points make a coincidence. Three make a pattern.",
+    "decryptionHint": "The IP traces look external. They are not.\nAll hops are internal. The latency is artificial.\nSomeone designed the network to mislead you.",
+    "flagSuspect": "You have the pattern.\nChat timing. File positioning. Simulated routing.\nAll of it points to someone who studies how people think — and acts before they do."
+  }
+}

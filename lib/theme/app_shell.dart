@@ -1,13 +1,15 @@
 // lib/theme/app_shell.dart
 // ═══════════════════════════════════════════════════════════════
-//  REDESIGNED APP SHELL — Dark navy · Neon accents · Glow UI
+//  APP SHELL — Bottom nav navigates correctly through the engine tree
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
-import 'cyber_theme.dart';
+import '../theme/cyber_theme.dart';
 import '../screens/evidence_collected_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/investigation_hub_screen.dart';
+import '../state/active_case.dart';
+import '../state/case_engine_provider.dart';
 import '../widgets/cyber_widgets.dart';
 
 class AppShell extends StatefulWidget {
@@ -26,7 +28,6 @@ class AppShell extends StatefulWidget {
     this.currentIndex = 0,
   });
 
-  // Keep backward-compatible alias
   static const Color neonCyan = CyberColors.neonCyan;
 
   @override
@@ -36,26 +37,34 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   void _onItemTapped(int index) {
     if (index == 0) {
-      Navigator.push(context,
-          _route(const InvestigationHubScreen()));
+      // Push a fresh hub wrapped in CaseEngineProvider.
+      // ActiveCase.engine is always available once a case has been started.
+      if (ActiveCase.isActive) {
+        Navigator.push(
+          context,
+          _route(
+            CaseEngineProvider(
+              engine: ActiveCase.engine,
+              child: const InvestigationHubScreen(),
+            ),
+          ),
+        );
+      }
     } else if (index == 1) {
-      Navigator.push(context,
-          _route(const EvidencesCollectedScreen()));
+      Navigator.push(context, _route(const EvidencesCollectedScreen()));
     } else if (index == 2) {
-      Navigator.push(context,
-          _route(const ProfileScreen()));
+      Navigator.push(context, _route(const ProfileScreen()));
     }
   }
 
   PageRouteBuilder _route(Widget screen) {
     return PageRouteBuilder(
       pageBuilder: (_, __, ___) => screen,
-      transitionsBuilder: (_, anim, __, child) {
-        return FadeTransition(
-          opacity: CurvedAnimation(parent: anim, curve: Curves.easeIn),
-          child: child,
-        );
-      },
+      transitionsBuilder: (_, anim, __, child) =>
+          FadeTransition(
+            opacity: CurvedAnimation(parent: anim, curve: Curves.easeIn),
+            child: child,
+          ),
       transitionDuration: const Duration(milliseconds: 300),
     );
   }
@@ -66,7 +75,6 @@ class _AppShellState extends State<AppShell> {
       backgroundColor: CyberColors.bgDeep,
       extendBody: true,
 
-      // ── Bottom Nav ──
       bottomNavigationBar: widget.showBottomNav
           ? _CyberBottomNav(
         currentIndex: widget.currentIndex,
@@ -76,7 +84,7 @@ class _AppShellState extends State<AppShell> {
 
       body: Stack(
         children: [
-          // ── Background gradient ──
+          // Background gradient
           Positioned.fill(
             child: DecoratedBox(
               decoration: const BoxDecoration(
@@ -85,7 +93,7 @@ class _AppShellState extends State<AppShell> {
             ),
           ),
 
-          // ── Subtle corner accent shapes ──
+          // Corner accent blobs
           Positioned(
             top: -60,
             right: -60,
@@ -121,23 +129,15 @@ class _AppShellState extends State<AppShell> {
             ),
           ),
 
-          // ── Scanline overlay ──
           const ScanlineOverlay(),
-
-          // ── Corner line decorations ──
           const Positioned.fill(child: _CornerDecorations()),
 
-          // ── Main content ──
+          // Main content
           SafeArea(
             bottom: false,
             child: Column(
               children: [
-                // Top bar
-                _TopBar(
-                  title: widget.title,
-                  showBack: widget.showBack,
-                ),
-                // Screen content
+                _TopBar(title: widget.title, showBack: widget.showBack),
                 Expanded(child: widget.child),
               ],
             ),
@@ -148,9 +148,8 @@ class _AppShellState extends State<AppShell> {
   }
 }
 
-// ──────────────────────────────────────────────────────────────
-//  TOP BAR
-// ──────────────────────────────────────────────────────────────
+// ── Top Bar ───────────────────────────────────────────────────
+
 class _TopBar extends StatelessWidget {
   final String? title;
   final bool showBack;
@@ -181,7 +180,6 @@ class _TopBar extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Back button
           if (showBack && Navigator.canPop(context))
             Align(
               alignment: Alignment.centerLeft,
@@ -208,7 +206,6 @@ class _TopBar extends StatelessWidget {
               ),
             ),
 
-          // Title
           if (title != null)
             Text(
               title!,
@@ -219,15 +216,11 @@ class _TopBar extends StatelessWidget {
                 color: CyberColors.neonCyan,
                 letterSpacing: 1.5,
                 shadows: [
-                  Shadow(
-                    color: CyberColors.neonCyan,
-                    blurRadius: 12,
-                  ),
+                  Shadow(color: CyberColors.neonCyan, blurRadius: 12),
                 ],
               ),
             ),
 
-          // Right — subtle status dot
           Align(
             alignment: Alignment.centerRight,
             child: StatusChip(
@@ -242,9 +235,8 @@ class _TopBar extends StatelessWidget {
   }
 }
 
-// ──────────────────────────────────────────────────────────────
-//  BOTTOM NAV
-// ──────────────────────────────────────────────────────────────
+// ── Bottom Nav ────────────────────────────────────────────────
+
 class _CyberBottomNav extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -270,7 +262,6 @@ class _CyberBottomNav extends StatelessWidget {
           BoxShadow(
             color: CyberColors.neonCyan.withOpacity(0.08),
             blurRadius: 24,
-            spreadRadius: 0,
           ),
           BoxShadow(
             color: Colors.black.withOpacity(0.5),
@@ -283,8 +274,8 @@ class _CyberBottomNav extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _NavItem(
-            icon: Icons.cases_outlined,
-            label: 'Cases',
+            icon: Icons.manage_search_outlined,
+            label: 'Hub',
             isActive: currentIndex == 0,
             onTap: () => onTap(0),
           ),
@@ -341,9 +332,7 @@ class _NavItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isActive
-                  ? CyberColors.neonCyan
-                  : CyberColors.textMuted,
+              color: isActive ? CyberColors.neonCyan : CyberColors.textMuted,
               size: 22,
             ),
             const SizedBox(height: 3),
@@ -351,9 +340,8 @@ class _NavItem extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 10,
-                color: isActive
-                    ? CyberColors.neonCyan
-                    : CyberColors.textMuted,
+                color:
+                isActive ? CyberColors.neonCyan : CyberColors.textMuted,
                 fontWeight:
                 isActive ? FontWeight.bold : FontWeight.normal,
                 letterSpacing: 0.5,
@@ -366,18 +354,14 @@ class _NavItem extends StatelessWidget {
   }
 }
 
-// ──────────────────────────────────────────────────────────────
-//  CORNER DECORATIONS  (very subtle cyber UI lines)
-// ──────────────────────────────────────────────────────────────
+// ── Corner Decorations ────────────────────────────────────────
+
 class _CornerDecorations extends StatelessWidget {
   const _CornerDecorations();
 
   @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _CornerPainter(),
-    );
-  }
+  Widget build(BuildContext context) =>
+      CustomPaint(painter: _CornerPainter());
 }
 
 class _CornerPainter extends CustomPainter {
@@ -390,7 +374,6 @@ class _CornerPainter extends CustomPainter {
 
     const len = 28.0;
 
-    // Top-left corner
     canvas.drawPath(
       Path()
         ..moveTo(16, 16 + len)
@@ -398,8 +381,6 @@ class _CornerPainter extends CustomPainter {
         ..lineTo(16 + len, 16),
       paint,
     );
-
-    // Top-right corner
     canvas.drawPath(
       Path()
         ..moveTo(size.width - 16 - len, 16)
@@ -407,8 +388,6 @@ class _CornerPainter extends CustomPainter {
         ..lineTo(size.width - 16, 16 + len),
       paint,
     );
-
-    // Bottom-left corner
     canvas.drawPath(
       Path()
         ..moveTo(16, size.height - 16 - len)

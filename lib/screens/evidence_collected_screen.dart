@@ -1,13 +1,17 @@
 // lib/screens/evidence_collected_screen.dart
 // ═══════════════════════════════════════════════════════════════
-//  REDESIGNED EVIDENCE COLLECTED SCREEN
+//  EVIDENCE LOCKER — reads from CaseEngine (not old EvidenceCollector)
+//  This fixes the "evidence not showing" bug: the old screen was
+//  reading from the EvidenceCollector singleton which is no longer
+//  written to. All evidence is now stored in CaseEngine.
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
-import '../services/evidence_collector.dart';
+import '../logic/game_engine.dart';
+import '../state/case_engine_provider.dart';
 
 class EvidencesCollectedScreen extends StatefulWidget {
   const EvidencesCollectedScreen({super.key});
@@ -17,9 +21,11 @@ class EvidencesCollectedScreen extends StatefulWidget {
       _EvidencesCollectedScreenState();
 }
 
-class _EvidencesCollectedScreenState extends State<EvidencesCollectedScreen> {
-  IconData _iconForCategory(String? cat) {
-    switch (cat) {
+class _EvidencesCollectedScreenState
+    extends State<EvidencesCollectedScreen> {
+
+  IconData _iconForPanel(String panelId) {
+    switch (panelId) {
       case 'chat':  return Icons.chat_bubble_outline;
       case 'files': return Icons.folder_outlined;
       case 'meta':  return Icons.data_object;
@@ -28,8 +34,8 @@ class _EvidencesCollectedScreenState extends State<EvidencesCollectedScreen> {
     }
   }
 
-  Color _colorForCategory(String? cat) {
-    switch (cat) {
+  Color _colorForPanel(String panelId) {
+    switch (panelId) {
       case 'chat':  return CyberColors.neonBlue;
       case 'files': return CyberColors.neonPurple;
       case 'meta':  return CyberColors.neonAmber;
@@ -40,7 +46,10 @@ class _EvidencesCollectedScreenState extends State<EvidencesCollectedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final collected = EvidenceCollector().collected;
+    // Read engine from the inherited provider — same engine that
+    // InvestigationHubScreen and EvidenceAnalysisScreen write to.
+    final engine = CaseEngineProvider.of(context);
+    final collected = engine.collectedEvidence;
 
     return AppShell(
       title: 'Evidence Locker',
@@ -52,52 +61,52 @@ class _EvidencesCollectedScreenState extends State<EvidencesCollectedScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
             child: NeonContainer(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              child: Row(
-                children: [
-                  const Icon(Icons.folder_outlined,
-                      color: CyberColors.neonCyan, size: 28),
-                  const SizedBox(width: 14),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '${collected.length} Items Collected',
-                        style: CyberText.sectionTitle.copyWith(fontSize: 16),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 14),
+              child: Row(children: [
+                const Icon(Icons.folder_outlined,
+                    color: CyberColors.neonCyan, size: 28),
+                const SizedBox(width: 14),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${collected.length} Items Collected',
+                      style:
+                      CyberText.sectionTitle.copyWith(fontSize: 16),
+                    ),
+                    Text(engine.caseFile.title,
+                        style: CyberText.caption),
+                  ],
+                ),
+                const Spacer(),
+                if (collected.isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
+                      engine.clearEvidence();
+                      setState(() {});
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: CyberColors.neonRed.withOpacity(0.1),
+                        borderRadius: CyberRadius.small,
+                        border: Border.all(
+                            color: CyberColors.neonRed.withOpacity(0.4),
+                            width: 1),
                       ),
-                      Text('Operation GhostTrace',
-                          style: CyberText.caption),
-                    ],
-                  ),
-                  const Spacer(),
-                  if (collected.isNotEmpty)
-                    GestureDetector(
-                      onTap: () {
-                        EvidenceCollector().clearAll();
-                        setState(() {});
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: CyberColors.neonRed.withOpacity(0.1),
-                          borderRadius: CyberRadius.small,
-                          border: Border.all(
-                              color: CyberColors.neonRed.withOpacity(0.4),
-                              width: 1),
-                        ),
-                        child: const Text(
-                          'Clear All',
-                          style: TextStyle(
-                            color: CyberColors.neonRed,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      child: const Text(
+                        'Clear All',
+                        style: TextStyle(
+                          color: CyberColors.neonRed,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ]),
             ),
           ),
 
@@ -112,97 +121,100 @@ class _EvidencesCollectedScreenState extends State<EvidencesCollectedScreen> {
               itemCount: collected.length,
               itemBuilder: (context, index) {
                 final item = collected[index];
-                final cat = item['category'];
-                final itemName = item['item'] ?? '';
-                final color = _colorForCategory(cat);
+                final color = _colorForPanel(item.panelId);
+                final isCorrect = engine.caseFile.correctEvidenceIds
+                    .contains(item.itemId);
 
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: NeonContainer(
                     borderColor: color,
                     padding: const EdgeInsets.all(14),
-                    child: Row(
-                      children: [
-                        // Category icon
-                        Container(
-                          width: 42,
-                          height: 42,
+                    child: Row(children: [
+                      // Panel icon
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: color.withOpacity(0.12),
+                          borderRadius: CyberRadius.small,
+                          border: Border.all(
+                              color: color.withOpacity(0.3), width: 1),
+                        ),
+                        child: Icon(_iconForPanel(item.panelId),
+                            color: color, size: 20),
+                      ),
+                      const SizedBox(width: 12),
+
+                      // Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.label,
+                              style: CyberText.bodySmall.copyWith(
+                                color: CyberColors.textPrimary,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Row(children: [
+                              StatusChip(
+                                label: item.panelId.toUpperCase(),
+                                color: color,
+                              ),
+                              const SizedBox(width: 8),
+                              // Show a subtle correct/incorrect indicator
+                              Icon(
+                                isCorrect
+                                    ? Icons.check_circle_outline
+                                    : Icons.radio_button_unchecked,
+                                color: isCorrect
+                                    ? CyberColors.neonGreen
+                                    : CyberColors.textMuted,
+                                size: 14,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                item.collectedAt
+                                    .toString()
+                                    .substring(11, 19),
+                                style: CyberText.caption,
+                              ),
+                            ]),
+                          ],
+                        ),
+                      ),
+
+                      // Remove button
+                      GestureDetector(
+                        onTap: () {
+                          engine.removeEvidence(item.itemId);
+                          setState(() {});
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Evidence removed'),
+                              backgroundColor: CyberColors.neonRed,
+                            ),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: color.withOpacity(0.12),
+                            color: CyberColors.neonRed.withOpacity(0.08),
                             borderRadius: CyberRadius.small,
                             border: Border.all(
-                                color: color.withOpacity(0.3), width: 1),
-                          ),
-                          child: Icon(_iconForCategory(cat),
-                              color: color, size: 20),
-                        ),
-                        const SizedBox(width: 12),
-
-                        // Info
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                itemName,
-                                style: CyberText.bodySmall.copyWith(
-                                  color: CyberColors.textPrimary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 3),
-                              Row(
-                                children: [
-                                  StatusChip(
-                                    label: (cat ?? 'unknown').toUpperCase(),
-                                    color: color,
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    item['addedAt'] ?? '',
-                                    style: CyberText.caption,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Delete
-                        GestureDetector(
-                          onTap: () {
-                            EvidenceCollector().removeEvidence(
-                              item['category']!,
-                              item['item']!,
-                            );
-                            setState(() {});
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Evidence removed'),
-                                backgroundColor: CyberColors.neonRed,
-                              ),
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: CyberColors.neonRed.withOpacity(0.08),
-                              borderRadius: CyberRadius.small,
-                              border: Border.all(
-                                color: CyberColors.neonRed.withOpacity(0.3),
-                                width: 1,
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.delete_outline,
-                              color: CyberColors.neonRed,
-                              size: 18,
+                              color: CyberColors.neonRed.withOpacity(0.3),
+                              width: 1,
                             ),
                           ),
+                          child: const Icon(Icons.delete_outline,
+                              color: CyberColors.neonRed, size: 18),
                         ),
-                      ],
-                    ),
+                      ),
+                    ]),
                   ),
                 );
               },
@@ -221,15 +233,13 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.folder_open_outlined,
-            color: CyberColors.textMuted,
-            size: 64,
-          ),
+          Icon(Icons.folder_open_outlined,
+              color: CyberColors.textMuted, size: 64),
           const SizedBox(height: 16),
           Text(
             'No evidence collected yet',
-            style: CyberText.bodyMedium.copyWith(color: CyberColors.textMuted),
+            style:
+            CyberText.bodyMedium.copyWith(color: CyberColors.textMuted),
           ),
           const SizedBox(height: 6),
           Text(

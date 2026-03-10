@@ -1,0 +1,352 @@
+{
+  "id": "dead_drop_signal",
+  "title": "Dead Drop Signal",
+  "shortDescription": "Self-deleting executables appear across research labs simultaneously — no malware detected, no data stolen. Someone is testing a delivery system.",
+  "difficulty": "Hard",
+  "theme": "Malware Distribution / Pattern Recognition",
+  "estimatedDuration": "2h 45m",
+  "caseNumber": "2049",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "An internal research campus reports strange executable files appearing across multiple labs.\nThe files look harmless and imitate normal internal tools.\nThey appear without user action and vanish quickly.\n\nNo data is stolen. No systems are damaged.\nSecurity software reports no malware.\n\nYet the files appear at the exact same time.\nThey execute within the same second.\nThey delete themselves on a strict timer.\n\nNetwork activity looks like data theft — but nothing ever leaves the campus.\n\nSomeone is testing a delivery system.\nNot attacking yet.\nPreparing for something larger.",
+    "missionText": "Your Mission:\n\n› Uncover what these files are and how they communicate\n\n› Identify who is behind the signal\n\n› Analyze binary patterns, metadata timing, and IP routing\n\n› Collect at least 3 correct evidence items\n\n› Flag the hidden operator to close the case"
+  },
+
+  "suspects": [
+    {
+      "id": "internal_admin",
+      "name": "Internal Administrator",
+      "role": "Systems Administrator",
+      "department": "Campus IT Operations",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.4.0.1 — standard admin access",
+        "deviceUsage": "Admin workstation — normal activity",
+        "locationTrace": "IT Operations Center",
+        "vpnCheck": "Internal only"
+      },
+      "profileNotes": "Has high access but lacks advanced signal design skills. Could deploy files across labs but cannot explain the synchronized timing or the dead-drop routing architecture. Suspicion moderate, weakens after IP analysis."
+    },
+    {
+      "id": "security_researcher",
+      "name": "Security Researcher",
+      "role": "Senior Security Analyst",
+      "department": "Cybersecurity Research Lab",
+      "riskLevel": "high",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.4.33.21 — research lab",
+        "deviceUsage": "Research workstation — elevated privileges",
+        "locationTrace": "Security Research Wing",
+        "vpnCheck": "Internal research VPN"
+      },
+      "profileNotes": "Understands dead-drop systems. Careful and methodical. Has partial access and high technical skill. However, no evidence links them directly to infrastructure control. Could be running an independent experiment."
+    },
+    {
+      "id": "external_attacker",
+      "name": "External Attacker",
+      "role": "Unknown External Party",
+      "department": "External — Unverified",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "No external IPs traced",
+        "deviceUsage": "No external device detected",
+        "locationTrace": "Unverifiable",
+        "vpnCheck": "N/A — no external routing found"
+      },
+      "profileNotes": "Initial assumption by security team. Eliminated through IP analysis — all traffic stays internal. Classic false lead to test the player's assumption habits."
+    },
+    {
+      "id": "hidden_operator",
+      "name": "Hidden Operator",
+      "role": "Infrastructure Access — Deep Level",
+      "department": "Classified Internal Project",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "172.16.0.7 — dead relay node",
+        "deviceUsage": "Automated system — no human session",
+        "locationTrace": "Server room, Research Campus",
+        "vpnCheck": "No external VPN — fully internal"
+      },
+      "profileNotes": "Designed the relay logic and controls internal routing. Preparing a command delivery system without triggering security alerts. The dead-drop approach means no payload has been deployed yet — but the infrastructure is ready. Matches all evidence."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "minigame": {
+        "id": "binary_pattern",
+        "type": "pattern_match",
+        "title": "Binary Pattern Analysis",
+        "description": "Align binary blocks from the three executables. Identify repeating structures and isolate variable bytes.",
+        "hint": "Files that share an opcode structure but differ in a few bytes are encoding something in those differences.",
+        "solution": "command_containers",
+        "maxHints": 3,
+        "hints": [
+          "Align the three files byte-by-byte. Where do they differ?",
+          "The differing bytes appear at the same offset in each file.",
+          "Variable bytes at a fixed offset encode instructions — this is a command container pattern."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "meta",
+          "message": "Metadata panel is now accessible. Files confirmed as command containers."
+        }
+      },
+      "items": [
+        {
+          "id": "file_sim_cache",
+          "label": "sim_cache_v2.exe",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Imitates a legitimate internal simulation cache tool. Appeared in /labA/temp/ without user action. Executed once, then deleted itself after exactly 90 seconds. No registry entries left behind.",
+          "metadata": {
+            "size": "412 KB",
+            "modifier": "System — no user",
+            "modifiedAt": "02:13 AM"
+          },
+          "rows": [
+            { "key": "Location", "value": "/labA/temp/" },
+            { "key": "First Seen", "value": "02:13:00 AM", "highlight": true },
+            { "key": "Deleted", "value": "02:14:30 AM — auto-delete", "highlight": true },
+            { "key": "Registry Entries", "value": "None" },
+            { "key": "User Execution", "value": "None — appeared autonomously" }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        },
+        {
+          "id": "file_render_test",
+          "label": "render_test.exe",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Appeared in /labC/bin/ at the exact same second as sim_cache_v2.exe in Lab A. File size differs by only 1 byte. Same auto-delete behavior. Same execution window.",
+          "metadata": {
+            "size": "413 KB",
+            "modifier": "System — no user",
+            "modifiedAt": "02:13 AM"
+          },
+          "rows": [
+            { "key": "Location", "value": "/labC/bin/" },
+            { "key": "First Seen", "value": "02:13:00 AM — identical to Lab A", "highlight": true },
+            { "key": "Size Difference", "value": "1 byte vs sim_cache_v2.exe", "highlight": true },
+            { "key": "Deleted", "value": "02:14:30 AM" }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        },
+        {
+          "id": "file_calc_patch",
+          "label": "calc_patch.exe",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Third file in the set. Appeared in /labB/tools/ simultaneously. All three files share an identical opcode structure with minor variable byte differences — consistent with a command container architecture.",
+          "metadata": {
+            "size": "412 KB",
+            "modifier": "System — no user",
+            "modifiedAt": "02:13 AM"
+          },
+          "rows": [
+            { "key": "Location", "value": "/labB/tools/" },
+            { "key": "First Seen", "value": "02:13:00 AM", "highlight": true },
+            { "key": "Shared Structure", "value": "Identical opcode base with sim_cache and render_test", "highlight": true },
+            { "key": "Deleted", "value": "02:14:30 AM" }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        }
+      ]
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": "binary_pattern",
+      "minigame": {
+        "id": "timeline_logic",
+        "type": "sequence_order",
+        "title": "Timeline Sequence Logic",
+        "description": "Reorder file events across all three labs. Convert time gaps into signal patterns and detect repeating cycles.",
+        "hint": "If three files on three different machines are created, executed, and deleted at the exact same second — that is not coincidence.",
+        "solution": "weekly_test_cycle",
+        "maxHints": 3,
+        "hints": [
+          "Line up the create, execute, and delete timestamps for all three files.",
+          "The gap between creation and execution is always 2 seconds. The gap to deletion is always 90 seconds.",
+          "Check the server logs for previous weeks — this pattern repeats every 7 days."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "ip",
+          "message": "IP Traces now accessible. Weekly test cycle confirmed — this is rehearsal, not attack."
+        }
+      },
+      "items": [
+        {
+          "id": "meta_sim_cache",
+          "label": "sim_cache_v2.exe — Metadata",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Created, executed, and deleted at times perfectly synchronized with the other two lab files. The 2-second gap between creation and execution and the 90-second auto-delete are consistent across all three machines.",
+          "rows": [
+            { "key": "Created", "value": "02:12:58 UTC", "highlight": true },
+            { "key": "Executed", "value": "02:13:00 UTC" },
+            { "key": "Deleted", "value": "02:14:30 UTC", "highlight": true }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        },
+        {
+          "id": "meta_render_test",
+          "label": "render_test.exe — Metadata",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Identical timestamps to sim_cache_v2.exe despite being on a different machine in a different lab. Synchronized to UTC — not local system time. Deletion fully automated.",
+          "rows": [
+            { "key": "Created", "value": "02:12:58 UTC — identical to Lab A", "highlight": true },
+            { "key": "Executed", "value": "02:13:00 UTC" },
+            { "key": "Deleted", "value": "02:14:30 UTC" }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        },
+        {
+          "id": "meta_weekly_cycle",
+          "label": "Previous Week Log Comparison",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Server logs reveal this exact pattern occurred 7 days prior and 14 days prior. A weekly on/off signal cycle — the attacker is testing delivery reliability on a regular schedule.",
+          "rows": [
+            { "key": "Week 1", "value": "Same pattern — 02:13 AM UTC" },
+            { "key": "Week 2", "value": "Same pattern — 02:13 AM UTC" },
+            { "key": "Week 3 (current)", "value": "Same pattern — 02:13 AM UTC", "highlight": true },
+            { "key": "Cycle Interval", "value": "Exactly 7 days", "highlight": true }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        }
+      ]
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": "timeline_logic",
+      "minigame": {
+        "id": "route_tracing",
+        "type": "node_connect",
+        "title": "Network Route Tracing",
+        "description": "Connect network nodes, eliminate fake exits, and identify the dead-drop relay point.",
+        "hint": "Traffic that never leaves the campus but mimics external routing is designed to fool network monitors.",
+        "solution": "dead_drop_relay",
+        "maxHints": 3,
+        "hints": [
+          "Trace each hop. Does any traffic actually leave the campus IP range?",
+          "The final node (172.16.0.7) has no external destination — it terminates internally.",
+          "A dead-drop relay stores and relays commands without a live connection to the operator."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "suspects",
+          "message": "Suspect Profiles unlocked. Dead-drop relay confirmed. Threat levels updated."
+        }
+      },
+      "items": [
+        {
+          "id": "ip_internal_relay",
+          "label": "Internal Relay",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Traffic originates from Lab A (10.4.22.18) and routes to internal research proxy 10.4.9.3. No external hop. The routing path mimics exfiltration behavior but all nodes are internal.",
+          "rows": [
+            { "key": "02:13:01 Source", "value": "10.4.22.18 (Lab A)" },
+            { "key": "02:13:01 Destination", "value": "10.4.9.3 (Internal relay)", "highlight": true },
+            { "key": "Note", "value": "Mimics external routing — all internal" }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        },
+        {
+          "id": "ip_dead_drop",
+          "label": "Dead-Drop Node",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Final routing node 172.16.0.7 receives all traffic but has no onward destination. This is the dead-drop relay — it stores command instructions and holds them until the operator retrieves them without a live connection.",
+          "rows": [
+            { "key": "02:13:02 Source", "value": "10.4.9.3" },
+            { "key": "02:13:02 Destination", "value": "172.16.0.7 (Research proxy)" },
+            { "key": "02:13:03 Final Node", "value": "172.16.0.7 → None — silent drop", "highlight": true },
+            { "key": "Verdict", "value": "Dead-drop relay confirmed", "highlight": true }
+          ],
+          "pointsToSuspect": "hidden_operator"
+        }
+      ]
+    }
+  ],
+
+  "timeline": [
+    { "time": "02:12:58 UTC", "title": "Files Created (All 3 Labs)", "description": "sim_cache_v2.exe, render_test.exe, calc_patch.exe appear simultaneously.", "severity": "high" },
+    { "time": "02:13:00 UTC", "title": "Synchronized Execution", "description": "All three files execute within the same second across separate machines.", "severity": "high" },
+    { "time": "02:13:01 UTC", "title": "Network Traffic Initiates", "description": "Internal relay traffic begins — mimics exfiltration pattern.", "severity": "medium" },
+    { "time": "02:14:30 UTC", "title": "Files Self-Delete", "description": "All three executables delete themselves on exact timer.", "severity": "medium" },
+    { "time": "Week -1 & -2", "title": "Previous Cycles Discovered", "description": "Same pattern found in server logs from prior weeks. Weekly test cycle confirmed.", "severity": "high" }
+  ],
+
+  "winCondition": {
+    "guiltySuspectId": "hidden_operator",
+    "minCorrectEvidence": 3
+  },
+
+  "correctEvidenceIds": [
+    "file_sim_cache",
+    "file_render_test",
+    "file_calc_patch",
+    "meta_sim_cache",
+    "meta_render_test",
+    "meta_weekly_cycle",
+    "ip_internal_relay",
+    "ip_dead_drop"
+  ],
+
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Signal Traced",
+      "subtitle": "The executables were command containers testing a dead-drop delivery system. No payload deployed — yet.",
+      "label": "CASE CLOSED",
+      "xp": 15
+    },
+    "partial": {
+      "condition": "correct_suspect_evidence_lt_3",
+      "title": "Partially Resolved",
+      "subtitle": "Correct operator identified but insufficient evidence to confirm the delivery system.",
+      "label": "PARTIAL",
+      "xp": 5
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Accusation",
+      "subtitle": "The routing pattern was internal, not external. The false exit node was a decoy. Wrong assumption ended the investigation.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "no_evidence",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The delivery system continues its test cycles undetected.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+
+  "aria": {
+    "welcomeToHub": "...Signal detected.\nFiles that appear and vanish. Execution without a user. Deletion on a timer.\nThis is not an accident. Someone is rehearsing.",
+    "exploreFeeds": "Three panels. Three layers of the same pattern.\nStart with the files — they're the surface.\nThe truth is in what they have in common.",
+    "viewEvidence": "You're looking at the right thing.\nSame second. Different labs. That's not coincidence.\nMark everything that synchronizes.",
+    "markEvidence": "Good. You're building the chain.\nThe files are containers — not tools.\nFind out what they're carrying.",
+    "decryptionHint": "The metadata holds the cycle.\nCompare the timestamps across all three machines.\nIf creation, execution, and deletion are identical — someone planned this.",
+    "flagSuspect": "You have the routing map.\nThe dead-drop node is the key.\nWho has the infrastructure to build this inside the campus?"
+  }
+}

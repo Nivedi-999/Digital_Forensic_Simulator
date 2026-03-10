@@ -1,102 +1,141 @@
 // lib/screens/evidence_analysis_screen.dart
 // ═══════════════════════════════════════════════════════════════
-//  REDESIGNED EVIDENCE ANALYSIS SCREEN
+//  EVIDENCE ANALYSIS — fully data-driven via CaseEngine
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
-import '../services/evidence_collector.dart';
-import '../services/game_progress.dart';
+import '../models/evidence.dart';
+import '../logic/game_engine.dart';
+import '../state/case_engine_provider.dart';
 import '../services/tutorial_service.dart';
-import '../widgets/aria_guide.dart';
 import '../widgets/aria_controller.dart';
 import 'mini_game.dart';
 
 class EvidenceAnalysisScreen extends StatefulWidget {
-  final String evidenceType;
-  final String? selectedItem;
+  final String panelId;
+  final String itemId;
 
   const EvidenceAnalysisScreen({
     super.key,
-    required this.evidenceType,
-    this.selectedItem,
+    required this.panelId,
+    required this.itemId,
   });
 
   @override
-  State<EvidenceAnalysisScreen> createState() => _EvidenceAnalysisScreenState();
+  State<EvidenceAnalysisScreen> createState() =>
+      _EvidenceAnalysisScreenState();
 }
 
 class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
     with AriaMixin {
-
   @override
   void initState() {
     super.initState();
     triggerAria(TutorialStep.viewEvidence);
   }
 
-  void _handleAddEvidence() {
-    if (widget.selectedItem != null && widget.selectedItem!.isNotEmpty) {
-      EvidenceCollector().addEvidence(widget.evidenceType, widget.selectedItem!);
-      TutorialService().onEvidenceMarked();
+  void _handleAddEvidence(BuildContext context) {
+    final engine = CaseEngineProvider.read(context);
+    engine.collectEvidence(widget.panelId, widget.itemId);
+    TutorialService().onEvidenceMarked();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.check_circle, color: CyberColors.textOnNeon),
-              const SizedBox(width: 10),
-              const Text(
-                'Evidence added to collection',
-                style: TextStyle(
-                  color: CyberColors.textOnNeon,
-                  fontWeight: FontWeight.bold,
-                ),
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Row(
+          children: [
+            Icon(Icons.check_circle, color: CyberColors.textOnNeon),
+            SizedBox(width: 10),
+            Text(
+              'Evidence added to collection',
+              style: TextStyle(
+                color: CyberColors.textOnNeon,
+                fontWeight: FontWeight.bold,
               ),
-            ],
-          ),
-          backgroundColor: CyberColors.neonGreen,
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.all(16),
-          shape: RoundedRectangleBorder(
-              borderRadius: CyberRadius.medium),
-          duration: const Duration(seconds: 2),
+            ),
+          ],
         ),
-      );
+        backgroundColor: CyberColors.neonGreen,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: CyberRadius.medium),
+        duration: const Duration(seconds: 2),
+      ),
+    );
 
-      final service = TutorialService();
-      if (service.currentStep == TutorialStep.markEvidence &&
-          !service.messageShown) {
-        triggerAria(TutorialStep.markEvidence, delayMs: 400);
-      }
+    final service = TutorialService();
+    if (service.currentStep == TutorialStep.markEvidence &&
+        !service.messageShown) {
+      triggerAria(TutorialStep.markEvidence, delayMs: 400);
     }
   }
 
-  String _getCategoryTitle(String type) {
+  String _iconForType(String type) {
     switch (type) {
-      case 'chat': return 'Chat Logs';
-      case 'files': return 'File System';
-      case 'meta': return 'Metadata Extract';
-      case 'ip': return 'IP Traces';
-      default: return 'Evidence';
+      case 'chat':
+        return 'chat_bubble_outline';
+      case 'files':
+        return 'folder_outlined';
+      case 'meta':
+        return 'data_object';
+      case 'ip':
+        return 'wifi';
+      default:
+        return 'search';
     }
   }
 
-  IconData _getCategoryIcon(String type) {
+  String _titleForType(String type) {
     switch (type) {
-      case 'chat': return Icons.chat_bubble_outline;
-      case 'files': return Icons.folder_outlined;
-      case 'meta': return Icons.data_object;
-      case 'ip': return Icons.wifi;
-      default: return Icons.search;
+      case 'chat':
+        return 'Chat Logs';
+      case 'files':
+        return 'File System';
+      case 'meta':
+        return 'Metadata Extract';
+      case 'ip':
+        return 'IP Traces';
+      default:
+        return 'Evidence';
+    }
+  }
+
+  IconData _iconData(String name) {
+    switch (name) {
+      case 'chat_bubble_outline':
+        return Icons.chat_bubble_outline;
+      case 'folder_outlined':
+        return Icons.folder_outlined;
+      case 'data_object':
+        return Icons.data_object;
+      case 'wifi':
+        return Icons.wifi;
+      default:
+        return Icons.search;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isAlreadyUnlocked = GameProgress.isBriefingUnlocked;
+    final engine = CaseEngineProvider.of(context);
+    final panel = engine.caseFile.panelById(widget.panelId);
+    if (panel == null) return const SizedBox();
+
+    // Find the item — check visible items (includes unlocked hidden items)
+    final visibleItems = engine.visibleItemsForPanel(widget.panelId);
+    EvidenceItem? item;
+    try {
+      item = visibleItems.firstWhere((i) => i.id == widget.itemId);
+    } catch (_) {
+      item = null;
+    }
+
+    final isAlreadyCollected = engine.isEvidenceCollected(widget.itemId);
+    final minigame = panel.minigame;
+    final isMinigameSolved =
+        minigame != null && engine.isMinigameSolved(minigame.id);
 
     return AppShell(
       title: 'Evidence Analysis',
@@ -111,10 +150,10 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
               children: [
                 // ── Type header ──
                 _TypeHeader(
-                  type: widget.evidenceType,
-                  title: _getCategoryTitle(widget.evidenceType),
-                  icon: _getCategoryIcon(widget.evidenceType),
-                  selectedItem: widget.selectedItem,
+                  title: _titleForType(panel.evidenceType),
+                  icon: _iconData(_iconForType(panel.evidenceType)),
+                  selectedLabel: item?.label,
+                  caseNumber: engine.caseFile.caseNumber,
                 ),
 
                 const SizedBox(height: 20),
@@ -126,10 +165,9 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
                     constraints: const BoxConstraints(
                         minHeight: 200, maxHeight: 440),
                     child: SingleChildScrollView(
-                      child: _buildContent(
-                        widget.evidenceType,
-                        widget.selectedItem,
-                      ),
+                      child: item != null
+                          ? _EvidenceContent(item: item, panel: panel, allItems: engine.visibleItemsForPanel(widget.panelId))
+                          : _EmptyContent(),
                     ),
                   ),
                 ),
@@ -137,35 +175,42 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
                 const SizedBox(height: 24),
 
                 // ── Unlock Hidden Clue button ──
-                SizedBox(
-                  width: double.infinity,
-                  child: isAlreadyUnlocked
-                      ? _AlreadyUnlockedBanner()
-                      : CyberButton(
-                    label: 'Unlock Hidden Clue',
-                    icon: Icons.lock_open_outlined,
-                    accentColor: CyberColors.neonPurple,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const DecryptionMiniGameScreen(),
-                        ),
-                      ).then((_) => setState(() {}));
-                    },
+                if (minigame != null) ...[
+                  SizedBox(
+                    width: double.infinity,
+                    child: isMinigameSolved
+                        ? _AlreadyUnlockedBanner(
+                        message: minigame.successMessage ??
+                            'Hidden clue unlocked.')
+                        : CyberButton(
+                      label: minigame.title,
+                      icon: Icons.lock_open_outlined,
+                      accentColor: CyberColors.neonPurple,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => DecryptionMiniGameScreen(
+                              panelId: widget.panelId,
+                            ),
+                          ),
+                        ).then((_) => setState(() {}));
+                      },
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 12),
+                ],
 
-                const SizedBox(height: 12),
-
-                // ── Add Evidence button (directly below Unlock) ──
+                // ── Mark as Evidence ──
                 SizedBox(
                   width: double.infinity,
-                  child: CyberButton(
+                  child: isAlreadyCollected
+                      ? _AlreadyMarkedBanner()
+                      : CyberButton(
                     label: 'Mark as Evidence',
                     icon: Icons.add_circle_outline,
                     accentColor: CyberColors.neonGreen,
-                    onTap: _handleAddEvidence,
+                    onTap: () => _handleAddEvidence(context),
                   ),
                 ),
 
@@ -174,229 +219,26 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
             ),
           ),
 
-          // ── ARIA Guide ──
           buildAriaLayer(),
         ],
       ),
     );
   }
-
-  Widget _buildContent(String type, String? selected) {
-    if (selected == null) {
-      return Center(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            Icon(Icons.inbox_outlined,
-                color: CyberColors.textMuted, size: 48),
-            const SizedBox(height: 12),
-            Text(
-              'No item selected.\nGo back and choose an evidence item.',
-              style: CyberText.bodySmall.copyWith(height: 1.6),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (type == 'files') {
-      if (selected == 'finance_report_q3.pdf') {
-        return _FileReport(
-          filename: 'finance_report_q3.pdf',
-          modifier: 'Ankita E',
-          modTime: '09:31 AM',
-          entries: const [
-            _DataEntry('Anomaly 1', '₹2.3 Crore → offshore ACC-4482-X',
-                color: CyberColors.neonRed),
-            _DataEntry('Anomaly 2', 'Unscheduled payment to "Northstar Solutions"',
-                color: CyberColors.neonAmber),
-            _DataEntry('Anomaly 3', 'Duplicate reimbursements — 14 Aug',
-                color: CyberColors.neonAmber),
-            _DataEntry('Total Revenue', '₹48.6 Crore'),
-            _DataEntry('Operating Costs', '₹31.2 Crore'),
-            _DataEntry('Net Profit', '₹17.4 Crore'),
-          ],
-        );
-      }
-      if (selected == 'system_patch.exe') {
-        return _FileReport(
-          filename: 'system_patch.exe',
-          modifier: 'Dhruv A (Admin)',
-          modTime: '09:45 AM',
-          entries: const [
-            _DataEntry('Signed by', 'Internal Admin — Dhruv A'),
-            _DataEntry('Size', '4.2 MB'),
-            _DataEntry('Note', 'Contains unusual outbound connection module',
-                color: CyberColors.neonAmber),
-          ],
-        );
-      }
-      if (selected == 'debug_log.txt') {
-        return _LogContent(lines: const [
-          '[2026-02-02 01:14:22] PatchService: Starting update...',
-          '[2026-02-02 01:14:24] PatchService: Verified signature (OK)',
-          '[2026-02-02 01:14:31] Network: Outbound → 185.193.127.44',
-          '[2026-02-02 01:14:32] ⚠ Warning: Unexpected privilege escalation',
-          '[2026-02-02 01:14:35] ✗ Error: Hash mismatch in module agent.dll',
-          '[2026-02-02 01:14:36] PatchService: Process terminated unexpectedly',
-          '[2026-02-02 01:14:40] SecurityAgent: No threat detected',
-        ], highlight: 'Credentials export initiated from FIN-WS-114 at 10:43 AM');
-      }
-      if (selected == 'cache_dump.bin') {
-        return _FileReport(
-          filename: 'cache_dump.bin',
-          modifier: 'System',
-          modTime: '10:44–10:46 AM',
-          entries: const [
-            _DataEntry('Contains', 'Employee credential database fragments',
-                color: CyberColors.neonRed),
-            _DataEntry('Dump Timestamp', '10:44–10:46 AM'),
-            _DataEntry('Exfil Path', 'FIN-WS-114 → 172.16.44.21'),
-          ],
-        );
-      }
-      // ── UNLOCKED via decryption mini-game ──
-      if (selected == 'credentials.pdf') {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Unlocked badge
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: CyberColors.neonGreen.withOpacity(0.08),
-                borderRadius: CyberRadius.small,
-                border: Border.all(
-                    color: CyberColors.neonGreen.withOpacity(0.4), width: 1),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.lock_open, color: CyberColors.neonGreen, size: 16),
-                  const SizedBox(width: 8),
-                  Text(
-                    'DECRYPTED — Hidden Clue Unlocked',
-                    style: TextStyle(
-                      color: CyberColors.neonGreen,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            _FileReport(
-              filename: 'credentials.pdf',
-              modifier: 'Ankita E',
-              modTime: '10:43 AM',
-              entries: const [
-                _DataEntry('Document Type', 'Internal Credential Export',
-                    color: CyberColors.neonRed),
-                _DataEntry('Exported By', 'Ankita E — Employee ID AE-4471',
-                    color: CyberColors.neonRed),
-                _DataEntry('Workstation', 'FIN-WS-114'),
-                _DataEntry('Export Time', '10:43:22 AM'),
-                _DataEntry('Contents', 'DB admin credentials for FINDB-PROD-01',
-                    color: CyberColors.neonAmber),
-                _DataEntry('Target Account', 'offshore ACC-4482-X',
-                    color: CyberColors.neonAmber),
-                _DataEntry('Auth Token', 'ghst_tkn_8f2d91cc4b7a...  [REDACTED]',
-                    color: CyberColors.neonRed),
-                _DataEntry('Destination IP', '202.56.23.101 (External)',
-                    color: CyberColors.neonRed),
-                _DataEntry('File Hash', 'SHA256: 3f4a1b9c... [truncated]'),
-                _DataEntry('Note',
-                    'This file was found in the exfiltration cache. It directly links Ankita E to the data breach.',
-                    color: CyberColors.neonAmber),
-              ],
-            ),
-          ],
-        );
-      }
-    }
-
-    if (type == 'meta') {
-      final rows = <_DataEntry>[];
-      if (selected == 'Device') {
-        rows.addAll(const [
-          _DataEntry('Workstation ID', 'FIN-WS-114'),
-          _DataEntry('Location', 'Finance Dept. Mumbai HQ'),
-          _DataEntry('Access Control', 'Biometric + PIN'),
-        ]);
-      } else if (selected == 'OS') {
-        rows.addAll(const [
-          _DataEntry('OS', 'Windows 11 Pro (Build 22621)'),
-          _DataEntry('Last Update', '2024-01-15 08:40 AM'),
-          _DataEntry('Patch Level', 'KB5034123 applied'),
-        ]);
-      } else if (selected == 'Last User') {
-        rows.addAll(const [
-          _DataEntry('Last Login User', 'Ankita E',
-              color: CyberColors.neonAmber),
-          _DataEntry('Login Time', '09:15 AM – 11:02 AM'),
-          _DataEntry('Session Type', 'Active'),
-        ]);
-      }
-      return Column(
-        children: rows.map((e) => _DataEntryRow(entry: e)).toList(),
-      );
-    }
-
-    if (type == 'ip') {
-      final rows = <_DataEntry>[];
-      if (selected == 'Internal Origin') {
-        rows.addAll(const [
-          _DataEntry('Source IP', '172.16.44.21'),
-          _DataEntry('MAC', '00-25-96-FF-12-34'),
-          _DataEntry('Hostname', 'FIN-WS-114.corp.local'),
-          _DataEntry('Location', 'Internal LAN – Finance Floor'),
-        ]);
-      } else if (selected == 'External Hop') {
-        rows.addAll(const [
-          _DataEntry('Next Hop IP', '202.56.23.101',
-              color: CyberColors.neonAmber),
-          _DataEntry('GeoIP', 'Mumbai, Maharashtra, India'),
-          _DataEntry('ISP', 'Public WiFi — Cafe near office',
-              color: CyberColors.neonRed),
-        ]);
-      }
-      return Column(
-        children: rows.map((e) => _DataEntryRow(entry: e)).toList(),
-      );
-    }
-
-    if (type == 'chat') {
-      return _ChatLog();
-    }
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text(
-          'No detailed content available for this item.\nUse "Unlock Hidden Clue" for deeper analysis.',
-          style: CyberText.bodySmall.copyWith(height: 1.6),
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
-  }
 }
 
-// ── Type Header ──
+// ── Type Header ──────────────────────────────────────────────
+
 class _TypeHeader extends StatelessWidget {
-  final String type;
   final String title;
   final IconData icon;
-  final String? selectedItem;
+  final String? selectedLabel;
+  final String caseNumber;
 
   const _TypeHeader({
-    required this.type,
     required this.title,
     required this.icon,
-    this.selectedItem,
+    this.selectedLabel,
+    required this.caseNumber,
   });
 
   @override
@@ -423,12 +265,12 @@ class _TypeHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: CyberText.sectionTitle.copyWith(
-                        color: CyberColors.neonPurple, fontSize: 16)),
-                if (selectedItem != null) ...[
+                    style: CyberText.sectionTitle
+                        .copyWith(color: CyberColors.neonPurple, fontSize: 16)),
+                if (selectedLabel != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    selectedItem!,
+                    selectedLabel!,
                     style: CyberText.bodySmall
                         .copyWith(color: CyberColors.textPrimary),
                     overflow: TextOverflow.ellipsis,
@@ -437,16 +279,497 @@ class _TypeHeader extends StatelessWidget {
               ],
             ),
           ),
-          Text('Case #2047', style: CyberText.caption),
+          Text('Case #$caseNumber', style: CyberText.caption),
         ],
       ),
     );
   }
 }
 
+// ── Evidence Content — renders correctly for each panel type ─
 
-// ── Already Unlocked Banner ──
+class _EvidenceContent extends StatelessWidget {
+  final EvidenceItem item;
+  final EvidencePanel panel;
+  final List<EvidenceItem> allItems;
+
+  const _EvidenceContent({required this.item, required this.panel, required this.allItems});
+
+  @override
+  Widget build(BuildContext context) {
+    switch (panel.evidenceType) {
+      case 'chat':
+        return _ChatDetail(item: item, allItems: allItems);
+      case 'files':
+        return _FileDetail(item: item);
+      case 'meta':
+      case 'ip':
+        return _RowDetail(item: item);
+      default:
+        return _GenericDetail(item: item);
+    }
+  }
+}
+
+// Chat — full conversation log, selected message highlighted
+class _ChatDetail extends StatelessWidget {
+  final EvidenceItem item;
+  final List<EvidenceItem> allItems;
+  const _ChatDetail({required this.item, required this.allItems});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(children: [
+          const Icon(Icons.chat_bubble_outline, color: CyberColors.neonCyan, size: 13),
+          const SizedBox(width: 6),
+          Text('FULL CONVERSATION LOG',
+              style: TextStyle(color: CyberColors.neonCyan, fontSize: 10,
+                  letterSpacing: 1.5, fontWeight: FontWeight.bold)),
+        ]),
+        const SizedBox(height: 12),
+        ...allItems.map((msg) {
+          final isSelected = msg.id == item.id;
+          final color = msg.isSuspectMessage ? CyberColors.neonRed : CyberColors.neonCyan;
+          return _ChatBubble(
+            sender: msg.sender ?? 'Unknown',
+            message: msg.label,
+            color: color,
+            isHighlighted: isSelected,
+          );
+        }),
+        const SizedBox(height: 16),
+        _DetailBox(text: item.detail, isKey: item.isKeyEvidence),
+      ],
+    );
+  }
+}
+
+class _ChatBubble extends StatelessWidget {
+  final String sender;
+  final String message;
+  final Color color;
+  final bool isHighlighted;
+  const _ChatBubble({required this.sender, required this.message,
+    required this.color, required this.isHighlighted});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: isHighlighted ? const EdgeInsets.all(10) : EdgeInsets.zero,
+      decoration: isHighlighted
+          ? BoxDecoration(
+        color: color.withOpacity(0.07),
+        borderRadius: CyberRadius.medium,
+        border: Border.all(color: color.withOpacity(0.5), width: 1.5),
+      )
+          : null,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 28, height: 28,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withOpacity(0.15),
+              border: Border.all(color: color.withOpacity(0.4), width: 1),
+            ),
+            child: Center(
+              child: Text(sender.substring(0, 1),
+                  style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  Text(sender,
+                      style: TextStyle(color: color, fontSize: 11,
+                          fontWeight: FontWeight.bold, letterSpacing: 0.5)),
+                  if (isHighlighted) ...[
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.15),
+                        borderRadius: CyberRadius.pill,
+                      ),
+                      child: Text('SELECTED',
+                          style: TextStyle(color: color, fontSize: 9, letterSpacing: 1)),
+                    ),
+                  ],
+                ]),
+                const SizedBox(height: 4),
+                Text(message,
+                    style: CyberText.bodySmall.copyWith(
+                      color: isHighlighted ? CyberColors.textPrimary : CyberColors.textSecondary,
+                      fontSize: 13, height: 1.5,
+                    )),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+// File detail — structured content per file id
+class _FileDetail extends StatelessWidget {
+  final EvidenceItem item;
+  const _FileDetail({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final meta = item.metadata;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (item.isHidden)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              color: CyberColors.neonGreen.withOpacity(0.08),
+              borderRadius: CyberRadius.small,
+              border: Border.all(color: CyberColors.neonGreen.withOpacity(0.4), width: 1),
+            ),
+            child: Row(children: [
+              const Icon(Icons.lock_open, color: CyberColors.neonGreen, size: 16),
+              const SizedBox(width: 8),
+              Text('DECRYPTED \u2014 Hidden Clue Unlocked',
+                  style: TextStyle(color: CyberColors.neonGreen,
+                      fontSize: 11, fontWeight: FontWeight.bold)),
+            ]),
+          ),
+        Text(item.label, style: CyberText.sectionTitle.copyWith(fontSize: 16)),
+        if (meta != null) ...[
+          const SizedBox(height: 4),
+          Row(children: [
+            const Icon(Icons.edit_outlined, color: CyberColors.neonAmber, size: 13),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                'By ${meta.modifier}  \u2022  ${meta.modifiedAt}  \u2022  ${meta.size}',
+                style: CyberText.caption.copyWith(color: CyberColors.neonAmber.withOpacity(0.9)),
+              ),
+            ),
+          ]),
+        ],
+        const SizedBox(height: 16),
+        _fileBody(),
+        const SizedBox(height: 16),
+        _DetailBox(text: item.detail, isKey: item.isKeyEvidence),
+      ],
+    );
+  }
+
+  Widget _fileBody() {
+    switch (item.id) {
+      case 'file_finance':    return const _FinanceReport();
+      case 'file_patch':      return const _PatchReport();
+      case 'file_debug':      return const _DebugLog();
+      case 'file_cache':      return const _CacheReport();
+      case 'file_credentials':return const _CredentialsReport();
+      default:                return const SizedBox.shrink();
+    }
+  }
+}
+
+class _FinanceReport extends StatelessWidget {
+  const _FinanceReport();
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const _SectionTag(label: '\u26a0 ANOMALIES DETECTED', color: CyberColors.neonRed),
+      const SizedBox(height: 8),
+      const _DataRow('\u20b92.3 Cr transferred', 'Offshore ACC-4482-X', highlight: true),
+      const _DataRow('Unscheduled payment', '"Northstar Solutions"', highlight: true),
+      const _DataRow('Duplicate entries', '14 reimbursements on 14 Aug', highlight: true),
+      const SizedBox(height: 14),
+      const _SectionTag(label: 'FINANCIAL SUMMARY', color: CyberColors.neonCyan),
+      const SizedBox(height: 8),
+      const _DataRow('Total Revenue', '\u20b948.6 Crore'),
+      const _DataRow('Operating Costs', '\u20b931.2 Crore'),
+      const _DataRow('Net Profit', '\u20b917.4 Crore'),
+      const _DataRow('Flagged Transfers', '\u20b92.3 Crore (unverified)', highlight: true),
+    ]);
+  }
+}
+
+class _PatchReport extends StatelessWidget {
+  const _PatchReport();
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const _SectionTag(label: 'FILE ANALYSIS', color: CyberColors.neonCyan),
+      const SizedBox(height: 8),
+      const _DataRow('Signed By', 'Dhruv A (Admin)'),
+      const _DataRow('File Size', '4.2 MB'),
+      const _DataRow('SHA-256', 'a3f9b1c8...d44e [truncated]'),
+      const SizedBox(height: 14),
+      const _SectionTag(label: '\u26a0 SUSPICIOUS MODULE', color: CyberColors.neonAmber),
+      const SizedBox(height: 8),
+      const _DataRow('Module', 'agent.dll', highlight: true),
+      const _DataRow('Behaviour', 'Outbound \u2192 185.193.127.44', highlight: true),
+      const _DataRow('Expected?', 'No \u2014 not in patch spec', highlight: true),
+      const _DataRow('Verdict', 'No direct link to finance data'),
+    ]);
+  }
+}
+
+class _DebugLog extends StatelessWidget {
+  const _DebugLog();
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const _SectionTag(label: 'SYSTEM LOG', color: CyberColors.neonCyan),
+      const SizedBox(height: 8),
+      Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.4),
+          borderRadius: CyberRadius.small,
+          border: Border.all(color: CyberColors.borderSubtle, width: 1),
+        ),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+          _LogLine('[01:14:22] PatchService: Starting update...'),
+          _LogLine('[01:14:24] PatchService: Verified signature (OK)'),
+          _LogLine('[01:14:31] Network: Outbound \u2192 185.193.127.44', warn: true),
+          _LogLine('[01:14:32] \u26a0 Warning: Unexpected privilege escalation', warn: true),
+          _LogLine('[01:14:35] \u2717 Error: Hash mismatch in agent.dll', error: true),
+          _LogLine('[01:14:36] PatchService: Terminated unexpectedly', error: true),
+          _LogLine('[01:14:40] SecurityAgent: No threat detected'),
+          _LogLine('[10:43:01] FIN-WS-114: Session active \u2014 Ankita E', warn: true),
+          _LogLine('[10:43:22] CredentialExport: credentials.pdf written', error: true),
+          _LogLine('[10:44:10] CacheDump: DB fragments \u2192 172.16.44.21', error: true),
+        ]),
+      ),
+    ]);
+  }
+}
+
+class _LogLine extends StatelessWidget {
+  final String text;
+  final bool warn;
+  final bool error;
+  const _LogLine(this.text, {this.warn = false, this.error = false});
+  @override
+  Widget build(BuildContext context) {
+    final color = error ? CyberColors.neonRed
+        : warn ? CyberColors.neonAmber
+        : CyberColors.textSecondary;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.5),
+      child: Text(text, style: TextStyle(
+          fontFamily: 'monospace', fontSize: 11, color: color, height: 1.5)),
+    );
+  }
+}
+
+class _CacheReport extends StatelessWidget {
+  const _CacheReport();
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const _SectionTag(label: '\u26a0 DUMP CONTENTS', color: CyberColors.neonRed),
+      const SizedBox(height: 8),
+      const _DataRow('Contains', 'Employee credential DB fragments', highlight: true),
+      const _DataRow('Dump Window', '10:44 AM \u2013 10:46 AM'),
+      const _DataRow('Size', '88 MB'),
+      const SizedBox(height: 14),
+      const _SectionTag(label: 'EXFILTRATION PATH', color: CyberColors.neonAmber),
+      const SizedBox(height: 8),
+      const _DataRow('Source', 'FIN-WS-114 (172.16.44.21)', highlight: true),
+      const _DataRow('Destination', '202.56.23.101 (External)', highlight: true),
+      const _DataRow('Protocol', 'HTTPS \u2014 port 443'),
+      const _DataRow('Encrypted?', 'Yes \u2014 TLS 1.2'),
+    ]);
+  }
+}
+
+class _CredentialsReport extends StatelessWidget {
+  const _CredentialsReport();
+  @override
+  Widget build(BuildContext context) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const _SectionTag(label: 'EXPORT DETAILS', color: CyberColors.neonRed),
+      const SizedBox(height: 8),
+      const _DataRow('Exported By', 'Ankita E \u2014 AE-4471', highlight: true),
+      const _DataRow('Workstation', 'FIN-WS-114'),
+      const _DataRow('Export Time', '10:43:22 AM'),
+      const SizedBox(height: 14),
+      const _SectionTag(label: 'TARGET INFORMATION', color: CyberColors.neonAmber),
+      const SizedBox(height: 8),
+      const _DataRow('DB Credentials', 'FINDB-PROD-01', highlight: true),
+      const _DataRow('Offshore Account', 'ACC-4482-X', highlight: true),
+      const _DataRow('Auth Token', 'ghst_tkn_8f2d91cc... [REDACTED]', highlight: true),
+      const _DataRow('Destination IP', '202.56.23.101', highlight: true),
+      const _DataRow('File Hash', 'SHA256: 3f4a1b9c... [truncated]'),
+    ]);
+  }
+}
+
+class _SectionTag extends StatelessWidget {
+  final String label;
+  final Color color;
+  const _SectionTag({required this.label, required this.color});
+  @override
+  Widget build(BuildContext context) {
+    return Row(children: [
+      Container(width: 3, height: 14, color: color, margin: const EdgeInsets.only(right: 8)),
+      Text(label, style: TextStyle(color: color, fontSize: 11,
+          fontWeight: FontWeight.bold, letterSpacing: 1)),
+    ]);
+  }
+}
+
+class _DataRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final bool highlight;
+  const _DataRow(this.label, this.value, {this.highlight = false});
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        SizedBox(width: 130,
+            child: Text(label, style: CyberText.bodySmall.copyWith(fontSize: 12))),
+        const SizedBox(width: 8),
+        Expanded(child: Text(value, style: TextStyle(
+          color: highlight ? CyberColors.neonAmber : CyberColors.textPrimary,
+          fontSize: 12,
+          fontWeight: highlight ? FontWeight.w600 : FontWeight.normal,
+        ))),
+      ]),
+    );
+  }
+}
+// Metadata / IP row-based detail
+class _RowDetail extends StatelessWidget {
+  final EvidenceItem item;
+  const _RowDetail({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...item.rows.map((row) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 120,
+                child: Text(row.key, style: CyberText.bodySmall),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  row.value,
+                  style: TextStyle(
+                    color: row.highlight
+                        ? CyberColors.neonAmber
+                        : CyberColors.textPrimary,
+                    fontSize: 13,
+                    fontWeight: row.highlight
+                        ? FontWeight.w600
+                        : FontWeight.normal,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        )),
+        const SizedBox(height: 12),
+        _DetailBox(text: item.detail, isKey: item.isKeyEvidence),
+      ],
+    );
+  }
+}
+
+// Fallback
+class _GenericDetail extends StatelessWidget {
+  final EvidenceItem item;
+  const _GenericDetail({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    return _DetailBox(text: item.detail, isKey: item.isKeyEvidence);
+  }
+}
+
+// Analyst insight box
+class _DetailBox extends StatelessWidget {
+  final String text;
+  final bool isKey;
+  const _DetailBox({required this.text, this.isKey = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isKey ? CyberColors.neonAmber : CyberColors.neonCyan;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.06),
+        borderRadius: CyberRadius.small,
+        border:
+        Border.all(color: color.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Icon(
+              isKey ? Icons.warning_amber_outlined : Icons.info_outline,
+              color: color,
+              size: 15,
+            ),
+            const SizedBox(width: 6),
+            Text('Analyst Note',
+                style: TextStyle(
+                    color: color, fontSize: 11, fontWeight: FontWeight.bold)),
+          ]),
+          const SizedBox(height: 8),
+          Text(text,
+              style: TextStyle(color: color, fontSize: 13, height: 1.55)),
+        ],
+      ),
+    );
+  }
+}
+
+class _EmptyContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(children: [
+        const SizedBox(height: 40),
+        Icon(Icons.inbox_outlined, color: CyberColors.textMuted, size: 48),
+        const SizedBox(height: 12),
+        Text(
+          'No item selected.\nGo back and choose an evidence item.',
+          style: CyberText.bodySmall.copyWith(height: 1.6),
+          textAlign: TextAlign.center,
+        ),
+      ]),
+    );
+  }
+}
+
 class _AlreadyUnlockedBanner extends StatelessWidget {
+  final String message;
+  const _AlreadyUnlockedBanner({required this.message});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -456,356 +779,58 @@ class _AlreadyUnlockedBanner extends StatelessWidget {
         color: CyberColors.neonGreen.withOpacity(0.08),
         borderRadius: CyberRadius.medium,
         border: Border.all(
-          color: CyberColors.neonGreen.withOpacity(0.5),
-          width: 1.5,
-        ),
+            color: CyberColors.neonGreen.withOpacity(0.5), width: 1.5),
       ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: CyberColors.neonGreen.withOpacity(0.12),
-              borderRadius: CyberRadius.small,
-            ),
-            child: const Icon(
-              Icons.lock_open,
-              color: CyberColors.neonGreen,
-              size: 20,
-            ),
+      child: Row(children: [
+        Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: CyberColors.neonGreen.withOpacity(0.12),
+            borderRadius: CyberRadius.small,
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hidden Clue Already Unlocked',
-                  style: TextStyle(
+          child: const Icon(Icons.lock_open,
+              color: CyberColors.neonGreen, size: 20),
+        ),
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            const Text('Hidden Clue Already Unlocked',
+                style: TextStyle(
                     color: CyberColors.neonGreen,
                     fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  'credentials.pdf is now available in your file feed.',
-                  style: CyberText.bodySmall.copyWith(fontSize: 12),
-                ),
-              ],
-            ),
-          ),
-          StatusChip(label: 'UNLOCKED', color: CyberColors.neonGreen),
-        ],
-      ),
+                    fontSize: 14)),
+            const SizedBox(height: 3),
+            Text(message, style: CyberText.bodySmall.copyWith(fontSize: 12)),
+          ]),
+        ),
+        const StatusChip(label: 'UNLOCKED', color: CyberColors.neonGreen),
+      ]),
     );
   }
 }
 
-// ── Add Evidence Bottom Bar ──
-class _AddEvidenceBar extends StatelessWidget {
-  final VoidCallback onAdd;
-  final String? selectedItem;
-
-  const _AddEvidenceBar({required this.onAdd, this.selectedItem});
-
+class _AlreadyMarkedBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 14, 20, 14),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       decoration: BoxDecoration(
-        color: CyberColors.bgCard,
-        boxShadow: [
-          BoxShadow(
-            color: CyberColors.neonCyan.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, -4),
-          ),
-        ],
-        border: Border(
-          top: BorderSide(
-            color: CyberColors.neonCyan.withOpacity(0.3),
-            width: 1.5,
-          ),
-        ),
+        color: CyberColors.neonGreen.withOpacity(0.08),
+        borderRadius: CyberRadius.medium,
+        border: Border.all(
+            color: CyberColors.neonGreen.withOpacity(0.5), width: 1.5),
       ),
-      child: Row(
-        children: [
-          if (selectedItem != null)
-            Expanded(
-              child: Text(
-                selectedItem!,
-                style: CyberText.bodySmall.copyWith(
-                    color: CyberColors.textSecondary),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          const SizedBox(width: 12),
-          SizedBox(
-            width: 160,
-            child: CyberButton(
-              label: 'Add Evidence',
-              icon: Icons.add_circle_outline,
-              accentColor: CyberColors.neonGreen,
-              isSmall: true,
-              onTap: onAdd,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── File Report Widget ──
-class _FileReport extends StatelessWidget {
-  final String filename;
-  final String modifier;
-  final String modTime;
-  final List<_DataEntry> entries;
-
-  const _FileReport({
-    required this.filename,
-    required this.modifier,
-    required this.modTime,
-    required this.entries,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(filename,
-            style: CyberText.sectionTitle.copyWith(fontSize: 16)),
-        const SizedBox(height: 4),
-        Text('Modified by $modifier at $modTime',
-            style: CyberText.caption.copyWith(
-                color: CyberColors.neonAmber.withOpacity(0.8))),
-        const SizedBox(height: 16),
-        ...entries.map((e) => _DataEntryRow(entry: e)),
-      ],
-    );
-  }
-}
-
-// ── Log Content Widget ──
-class _LogContent extends StatelessWidget {
-  final List<String> lines;
-  final String? highlight;
-
-  const _LogContent({required this.lines, this.highlight});
-
-  @override
-  Widget build(BuildContext context) {
-    if (highlight != null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.only(bottom: 12),
-            decoration: BoxDecoration(
-              color: CyberColors.neonAmber.withOpacity(0.1),
-              borderRadius: CyberRadius.small,
-              border: Border.all(
-                  color: CyberColors.neonAmber.withOpacity(0.4), width: 1),
-            ),
-            child: Row(
-              children: [
-                const Icon(Icons.warning_amber_outlined,
-                    color: CyberColors.neonAmber, size: 16),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Key entry: "$highlight"',
-                    style: TextStyle(
-                        color: CyberColors.neonAmber, fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ...lines.map((l) => _LogLine(line: l)),
-        ],
-      );
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: lines.map((l) => _LogLine(line: l)).toList(),
-    );
-  }
-}
-
-class _LogLine extends StatelessWidget {
-  final String line;
-  const _LogLine({required this.line});
-
-  Color get _color {
-    if (line.contains('Error') || line.contains('✗'))
-      return CyberColors.neonRed;
-    if (line.contains('Warning') || line.contains('⚠'))
-      return CyberColors.neonAmber;
-    return CyberColors.textSecondary;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text(
-        line,
-        style: TextStyle(
-          fontFamily: 'monospace',
-          fontSize: 11.5,
-          color: _color,
-          height: 1.5,
-        ),
-      ),
-    );
-  }
-}
-
-// ── Chat Log Widget ──
-class _ChatLog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final messages = [
-      ('Admin', 'Patch deployed successfully.', false),
-      ('Ghost', 'I noticed.', true),
-      ('Admin', 'You shouldn\'t be here.', false),
-      ('Ghost', 'You left a door open.', true),
-      ('Admin', 'Who are you?', false),
-      ('Ghost', 'Just a shadow.', true),
-      ('Ghost', 'Check your finance workstation.', true),
-      ('Ankita E', 'Can you send me the Q3 forecast again?', false),
-      ('Admin', 'Sent to your internal mail.', false),
-      ('Ghost', 'For the next phase, transfer to offshore account.', true),
-    ];
-
-    return Column(
-      children: messages.map((m) {
-        final isGhost = m.$2;
-        return _ChatBubble(sender: m.$1, message: m.$2, isSuspect: m.$3);
-      }).toList(),
-    );
-  }
-}
-
-class _ChatBubble extends StatelessWidget {
-  final String sender;
-  final String message;
-  final bool isSuspect;
-
-  const _ChatBubble({
-    required this.sender,
-    required this.message,
-    required this.isSuspect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isSuspect ? CyberColors.neonRed : CyberColors.neonCyan;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 28,
-            height: 28,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: color.withOpacity(0.15),
-              border: Border.all(color: color.withOpacity(0.5), width: 1),
-            ),
-            child: Center(
-              child: Text(
-                sender.substring(0, 1),
-                style: TextStyle(
-                    color: color, fontSize: 11, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(sender,
-                    style: TextStyle(
-                        color: color,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5)),
-                const SizedBox(height: 3),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.06),
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(10),
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
-                    ),
-                    border: Border.all(
-                        color: color.withOpacity(0.2), width: 1),
-                  ),
-                  child: Text(
-                    message,
-                    style: CyberText.bodySmall.copyWith(
-                        color: CyberColors.textPrimary, fontSize: 13),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ── Data Entry types ──
-class _DataEntry {
-  final String label;
-  final String value;
-  final Color? color;
-
-  const _DataEntry(this.label, this.value, {this.color});
-}
-
-class _DataEntryRow extends StatelessWidget {
-  final _DataEntry entry;
-  const _DataEntryRow({required this.entry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(entry.label, style: CyberText.bodySmall),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              entry.value,
-              style: TextStyle(
-                color: entry.color ?? CyberColors.textPrimary,
-                fontSize: 13,
-                fontWeight: entry.color != null
-                    ? FontWeight.w600
-                    : FontWeight.normal,
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: const Row(children: [
+        Icon(Icons.check_circle_outline,
+            color: CyberColors.neonGreen, size: 20),
+        SizedBox(width: 12),
+        Text('Already marked as evidence',
+            style: TextStyle(
+                color: CyberColors.neonGreen,
+                fontWeight: FontWeight.bold,
+                fontSize: 14)),
+      ]),
     );
   }
 }

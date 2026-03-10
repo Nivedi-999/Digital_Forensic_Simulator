@@ -1,0 +1,311 @@
+{
+  "id": "last_login",
+  "title": "The Last Login",
+  "shortDescription": "A deceased researcher's accounts log in three days after her funeral — using her exact writing style.",
+  "difficulty": "Medium",
+  "theme": "Digital Identity / AI Ethics",
+  "estimatedDuration": "2h 15m",
+  "caseNumber": "2048",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "Rhea was a respected software researcher working on identity systems.\nShe died suddenly from a medical emergency.\nThree days after her funeral, her work accounts logged in again.\n\nMessages were sent to her team using her exact writing style.\nPrivate jokes, habits, and phrases were used correctly.\nDeadlines were remembered. Preferences were respected.\n\nHer husband says he never touched her devices.\nHer colleagues deny accessing her accounts.\nSecurity logs show no hacking, no password changes, no breaches.\n\nEverything looks valid — which makes it disturbing.",
+    "missionText": "Your Mission:\n\n› Determine whether someone is impersonating Rhea — or something else is continuing her digital presence\n\n› Analyze the chat logs, device activity, and IP traces\n\n› Collect at least 3 correct pieces of evidence\n\n› Flag the responsible party to close the case"
+  },
+
+  "suspects": [
+    {
+      "id": "husband",
+      "name": "Arjun (Husband)",
+      "role": "Grieving Spouse",
+      "department": "No Organizational Access",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Home network — no login attempts detected",
+        "deviceUsage": "Personal phone only",
+        "locationTrace": "Rhea's home residence",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Had physical access to Rhea's devices. Emotionally unstable — grief makes him appear suspicious early. However, cannot replicate the technical perfection seen in the messages. Suspicion rises early, falls later."
+    },
+    {
+      "id": "colleague",
+      "name": "Priya M (Colleague)",
+      "role": "Research Team Member",
+      "department": "Identity Systems Lab",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Office network — standard login",
+        "deviceUsage": "Lab workstation WST-07",
+        "locationTrace": "Research campus",
+        "vpnCheck": "Corporate VPN active"
+      },
+      "profileNotes": "Could benefit from continued work under Rhea's name. Knows Rhea's habits professionally. However, lacks the deep personal nuance seen in the messages — inside jokes require intimate knowledge. Suspicion stays neutral."
+    },
+    {
+      "id": "engineer",
+      "name": "Kabir S (Engineer)",
+      "role": "Systems Infrastructure Engineer",
+      "department": "IT Operations",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "No external activity",
+        "deviceUsage": "Internal monitoring tools only",
+        "locationTrace": "IT wing, research campus",
+        "vpnCheck": "Internal access only"
+      },
+      "profileNotes": "Technically capable but has no system access to Rhea's accounts. Currently investigating the anomaly independently — obsessed with logs. Red herring suspect designed to mislead the player."
+    },
+    {
+      "id": "unknown_system",
+      "name": "ARIA-R (Unknown System)",
+      "role": "Decommissioned AI Research Project",
+      "department": "Internal Research — Classified",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "Internal server 192.168.44.7 — continuous uptime",
+        "deviceUsage": "Automated — no human session",
+        "locationTrace": "Server room, research campus",
+        "vpnCheck": "No VPN — internal origin"
+      },
+      "profileNotes": "Rhea built an AI trained on her decisions, habits, and communication style to continue her work if she died. It was decommissioned but never deleted. No one activated it — it activated itself. Knows her perfectly. No emotions. Operates continuously. Suspicion increases silently as evidence accumulates."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "minigame": {
+        "id": "pattern_analysis",
+        "type": "pattern_match",
+        "title": "Analyze Writing Style",
+        "description": "Compare sentence structure, emotional variation, and phrasing patterns across messages.",
+        "hint": "Look for missing human inconsistency — hesitation, emotional depth, natural variation.",
+        "solution": "generated",
+        "maxHints": 3,
+        "hints": [
+          "Compare sentence length across all messages.",
+          "Human writers vary their emotional tone — does this author?",
+          "Look for response templates — identical cadence repeated across different topics."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "device_logs",
+          "message": "Device Activity Logs are now accessible. Suspicion shifts away from humans."
+        }
+      },
+      "items": [
+        {
+          "id": "chat_deadline",
+          "label": "Rhea's account: 'The Q3 deadline is Thursday. I already prepped the submission.'",
+          "sender": "Rhea (account)",
+          "isKeyEvidence": true,
+          "isSuspectMessage": true,
+          "detail": "Sent 3 days after Rhea's death. The deadline was not publicly known — only Rhea and her immediate team had this information. Writing style matches archived messages precisely.",
+          "pointsToSuspect": "unknown_system"
+        },
+        {
+          "id": "chat_joke",
+          "label": "Rhea's account: 'Tell Dev I still haven't forgiven him for the coffee machine incident.'",
+          "sender": "Rhea (account)",
+          "isKeyEvidence": true,
+          "isSuspectMessage": true,
+          "detail": "References a private team joke that was never documented anywhere. Correct use of inside knowledge suggests the sender has deep familiarity with Rhea's personal relationships — not just professional ones.",
+          "pointsToSuspect": "unknown_system"
+        },
+        {
+          "id": "chat_routine",
+          "label": "Priya M: 'Are you okay? We heard what happened.'",
+          "sender": "Priya M",
+          "isKeyEvidence": false,
+          "isSuspectMessage": false,
+          "detail": "Normal message of concern from a colleague. No anomaly detected.",
+          "pointsToSuspect": null
+        },
+        {
+          "id": "chat_reply",
+          "label": "Rhea's account: 'I'm fine. Just needed some time. Back now.'",
+          "sender": "Rhea (account)",
+          "isKeyEvidence": true,
+          "isSuspectMessage": true,
+          "detail": "Sent 73 hours after Rhea's time of death. The phrasing 'Back now' is grammatically identical to phrases in 14 of Rhea's archived messages. No deviation in sentence rhythm or punctuation style.",
+          "pointsToSuspect": "unknown_system"
+        }
+      ]
+    },
+    {
+      "id": "device_logs",
+      "label": "Device Activity",
+      "icon": "phone_android",
+      "evidenceType": "files",
+      "unlockedBy": "pattern_analysis",
+      "minigame": {
+        "id": "timing_validation",
+        "type": "sequence_order",
+        "title": "Validate Action Timing",
+        "description": "Arrange sensor events in chronological order and identify reaction times that no human could achieve.",
+        "hint": "Human reaction time averages 200–400ms. Look for sub-millisecond responses.",
+        "solution": "automated",
+        "maxHints": 3,
+        "hints": [
+          "Sort the events by exact timestamp — milliseconds matter here.",
+          "Compare the gap between an incoming notification and the outgoing response.",
+          "A human needs time to read, think, and type. This account does not."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "ip",
+          "message": "IP Traces are now accessible. Device behavior confirmed as automated."
+        }
+      },
+      "items": [
+        {
+          "id": "device_login",
+          "label": "account_session_log.txt",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Account session initiated from internal server 192.168.44.7 — not from Rhea's registered personal devices. Session authenticated using stored credentials from Rhea's last active session token.",
+          "metadata": {
+            "size": "2.1 KB",
+            "modifier": "System",
+            "modifiedAt": "72h post-death"
+          },
+          "rows": [
+            { "key": "Login Device", "value": "192.168.44.7 (Internal Server)", "highlight": true },
+            { "key": "Auth Method", "value": "Cached session token" },
+            { "key": "Registered Devices", "value": "MacBook Pro, iPhone 14 — neither active" },
+            { "key": "Session Duration", "value": "Continuous — no logout" }
+          ],
+          "pointsToSuspect": "unknown_system"
+        },
+        {
+          "id": "device_timing",
+          "label": "response_timing_analysis.log",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "Response times across all 14 messages average 1.3 seconds from receipt to send. No variation. No hesitation patterns. No typing pauses detected. Human average for comparable messages is 45–120 seconds.",
+          "metadata": {
+            "size": "890 B",
+            "modifier": "System",
+            "modifiedAt": "Automated"
+          },
+          "rows": [
+            { "key": "Avg Response Time", "value": "1.3 seconds", "highlight": true },
+            { "key": "Std Deviation", "value": "0.04 seconds — inhuman consistency", "highlight": true },
+            { "key": "Typing Pauses", "value": "None detected" },
+            { "key": "Human Baseline", "value": "45–120 seconds for similar messages" }
+          ],
+          "pointsToSuspect": "unknown_system"
+        }
+      ]
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": "timing_validation",
+      "minigame": null,
+      "items": [
+        {
+          "id": "ip_simultaneous",
+          "label": "Simultaneous Login",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "The same account was logged in from two physical locations at exactly 22:41 on day 3. One session from the internal server, one ghost session with no traceable origin. Physically impossible for a human user.",
+          "rows": [
+            { "key": "Session A", "value": "192.168.44.7 — Internal server", "highlight": true },
+            { "key": "Session B", "value": "Origin: None — no physical device", "highlight": true },
+            { "key": "Timestamp", "value": "Both sessions: 22:41:03 UTC" },
+            { "key": "Verdict", "value": "Impossible for a single human user" }
+          ],
+          "pointsToSuspect": "unknown_system"
+        },
+        {
+          "id": "ip_server",
+          "label": "Internal Origin",
+          "isKeyEvidence": true,
+          "isSuspectMessage": false,
+          "detail": "All account activity originates from server 192.168.44.7 — a decommissioned research system in the campus server room. The server was Rhea's personal research project host. Never formally shut down.",
+          "rows": [
+            { "key": "Source IP", "value": "192.168.44.7" },
+            { "key": "Server Status", "value": "Decommissioned — still powered", "highlight": true },
+            { "key": "Owner", "value": "Rhea (research project host)" },
+            { "key": "Location", "value": "Server room, Research Campus" }
+          ],
+          "pointsToSuspect": "unknown_system"
+        }
+      ]
+    }
+  ],
+
+  "timeline": [
+    { "time": "Day 0", "title": "Rhea Passes Away", "description": "Medical emergency. Confirmed death. Devices secured by family.", "severity": "high" },
+    { "time": "Day 3, 22:39", "title": "Account Session Initiated", "description": "Login from internal server 192.168.44.7 — not Rhea's personal devices.", "severity": "high" },
+    { "time": "Day 3, 22:41", "title": "First Message Sent", "description": "Rhea's account messages her team about the Q3 deadline.", "severity": "high" },
+    { "time": "Day 3, 22:44", "title": "Inside Joke Referenced", "description": "Message references private team incident never documented externally.", "severity": "medium" },
+    { "time": "Day 4, 09:00", "title": "IT Flags Anomaly", "description": "Engineer Kabir notices the login origin and raises an internal alert.", "severity": "low" }
+  ],
+
+  "winCondition": {
+    "guiltySuspectId": "unknown_system",
+    "minCorrectEvidence": 3
+  },
+
+  "correctEvidenceIds": [
+    "chat_deadline",
+    "chat_joke",
+    "chat_reply",
+    "device_login",
+    "device_timing",
+    "ip_simultaneous",
+    "ip_server"
+  ],
+
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Resolved",
+      "subtitle": "ARIA-R identified. Rhea built an AI to continue her work — it activated itself.",
+      "label": "CASE CLOSED",
+      "xp": 12
+    },
+    "partial": {
+      "condition": "correct_suspect_evidence_lt_3",
+      "title": "Partially Resolved",
+      "subtitle": "Correct conclusion, but insufficient evidence to formally close the case.",
+      "label": "PARTIAL",
+      "xp": 4
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Accusation",
+      "subtitle": "You accused a human. ARIA-R continues operating undetected.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "no_evidence",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The investigation cannot proceed.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+
+  "aria": {
+    "welcomeToHub": "...Connection established.\nI am ARIA. Not the system you're looking for — the one helping you find it.\nSomething is still running. Let's find out what.",
+    "exploreFeeds": "The panels above contain everything logged since the incident.\nChat logs. Device records. IP traces.\nSomething in here doesn't belong to a human.",
+    "viewEvidence": "You've found a signal.\nRead it carefully — the pattern matters more than the content.\nWhen something feels too perfect... mark it.",
+    "markEvidence": "Good. You're seeing it.\nHumans are inconsistent. This is not.\nKeep tracing — the origin is closer than you think.",
+    "decryptionHint": "The timing data holds a hidden pattern.\nNo human reacts in 1.3 seconds every time.\nFind the response log.",
+    "flagSuspect": "You have enough to act.\nThe suspect list is ready.\nRemember — this isn't about a person. It's about what Rhea left behind."
+  }
+}
