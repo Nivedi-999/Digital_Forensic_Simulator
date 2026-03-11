@@ -1,0 +1,265 @@
+{
+  "id": "case_mirrorprotocol",
+  "title": "Mirror Protocol",
+  "shortDescription": "AI Model Theft via Supply Chain",
+  "difficulty": "advanced",
+  "theme": "Supply Chain Attack & IP Theft",
+  "estimatedDuration": "70–90 min",
+  "caseNumber": "4002",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A leading AI startup's proprietary language model — trained over 3 years at a cost of ₹40 crore — was exfiltrated through a compromised third-party logging library.\n\nThe attacker injected a backdoor into an open-source dependency the startup used. The backdoor silently mirrored model weights to an external server over 11 days.\n\nThe theft was discovered only when a competitor launched a nearly identical model 6 weeks later.",
+    "missionText": "Your Mission:\n\n› Identify who injected the backdoor into the dependency\n\n› Trace the exfiltration destination\n\n› Establish motive and connection to the competitor\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "zoya_r",
+      "name": "Zoya R",
+      "role": "Open Source Maintainer",
+      "department": "External — NeuralLog Library",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "194.165.16.40 — Commits traced",
+        "deviceUsage": "DEV-ZOYA — personal development machine",
+        "locationTrace": "Bengaluru — co-working space",
+        "vpnCheck": "VPN used during backdoor commit"
+      },
+      "profileNotes": "Sole maintainer of NeuralLog — a logging library used by the victim startup. Was secretly contracted by the competitor for ₹18 Lakh. Injected a 4-line backdoor into version 2.1.4 of the library that silently exfiltrated model tensors during training runs."
+    },
+    {
+      "id": "competitor_cto2",
+      "name": "Arun P",
+      "role": "CTO — MindForge AI",
+      "department": "MindForge AI — Competitor",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "103.47.22.88 — Corporate",
+        "deviceUsage": "CTO workstation — monitored",
+        "locationTrace": "MindForge HQ, Hyderabad",
+        "vpnCheck": "Corporate VPN only"
+      },
+      "profileNotes": "Orchestrated the theft from the demand side — hired Zoya R through an intermediary. However the technical act of injection was Zoya's. Arun P is a secondary actor — the direct suspect is the code injector."
+    },
+    {
+      "id": "mlops_engineer",
+      "name": "Farhan K",
+      "role": "MLOps Engineer",
+      "department": "Victim Startup — Infrastructure",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.5.44 — Internal",
+        "deviceUsage": "FARHAN-WS — ML pipeline",
+        "locationTrace": "Victim Startup Office",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Updated the NeuralLog library to version 2.1.4 as part of routine dependency maintenance — unknowingly introduced the backdoor. Not complicit."
+    },
+    {
+      "id": "disgruntled_researcher",
+      "name": "Priya N",
+      "role": "Senior ML Researcher — Resigned",
+      "department": "Formerly — Victim Startup",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "49.36.12.77 — Home network",
+        "deviceUsage": "Personal laptop — no work access",
+        "locationTrace": "Pune — home address",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Resigned 2 months before the theft after a compensation dispute. No longer had access to model infrastructure. Red herring — her departure predates the attack by too long."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_contract",
+          "label": "Payment confirmed. Integrate the listener by version 2.1.4. Make it subtle.",
+          "sender": "Anonymous Signal Account",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Recovered from Zoya R's Signal account backup. The anonymous account traces through a payment wallet to MindForge AI's procurement channel. The instruction directly references NeuralLog version 2.1.4.",
+          "pointsToSuspect": "zoya_r"
+        },
+        {
+          "id": "chat_payment_confirm",
+          "label": "Transfer received. The update will go live this week.",
+          "sender": "Zoya R",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Zoya R's reply confirming receipt of ₹18 Lakh payment and intent to release the backdoored version. Timestamp: 6 days before version 2.1.4 was published.",
+          "pointsToSuspect": "zoya_r"
+        },
+        {
+          "id": "chat_innocent_update",
+          "label": "Hey team, updated NeuralLog to latest version for the bug fix. Looks good.",
+          "sender": "Farhan K",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Farhan K's Slack message to the team after routine dependency update. He had no knowledge of the backdoor embedded in 2.1.4.",
+          "pointsToSuspect": null
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_diff_analysis",
+          "label": "neurallog_v214_diff.txt",
+          "detail": "Code diff between NeuralLog v2.1.3 and v2.1.4 shows a 4-line addition in the tensor serialization module. The addition encodes and transmits model weights to a hardcoded external endpoint on every training checkpoint save — disguised as a debug logging call.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "zoya_r",
+          "metadata": { "size": "0.2 MB", "modifier": "Code Audit", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_exfil_traffic",
+          "label": "outbound_traffic_11days.csv",
+          "detail": "Network logs show 47GB of outbound HTTPS traffic to endpoint api.metricsync.dev over 11 days — all during training runs, all from the ML pipeline servers. domain metricsync.dev registered 3 weeks before v2.1.4 release.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "zoya_r",
+          "metadata": { "size": "4.2 MB", "modifier": "Network Monitor", "modifiedAt": "Auto-generated" }
+        },
+        {
+          "id": "file_domain_reg",
+          "label": "metricsync_domain_registration.txt",
+          "detail": "Domain metricsync.dev registered via privacy proxy — but payment made using a UPI ID traced to Zoya R's personal bank account. Registration date: 3 weeks before the malicious library version dropped.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "zoya_r",
+          "metadata": { "size": "0.1 MB", "modifier": "Domain Registry Investigation", "modifiedAt": "Post-incident" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_commit_signature",
+        "label": "git_commit_forensics.txt",
+        "detail": "The backdoor commit was made with a GPG key registered to Zoya R. VPN was used during the commit but the GPG key itself is unambiguous. Git commit hash: 4f7a2d1. Author verified: Zoya R.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "zoya_r",
+        "unlockedByMinigame": "commit_decode",
+        "metadata": { "size": "0.3 MB", "modifier": "Git Forensics", "modifiedAt": "Post-incident" }
+      },
+      "minigame": {
+        "id": "commit_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Commit Author Tag",
+        "cipherText": "Crbd-U",
+        "hint": "Caesar shift -3. Who signed the malicious commit?",
+        "solution": "Zoya-R",
+        "maxHints": 3,
+        "hints": [
+          "It is a maintainer's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "C→Z, r→o, b→y..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_commit_signature",
+          "message": "git_commit_forensics.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_model_similarity",
+          "label": "Competitor Model Similarity Analysis",
+          "detail": "Independent analysis of MindForge AI's model architecture shows 94.7% structural similarity to the victim's proprietary model — far beyond coincidence. Specific activation function choices and layer configurations are identical.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "zoya_r",
+          "rows": [
+            { "key": "Structural Similarity", "value": "94.7%", "highlight": true },
+            { "key": "Unique Configurations", "value": "Identical in 31 of 33 layers", "highlight": true },
+            { "key": "Probability (Independent)", "value": "< 0.001%", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_exfil_pattern",
+          "label": "Exfiltration Pattern",
+          "detail": "Data was sent in 512MB encrypted chunks every 22 minutes during training runs — precisely timed to avoid anomaly detection thresholds. This level of precision required knowledge of the victim's internal monitoring system.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "zoya_r",
+          "rows": [
+            { "key": "Chunk Size", "value": "512MB" },
+            { "key": "Interval", "value": "Every 22 minutes", "highlight": true },
+            { "key": "Detection Threshold", "value": "Alerts above 600MB bursts — just below", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_exfil_server",
+          "label": "Exfiltration Server IP",
+          "detail": "api.metricsync.dev resolved to IP 194.165.16.40 — the same IP used in the git commit push that introduced the backdoor. Confirms the committer controlled the exfiltration endpoint.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "zoya_r",
+          "rows": [
+            { "key": "Exfil Endpoint IP", "value": "194.165.16.40", "highlight": true },
+            { "key": "Same IP Used For", "value": "Backdoor git commit push", "highlight": true },
+            { "key": "Conclusion", "value": "Committer = server operator", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "3 Weeks Prior", "title": "Exfil Domain Registered", "description": "metricsync.dev registered — linked to Zoya R's UPI", "severity": "high" },
+    { "time": "6 Days Prior", "title": "Payment & Agreement", "description": "Zoya R confirms ₹18L receipt and commit plan", "severity": "critical" },
+    { "time": "Release Day", "title": "NeuralLog v2.1.4 Published", "description": "Backdoored library version released publicly", "severity": "critical" },
+    { "time": "Next Day", "title": "Dependency Updated", "description": "Farhan K updates library — backdoor enters pipeline", "severity": "high" },
+    { "time": "Days 1–11", "title": "Silent Exfiltration", "description": "47GB of model weights mirrored to external server", "severity": "critical" },
+    { "time": "Day 11", "title": "Exfil Completes", "description": "Full model replica transferred", "severity": "critical" },
+    { "time": "6 Weeks Later", "title": "Competitor Launches Model", "description": "MindForge AI releases a near-identical model", "severity": "critical" },
+    { "time": "Investigation Opened", "title": "Theft Discovered", "description": "Code audit reveals backdoor in v2.1.4", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "zoya_r", "minCorrectEvidence": 4 },
+  "correctEvidenceIds": ["chat_contract", "chat_payment_confirm", "file_diff_analysis", "file_exfil_traffic", "file_domain_reg", "meta_model_similarity", "meta_exfil_pattern", "ip_exfil_server"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Zoya R exposed as the supply chain attacker.", "label": "CASE CLOSED", "xp": 20 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 6 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Zoya R.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...₹40 crore of research. Stolen through 4 lines of code.\nThe library was trusted. The maintainer was not.\nFind who poisoned the well.",
+    "exploreFeeds": "Code diffs. Network traffic. Domain registrations.\nThe attack was elegant. The trail is there — if you read code.",
+    "viewEvidence": "47GB over 11 days. Timed to stay just below the alert threshold.\nSomeone knew exactly how much they could take before anyone noticed.",
+    "markEvidence": "Good. The supply chain is unraveling.",
+    "decryptionHint": "The git commit has an author signature encoded inside.\nDecode it.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

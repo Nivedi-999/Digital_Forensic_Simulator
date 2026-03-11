@@ -1,0 +1,263 @@
+{
+  "id": "case_ghostnetwork",
+  "title": "Ghost Network",
+  "shortDescription": "Long-Term APT Inside a Defence Contractor",
+  "difficulty": "advanced",
+  "theme": "Advanced Persistent Threat (APT)",
+  "estimatedDuration": "80–100 min",
+  "caseNumber": "4004",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A defence contractor discovered that classified project files had been quietly exfiltrated for 14 months.\n\nThe attacker lived inside the network — moving laterally, avoiding detection, mimicking normal traffic patterns.\n\nThis was not a smash-and-grab. This was a ghost: patient, methodical, invisible.\n\nThey made one mistake. In month 14, they accessed a canary file — a honeypot document placed specifically to detect insider threats.",
+    "missionText": "Your Mission:\n\n› Identify the APT operator inside the organisation\n\n› Map 14 months of lateral movement\n\n› Understand what data was taken and why\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "nalini_v",
+      "name": "Nalini V",
+      "role": "Senior Systems Analyst",
+      "department": "Defence Contractor — Infrastructure",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "10.10.5.44 — canary file access traced",
+        "deviceUsage": "NALINI-WS — standard workstation",
+        "locationTrace": "Secure Facility — Zone B",
+        "vpnCheck": "Internal network — no anomaly on surface"
+      },
+      "profileNotes": "Recruited by a foreign intelligence handler 16 months ago via a compromised academic contact. Used legitimate access to build a mental map of the network over 2 months before any exfiltration began. Exfiltrated via steganographic files embedded in routine maintenance reports. Triggered the canary file while searching for a specific missile guidance specification."
+    },
+    {
+      "id": "new_hire",
+      "name": "Kabir J",
+      "role": "Junior Network Engineer",
+      "department": "Defence Contractor — Network Ops",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.10.5.88 — standard activity",
+        "deviceUsage": "KABIR-WS — monitored",
+        "locationTrace": "Secure Facility — Zone A",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Joined 10 months ago. Has broad network access due to role. However network activity is entirely within expected patterns. No after-hours anomalies. Used as a red herring — his broad access makes him suspicious at first glance."
+    },
+    {
+      "id": "external_auditor",
+      "name": "Meghna T",
+      "role": "External IT Auditor",
+      "department": "Third-Party Audit Firm — Periodic Access",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Visitor IP — 203.45.88.12",
+        "deviceUsage": "Personal laptop — auditor",
+        "locationTrace": "Visitor access — lobby terminal",
+        "vpnCheck": "Guest VPN only"
+      },
+      "profileNotes": "Conducts biannual audits. Only has access during audit periods — the exfiltration spanned 14 months with activity between audit windows, ruling her out."
+    },
+    {
+      "id": "hr_manager",
+      "name": "Sunil D",
+      "role": "HR Manager",
+      "department": "Defence Contractor — Human Resources",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.10.2.5 — HR network",
+        "deviceUsage": "HR-WS-02 — HR applications only",
+        "locationTrace": "HR Department",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "No access to technical systems. Unaware of the network topology. Handles personnel records — not a viable APT operator."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_handler",
+          "label": "Package 7 received. Quality satisfactory. Continue to priority target: guidance_spec_v3.",
+          "sender": "Unknown Handler (encrypted channel)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Recovered from an encrypted dead drop channel found on Nalini V's personal device. References 7 exfiltration packages received — confirming an ongoing, directed operation. The 'guidance_spec_v3' request led directly to the canary file trigger.",
+          "pointsToSuspect": "nalini_v"
+        },
+        {
+          "id": "chat_recruitment",
+          "label": "The position is research-oriented. We can discuss compensation at your convenience. 16 months prior.",
+          "sender": "Unknown Academic Contact",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Email recovered from Nalini V's personal account — initial contact from the intelligence handler posing as an academic recruiter. Timeline aligns with the start of her network reconnaissance phase.",
+          "pointsToSuspect": "nalini_v"
+        },
+        {
+          "id": "chat_canary_alert",
+          "label": "ALERT: Canary file 'guidance_decoy_v3.pdf' accessed — user NALINI-WS at 11:32 PM.",
+          "sender": "Honeypot System (Auto-Alert)",
+          "isKeyEvidence": true,
+          "isSuspect": false,
+          "detail": "The automated canary system flagged access to the honeypot document. This is the event that opened the investigation. The file had no legitimate reason to be accessed — it existed only to identify insider threats.",
+          "pointsToSuspect": "nalini_v"
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_stego_reports",
+          "label": "steganography_analysis_report.pdf",
+          "detail": "14 routine maintenance reports authored by Nalini V over 14 months contained steganographically embedded data in JPEG headers. Total hidden payload: 2.3GB. Data extracted from the images matches classified project specifications.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "nalini_v",
+          "metadata": { "size": "4.8 MB", "modifier": "Digital Forensics Lab", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_lateral_movement",
+          "label": "14month_lateral_movement_map.pdf",
+          "detail": "SIEM retrospective analysis shows NALINI-WS accessed 44 systems outside her role scope over 14 months — always during business hours, always for durations under 3 minutes, never triggering anomaly thresholds. Classic APT patience.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "nalini_v",
+          "metadata": { "size": "7.2 MB", "modifier": "Threat Hunting Team", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_financial_trace",
+          "label": "foreign_payment_trace.pdf",
+          "detail": "Monthly deposits of ₹2.2 Lakh into Nalini V's secondary account — untaxed, via cryptocurrency exchange liquidation. Deposits began exactly 16 months ago, coinciding with the recruitment contact.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "nalini_v",
+          "metadata": { "size": "1.1 MB", "modifier": "Financial Intelligence Unit", "modifiedAt": "Post-incident" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_handler_identity",
+        "label": "handler_comms_analysis.txt",
+        "detail": "Linguistic and operational analysis of the handler's communications matches patterns attributed to a known foreign intelligence unit. Nalini V's personal device metadata shows communications with this handler from 3 days after her initial recruitment contact.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "nalini_v",
+        "unlockedByMinigame": "handler_decode",
+        "metadata": { "size": "0.8 MB", "modifier": "Signals Intelligence", "modifiedAt": "Post-incident" }
+      },
+      "minigame": {
+        "id": "handler_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Handler Contact Name",
+        "cipherText": "Qdolql-Y",
+        "hint": "Caesar shift -3. Whose device shows the handler communications?",
+        "solution": "Nalini-V",
+        "maxHints": 3,
+        "hints": [
+          "It is an insider's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "Q→N, d→a, o→l..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_handler_identity",
+          "message": "handler_comms_analysis.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_access_pattern",
+          "label": "14-Month Behavioural Baseline Deviation",
+          "detail": "Nalini V's access patterns show a consistent 8% weekly drift from her established baseline — always toward higher-classification systems. Below the alert threshold individually, but cumulatively forming a directed reconnaissance path.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "nalini_v",
+          "rows": [
+            { "key": "Baseline Deviation", "value": "8% weekly — below threshold", "highlight": true },
+            { "key": "Cumulative Drift", "value": "Toward missile guidance systems", "highlight": true },
+            { "key": "Duration", "value": "14 months", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_stego_timing",
+          "label": "Report Publication Timing",
+          "detail": "Each steganographic maintenance report was published within 48 hours of receiving a handler instruction. The correlation is 100% — every handler message was followed by a report within 2 days.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "nalini_v",
+          "rows": [
+            { "key": "Handler Messages", "value": "14 over 14 months" },
+            { "key": "Reports With Payload", "value": "14 — one per message", "highlight": true },
+            { "key": "Timing Correlation", "value": "100% — within 48 hours", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_canary_access",
+          "label": "Canary File Access IP",
+          "detail": "IP 10.10.5.44 accessed the canary file at 11:32 PM. This IP is permanently assigned to NALINI-WS. No shared workstation — this machine is exclusively used by Nalini V.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "nalini_v",
+          "rows": [
+            { "key": "IP Address", "value": "10.10.5.44", "highlight": true },
+            { "key": "Workstation", "value": "NALINI-WS — exclusive use", "highlight": true },
+            { "key": "Access Time", "value": "11:32 PM — after hours", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "16 Months Prior", "title": "Recruitment Contact", "description": "Handler poses as academic recruiter — approaches Nalini V", "severity": "high" },
+    { "time": "14 Months Prior", "title": "Reconnaissance Begins", "description": "Nalini V starts mapping network — no exfiltration yet", "severity": "high" },
+    { "time": "Months 2–14", "title": "Steganographic Exfiltration", "description": "14 maintenance reports — 2.3GB hidden inside image metadata", "severity": "critical" },
+    { "time": "Month 14 — Night", "title": "Canary File Triggered", "description": "Nalini V accesses honeypot document searching for guidance spec", "severity": "critical" },
+    { "time": "11:32 PM", "title": "Alert Fires", "description": "Automated canary system notifies security team", "severity": "critical" },
+    { "time": "Next Morning", "title": "Investigation Opened", "description": "Security team begins 14-month retrospective analysis", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "nalini_v", "minCorrectEvidence": 4 },
+  "correctEvidenceIds": ["chat_handler", "chat_recruitment", "file_stego_reports", "file_lateral_movement", "file_financial_trace", "meta_access_pattern", "meta_stego_timing", "ip_canary_access"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Nalini V exposed as a long-term APT operator.", "label": "CASE CLOSED", "xp": 20 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 6 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Nalini V.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...14 months. 44 systems. 2.3 gigabytes. Not one alarm.\nThen one wrong file. One canary. One mistake in 424 days.\nThat's who you're looking for.",
+    "exploreFeeds": "Steganographic reports. Lateral movement maps. Financial traces.\nThis ghost left almost nothing. Almost.",
+    "viewEvidence": "Every access under 3 minutes. Always during business hours. Always just below the threshold.\nPatience like this is trained — not natural.",
+    "markEvidence": "Good. Every thread matters in a case this long.",
+    "decryptionHint": "The handler's contact is linked to a device. Decode the device owner.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

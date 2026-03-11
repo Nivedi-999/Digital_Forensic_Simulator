@@ -23,12 +23,29 @@ flutter:
   uses-material-design: true
 
   assets:
-    # ── Case data files (one JSON per case) ──
+    # ── Easy Cases ────────────────────────────────────────
+    - assets/cases/case_passwordheist.json
+    - assets/cases/case_wifithief.json
+    - assets/cases/case_fakereview.json
     - assets/cases/case_ghosttrace.json
+
+    # ── Medium Cases ──────────────────────────────────────
+    - assets/cases/case_phantomtransaction.json
+    - assets/cases/case_attendancehack.json
+    - assets/cases/case_socialengineer.json
     - assets/cases/case_lastlogin.json
-    - assets/cases/case_deaddropsignal.json
+
+    # ── Hard Cases ────────────────────────────────────────
+    - assets/cases/case_deaddrop.json
     - assets/cases/case_echoesoftomorrow.json
     - assets/cases/case_echowithoutavoice.json
+    - assets/cases/case_darkproxyattack.json
+
+    # ── Advanced Cases ────────────────────────────────────
+    - assets/cases/case_vanishingvault.json
+    - assets/cases/case_mirrorprotocol.json
+    - assets/cases/case_zeropointentry.json
+    - assets/cases/case_ghostnetwork.json
 
   fonts:
     - family: DotMatrix

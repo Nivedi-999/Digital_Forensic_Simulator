@@ -1,0 +1,236 @@
+{
+  "id": "case_socialengineer",
+  "title": "The Impersonator",
+  "shortDescription": "Corporate Social Engineering Attack",
+  "difficulty": "medium",
+  "theme": "Identity Fraud & Social Engineering",
+  "estimatedDuration": "30–40 min",
+  "caseNumber": "2003",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "An employee at a logistics company was tricked into transferring ₹3.2 Lakh to a fraudulent vendor account.\n\nThe attacker impersonated the company's CFO through a spoofed email and a cloned voice call.\n\nThe real CFO was on a flight. She never sent any instruction.",
+    "missionText": "Your Mission:\n\n› Identify who spoofed the CFO's identity\n\n› Trace the email and call origin\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "arpit_c",
+      "name": "Arpit C",
+      "role": "Ex-Vendor Contact",
+      "department": "External — Former Supplier",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "45.33.99.12 — 11:00 AM",
+        "deviceUsage": "ARPIT-WS — 10:45 AM–12:30 PM",
+        "locationTrace": "Registered Address — Pune Industrial Area",
+        "vpnCheck": "VPN detected — exited"
+      },
+      "profileNotes": "Had insider knowledge of the CFO's name, travel schedule, and vendor payment process — obtained during his time as a vendor. Sent the spoofed email and made the cloned voice call."
+    },
+    {
+      "id": "neha_f",
+      "name": "Neha F",
+      "role": "Finance Executive",
+      "department": "Logistics Company — Finance Dept",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.5.22 — 11:15 AM",
+        "deviceUsage": "Office Terminal — FIN-WS-003",
+        "locationTrace": "Finance Department Office",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Victim — received the spoofed instruction and transferred the funds in good faith. Not complicit in the fraud."
+    },
+    {
+      "id": "it_head",
+      "name": "Sameer L",
+      "role": "IT Head",
+      "department": "Logistics Company — IT Dept",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.5.10 — 10:00 AM–6:00 PM",
+        "deviceUsage": "IT Admin Terminal — business hours",
+        "locationTrace": "IT Department",
+        "vpnCheck": "Admin access active"
+      },
+      "profileNotes": "No motive. Company's email security was his responsibility — he failed to implement DMARC properly, enabling the spoof. Negligent but not culpable."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_spoofed_email",
+          "label": "Transfer ₹3.2L to vendor ACC-7731 immediately. I am boarding. — CFO Priya",
+          "sender": "Spoofed CFO Email",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Email header analysis shows sender domain was cfo@logistlcs-corp.com — note the extra 'l' in logistics. Classic homoglyph spoof. Sent from IP 45.33.99.12.",
+          "pointsToSuspect": "arpit_c"
+        },
+        {
+          "id": "chat_voice_confirm",
+          "label": "Yes this is Priya. Please confirm the transfer quickly.",
+          "sender": "Cloned Voice Call",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "AI voice clone used CFO's voice samples from public conference recordings. Spectral analysis confirms it is synthetic — not the real CFO.",
+          "pointsToSuspect": "arpit_c"
+        },
+        {
+          "id": "chat_real_cfo",
+          "label": "I am on a flight. I sent no transfer instruction. Block it.",
+          "sender": "Real CFO Priya",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Real CFO contacted the company from the destination airport. Flight records confirm she was airborne during the fraud window.",
+          "pointsToSuspect": null
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_emailheader",
+          "label": "spoofed_email_headers.txt",
+          "detail": "Full email header trace: From: cfo@logistlcs-corp.com (note extra 'l'). Originating IP: 45.33.99.12. SPF and DKIM checks: FAIL. Company had no DMARC policy — allowed the spoof through.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "arpit_c",
+          "metadata": { "size": "0.1 MB", "modifier": "Email Gateway", "modifiedAt": "11:03 AM" }
+        },
+        {
+          "id": "file_vendoraccount",
+          "label": "vendor_account_trace.pdf",
+          "detail": "Account ACC-7731 was opened 3 weeks prior at a cooperative bank using documents forged in Arpit C's former company name. Account was emptied 4 hours after transfer.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "arpit_c",
+          "metadata": { "size": "0.3 MB", "modifier": "Bank Fraud Cell", "modifiedAt": "Investigation" }
+        },
+        {
+          "id": "file_voiceanalysis",
+          "label": "voice_spectral_analysis.pdf",
+          "detail": "Forensic audio analysis of the voice call: micro-pause patterns, formant frequencies, and background noise artifacts confirm AI synthesis. Not a real human voice.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "arpit_c",
+          "metadata": { "size": "1.2 MB", "modifier": "Audio Forensics Lab", "modifiedAt": "Post-incident" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_vendorhistory",
+        "label": "arpit_vendor_history.txt",
+        "detail": "Arpit C's vendor contract terminated 6 months ago after a pricing dispute. His last internal access included the CFO's travel calendar and vendor payment SOP — giving him exact knowledge of the attack vector.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "arpit_c",
+        "unlockedByMinigame": "vendor_decode",
+        "metadata": { "size": "0.2 MB", "modifier": "HR System", "modifiedAt": "6 months ago" }
+      },
+      "minigame": {
+        "id": "vendor_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Vendor Record",
+        "cipherText": "Dusfw-F",
+        "hint": "Caesar shift -3. Which ex-vendor is this?",
+        "solution": "Arpit-C",
+        "maxHints": 3,
+        "hints": [
+          "It is an ex-vendor's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "D→A, u→r, s→p..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_vendorhistory",
+          "message": "arpit_vendor_history.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_domain",
+          "label": "Spoofed Domain Registration",
+          "detail": "Domain logistlcs-corp.com was registered 3 weeks ago — same time as the mule account opening. Registered anonymously via a privacy proxy service.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "arpit_c",
+          "rows": [
+            { "key": "Fake Domain", "value": "logistlcs-corp.com", "highlight": true },
+            { "key": "Registered", "value": "3 weeks prior", "highlight": true },
+            { "key": "Registrant", "value": "Anonymous privacy proxy" }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_spoof_origin",
+          "label": "Email Origin IP",
+          "detail": "IP 45.33.99.12 geolocates to Pune Industrial Area — matching Arpit C's registered business address. VPN was used briefly then dropped, exposing the real IP.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "arpit_c",
+          "rows": [
+            { "key": "Origin IP", "value": "45.33.99.12", "highlight": true },
+            { "key": "Geolocation", "value": "Pune Industrial Area", "highlight": true },
+            { "key": "VPN", "value": "Used briefly — then dropped", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "3 Weeks Prior", "title": "Attack Preparation", "description": "Fake domain and mule account created", "severity": "high" },
+    { "time": "CFO's Travel Day — 10:45 AM", "title": "Attack Window Opens", "description": "CFO boards flight — becomes unreachable", "severity": "medium" },
+    { "time": "11:03 AM", "title": "Spoofed Email Sent", "description": "Fake CFO email instructs ₹3.2L transfer", "severity": "critical" },
+    { "time": "11:18 AM", "title": "Voice Call Made", "description": "AI voice clone confirms the instruction", "severity": "critical" },
+    { "time": "11:24 AM", "title": "Transfer Executed", "description": "Finance executive processes the payment", "severity": "critical" },
+    { "time": "3:30 PM", "title": "CFO Lands — Raises Alarm", "description": "Real CFO contacts company, fraud discovered", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "arpit_c", "minCorrectEvidence": 3 },
+  "correctEvidenceIds": ["chat_spoofed_email", "chat_voice_confirm", "file_emailheader", "file_vendoraccount", "file_voiceanalysis", "meta_domain", "ip_spoof_origin"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_3", "title": "Case Solved!", "subtitle": "Arpit C exposed as the social engineering attacker.", "label": "CASE CLOSED", "xp": 10 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_3", "title": "Insufficient Evidence", "subtitle": "Correct suspect but thin evidence.", "label": "PARTIAL", "xp": 3 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Arpit C.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...The CFO never sent that email. She was at 35,000 feet.\nSomeone wore her face and spoke with her voice.\nFind the impersonator.",
+    "exploreFeeds": "Email headers. Voice analysis. Domain registration.\nEvery fake leaves a real trace.",
+    "viewEvidence": "One extra letter in a domain name. That's all it took.\nLook closely.",
+    "markEvidence": "Good. The deception is unraveling.",
+    "decryptionHint": "The ex-vendor's name is encoded in the record.\nDecode it.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

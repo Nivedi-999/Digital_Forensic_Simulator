@@ -1,0 +1,265 @@
+{
+  "id": "case_zeropointentry",
+  "title": "Zero Point Entry",
+  "shortDescription": "Zero-Day Exploit in Critical Infrastructure",
+  "difficulty": "advanced",
+  "theme": "Zero-Day Exploit & State-Level Attack",
+  "estimatedDuration": "80–100 min",
+  "caseNumber": "4003",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A zero-day vulnerability in a power grid SCADA system was exploited, causing a controlled blackout in an industrial zone for 6 hours.\n\nThe attacker didn't cause maximum damage — they demonstrated capability. A warning shot.\n\nThe exploit code was custom-built and vendor-specific. No patch existed. Only three people in the country had ever audited this SCADA system's codebase.",
+    "missionText": "Your Mission:\n\n› Identify who wrote the zero-day exploit\n\n› Determine if this was state-sponsored or rogue\n\n› Trace the controlled nature of the attack — why stop early?\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "ronak_s",
+      "name": "Ronak S",
+      "role": "SCADA Security Researcher",
+      "department": "Critical Infrastructure Research Lab",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "45.61.185.22 — jump server traced",
+        "deviceUsage": "AIR-GAPPED-LAP-01 — research machine",
+        "locationTrace": "Research lab — after hours",
+        "vpnCheck": "Custom VPN — non-commercial"
+      },
+      "profileNotes": "One of only 3 researchers with SCADA codebase access. Discreetly sold the exploit to a foreign intelligence intermediary for $280,000 — but panicked and triggered the shutdown early, preventing full infrastructure damage. Financial trail leads to a Mauritius account."
+    },
+    {
+      "id": "state_actor",
+      "name": "Unknown Foreign Actor",
+      "role": "Suspected Intelligence Operator",
+      "department": "External — Unattributed",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Tor + custom proxy — untraced",
+        "deviceUsage": "Unknown",
+        "locationTrace": "Origin untraced",
+        "vpnCheck": "Advanced obfuscation"
+      },
+      "profileNotes": "Purchased the exploit — was the buyer. However the technical authorship of the zero-day and the decision to trigger it belong to Ronak S. The buyer only provided direction — Ronak executed."
+    },
+    {
+      "id": "vendor_engineer",
+      "name": "Supriya K",
+      "role": "SCADA Vendor Engineer",
+      "department": "GridCore Technologies — Support",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.12.5 — vendor remote access",
+        "deviceUsage": "Vendor terminal — scheduled maintenance",
+        "locationTrace": "GridCore HQ, Pune",
+        "vpnCheck": "Vendor VPN — authorized"
+      },
+      "profileNotes": "Had remote access for scheduled maintenance but was on leave during the attack window. Access token was active but not used — confirms she did not execute the exploit."
+    },
+    {
+      "id": "whistleblower",
+      "name": "Devraj M",
+      "role": "Retired Infrastructure Security Officer",
+      "department": "Formerly — National Grid Authority",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "49.207.8.44 — home network",
+        "deviceUsage": "Personal laptop — no privileged access",
+        "locationTrace": "Retired — Chennai",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Had warned about this vulnerability 2 years ago in an internal memo that was ignored. No current system access. His old memo makes him a witness, not a suspect."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_exploit_sale",
+          "label": "Module ready. Tested on isolated clone. Confirm payment before I hand over the trigger.",
+          "sender": "Ronak S (encrypted forum)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Recovered from a dark web escrow forum. Ronak S negotiated the exploit sale under the handle 'NullVector'. Linguistic analysis and PGP key confirm NullVector = Ronak S.",
+          "pointsToSuspect": "ronak_s"
+        },
+        {
+          "id": "chat_early_kill",
+          "label": "Abort. Shut it down now. This is going too far.",
+          "sender": "Ronak S (encrypted app)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Sent at 2:47 AM — 4 hours into the blackout, 2 hours before the buyer expected full escalation. Ronak S panicked and remotely triggered the shutdown sequence, cutting the attack short.",
+          "pointsToSuspect": "ronak_s"
+        },
+        {
+          "id": "chat_old_memo",
+          "label": "Recommend immediate patch of CVE-GRID-0091. Risk level: critical. This will be exploited.",
+          "sender": "Devraj M (internal memo, 2 years prior)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Devraj M warned about this exact vulnerability 2 years ago. His memo was classified and shelved. He is a witness to negligence, not a suspect.",
+          "pointsToSuspect": null
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_exploit_code",
+          "label": "zeroday_exploit_analysis.pdf",
+          "detail": "Reverse-engineered exploit targets a buffer overflow in GridCore SCADA firmware v4.2.1 — a vulnerability that was never publicly disclosed. Code style analysis matches Ronak S's published research papers: identical comment formatting, variable naming, and error handling patterns.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ronak_s",
+          "metadata": { "size": "5.1 MB", "modifier": "CERT-IN Forensics", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_financial",
+          "label": "mauritius_account_trace.pdf",
+          "detail": "$280,000 transferred in 3 tranches to a Mauritius shell account. Account opened under a name matching Ronak S's alias used in academic conferences. Traced via SWIFT correspondent banking logs.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ronak_s",
+          "metadata": { "size": "1.3 MB", "modifier": "Financial Intelligence Unit", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_scada_access",
+          "label": "codebase_access_log.txt",
+          "detail": "Of the 3 researchers with SCADA codebase access, only Ronak S accessed the firmware module containing the exploited buffer overflow — 14 times in the past 4 months. The other 2 researchers never accessed that specific module.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ronak_s",
+          "metadata": { "size": "0.5 MB", "modifier": "Research Lab Access Control", "modifiedAt": "Auto-generated" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_pgp_key",
+        "label": "nullvector_pgp_identity.txt",
+        "detail": "The PGP key used by forum handle 'NullVector' was cross-referenced against Ronak S's academic email signature. They share the same RSA 4096-bit key fingerprint — confirming Ronak S is NullVector.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ronak_s",
+        "unlockedByMinigame": "pgp_decode",
+        "metadata": { "size": "0.2 MB", "modifier": "Cryptographic Analysis", "modifiedAt": "Post-incident" }
+      },
+      "minigame": {
+        "id": "pgp_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Forum Identity",
+        "cipherText": "Urqdn-V",
+        "hint": "Caesar shift -3. What is the real name behind NullVector?",
+        "solution": "Ronak-S",
+        "maxHints": 3,
+        "hints": [
+          "It is a researcher's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "U→R, r→o, q→n..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_pgp_key",
+          "message": "nullvector_pgp_identity.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_controlled_shutdown",
+          "label": "Controlled Shutdown Analysis",
+          "detail": "The blackout was terminated via a shutdown command sent over the same channel as the exploit — remotely, from the attacker's side. This was not a defensive response by the grid operators. The attacker chose to stop. This suggests remorse or fear — not state-level discipline.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ronak_s",
+          "rows": [
+            { "key": "Shutdown Origin", "value": "Attacker's C2 channel", "highlight": true },
+            { "key": "Time", "value": "4 hours into attack", "highlight": true },
+            { "key": "Operator Response?", "value": "No — attacker self-terminated", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_code_style",
+          "label": "Code Authorship Analysis",
+          "detail": "Automated stylometry analysis of the exploit code against 12 published SCADA security papers returns a 91.3% match to Ronak S's writing style. Second-highest match is 41%.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ronak_s",
+          "rows": [
+            { "key": "Top Match", "value": "Ronak S — 91.3%", "highlight": true },
+            { "key": "Second Match", "value": "41% — no strong candidate" },
+            { "key": "Method", "value": "Code stylometry analysis" }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_jumpserver",
+          "label": "Jump Server Trace",
+          "detail": "Attack was routed through a custom VPN terminating at IP 45.61.185.22 — a jump server in Singapore. Server was rented using a credit card in Ronak S's name at a past conference hotel.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ronak_s",
+          "rows": [
+            { "key": "Jump Server IP", "value": "45.61.185.22", "highlight": true },
+            { "key": "Location", "value": "Singapore VPS" },
+            { "key": "Registered To", "value": "Credit card — Ronak S (conference)", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "2 Years Prior", "title": "Vulnerability Identified — Ignored", "description": "Devraj M files memo about CVE-GRID-0091. Shelved.", "severity": "medium" },
+    { "time": "4 Months Prior", "title": "Codebase Access Pattern", "description": "Ronak S accesses buffer overflow module 14 times", "severity": "high" },
+    { "time": "3 Months Prior", "title": "Dark Web Negotiation", "description": "NullVector (Ronak S) auctions exploit on dark web forum", "severity": "critical" },
+    { "time": "2 Weeks Prior", "title": "Payment Received", "description": "$280,000 in 3 tranches to Mauritius shell account", "severity": "critical" },
+    { "time": "Attack Night — 10:45 PM", "title": "Exploit Triggered", "description": "Zero-day executed on GridCore SCADA system", "severity": "critical" },
+    { "time": "10:52 PM", "title": "Blackout Begins", "description": "Industrial zone loses power — 6 facilities offline", "severity": "critical" },
+    { "time": "2:47 AM", "title": "Attacker Self-Terminates", "description": "Ronak S sends abort command — panic shutdown", "severity": "critical" },
+    { "time": "4:50 AM", "title": "Power Restored", "description": "Grid operators restore service", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "ronak_s", "minCorrectEvidence": 4 },
+  "correctEvidenceIds": ["chat_exploit_sale", "chat_early_kill", "file_exploit_code", "file_financial", "file_scada_access", "meta_controlled_shutdown", "meta_code_style", "ip_jumpserver"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Ronak S exposed as the zero-day seller who panicked mid-attack.", "label": "CASE CLOSED", "xp": 20 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 6 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Ronak S.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...A blackout. 6 hours. A warning shot — not a killing blow.\nWhoever did this could have gone further. They chose not to.\nThat tells you something. Find out who flinched.",
+    "exploreFeeds": "Exploit code. Financial transfers. Dark web traces.\nThis was a researcher who crossed a line — and then tried to step back.",
+    "viewEvidence": "The code style. The codebase access. The controlled shutdown.\nThis was personal knowledge, not just technical skill.",
+    "markEvidence": "Good. The evidence is forming a portrait.",
+    "decryptionHint": "The forum identity is encoded. Decode it — the PGP key will confirm everything.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

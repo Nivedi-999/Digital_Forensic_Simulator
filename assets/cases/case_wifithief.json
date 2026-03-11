@@ -1,0 +1,210 @@
+{
+  "id": "case_wifithief",
+  "title": "The WiFi Thief",
+  "shortDescription": "Home Network Intrusion",
+  "difficulty": "easy",
+  "theme": "Unauthorized Network Access",
+  "estimatedDuration": "15–20 min",
+  "caseNumber": "1002",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A family noticed their internet was unusually slow for weeks.\n\nA network scan revealed an unknown device had been connected to their home WiFi — downloading large files late at night.\n\nThe device was traced to someone nearby.",
+    "missionText": "Your Mission:\n\n› Identify the unauthorized device\n\n› Trace it to its owner\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "neil_v",
+      "name": "Neil V",
+      "role": "Neighbor",
+      "department": "Flat 4B • Same Building",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "192.168.0.109 — 01:15 AM",
+        "deviceUsage": "NEIL-LAPTOP — nightly 12:00–3:00 AM",
+        "locationTrace": "Within WiFi range — Flat 4B",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Device MAC address registered to a laptop purchased under Neil V's name. Downloads averaged 4GB per night — mostly pirated movies."
+    },
+    {
+      "id": "delivery_guy",
+      "name": "Rohan D",
+      "role": "Delivery Worker",
+      "department": "External — Building Visitor",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.0.201 — 06:30 PM",
+        "deviceUsage": "Android Phone — brief connection",
+        "locationTrace": "Building Lobby",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Connected briefly while making a delivery. Only 2MB data used. No suspicious activity."
+    },
+    {
+      "id": "guest_user",
+      "name": "Preethi A",
+      "role": "Family Friend",
+      "department": "Occasional Visitor",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.0.77 — 04:00 PM",
+        "deviceUsage": "iPhone — weekend visits only",
+        "locationTrace": "Living Room",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Has the WiFi password legitimately. Only visits on weekends. No nighttime activity."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_routerlog",
+          "label": "router_access_log.txt",
+          "detail": "Router log shows device MAC 44:D9:E7:2A:BC:01 connected every night between 12:00 AM and 3:00 AM for 18 consecutive days. Total data consumed: 72GB.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "neil_v",
+          "metadata": { "size": "0.3 MB", "modifier": "Router Firmware", "modifiedAt": "Auto-generated" }
+        },
+        {
+          "id": "file_maclookup",
+          "label": "mac_address_lookup.txt",
+          "detail": "MAC address 44:D9:E7:2A:BC:01 is registered to a Dell Inspiron laptop sold to Neil V, Flat 4B, on 12 March 2024 per retailer records.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "neil_v",
+          "metadata": { "size": "0.1 MB", "modifier": "Retailer DB", "modifiedAt": "12 Mar 2024" }
+        },
+        {
+          "id": "file_bandwidth",
+          "label": "bandwidth_report.pdf",
+          "detail": "ISP bandwidth report shows 4GB average nightly usage between 12–3 AM. Daytime usage by family accounts for only 0.8GB/day — clearly two separate users.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": null,
+          "metadata": { "size": "0.5 MB", "modifier": "ISP System", "modifiedAt": "Monthly" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_devicename",
+        "label": "dhcp_hostname_log.txt",
+        "detail": "DHCP server assigned hostname 'NEIL-LAPTOP' to MAC 44:D9:E7:2A:BC:01. Device name directly identifies the owner.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "neil_v",
+        "unlockedByMinigame": "network_decode",
+        "metadata": { "size": "0.1 MB", "modifier": "Router DHCP", "modifiedAt": "Auto-generated" }
+      },
+      "minigame": {
+        "id": "network_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Device Hostname",
+        "cipherText": "Qhlo-Odswrs",
+        "hint": "Caesar shift -3. What is the device's hostname?",
+        "solution": "Neil-Laptop",
+        "maxHints": 3,
+        "hints": [
+          "It is the name of a person followed by a device type.",
+          "Shift each letter 3 positions backward.",
+          "Q→N, h→e, l→i..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_devicename",
+          "message": "dhcp_hostname_log.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_signal",
+          "label": "Signal Strength Log",
+          "detail": "The unauthorized device consistently showed -48 dBm signal strength — indicating it was within 10 meters of the router. Flat 4B is directly adjacent.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "neil_v",
+          "rows": [
+            { "key": "Signal Strength", "value": "-48 dBm (very close)", "highlight": true },
+            { "key": "Estimated Distance", "value": "Under 10 meters" },
+            { "key": "Nearest Unit", "value": "Flat 4B", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_timing",
+          "label": "Connection Timing",
+          "detail": "Device connected exactly at midnight every night — suggesting an automated scheduled task, not casual browsing.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": null,
+          "rows": [
+            { "key": "First Connection", "value": "12:00 AM (±2 min)" },
+            { "key": "Pattern", "value": "Nightly, 18 consecutive days" },
+            { "key": "Disconnect Time", "value": "~3:00 AM" }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_unknown",
+          "label": "Unknown Device IP",
+          "detail": "IP 192.168.0.109 was dynamically assigned to the unauthorized device. All large download traffic routes through this IP.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "neil_v",
+          "rows": [
+            { "key": "Assigned IP", "value": "192.168.0.109", "highlight": true },
+            { "key": "MAC Address", "value": "44:D9:E7:2A:BC:01", "highlight": true },
+            { "key": "First Seen", "value": "18 days ago" }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "Day 1 — 12:00 AM", "title": "First Unauthorized Connection", "description": "Unknown device joins home WiFi", "severity": "medium" },
+    { "time": "Nightly", "title": "Repeated Access", "description": "Device connects every night, 12–3 AM", "severity": "high" },
+    { "time": "Day 18", "title": "Family Notices Slowdown", "description": "Internet speed drops significantly during evening", "severity": "medium" },
+    { "time": "Day 18 — Afternoon", "title": "Network Scan Run", "description": "Family runs scan, finds unknown device", "severity": "high" },
+    { "time": "Day 18 — Evening", "title": "Case Opened", "description": "Incident reported for investigation", "severity": "critical" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "neil_v", "minCorrectEvidence": 3 },
+  "correctEvidenceIds": ["file_routerlog", "file_maclookup", "meta_signal", "ip_unknown", "file_devicename"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_3", "title": "Case Solved!", "subtitle": "Neil V identified as the WiFi thief.", "label": "CASE CLOSED", "xp": 8 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_3", "title": "Insufficient Evidence", "subtitle": "Correct suspect but thin evidence.", "label": "PARTIAL", "xp": 2 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Neil V.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...Someone was stealing bandwidth. Every night. For 18 days.\nThey thought no one was watching.\nProve them wrong.",
+    "exploreFeeds": "Router logs don't lie.\nMAC addresses, signal strength, hostnames.\nThe device left a full trail.",
+    "viewEvidence": "Every device has a fingerprint.\nThis one leads somewhere very close.",
+    "markEvidence": "Good find. Keep building the chain.",
+    "decryptionHint": "The hostname is encoded.\nDecode it — it might have a name in it.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

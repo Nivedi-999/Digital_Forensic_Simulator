@@ -1,0 +1,243 @@
+{
+  "id": "case_attendancehack",
+  "title": "Silent Attendance Hack",
+  "shortDescription": "College Attendance Manipulation",
+  "difficulty": "medium",
+  "theme": "System Tampering",
+  "estimatedDuration": "30–40 min",
+  "caseNumber": "2002",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "Twelve students at a Mumbai engineering college suddenly show 100% attendance — despite multiple verified absences.\n\nThe college attendance portal was accessed and records altered over three nights.\n\nAn inside job is suspected.",
+    "missionText": "Your Mission:\n\n› Identify who altered the attendance records\n\n› Find which credentials were used\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "tanmay_d",
+      "name": "Tanmay D",
+      "role": "Student — Computer Science",
+      "department": "Engineering College — Year 3",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.77 — 1:00–2:30 AM",
+        "deviceUsage": "TANMAY-LAPTOP — 3 consecutive nights",
+        "locationTrace": "College Hostel WiFi — Block C",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "CS student with SQL knowledge. Accessed the attendance database directly using stolen faculty credentials. Charged 500 rupees per student for the service."
+    },
+    {
+      "id": "prof_mehta",
+      "name": "Prof. Mehta",
+      "role": "Faculty — Computer Science",
+      "department": "Engineering College — CS Dept",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.5 — 9:00 AM–5:00 PM",
+        "deviceUsage": "Faculty Terminal — daytime only",
+        "locationTrace": "Faculty Room, CS Block",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Credentials were stolen from Prof. Mehta's unattended workstation. Professor had no knowledge of the breach."
+    },
+    {
+      "id": "admin_staff",
+      "name": "Rekha P",
+      "role": "Exam Cell Administrator",
+      "department": "Engineering College — Admin",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.3 — 10:00 AM–4:00 PM",
+        "deviceUsage": "Admin Terminal — business hours",
+        "locationTrace": "Admin Office",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Has portal access but no motive. Activity confined to business hours. No nighttime logins from her credentials."
+    },
+    {
+      "id": "rohan_s",
+      "name": "Rohan S",
+      "role": "Student — Mechanical Engineering",
+      "department": "Engineering College — Year 3",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.144 — 11:00 PM",
+        "deviceUsage": "Personal Phone — social media only",
+        "locationTrace": "College Hostel — Block A",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Was one of the 12 beneficiaries — paid Tanmay for the service. Did not perform the hack himself."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_offer",
+          "label": "Need attendance fixed? ₹500 per subject. DM me.",
+          "sender": "Tanmay D",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Posted in a college WhatsApp group 4 days before the breach. Direct solicitation for the illegal service.",
+          "pointsToSuspect": "tanmay_d"
+        },
+        {
+          "id": "chat_confirm",
+          "label": "Done bro. Check portal tomorrow morning.",
+          "sender": "Tanmay D",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Sent to 12 different students over 3 nights after each batch of changes was made.",
+          "pointsToSuspect": "tanmay_d"
+        },
+        {
+          "id": "chat_payment",
+          "label": "Sending ₹500 now. Change my attendance for Networks subject.",
+          "sender": "Rohan S",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Rohan S was a customer — not the perpetrator. Shows demand existed but does not link to the actual breach.",
+          "pointsToSuspect": null
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_dblog",
+          "label": "attendance_db_access_log.txt",
+          "detail": "Database access log shows Prof. Mehta's credentials used at 1:14 AM, 1:22 AM, and 2:07 AM across 3 nights. Professor was asleep — credentials stolen.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "tanmay_d",
+          "metadata": { "size": "0.4 MB", "modifier": "DB System", "modifiedAt": "Auto-generated" }
+        },
+        {
+          "id": "file_sqlqueries",
+          "label": "executed_queries.sql",
+          "detail": "36 UPDATE queries executed on student attendance table. All follow the same pattern: UPDATE attendance SET present=1 WHERE student_id=XXXX. Written with beginner-level SQL — consistent with a CS student, not a professional.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "tanmay_d",
+          "metadata": { "size": "0.1 MB", "modifier": "DB System", "modifiedAt": "Auto-generated" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_hostelwifi",
+        "label": "hostel_wifi_log.txt",
+        "detail": "Hostel WiFi log shows device TANMAY-LAPTOP connected from Block C at exactly the same times as the database intrusions. MAC address confirmed to Tanmay D's laptop.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "tanmay_d",
+        "unlockedByMinigame": "hostel_decode",
+        "metadata": { "size": "0.2 MB", "modifier": "Hostel Network", "modifiedAt": "Auto-generated" }
+      },
+      "minigame": {
+        "id": "hostel_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Hostel Network Log",
+        "cipherText": "Wdqpdb-G",
+        "hint": "Caesar shift -3. Whose device was on the hostel network?",
+        "solution": "Tanmay-D",
+        "maxHints": 3,
+        "hints": [
+          "It is a student's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "W→T, d→a, q→n..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_hostelwifi",
+          "message": "hostel_wifi_log.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_credentials",
+          "label": "Stolen Credential Source",
+          "detail": "Prof. Mehta's credentials were captured via a keylogger installed on the faculty room computer 6 days before the breach. Keylogger file matches software found on Tanmay D's USB drive.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "tanmay_d",
+          "rows": [
+            { "key": "Credentials Used", "value": "Prof. Mehta (stolen)", "highlight": true },
+            { "key": "Capture Method", "value": "Keylogger on faculty PC", "highlight": true },
+            { "key": "Keylogger Match", "value": "Found on Tanmay D's USB", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_hostel",
+          "label": "Intrusion Source IP",
+          "detail": "IP 10.0.1.77 originates from the college hostel network — Block C, Room 312. That room is assigned to Tanmay D.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "tanmay_d",
+          "rows": [
+            { "key": "IP Address", "value": "10.0.1.77", "highlight": true },
+            { "key": "Network", "value": "College Hostel — Block C" },
+            { "key": "Room Assignment", "value": "Room 312 — Tanmay D", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "6 Days Prior", "title": "Keylogger Installed", "description": "Keylogger placed on Prof. Mehta's faculty PC", "severity": "high" },
+    { "time": "4 Days Prior", "title": "Service Advertised", "description": "Tanmay posts offer in college WhatsApp group", "severity": "medium" },
+    { "time": "Night 1 — 1:14 AM", "title": "First DB Intrusion", "description": "12 attendance records altered — batch 1", "severity": "critical" },
+    { "time": "Night 2 — 1:22 AM", "title": "Second Intrusion", "description": "14 more records altered", "severity": "critical" },
+    { "time": "Night 3 — 2:07 AM", "title": "Third Intrusion", "description": "Final 10 records altered — operation complete", "severity": "critical" },
+    { "time": "Morning After", "title": "Students Verify Changes", "description": "12 students confirm their attendance is now 100%", "severity": "medium" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "tanmay_d", "minCorrectEvidence": 3 },
+  "correctEvidenceIds": ["chat_offer", "chat_confirm", "file_dblog", "file_sqlqueries", "meta_credentials", "ip_hostel"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_3", "title": "Case Solved!", "subtitle": "Tanmay D exposed as the attendance hacker.", "label": "CASE CLOSED", "xp": 10 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_3", "title": "Insufficient Evidence", "subtitle": "Correct suspect but thin evidence.", "label": "PARTIAL", "xp": 3 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Tanmay D.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...Twelve students. Perfect attendance. All lies.\nSomebody sold shortcuts into the system.\nFind who opened that door.",
+    "exploreFeeds": "Database logs. SQL queries. Hostel network traces.\nThe breach happened at night. So did the money.",
+    "viewEvidence": "Stolen credentials. Beginner SQL. Hostel IP.\nThis was an inside job by someone who knew just enough.",
+    "markEvidence": "Good. Keep building the chain.",
+    "decryptionHint": "The hostel network log has the device name encoded.\nDecode it.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

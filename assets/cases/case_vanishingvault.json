@@ -1,0 +1,266 @@
+{
+  "id": "case_vanishingvault",
+  "title": "The Vanishing Vault",
+  "shortDescription": "Encrypted File Destruction",
+  "difficulty": "advanced",
+  "theme": "Ransomware & Corporate Sabotage",
+  "estimatedDuration": "70–90 min",
+  "caseNumber": "4001",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A pharmaceutical company's entire R&D vault — 11 years of proprietary drug research — was encrypted and deleted overnight.\n\nA ransom note demanded $2 million. But the encryption key was never sent, even after a partial payment was made.\n\nThis wasn't ransomware for money. This was destruction by design.\n\nAnd it came from inside the network.",
+    "missionText": "Your Mission:\n\n› Trace the ransomware deployment\n\n› Identify who planted the wiper disguised as ransomware\n\n› Look for motive beyond the money\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "ishaan_m",
+      "name": "Ishaan M",
+      "role": "Senior Security Researcher",
+      "department": "PharmaCore R&D — Cybersecurity Audit",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "172.31.10.88 — 2:00–4:15 AM",
+        "deviceUsage": "ISHAAN-WS — R&D Lab Network",
+        "locationTrace": "PharmaCore R&D Building — Server Room Access",
+        "vpnCheck": "Internal network — no VPN"
+      },
+      "profileNotes": "Conducted the last security audit of the vault system. Had full knowledge of the backup architecture. Was secretly employed by a rival pharma company — salary deposits traced to a shell account. The 'ransom' was theater; the goal was erasure."
+    },
+    {
+      "id": "ransom_actor",
+      "name": "Unknown Ransomware Group — IRON LOCK",
+      "role": "External Threat Actor",
+      "department": "External — Unverified",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Tor — multiple exit nodes",
+        "deviceUsage": "Unknown — distributed",
+        "locationTrace": "Untraced",
+        "vpnCheck": "Tor detected"
+      },
+      "profileNotes": "IRON LOCK claimed responsibility. However their known ransomware signature includes a working decryption portal — none was provided here. The wiper code does not match any known IRON LOCK sample in threat intel databases."
+    },
+    {
+      "id": "cfo_pharma",
+      "name": "Sneha P",
+      "role": "CFO",
+      "department": "PharmaCore — Finance",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.8.5 — Business hours only",
+        "deviceUsage": "Executive Terminal — FIN-EXEC-01",
+        "locationTrace": "PharmaCore HQ — Executive Floor",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Authorized partial ransom payment of $200K — a decision later scrutinized. No technical access to R&D vault. No nighttime activity."
+    },
+    {
+      "id": "sysadmin_vault",
+      "name": "Parth V",
+      "role": "Infrastructure Administrator",
+      "department": "PharmaCore — IT Infrastructure",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "172.31.10.10 — Standard hours",
+        "deviceUsage": "INFRA-ADMIN-01 — business hours",
+        "locationTrace": "IT Department",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Manages vault infrastructure but access logs show no after-hours activity. Ishaan M used a vulnerability in the audit account — not Parth's credentials."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_ransom_note",
+          "label": "Your files are encrypted. Send $2M to wallet 3FZbgi29... within 48hrs.",
+          "sender": "IRON LOCK (Ransom Note)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The ransom note was dropped in every encrypted directory. However threat intel shows IRON LOCK always provides a Tor-based decryption portal — no such portal exists here. The note is a decoy.",
+          "pointsToSuspect": null
+        },
+        {
+          "id": "chat_rival_contact",
+          "label": "Delivery confirmed. The vault is dark. Expect your final payment.",
+          "sender": "Ishaan M (encrypted app)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Recovered from an encrypted messaging app on Ishaan M's personal phone — seized during investigation. Sent at 4:22 AM — 7 minutes after the wiper completed. Confirms communication with an external party about the vault destruction.",
+          "pointsToSuspect": "ishaan_m"
+        },
+        {
+          "id": "chat_audit_access",
+          "label": "Ishaan — I'm giving you full read/write on vault nodes for the security audit. Don't abuse it.",
+          "sender": "Parth V",
+          "isKeyEvidence": true,
+          "isSuspect": false,
+          "detail": "Internal Slack message from 3 weeks before the attack. Parth gave Ishaan elevated vault access for the audit — access Ishaan never relinquished and later exploited.",
+          "pointsToSuspect": "ishaan_m"
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_wiper_code",
+          "label": "wiper_analysis_report.pdf",
+          "detail": "Malware analysis: the payload encrypted files with AES-256 but discarded the key locally and never transmitted it to a C2 server. True ransomware always retains the key for negotiation. This was a wiper. The ransomware wrapper was cosmetic.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ishaan_m",
+          "metadata": { "size": "3.4 MB", "modifier": "Malware Analysis Lab", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_deployment_log",
+          "label": "payload_deployment_log.txt",
+          "detail": "The wiper was deployed at 2:04 AM from IP 172.31.10.88 — Ishaan M's workstation — using his audit account credentials. Lateral movement across 44 vault nodes in 2 hours 11 minutes.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ishaan_m",
+          "metadata": { "size": "1.1 MB", "modifier": "SIEM System", "modifiedAt": "Auto-generated" }
+        },
+        {
+          "id": "file_salary_trace",
+          "label": "financial_investigation_report.pdf",
+          "detail": "Ishaan M received 6 payments of ₹4.5 Lakh each over the past year from a shell company 'GreenPath Innovations' — traced to PharmaCore's primary competitor GenNova Ltd. A clear double employment arrangement.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ishaan_m",
+          "metadata": { "size": "0.9 MB", "modifier": "Financial Forensics", "modifiedAt": "Post-incident" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_backdoor",
+        "label": "audit_backdoor_analysis.txt",
+        "detail": "During the security audit, Ishaan M installed a persistent backdoor on the vault controller — giving him persistent access outside of his audit credentials. The backdoor was specifically designed to survive a standard credential reset, confirming premeditation.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ishaan_m",
+        "unlockedByMinigame": "vault_decode",
+        "metadata": { "size": "0.6 MB", "modifier": "Threat Hunting Team", "modifiedAt": "Post-incident" }
+      },
+      "minigame": {
+        "id": "vault_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Backdoor Author Signature",
+        "cipherText": "Lvkddq-P",
+        "hint": "Caesar shift -3. Who signed the backdoor?",
+        "solution": "Ishaan-M",
+        "maxHints": 3,
+        "hints": [
+          "It is a researcher's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "L→I, v→s, k→h..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_backdoor",
+          "message": "audit_backdoor_analysis.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_backup_deletion",
+          "label": "Backup Deletion Sequence",
+          "detail": "All 3 backup tiers — local, NAS, and cloud — were wiped in sequence before the encryption ran. The attacker knew the exact backup architecture. Only the security auditor had mapped all three tiers.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ishaan_m",
+          "rows": [
+            { "key": "Local Backup", "value": "Wiped at 2:01 AM", "highlight": true },
+            { "key": "NAS Backup", "value": "Wiped at 2:03 AM", "highlight": true },
+            { "key": "Cloud Backup", "value": "Wiped at 2:04 AM", "highlight": true },
+            { "key": "Who Mapped All Three?", "value": "Security Auditor — Ishaan M", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_c2_silence",
+          "label": "C2 Communication Absent",
+          "detail": "Network logs show zero outbound C2 communication during and after the attack — the encryption key was never sent anywhere. Real ransomware requires key exchange with the operator's server. This confirms the payload was always a wiper.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ishaan_m",
+          "rows": [
+            { "key": "Expected C2 Traffic", "value": "Key exchange with server" },
+            { "key": "Actual C2 Traffic", "value": "None detected", "highlight": true },
+            { "key": "Conclusion", "value": "Wiper — not true ransomware", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_internal_ws",
+          "label": "Wiper Origin — Internal Workstation",
+          "detail": "IP 172.31.10.88 is the internal address of Ishaan M's assigned workstation in the R&D building. The wiper was deployed directly from this machine — no external entry point used.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ishaan_m",
+          "rows": [
+            { "key": "Origin IP", "value": "172.31.10.88", "highlight": true },
+            { "key": "Workstation", "value": "ISHAAN-WS — R&D Building", "highlight": true },
+            { "key": "External Entry?", "value": "None — purely internal", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "3 Weeks Prior", "title": "Audit Access Granted", "description": "Ishaan M given full vault read/write for security audit", "severity": "low" },
+    { "time": "During Audit", "title": "Backdoor Installed", "description": "Persistent backdoor placed on vault controller", "severity": "critical" },
+    { "time": "2:01 AM", "title": "Backup Tier 1 Wiped", "description": "Local backup deleted", "severity": "critical" },
+    { "time": "2:03 AM", "title": "Backup Tier 2 Wiped", "description": "NAS backup deleted", "severity": "critical" },
+    { "time": "2:04 AM", "title": "Wiper Deployed", "description": "AES-256 wiper launched across 44 vault nodes", "severity": "critical" },
+    { "time": "2:04–4:15 AM", "title": "Vault Encrypted & Destroyed", "description": "11 years of R&D data encrypted — key discarded", "severity": "critical" },
+    { "time": "4:22 AM", "title": "Completion Message Sent", "description": "Ishaan M sends 'Delivery confirmed' to unknown contact", "severity": "critical" },
+    { "time": "Morning", "title": "Ransom Note Discovered", "description": "Staff find encrypted files and ransom demand", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "ishaan_m", "minCorrectEvidence": 4 },
+  "correctEvidenceIds": ["chat_rival_contact", "chat_audit_access", "file_wiper_code", "file_deployment_log", "file_salary_trace", "meta_backup_deletion", "meta_c2_silence", "ip_internal_ws"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Ishaan M exposed as a corporate spy who destroyed the vault.", "label": "CASE CLOSED", "xp": 20 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 6 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Ishaan M.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...11 years of research. Gone in 2 hours.\nThe ransom note was a lie — there was never a key.\nThis was erasure. Find who was paid to erase it.",
+    "exploreFeeds": "Malware analysis. Deployment logs. Financial traces.\nThe attacker was on the inside and on someone else's payroll.",
+    "viewEvidence": "No C2 traffic. No key exchange. No decryption portal.\nThis was never ransomware. It was always a wiper.",
+    "markEvidence": "Good. The deception is unraveling layer by layer.",
+    "decryptionHint": "The backdoor has a signature encoded inside it.\nDecode the author.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}
