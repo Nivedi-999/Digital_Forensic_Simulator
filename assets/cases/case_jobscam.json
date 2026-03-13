@@ -1,0 +1,240 @@
+{
+  "id": "case_jobscam",
+  "title": "Dream Job Scam",
+  "shortDescription": "Fake Recruitment Fraud",
+  "difficulty": "easy",
+  "theme": "Online Job Fraud & Identity Theft",
+  "estimatedDuration": "15–20 min",
+  "caseNumber": "1005",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A fresh graduate paid ₹25,000 as a 'security deposit' for a data entry job at a company called DataPro Solutions.\n\nThe company doesn't exist. The phone number is dead. The money is gone.\n\nThe job posting was on a fake careers website that mimicked a real firm. Someone ran this scam across at least 14 victims in one month.",
+    "missionText": "Your Mission:\n\n› Trace the fake job posting to its creator\n\n› Identify the bank account used to collect deposits\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "ramesh_p",
+      "name": "Ramesh P",
+      "role": "Unemployed — Prior Fraud Record",
+      "department": "External — No Fixed Employer",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "49.36.44.201 — website registration traced",
+        "deviceUsage": "RAMESH-PHONE — Android 12",
+        "locationTrace": "Pune — Kothrud Area",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Registered the fake careers website using his personal email. The UPI collection account is linked to his Aadhaar. Has a prior fraud case from 2022 involving a similar job scam."
+    },
+    {
+      "id": "agency_hr",
+      "name": "Sunita M",
+      "role": "HR at Real DataPro Solutions",
+      "department": "DataPro Solutions — Legitimate Company",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "103.44.22.10 — company IP",
+        "deviceUsage": "Office terminal — business hours",
+        "locationTrace": "DataPro Office, Bengaluru",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Victim of brand impersonation — her company's name was cloned. Filed a complaint immediately. Not involved in the fraud."
+    },
+    {
+      "id": "job_portal_admin",
+      "name": "Vikash T",
+      "role": "Job Portal Moderator",
+      "department": "QuickHire Portal — Admin",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "115.99.12.44 — portal admin IP",
+        "deviceUsage": "Admin dashboard — business hours",
+        "locationTrace": "QuickHire Office, Mumbai",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Approved the job listing without verifying the company. Negligent but not complicit. The fake site bypassed the portal's domain check."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_offer",
+          "label": "Congratulations! You are selected for Data Entry Executive. Pay ₹25,000 security deposit to confirm your slot.",
+          "sender": "Fake HR — DataPro Solutions",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Message sent from +91-98XXXXXXXX — a prepaid SIM registered to a false identity. Sent to 14 different victims using the same script. The security deposit demand is the fraud trigger.",
+          "pointsToSuspect": "ramesh_p"
+        },
+        {
+          "id": "chat_victim",
+          "label": "I paid the deposit. When do I get the offer letter?",
+          "sender": "Victim (graduate applicant)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Standard victim response. After payment, the fake HR number went silent. Victim filed a complaint 3 days later when offer letter never arrived.",
+          "pointsToSuspect": null
+        },
+        {
+          "id": "chat_upi_confirm",
+          "label": "Payment received. Your offer letter will be sent in 48 hours.",
+          "sender": "Fake HR — DataPro Solutions",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Sent immediately after the UPI transfer completed — automated confirmation script. The 48-hour delay was designed to give the scammer time to withdraw cash before the victim raised an alarm.",
+          "pointsToSuspect": "ramesh_p"
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_domain_reg",
+          "label": "fake_site_registration.txt",
+          "detail": "Domain datapro-careers.in registered 6 weeks before the scam. Registrant email: rameshpune44@gmail.com. IP used for registration: 49.36.44.201 — geolocates to Pune, Kothrud.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ramesh_p",
+          "metadata": { "size": "0.1 MB", "modifier": "WHOIS Registry", "modifiedAt": "6 weeks prior" }
+        },
+        {
+          "id": "file_upi_trace",
+          "label": "upi_account_trace.pdf",
+          "detail": "UPI ID datapro.hr@upi traced to a savings account opened under Ramesh P's Aadhaar number. ₹3.5 lakh received across 14 transactions in one month — all immediately withdrawn as cash.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ramesh_p",
+          "metadata": { "size": "0.4 MB", "modifier": "Bank Fraud Cell", "modifiedAt": "Investigation" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_prior_case",
+        "label": "prior_fraud_fir.pdf",
+        "detail": "FIR from 2022 against Ramesh P for an identical job scam in Nashik — same MO: fake company name, prepaid SIM, UPI deposit collection. Case settled with fine but no jail time. Pattern confirmed.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ramesh_p",
+        "unlockedByMinigame": "name_decode",
+        "metadata": { "size": "0.6 MB", "modifier": "Police Records", "modifiedAt": "2022" }
+      },
+      "minigame": {
+        "id": "name_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Registrant Email Username",
+        "cipherText": "Udphvk",
+        "hint": "Caesar shift -3. What is the first name in the registration email?",
+        "solution": "Ramesh",
+        "maxHints": 3,
+        "hints": [
+          "It is a common Indian first name.",
+          "Shift each letter 3 positions backward.",
+          "U→R, d→a, p→m..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_prior_case",
+          "message": "prior_fraud_fir.pdf is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_victims",
+          "label": "Victim Pattern Analysis",
+          "detail": "All 14 victims responded to the same job listing on QuickHire portal. All paid between ₹20,000–₹30,000. All contacted within a 30-day window. Suggests one automated campaign with a single operator.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": null,
+          "rows": [
+            { "key": "Total Victims", "value": "14" },
+            { "key": "Amount Range", "value": "₹20,000–₹30,000" },
+            { "key": "Campaign Duration", "value": "30 days" }
+          ]
+        },
+        {
+          "id": "meta_site_clone",
+          "label": "Website Clone Analysis",
+          "detail": "datapro-careers.in used a cloned template of the real DataPro Solutions site with the logo, colour scheme, and address copied. Only the contact number and bank details were changed. Built using a free website builder — no coding skill needed.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ramesh_p",
+          "rows": [
+            { "key": "Cloned From", "value": "dataprosolutions.com (real)", "highlight": true },
+            { "key": "Changes Made", "value": "Phone, UPI, email only", "highlight": true },
+            { "key": "Builder Used", "value": "Wix — free plan" }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_registration",
+          "label": "Domain Registration IP",
+          "detail": "IP 49.36.44.201 used to register both the fake domain and the Wix account that hosts the cloned site. Geolocates to a residential address in Kothrud, Pune — matching Ramesh P's known address.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ramesh_p",
+          "rows": [
+            { "key": "IP Address", "value": "49.36.44.201", "highlight": true },
+            { "key": "Geolocation", "value": "Kothrud, Pune", "highlight": true },
+            { "key": "Used For", "value": "Domain + Wix account registration", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "6 Weeks Prior", "title": "Fake Domain Registered", "description": "datapro-careers.in created by Ramesh P", "severity": "high" },
+    { "time": "5 Weeks Prior", "title": "Fake Site Goes Live", "description": "Cloned DataPro website published on Wix", "severity": "medium" },
+    { "time": "4 Weeks Prior", "title": "Job Listing Posted", "description": "Fake Data Entry role posted on QuickHire portal", "severity": "medium" },
+    { "time": "Over 30 Days", "title": "14 Victims Targeted", "description": "₹3.5 lakh collected via UPI across 14 payments", "severity": "critical" },
+    { "time": "Day 30", "title": "Victim Files Complaint", "description": "Graduate reports scam to cyber cell after no offer letter", "severity": "high" },
+    { "time": "Investigation Day 1", "title": "Domain Trace Begins", "description": "WHOIS lookup links domain to rameshpune44@gmail.com", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "ramesh_p", "minCorrectEvidence": 3 },
+  "correctEvidenceIds": ["chat_offer", "chat_upi_confirm", "file_domain_reg", "file_upi_trace", "meta_site_clone", "ip_registration", "file_prior_case"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_3", "title": "Case Solved!", "subtitle": "Ramesh P exposed as the job scam operator.", "label": "CASE CLOSED", "xp": 8 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_3", "title": "Insufficient Evidence", "subtitle": "Correct suspect but thin evidence.", "label": "PARTIAL", "xp": 2 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Ramesh P.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...A dream job that never existed.\n14 people paid. None got hired.\nFind who built the lie.",
+    "exploreFeeds": "Domain records. UPI traces. Cloned websites.\nThis scam was lazy — they left their real email in the WHOIS.",
+    "viewEvidence": "Same script. Same UPI. Same 48-hour delay.\nOne person ran all of this.",
+    "markEvidence": "Good. Keep building the chain.",
+    "decryptionHint": "The registration email has a name in it.\nDecode the first 6 characters.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

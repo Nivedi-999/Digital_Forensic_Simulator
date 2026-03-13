@@ -1,0 +1,278 @@
+{
+  "id": "case_doubleagent",
+  "title": "Double Agent",
+  "shortDescription": "Simultaneous Insider Threat on Two Competing Firms",
+  "difficulty": "advanced",
+  "theme": "Dual Espionage & Coordinated Insider Attack",
+  "estimatedDuration": "80–100 min",
+  "caseNumber": "4005",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "Two rival fintech firms — PayAxis and ClearVault — both reported simultaneous data breaches on the same night.\n\nPayAxis lost its fraud detection model weights. ClearVault lost its transaction risk scoring engine.\n\nWhen investigators compared the breach signatures, something impossible emerged: both attacks were executed with the same tools, same timing pattern, and routed through the same intermediate server.\n\nThe perpetrator had active employment at both companies — simultaneously.",
+    "missionText": "Your Mission:\n\n› Establish that both breaches share a single operator\n\n› Identify the employee working at both firms under different identities\n\n› Understand what data was taken and where it went\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "ananya_v",
+      "name": "Ananya V",
+      "role": "Senior ML Engineer — PayAxis / 'Anya Verma' — ClearVault",
+      "department": "PayAxis (primary) + ClearVault (moonlighting under alias)",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "45.77.190.22 — intermediate relay server",
+        "deviceUsage": "Two laptops — PAYAXIS-ML-03 and CLEAR-ENG-07",
+        "locationTrace": "Mumbai — same residential IP for both breach sessions",
+        "vpnCheck": "Different VPNs used per company — both traced to same physical location"
+      },
+      "profileNotes": "Employed at PayAxis as Ananya V (ML Engineer) and simultaneously at ClearVault as 'Anya Verma' (Data Scientist) — same person, different PAN card (one forged). Exfiltrated both firms' proprietary ML models on the same night, routing everything through a shared relay server she controlled. Sold both datasets to a Singapore-based hedge fund for $1.1 million total."
+    },
+    {
+      "id": "hr_payaxis",
+      "name": "Sajan T",
+      "role": "HR Head — PayAxis",
+      "department": "PayAxis — Human Resources",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.5 — internal HR network",
+        "deviceUsage": "HR-WS-01 — business hours only",
+        "locationTrace": "PayAxis HQ, Mumbai",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Failed to run a cross-company employment check during onboarding. The forged PAN used to join PayAxis went unverified. Negligent but not complicit."
+    },
+    {
+      "id": "clearva_engineer",
+      "name": "Rahil D",
+      "role": "Senior Data Scientist — ClearVault",
+      "department": "ClearVault — ML Team",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.5.22 — ClearVault internal",
+        "deviceUsage": "CLEAR-ENG-04 — monitored",
+        "locationTrace": "ClearVault Office, Pune",
+        "vpnCheck": "Corporate VPN only"
+      },
+      "profileNotes": "Sat adjacent to 'Anya Verma' at ClearVault. No unusual access patterns. Became suspicious of her after she asked unusual questions about model checkpoint file paths."
+    },
+    {
+      "id": "hedge_fund",
+      "name": "Unknown Buyer — Meridian Capital",
+      "role": "Singapore Hedge Fund",
+      "department": "External — Financial",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "External — Singapore-registered entity",
+        "deviceUsage": "Unknown",
+        "locationTrace": "Singapore",
+        "vpnCheck": "Unknown"
+      },
+      "profileNotes": "Received both datasets — is the demand side of the operation. However the technical act of exfiltration was entirely Ananya V's. The buyer is a separate investigation."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_buyer",
+          "label": "Both packages received. Initiating transfer — $550K per dataset as agreed.",
+          "sender": "Meridian Capital (encrypted channel)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Recovered from an encrypted messaging app on a device linked to Ananya V's home IP. Confirms simultaneous delivery of both companies' datasets to a single buyer — one seller, two victims.",
+          "pointsToSuspect": "ananya_v"
+        },
+        {
+          "id": "chat_colleague_tip",
+          "label": "She kept asking me where we store model checkpoints. Said it was for a personal project. Felt weird.",
+          "sender": "Rahil D (ClearVault — internal report)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Rahil D raised a concern to ClearVault's security team 3 days before the breach. The alert was logged but not acted on in time.",
+          "pointsToSuspect": null
+        },
+        {
+          "id": "chat_same_relay",
+          "label": "BOTH breach sessions routed via relay 45.77.190.22. Timestamp delta: 4 minutes.",
+          "sender": "Joint Investigation Team (log analysis)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Cross-company network forensics finding. PayAxis breach started at 2:11 AM, ClearVault breach at 2:15 AM — same relay IP, 4 minutes apart. Statistically impossible coincidence. One operator ran both sessions simultaneously.",
+          "pointsToSuspect": "ananya_v"
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_dual_employment",
+          "label": "dual_employment_verification.pdf",
+          "detail": "Cross-referencing PayAxis and ClearVault employee records: photo comparison, biometric data from onboarding, and mobile number triangulation confirm Ananya V (PayAxis) and Anya Verma (ClearVault) are the same person. The PAN used at ClearVault is forged — digitally altered from her real PAN.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ananya_v",
+          "metadata": { "size": "2.1 MB", "modifier": "Joint HR Investigation", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_exfil_log_payaxis",
+          "label": "payaxis_data_exfil_log.txt",
+          "detail": "PayAxis SIEM: 8.2GB outbound transfer from PAYAXIS-ML-03 at 2:11 AM via HTTPS to relay 45.77.190.22. Machine assigned to Ananya V. Data fingerprint matches fraud detection model checkpoint files.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ananya_v",
+          "metadata": { "size": "1.4 MB", "modifier": "PayAxis SIEM", "modifiedAt": "2:11 AM" }
+        },
+        {
+          "id": "file_exfil_log_clearvault",
+          "label": "clearvault_data_exfil_log.txt",
+          "detail": "ClearVault SIEM: 6.7GB outbound transfer from CLEAR-ENG-07 at 2:15 AM via HTTPS to the same relay 45.77.190.22. Machine assigned to Anya Verma. Data fingerprint matches risk scoring engine model files.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ananya_v",
+          "metadata": { "size": "1.2 MB", "modifier": "ClearVault SIEM", "modifiedAt": "2:15 AM" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_relay_ownership",
+        "label": "relay_server_ownership.txt",
+        "detail": "Relay server 45.77.190.22 is a VPS registered to an email address ananya.work.ops@proton.me — traced via payment records to Ananya V's personal credit card. She owned and operated the relay herself. This was not a commercial VPN — it was a custom exfiltration node she controlled.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ananya_v",
+        "unlockedByMinigame": "relay_decode",
+        "metadata": { "size": "0.5 MB", "modifier": "VPS Provider (subpoena)", "modifiedAt": "Post-incident" }
+      },
+      "minigame": {
+        "id": "relay_decode",
+        "type": "caesar_cipher",
+        "title": "Decode Relay Server Owner",
+        "cipherText": "Dqdqbd-Y",
+        "hint": "Caesar shift -3. Who owned the relay server?",
+        "solution": "Ananya-V",
+        "maxHints": 3,
+        "hints": [
+          "It is the real name behind both identities — followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "D→A, q→n, d→a..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_relay_ownership",
+          "message": "relay_server_ownership.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_same_home_ip",
+          "label": "Shared Residential IP",
+          "detail": "Both PAYAXIS-ML-03 and CLEAR-ENG-07 were VPN-connected during the breach. VPN exit nodes differ — but both VPN accounts were activated from the same residential IP: 122.178.44.90. That IP is registered to Ananya V's home broadband in Bandra, Mumbai.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ananya_v",
+          "rows": [
+            { "key": "PayAxis VPN Origin", "value": "122.178.44.90 (Ananya V's home)", "highlight": true },
+            { "key": "ClearVault VPN Origin", "value": "122.178.44.90 (same)", "highlight": true },
+            { "key": "Registered To", "value": "Ananya V — Bandra, Mumbai", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_tool_signature",
+          "label": "Exfiltration Tool Signature",
+          "detail": "Both breaches used the same custom Python exfiltration script — identical function names, identical chunk size (512KB), identical retry logic. The script is not publicly available. Same author wrote both — or it is literally the same script run twice.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ananya_v",
+          "rows": [
+            { "key": "Script Match", "value": "100% — identical source", "highlight": true },
+            { "key": "Chunk Size", "value": "512KB — custom, not default" },
+            { "key": "Public?", "value": "No — custom-authored", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_timeline_overlap",
+          "label": "Employment Date Overlap",
+          "detail": "Ananya V joined PayAxis 14 months ago. 'Anya Verma' joined ClearVault 11 months ago — 3 months into her PayAxis tenure. Both employment offers accepted on the same day. HR at neither company checked cross-employment clauses.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ananya_v",
+          "rows": [
+            { "key": "PayAxis Join Date", "value": "14 months ago" },
+            { "key": "ClearVault Join Date", "value": "11 months ago (same person)", "highlight": true },
+            { "key": "Cross-Check Done?", "value": "No — neither company verified", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_relay",
+          "label": "Shared Relay Server",
+          "detail": "Both breach data streams passed through 45.77.190.22 before reaching the buyer's endpoint. The relay is a custom VPS — not a commercial service. Owned by Ananya V. Using one relay for both breaches simultaneously is what made the connection detectable.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ananya_v",
+          "rows": [
+            { "key": "Relay IP", "value": "45.77.190.22", "highlight": true },
+            { "key": "Type", "value": "Custom VPS — not commercial VPN" },
+            { "key": "Used By", "value": "Both PayAxis + ClearVault breach sessions", "highlight": true },
+            { "key": "Owner", "value": "Ananya V (payment trace)", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "14 Months Prior", "title": "Joins PayAxis", "description": "Ananya V hired as Senior ML Engineer", "severity": "low" },
+    { "time": "11 Months Prior", "title": "Joins ClearVault as Alias", "description": "'Anya Verma' hired — forged PAN used", "severity": "critical" },
+    { "time": "3 Months Prior", "title": "Buyer Contact Established", "description": "Meridian Capital approaches via encrypted channel", "severity": "high" },
+    { "time": "3 Days Before Breach", "title": "Colleague Raises Flag", "description": "Rahil D reports unusual questions about model checkpoints — not acted on", "severity": "medium" },
+    { "time": "Breach Night — 2:11 AM", "title": "PayAxis Exfiltration", "description": "8.2GB fraud detection model transferred via relay", "severity": "critical" },
+    { "time": "2:15 AM", "title": "ClearVault Exfiltration", "description": "6.7GB risk scoring engine transferred via same relay", "severity": "critical" },
+    { "time": "2:19 AM", "title": "Buyer Confirms Receipt", "description": "$1.1M transfer initiated by Meridian Capital", "severity": "critical" },
+    { "time": "Morning", "title": "Both Companies Raise Alarms", "description": "SIEM alerts fire — joint investigation begins", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "ananya_v", "minCorrectEvidence": 4 },
+  "correctEvidenceIds": ["chat_buyer", "chat_same_relay", "file_dual_employment", "file_exfil_log_payaxis", "file_exfil_log_clearvault", "meta_same_home_ip", "meta_tool_signature", "meta_timeline_overlap", "ip_relay"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Ananya V exposed as the double agent behind both breaches.", "label": "CASE CLOSED", "xp": 20 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 6 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Ananya V.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...Two companies. Same night. Same relay. Same script.\nThis wasn't two attackers. This was one person — in two places at once.\nFind the person behind both names.",
+    "exploreFeeds": "Employment records. Dual SIEM logs. Relay traces. Script signatures.\nThe impossibility is the clue. One relay used for two simultaneous breaches.",
+    "viewEvidence": "Same home IP. Same exfil script. Same relay. 4 minutes apart.\nThis wasn't coordination between two people. This was one.",
+    "markEvidence": "Good. The double identity is unraveling.",
+    "decryptionHint": "The relay server is registered to a name.\nDecode who owns it.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

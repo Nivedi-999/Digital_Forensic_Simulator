@@ -1,8 +1,4 @@
 // lib/services/case_repository.dart
-//
-// Loads CaseFile objects from bundled JSON assets.
-// Add new cases by dropping a JSON file in assets/cases/
-// and registering its path in _casePaths below.
 
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -12,28 +8,54 @@ class CaseRepository {
   CaseRepository._();
   static final CaseRepository instance = CaseRepository._();
 
-  // ── Register all case asset paths here ──────────────────
   static const List<String> _casePaths = [
+    // ── EASY ──────────────────────────────────────────────
+    'assets/cases/case_passwordheist.json',
+    'assets/cases/case_wifithief.json',
+    'assets/cases/case_fakereview.json',
     'assets/cases/case_ghosttrace.json',
-    // 'assets/cases/case_deaddropsignal.json',
-    // 'assets/cases/case_echoesoftomorrow.json',
+    'assets/cases/case_jobscam.json',
+
+    // ── MEDIUM ────────────────────────────────────────────
+    'assets/cases/case_phantomtransaction.json',
+    'assets/cases/case_attendancehack.json',
+    'assets/cases/case_socialengineer.json',
+    'assets/cases/case_lastlogin.json',
+    'assets/cases/case_clouddrain.json',
+
+    // ── HARD ──────────────────────────────────────────────
+    'assets/cases/case_deaddrop.json',
+    'assets/cases/case_echoesoftomorrow.json',
+    'assets/cases/case_echowithoutavoice.json',
+    'assets/cases/case_darkproxyattack.json',
+    'assets/cases/case_poisonedpatch.json',
+
+    // ── ADVANCED ──────────────────────────────────────────
+    'assets/cases/case_vanishingvault.json',
+    'assets/cases/case_mirrorprotocol.json',
+    'assets/cases/case_zeropointentry.json',
+    'assets/cases/case_ghostnetwork.json',
+    'assets/cases/case_doubleagent.json',
   ];
 
-  // ── In-memory cache ──────────────────────────────────────
+  // Key: filename stem (e.g. "case_ghosttrace"), Value: loaded CaseFile
   final Map<String, CaseFile> _cache = {};
   bool _loaded = false;
 
-  /// Load all registered cases from assets. Safe to call multiple times.
+  static String _keyFromPath(String path) =>
+      path.split('/').last.replaceAll('.json', '');
+
   Future<void> loadAll() async {
     if (_loaded) return;
     for (final path in _casePaths) {
       try {
         final raw = await rootBundle.loadString(path);
-        final json = jsonDecode(raw) as Map<String, dynamic>;
-        final caseFile = CaseFile.fromJson(json);
-        _cache[caseFile.id] = caseFile;
+        final jsonMap = jsonDecode(raw) as Map<String, dynamic>;
+        final caseFile = CaseFile.fromJson(jsonMap);
+        // Store by filename stem — not by caseFile.id — so the `all`
+        // getter can always find it regardless of what id is in the JSON.
+        _cache[_keyFromPath(path)] = caseFile;
       } catch (e) {
-        // Log and skip malformed files so a bad JSON never crashes the app
         assert(() {
           // ignore: avoid_print
           print('[CaseRepository] Failed to load $path: $e');
@@ -46,18 +68,17 @@ class CaseRepository {
 
   /// All loaded cases in registration order.
   List<CaseFile> get all => _casePaths
-      .map((p) {
-    // derive id from filename: assets/cases/case_ghosttrace.json → case_ghosttrace
-    final name =
-    p.split('/').last.replaceAll('.json', '');
-    return _cache[name];
-  })
+      .map((p) => _cache[_keyFromPath(p)])
       .whereType<CaseFile>()
       .toList();
 
-  /// Look up a case by its id field (e.g. 'case_ghosttrace').
+  /// Filter by difficulty tier.
+  List<CaseFile> byDifficulty(String difficulty) =>
+      all.where((c) => c.difficulty.toLowerCase() == difficulty.toLowerCase()).toList();
+
+  /// Look up by filename stem (e.g. 'case_ghosttrace').
   CaseFile? byId(String id) => _cache[id];
 
-  /// Convenience — returns the first case; useful while only one exists.
-  CaseFile? get first => _cache.values.isNotEmpty ? _cache.values.first : null;
+  /// First loaded case — used by StorylineScreen when no caseId is passed.
+  CaseFile? get first => all.isNotEmpty ? all.first : null;
 }

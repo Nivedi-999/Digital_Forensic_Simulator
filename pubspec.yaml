@@ -23,29 +23,34 @@ flutter:
   uses-material-design: true
 
   assets:
-    # ── Easy Cases ────────────────────────────────────────
+
+    # ── Easy (5) ──────────────────────────────────────────
     - assets/cases/case_passwordheist.json
     - assets/cases/case_wifithief.json
     - assets/cases/case_fakereview.json
     - assets/cases/case_ghosttrace.json
+    - assets/cases/case_jobscam.json
 
-    # ── Medium Cases ──────────────────────────────────────
+    # ── Medium (5) ────────────────────────────────────────
     - assets/cases/case_phantomtransaction.json
     - assets/cases/case_attendancehack.json
     - assets/cases/case_socialengineer.json
     - assets/cases/case_lastlogin.json
+    - assets/cases/case_clouddrain.json
 
-    # ── Hard Cases ────────────────────────────────────────
+    # ── Hard (5) ──────────────────────────────────────────
     - assets/cases/case_deaddrop.json
     - assets/cases/case_echoesoftomorrow.json
     - assets/cases/case_echowithoutavoice.json
     - assets/cases/case_darkproxyattack.json
+    - assets/cases/case_poisonedpatch.json
 
-    # ── Advanced Cases ────────────────────────────────────
+    # ── Advanced (5) ──────────────────────────────────────
     - assets/cases/case_vanishingvault.json
     - assets/cases/case_mirrorprotocol.json
     - assets/cases/case_zeropointentry.json
     - assets/cases/case_ghostnetwork.json
+    - assets/cases/case_doubleagent.json
 
   fonts:
     - family: DotMatrix

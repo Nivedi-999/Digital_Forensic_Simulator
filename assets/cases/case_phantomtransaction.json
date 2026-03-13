@@ -2,48 +2,46 @@
   "id": "case_phantomtransaction",
   "title": "Phantom Transaction",
   "shortDescription": "Unauthorized Bank Transfer",
-  "difficulty": "medium",
+  "difficulty": "hard",
   "theme": "Financial Fraud",
-  "estimatedDuration": "30–40 min",
-  "caseNumber": "2001",
+  "estimatedDuration": "30\u201340 min",
+  "caseNumber": "3006",
   "status": "Locked",
   "tutorialEnabled": false,
-
   "briefing": {
-    "incidentSummary": "₹85,000 was transferred from a senior citizen's bank account to an unknown account at 3:14 AM.\n\nThe victim never initiated the transfer. Their phone was found at home.\n\nSomeone used a cloned SIM card to intercept the OTP.",
-    "missionText": "Your Mission:\n\n› Trace the SIM cloning operation\n\n› Identify who intercepted the OTP\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+    "incidentSummary": "\u20b985,000 was transferred from a senior citizen's bank account to an unknown account at 3:14 AM.\n\nThe victim never initiated the transfer. Their phone was found at home.\n\nSomeone used a cloned SIM card to intercept the OTP.",
+    "missionText": "Your Mission:\n\n\u203a Trace the SIM cloning operation\n\n\u203a Identify who intercepted the OTP\n\n\u203a Collect at least 3 correct evidences\n\n\u203a Flag the right suspect"
   },
-
   "suspects": [
     {
       "id": "vikram_b",
       "name": "Vikram B",
       "role": "Telecom Insider",
-      "department": "SimConnect Telecom — Backend Support",
+      "department": "SimConnect Telecom \u2014 Backend Support",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "27.56.88.201 — 3:10 AM",
-        "deviceUsage": "VIKRAM-PC — 3:05–3:25 AM",
+        "ipActivity": "27.56.88.201 \u2014 3:10 AM",
+        "deviceUsage": "VIKRAM-PC \u2014 3:05\u20133:25 AM",
         "locationTrace": "SimConnect Office, Night Shift",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Accessed victim's SIM provisioning record at 3:05 AM — 9 minutes before the fraudulent transfer. Issued a duplicate SIM request without a physical store visit."
+      "profileNotes": "Accessed victim's SIM provisioning record at 3:05 AM \u2014 9 minutes before the fraudulent transfer. Issued a duplicate SIM request without a physical store visit."
     },
     {
       "id": "unknown_caller",
       "name": "Unknown Caller",
       "role": "Social Engineer",
-      "department": "External — Unidentified",
+      "department": "External \u2014 Unidentified",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "VoIP — masked number",
-        "deviceUsage": "Unknown — VoIP device",
+        "ipActivity": "VoIP \u2014 masked number",
+        "deviceUsage": "Unknown \u2014 VoIP device",
         "locationTrace": "Untraced",
         "vpnCheck": "VPN detected"
       },
-      "profileNotes": "Called victim the previous day posing as a bank employee. Collected account number but NOT OTP — the OTP was intercepted separately via SIM clone."
+      "profileNotes": "Called victim the previous day posing as a bank employee. Collected account number but NOT OTP \u2014 the OTP was intercepted separately via SIM clone."
     },
     {
       "id": "rahul_v",
@@ -53,8 +51,8 @@
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "49.40.12.55 — 9:00 PM",
-        "deviceUsage": "Personal Phone — evening only",
+        "ipActivity": "49.40.12.55 \u2014 9:00 PM",
+        "deviceUsage": "Personal Phone \u2014 evening only",
         "locationTrace": "Victim's residence",
         "vpnCheck": "No VPN detected"
       },
@@ -64,19 +62,18 @@
       "id": "store_manager",
       "name": "Deepa S",
       "role": "Telecom Store Manager",
-      "department": "SimConnect — Retail Store",
+      "department": "SimConnect \u2014 Retail Store",
       "riskLevel": "low",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "192.168.4.10 — 10:00 AM",
-        "deviceUsage": "Store Terminal — business hours only",
+        "ipActivity": "192.168.4.10 \u2014 10:00 AM",
+        "deviceUsage": "Store Terminal \u2014 business hours only",
         "locationTrace": "SimConnect Retail, Dadar",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Store was closed at 3 AM. Her credentials were not used in the SIM duplication — the backend system was accessed directly."
+      "profileNotes": "Store was closed at 3 AM. Her credentials were not used in the SIM duplication \u2014 the backend system was accessed directly."
     }
   ],
-
   "evidencePanels": [
     {
       "id": "chat",
@@ -91,7 +88,7 @@
           "sender": "Vikram B",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Internal message from Vikram B to an unknown number at 3:13 AM — one minute before the transfer. He received and forwarded the OTP directly.",
+          "detail": "Internal message from Vikram B to an unknown number at 3:13 AM \u2014 one minute before the transfer. He received and forwarded the OTP directly.",
           "pointsToSuspect": "vikram_b"
         },
         {
@@ -100,7 +97,7 @@
           "sender": "Vikram B",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Sent at 3:16 AM — 2 minutes after the fraudulent transfer completed. Confirms Vikram knew about and participated in the fraud.",
+          "detail": "Sent at 3:16 AM \u2014 2 minutes after the fraudulent transfer completed. Confirms Vikram knew about and participated in the fraud.",
           "pointsToSuspect": "vikram_b"
         },
         {
@@ -109,7 +106,7 @@
           "sender": "Unknown Caller",
           "isKeyEvidence": false,
           "isSuspect": false,
-          "detail": "Phishing call transcript from the day before. Collected account number but not the critical OTP — the OTP interception happened separately via SIM clone.",
+          "detail": "Phishing call transcript from the day before. Collected account number but not the critical OTP \u2014 the OTP interception happened separately via SIM clone.",
           "pointsToSuspect": null
         }
       ],
@@ -125,26 +122,38 @@
         {
           "id": "file_simclone",
           "label": "sim_provisioning_log.txt",
-          "detail": "Backend log shows duplicate SIM issued for victim's number at 3:07 AM. Request initiated by employee ID VB-4421 — Vikram B — without any physical ID verification.",
+          "detail": "Backend log shows duplicate SIM issued for victim's number at 3:07 AM. Request initiated by employee ID VB-4421 \u2014 Vikram B \u2014 without any physical ID verification.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
-          "metadata": { "size": "0.3 MB", "modifier": "Telecom Backend System", "modifiedAt": "3:07 AM" }
+          "metadata": {
+            "size": "0.3 MB",
+            "modifier": "Telecom Backend System",
+            "modifiedAt": "3:07 AM"
+          }
         },
         {
           "id": "file_banktransfer",
           "label": "bank_transfer_record.pdf",
-          "detail": "₹85,000 transferred at 3:14 AM to account ACC-9921-X. OTP authenticated at 3:13 AM from a different device than victim's registered phone.",
+          "detail": "\u20b985,000 transferred at 3:14 AM to account ACC-9921-X. OTP authenticated at 3:13 AM from a different device than victim's registered phone.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
-          "metadata": { "size": "0.4 MB", "modifier": "Bank Core System", "modifiedAt": "3:14 AM" }
+          "metadata": {
+            "size": "0.4 MB",
+            "modifier": "Bank Core System",
+            "modifiedAt": "3:14 AM"
+          }
         },
         {
           "id": "file_employeelog",
           "label": "employee_access_log.txt",
-          "detail": "Vikram B accessed the SIM provisioning portal at 3:05 AM — outside of his assigned shift hours (9 AM–6 PM). Unauthorized off-hours access.",
+          "detail": "Vikram B accessed the SIM provisioning portal at 3:05 AM \u2014 outside of his assigned shift hours (9 AM\u20136 PM). Unauthorized off-hours access.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
-          "metadata": { "size": "0.2 MB", "modifier": "HR System", "modifiedAt": "Auto-generated" }
+          "metadata": {
+            "size": "0.2 MB",
+            "modifier": "HR System",
+            "modifiedAt": "Auto-generated"
+          }
         }
       ],
       "hiddenItem": {
@@ -154,7 +163,11 @@
         "isKeyEvidence": true,
         "pointsToSuspect": "vikram_b",
         "unlockedByMinigame": "account_decode",
-        "metadata": { "size": "0.2 MB", "modifier": "Bank Fraud Cell", "modifiedAt": "Investigation" }
+        "metadata": {
+          "size": "0.2 MB",
+          "modifier": "Bank Fraud Cell",
+          "modifiedAt": "Investigation"
+        }
       },
       "minigame": {
         "id": "account_decode",
@@ -167,7 +180,7 @@
         "hints": [
           "It is a person's name followed by their initial.",
           "Shift each letter 3 positions backward.",
-          "Y→V, l→i, n→k..."
+          "Y\u2192V, l\u2192i, n\u2192k..."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_bankaccount",
@@ -185,13 +198,24 @@
         {
           "id": "meta_otpdevice",
           "label": "OTP Authentication Device",
-          "detail": "OTP was authenticated from device IMEI 867530041234567 — not the victim's registered phone (IMEI 356789012345678). Confirms a different device received the OTP.",
+          "detail": "OTP was authenticated from device IMEI 867530041234567 \u2014 not the victim's registered phone (IMEI 356789012345678). Confirms a different device received the OTP.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "rows": [
-            { "key": "Expected IMEI", "value": "356789012345678 (victim's phone)" },
-            { "key": "Actual IMEI", "value": "867530041234567 (unknown device)", "highlight": true },
-            { "key": "Match?", "value": "No — OTP intercepted", "highlight": true }
+            {
+              "key": "Expected IMEI",
+              "value": "356789012345678 (victim's phone)"
+            },
+            {
+              "key": "Actual IMEI",
+              "value": "867530041234567 (unknown device)",
+              "highlight": true
+            },
+            {
+              "key": "Match?",
+              "value": "No \u2014 OTP intercepted",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -207,45 +231,117 @@
         {
           "id": "ip_backend",
           "label": "Backend Access IP",
-          "detail": "IP 27.56.88.201 accessed the SIM provisioning backend at 3:05 AM. This IP is assigned to a workstation at SimConnect's night shift office — traced to Vikram B's desk.",
+          "detail": "IP 27.56.88.201 accessed the SIM provisioning backend at 3:05 AM. This IP is assigned to a workstation at SimConnect's night shift office \u2014 traced to Vikram B's desk.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "rows": [
-            { "key": "IP Address", "value": "27.56.88.201", "highlight": true },
-            { "key": "Location", "value": "SimConnect Office — Night Shift Floor" },
-            { "key": "Workstation", "value": "Vikram B's assigned desk", "highlight": true }
+            {
+              "key": "IP Address",
+              "value": "27.56.88.201",
+              "highlight": true
+            },
+            {
+              "key": "Location",
+              "value": "SimConnect Office \u2014 Night Shift Floor"
+            },
+            {
+              "key": "Workstation",
+              "value": "Vikram B's assigned desk",
+              "highlight": true
+            }
           ]
         }
       ],
       "minigame": null
     }
   ],
-
   "timeline": [
-    { "time": "Previous Day — 2:00 PM", "title": "Phishing Call", "description": "Victim receives fake bank call, account number collected", "severity": "medium" },
-    { "time": "3:05 AM", "title": "Backend Access", "description": "Vikram B logs into SIM provisioning system off-hours", "severity": "high" },
-    { "time": "3:07 AM", "title": "SIM Cloned", "description": "Duplicate SIM issued for victim's number", "severity": "critical" },
-    { "time": "3:13 AM", "title": "OTP Intercepted", "description": "Bank OTP received on cloned SIM by Vikram B", "severity": "critical" },
-    { "time": "3:14 AM", "title": "Transfer Executed", "description": "₹85,000 transferred to mule account ACC-9921-X", "severity": "critical" },
-    { "time": "3:16 AM", "title": "Cover-Up Message", "description": "Vikram B sends 'Delete this' message", "severity": "high" }
+    {
+      "time": "Previous Day \u2014 2:00 PM",
+      "title": "Phishing Call",
+      "description": "Victim receives fake bank call, account number collected",
+      "severity": "medium"
+    },
+    {
+      "time": "3:05 AM",
+      "title": "Backend Access",
+      "description": "Vikram B logs into SIM provisioning system off-hours",
+      "severity": "high"
+    },
+    {
+      "time": "3:07 AM",
+      "title": "SIM Cloned",
+      "description": "Duplicate SIM issued for victim's number",
+      "severity": "critical"
+    },
+    {
+      "time": "3:13 AM",
+      "title": "OTP Intercepted",
+      "description": "Bank OTP received on cloned SIM by Vikram B",
+      "severity": "critical"
+    },
+    {
+      "time": "3:14 AM",
+      "title": "Transfer Executed",
+      "description": "\u20b985,000 transferred to mule account ACC-9921-X",
+      "severity": "critical"
+    },
+    {
+      "time": "3:16 AM",
+      "title": "Cover-Up Message",
+      "description": "Vikram B sends 'Delete this' message",
+      "severity": "high"
+    }
   ],
-
-  "winCondition": { "guiltySuspectId": "vikram_b", "minCorrectEvidence": 3 },
-  "correctEvidenceIds": ["chat_otp_received", "chat_transfer_confirm", "file_simclone", "file_banktransfer", "file_employeelog", "meta_otpdevice", "ip_backend"],
-
-  "outcomes": {
-    "perfect": { "condition": "correct_suspect_and_evidence_gte_3", "title": "Case Solved!", "subtitle": "Vikram B exposed as the SIM fraud perpetrator.", "label": "CASE CLOSED", "xp": 10 },
-    "partial": { "condition": "correct_suspect_and_evidence_lt_3", "title": "Insufficient Evidence", "subtitle": "Correct suspect but thin evidence.", "label": "PARTIAL", "xp": 3 },
-    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Vikram B.", "label": "CASE FAILED", "xp": 0 },
-    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  "winCondition": {
+    "guiltySuspectId": "vikram_b",
+    "minCorrectEvidence": 3
   },
-
+  "correctEvidenceIds": [
+    "chat_otp_received",
+    "chat_transfer_confirm",
+    "file_simclone",
+    "file_banktransfer",
+    "file_employeelog",
+    "meta_otpdevice",
+    "ip_backend"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Vikram B exposed as the SIM fraud perpetrator.",
+      "label": "CASE CLOSED",
+      "xp": 10
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect but thin evidence.",
+      "label": "PARTIAL",
+      "xp": 3
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The real culprit was Vikram B.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
   "aria": {
-    "welcomeToHub": "...₹85,000. Gone. At 3 in the morning.\nThe victim was asleep. Their phone never moved.\nSomeone intercepted the signal itself.",
+    "welcomeToHub": "...\u20b985,000. Gone. At 3 in the morning.\nThe victim was asleep. Their phone never moved.\nSomeone intercepted the signal itself.",
     "exploreFeeds": "SIM logs. Bank records. OTP device traces.\nThe fraud was surgical. Find the surgeon.",
     "viewEvidence": "Off-hours access. Unauthorized SIM duplication.\nThis wasn't random.",
     "markEvidence": "Good. The chain is forming.",
     "decryptionHint": "The mule account has a name behind it.\nDecode the reference.",
-    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

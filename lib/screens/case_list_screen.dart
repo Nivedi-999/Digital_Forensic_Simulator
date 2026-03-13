@@ -1,107 +1,262 @@
 // lib/screens/case_list_screen.dart
 // ═══════════════════════════════════════════════════════════════
-//  REDESIGNED CASE LIST SCREEN
+//  CASE LIST SCREEN
+//  Dynamically loads all 20 cases from CaseRepository.
+//  Preserves all existing widget usage from the original screen.
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
+import '../models/case.dart';
+import '../services/case_repository.dart';
 import 'case_story_screen.dart';
 
-class CaseListScreen extends StatelessWidget {
+class CaseListScreen extends StatefulWidget {
   const CaseListScreen({super.key});
+
+  @override
+  State<CaseListScreen> createState() => _CaseListScreenState();
+}
+
+class _CaseListScreenState extends State<CaseListScreen> {
+  bool _loading = true;
+  List<CaseFile> _cases = [];
+  String _activeFilter = 'all'; // 'all' | 'easy' | 'medium' | 'hard' | 'advanced'
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCases();
+  }
+
+  Future<void> _loadCases() async {
+    await CaseRepository.instance.loadAll();
+    if (mounted) {
+      setState(() {
+        _cases = CaseRepository.instance.all;
+        _loading = false;
+      });
+    }
+  }
+
+  List<CaseFile> get _filtered {
+    if (_activeFilter == 'all') return _cases;
+    return _cases
+        .where((c) => c.difficulty.toLowerCase() == _activeFilter)
+        .toList();
+  }
+
+  // Count how many cases exist per difficulty (for filter tab badges)
+  int _countFor(String diff) => diff == 'all'
+      ? _cases.length
+      : _cases.where((c) => c.difficulty.toLowerCase() == diff).length;
 
   @override
   Widget build(BuildContext context) {
     return AppShell(
       title: 'Case Files',
       showBack: true,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 16, 20, 100),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const CyberSectionHeader(
-              title: 'Available Cases',
+      child: _loading
+          ? const Center(
+        child: CircularProgressIndicator(color: CyberColors.neonCyan),
+      )
+          : Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ── Header ─────────────────────────────────
+          const Padding(
+            padding: EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: CyberSectionHeader(
+              title: 'Case Files',
               subtitle: 'Select a case to begin investigation',
             ),
+          ),
 
-            _CaseCard(
-              title: 'Operation GhostTrace',
-              difficulty: 'Medium',
-              theme: 'Insider Data Leak',
-              status: 'Available',
-              statusColor: CyberColors.neonGreen,
-              isAvailable: true,
-              onTap: (ctx) => Navigator.push(
-                ctx,
-                PageRouteBuilder(
-                  pageBuilder: (_, __, ___) => const StorylineScreen(),
-                  transitionsBuilder: (_, anim, __, child) =>
-                      FadeTransition(opacity: anim, child: child),
-                  transitionDuration: const Duration(milliseconds: 350),
-                ),
+          // ── Difficulty filter tabs ──────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  _FilterTab(
+                    label: 'All',
+                    count: _countFor('all'),
+                    value: 'all',
+                    active: _activeFilter,
+                    color: CyberColors.neonCyan,
+                    onTap: (v) => setState(() => _activeFilter = v),
+                  ),
+                  _FilterTab(
+                    label: 'Easy',
+                    count: _countFor('easy'),
+                    value: 'easy',
+                    active: _activeFilter,
+                    color: CyberColors.neonGreen,
+                    onTap: (v) => setState(() => _activeFilter = v),
+                  ),
+                  _FilterTab(
+                    label: 'Medium',
+                    count: _countFor('medium'),
+                    value: 'medium',
+                    active: _activeFilter,
+                    color: CyberColors.neonAmber,
+                    onTap: (v) => setState(() => _activeFilter = v),
+                  ),
+                  _FilterTab(
+                    label: 'Hard',
+                    count: _countFor('hard'),
+                    value: 'hard',
+                    active: _activeFilter,
+                    color: CyberColors.neonRed,
+                    onTap: (v) => setState(() => _activeFilter = v),
+                  ),
+                  _FilterTab(
+                    label: 'Advanced',
+                    count: _countFor('advanced'),
+                    value: 'advanced',
+                    active: _activeFilter,
+                    color: CyberColors.neonPurple,
+                    onTap: (v) => setState(() => _activeFilter = v),
+                  ),
+                ],
               ),
             ),
+          ),
 
-            _CaseCard(
-              title: 'Phantom Transaction',
-              difficulty: 'Easy',
-              theme: 'Unauthorized Bank Transfer',
-              status: 'Coming Soon',
-              statusColor: CyberColors.textMuted,
-              isAvailable: false,
-            ),
+          const SizedBox(height: 10),
 
-            _CaseCard(
-              title: 'Silent Attendance Hack',
-              difficulty: 'Easy–Medium',
-              theme: 'College Attendance Manipulation',
-              status: 'Locked',
-              statusColor: CyberColors.textMuted,
-              isAvailable: false,
+          // ── Case list ───────────────────────────────
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 100),
+              itemCount: _filtered.length,
+              itemBuilder: (ctx, i) {
+                final c = _filtered[i];
+                final isAvailable =
+                    c.status.toLowerCase() == 'active';
+                return _CaseCard(
+                  caseFile: c,
+                  isAvailable: isAvailable,
+                  onTap: isAvailable
+                      ? () => Navigator.push(
+                    context,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) =>
+                          StorylineScreen(caseId: c.id),
+                      transitionsBuilder:
+                          (_, anim, __, child) =>
+                          FadeTransition(
+                              opacity: anim, child: child),
+                      transitionDuration:
+                      const Duration(milliseconds: 350),
+                    ),
+                  )
+                      : null,
+                );
+              },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-            _CaseCard(
-              title: 'Dark Proxy Attack',
-              difficulty: 'Hard',
-              theme: 'Masked DDoS via Proxies',
-              status: 'Locked',
-              statusColor: CyberColors.textMuted,
-              isAvailable: false,
-            ),
+// ═══════════════════════════════════════════════════════════════
+//  Filter Tab
+// ═══════════════════════════════════════════════════════════════
 
-            _CaseCard(
-              title: 'The Vanishing Vault',
-              difficulty: 'Insane',
-              theme: 'Encrypted File Destruction',
-              status: 'Locked',
-              statusColor: CyberColors.textMuted,
-              isAvailable: false,
+class _FilterTab extends StatelessWidget {
+  final String label;
+  final int count;
+  final String value;
+  final String active;
+  final Color color;
+  final ValueChanged<String> onTap;
+
+  const _FilterTab({
+    required this.label,
+    required this.count,
+    required this.value,
+    required this.active,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = active == value;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: GestureDetector(
+        onTap: () => onTap(value),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding:
+          const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
+          decoration: BoxDecoration(
+            color:
+            isActive ? color.withOpacity(0.15) : Colors.transparent,
+            borderRadius: CyberRadius.pill,
+            border: Border.all(
+              color: isActive ? color : CyberColors.borderSubtle,
+              width: 1.5,
             ),
-          ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: isActive ? color : CyberColors.textMuted,
+                  fontSize: 12,
+                  fontWeight:
+                  isActive ? FontWeight.bold : FontWeight.normal,
+                  letterSpacing: 0.4,
+                ),
+              ),
+              const SizedBox(width: 5),
+              Container(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? color.withOpacity(0.25)
+                      : CyberColors.borderSubtle.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  '$count',
+                  style: TextStyle(
+                    color: isActive ? color : CyberColors.textMuted,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  Case Card  (matches original _CaseCard structure exactly)
+// ═══════════════════════════════════════════════════════════════
+
 class _CaseCard extends StatefulWidget {
-  final String title;
-  final String difficulty;
-  final String theme;
-  final String status;
-  final Color statusColor;
+  final CaseFile caseFile;
   final bool isAvailable;
-  final void Function(BuildContext ctx)? onTap;
+  final VoidCallback? onTap;
 
   const _CaseCard({
-    required this.title,
-    required this.difficulty,
-    required this.theme,
-    required this.status,
-    required this.statusColor,
+    required this.caseFile,
     required this.isAvailable,
     this.onTap,
   });
@@ -114,18 +269,18 @@ class _CaseCardState extends State<_CaseCard> {
   bool _expanded = false;
 
   Color get _diffColor {
-    switch (widget.difficulty.toLowerCase()) {
-      case 'easy':         return CyberColors.neonGreen;
-      case 'medium':
-      case 'easy–medium':  return CyberColors.neonAmber;
-      case 'hard':         return CyberColors.neonRed;
-      case 'insane':       return CyberColors.neonPurple;
-      default:             return CyberColors.textSecondary;
+    switch (widget.caseFile.difficulty.toLowerCase()) {
+      case 'easy':     return CyberColors.neonGreen;
+      case 'medium':   return CyberColors.neonAmber;
+      case 'hard':     return CyberColors.neonRed;
+      case 'advanced': return CyberColors.neonPurple;
+      default:         return CyberColors.textSecondary;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final c = widget.caseFile;
     final borderColor = widget.isAvailable
         ? CyberColors.neonCyan
         : CyberColors.borderSubtle;
@@ -137,13 +292,13 @@ class _CaseCardState extends State<_CaseCard> {
         padding: EdgeInsets.zero,
         child: Column(
           children: [
-            // ── Header row ──
+            // ── Header row ──────────────────────────────
             Material(
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: CyberRadius.medium,
                 onTap: widget.isAvailable
-                    ? () => widget.onTap?.call(context)
+                    ? () => widget.onTap?.call()
                     : () => setState(() => _expanded = !_expanded),
                 child: Padding(
                   padding: const EdgeInsets.all(18),
@@ -157,7 +312,8 @@ class _CaseCardState extends State<_CaseCard> {
                           color: borderColor.withOpacity(0.1),
                           borderRadius: CyberRadius.small,
                           border: Border.all(
-                              color: borderColor.withOpacity(0.4), width: 1),
+                              color: borderColor.withOpacity(0.4),
+                              width: 1),
                         ),
                         child: Icon(
                           widget.isAvailable
@@ -175,7 +331,7 @@ class _CaseCardState extends State<_CaseCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.title,
+                              c.title,
                               style: TextStyle(
                                 fontFamily: 'DotMatrix',
                                 fontSize: 15,
@@ -186,20 +342,24 @@ class _CaseCardState extends State<_CaseCard> {
                               ),
                             ),
                             const SizedBox(height: 4),
-                            Text(widget.theme,
-                                style: CyberText.bodySmall.copyWith(
-                                    fontSize: 12)),
+                            Text(
+                              c.theme,
+                              style: CyberText.bodySmall
+                                  .copyWith(fontSize: 12),
+                            ),
                           ],
                         ),
                       ),
 
-                      // Status + expand
+                      // Status chip + chevron
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           StatusChip(
-                            label: widget.status,
-                            color: widget.statusColor,
+                            label: c.status.toUpperCase(),
+                            color: widget.isAvailable
+                                ? CyberColors.neonGreen
+                                : CyberColors.textMuted,
                             pulsing: widget.isAvailable,
                           ),
                           const SizedBox(height: 6),
@@ -218,14 +378,15 @@ class _CaseCardState extends State<_CaseCard> {
               ),
             ),
 
-            // ── Expanded info ──
+            // ── Expanded detail ──────────────────────────
             AnimatedSize(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeOutCubic,
               child: _expanded
                   ? Container(
                 width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+                padding:
+                const EdgeInsets.fromLTRB(18, 0, 18, 18),
                 decoration: BoxDecoration(
                   border: Border(
                     top: BorderSide(
@@ -238,24 +399,31 @@ class _CaseCardState extends State<_CaseCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 14),
+
+                    // Difficulty badge
                     Row(
                       children: [
-                        const Text('Difficulty:  ',
-                            style: TextStyle(
-                                color: CyberColors.textSecondary,
-                                fontSize: 13)),
+                        const Text(
+                          'Difficulty:  ',
+                          style: TextStyle(
+                            color: CyberColors.textSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
                         Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: _diffColor.withOpacity(0.12),
+                            color:
+                            _diffColor.withOpacity(0.12),
                             borderRadius: CyberRadius.pill,
                             border: Border.all(
-                                color: _diffColor.withOpacity(0.4),
-                                width: 1),
+                              color: _diffColor.withOpacity(0.4),
+                              width: 1,
+                            ),
                           ),
                           child: Text(
-                            widget.difficulty,
+                            c.difficulty.toUpperCase(),
                             style: TextStyle(
                               color: _diffColor,
                               fontSize: 12,
@@ -266,16 +434,53 @@ class _CaseCardState extends State<_CaseCard> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text('Theme: ${widget.theme}',
-                        style: CyberText.bodySmall.copyWith(
-                            fontSize: 12)),
+
+                    // Case number + duration
+                    Text(
+                      'Case #${c.caseNumber}  •  ${c.estimatedDuration}',
+                      style: CyberText.bodySmall
+                          .copyWith(fontSize: 11),
+                    ),
+                    const SizedBox(height: 6),
+
+                    // Short description
+                    Text(
+                      c.shortDescription,
+                      style: CyberText.bodySmall
+                          .copyWith(fontSize: 12),
+                    ),
+                    const SizedBox(height: 6),
+
+                    // Suspect + panel count
+                    Text(
+                      '${c.suspects.length} suspects  •  ${c.evidencePanels.length} evidence panels',
+                      style: CyberText.bodySmall
+                          .copyWith(fontSize: 11),
+                    ),
+
+                    // Theme line
+                    const SizedBox(height: 4),
+                    Text(
+                      'Theme: ${c.theme}',
+                      style: CyberText.bodySmall
+                          .copyWith(fontSize: 12),
+                    ),
+
                     if (widget.isAvailable) ...[
                       const SizedBox(height: 14),
                       CyberButton(
                         label: 'Begin Investigation',
                         icon: Icons.play_arrow_outlined,
                         isSmall: true,
-                        onTap: () => widget.onTap?.call(context),
+                        onTap: () => widget.onTap?.call(),
+                      ),
+                    ] else ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        'Complete earlier cases to unlock.',
+                        style: CyberText.bodySmall.copyWith(
+                            fontSize: 11,
+                            color: CyberColors.textMuted),
                       ),
                     ],
                   ],

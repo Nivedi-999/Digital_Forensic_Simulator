@@ -1,0 +1,264 @@
+{
+  "id": "case_clouddrain",
+  "title": "Cloud Drain",
+  "shortDescription": "Crypto Mining via Stolen Cloud Credentials",
+  "difficulty": "medium",
+  "theme": "Cloud Resource Hijacking",
+  "estimatedDuration": "30–40 min",
+  "caseNumber": "2005",
+  "status": "Locked",
+  "tutorialEnabled": false,
+
+  "briefing": {
+    "incidentSummary": "A startup received an AWS bill of ₹14.2 lakh for a single month — 60x their usual spend.\n\nSomeone had spun up 47 high-performance GPU instances in three regions and was running cryptocurrency mining software around the clock.\n\nThe AWS root credentials were leaked. But by who — and how?",
+    "missionText": "Your Mission:\n\n› Trace how the credentials were leaked\n\n› Identify who accessed and misused them\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+
+  "suspects": [
+    {
+      "id": "ketan_s",
+      "name": "Ketan S",
+      "role": "Backend Developer",
+      "department": "Startup — Engineering Team",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "103.55.77.12 — AWS API calls traced",
+        "deviceUsage": "KETAN-LAPTOP — personal machine",
+        "locationTrace": "Bengaluru — home network",
+        "vpnCheck": "VPN used — exit node traced"
+      },
+      "profileNotes": "Pushed AWS root credentials to a public GitHub repo 3 months ago inside a .env file. Instead of immediately rotating the credentials, he quietly removed the commit. A bot scraped the credentials within 8 minutes of the push. Ketan then used the still-valid credentials himself to mine crypto from home."
+    },
+    {
+      "id": "bot_scraper",
+      "name": "Automated Credential Bot",
+      "role": "GitHub Secret Scanner — Malicious",
+      "department": "External — Unknown Operator",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Multiple — rotating exit nodes",
+        "deviceUsage": "Automated — not a human",
+        "locationTrace": "Unknown — global",
+        "vpnCheck": "Tor detected"
+      },
+      "profileNotes": "Scraped the credentials within 8 minutes of the GitHub push. However the mining activity began 11 days later — suggesting the human actor (Ketan S) used the credentials himself rather than the bot operator."
+    },
+    {
+      "id": "devops_lead",
+      "name": "Prerna A",
+      "role": "DevOps Lead",
+      "department": "Startup — Infrastructure",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.3.5 — internal",
+        "deviceUsage": "PRERNA-WS — office machine",
+        "locationTrace": "Startup Office, Bengaluru",
+        "vpnCheck": "Corporate VPN"
+      },
+      "profileNotes": "Had legitimate AWS access but only to staging environments. No GPU instance provisioning rights. No activity outside business hours."
+    },
+    {
+      "id": "ex_intern",
+      "name": "Aman V",
+      "role": "Former Intern",
+      "department": "Startup — Formerly Engineering",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "49.40.88.33 — home network",
+        "deviceUsage": "Personal laptop — no company access",
+        "locationTrace": "Hyderabad",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Internship ended 5 months ago. AWS access revoked on last day. No activity under his credentials since then."
+    }
+  ],
+
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_git_commit",
+          "label": "oops pushed .env with keys, removing now",
+          "sender": "Ketan S (GitHub commit message)",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Git commit message from 3 months ago. Ketan pushed AWS_ACCESS_KEY and AWS_SECRET_KEY in a .env file then immediately deleted the commit — but GitHub history retains the data, and a scraper had already captured it within 8 minutes.",
+          "pointsToSuspect": "ketan_s"
+        },
+        {
+          "id": "chat_bill_shock",
+          "label": "Why is our AWS bill ₹14 lakh?? Who authorized GPU instances??",
+          "sender": "Prerna A (internal Slack)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Prerna's message when the bill alert fired. She immediately raised the alarm and began the investigation. Not involved in the breach.",
+          "pointsToSuspect": null
+        },
+        {
+          "id": "chat_mining_config",
+          "label": "user_data: #!/bin/bash\napt install -y xmrig\nxmrig --config /tmp/pool.conf",
+          "sender": "AWS Instance Launch Script",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "User data script embedded in all 47 GPU instance launches. Installs XMRig — a Monero mining tool — immediately on boot. The pool config points to a mining pool wallet traced to Ketan S.",
+          "pointsToSuspect": "ketan_s"
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_cloudtrail",
+          "label": "aws_cloudtrail_log.json",
+          "detail": "AWS CloudTrail log shows root account API calls from IP 103.55.77.12 starting 11 days after the credential leak. 47 p3.8xlarge GPU instances launched across us-east-1, eu-west-1, ap-south-1 over 4 hours. All launched using root credentials — not IAM roles.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ketan_s",
+          "metadata": { "size": "2.1 MB", "modifier": "AWS CloudTrail", "modifiedAt": "Auto-generated" }
+        },
+        {
+          "id": "file_gitleak",
+          "label": "github_secret_scan_report.txt",
+          "detail": "GitHub's secret scanning flagged the .env commit 9 minutes after push — but Ketan had already deleted it 1 minute prior. The 8-minute scraper window means the credentials were captured before deletion. Ketan never rotated them.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ketan_s",
+          "metadata": { "size": "0.2 MB", "modifier": "GitHub Security", "modifiedAt": "3 months prior" }
+        },
+        {
+          "id": "file_wallet_trace",
+          "label": "mining_wallet_analysis.pdf",
+          "detail": "XMRig pool wallet traced via blockchain analysis to a Monero address that had previously received payouts to an exchange account KYC-verified under Ketan S's PAN card. ₹1.8 lakh in mining revenue identified.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ketan_s",
+          "metadata": { "size": "1.1 MB", "modifier": "Blockchain Forensics", "modifiedAt": "Post-incident" }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_vpn_trace",
+        "label": "vpn_exit_node_trace.txt",
+        "detail": "VPN exit node IP 103.55.77.12 linked to a commercial VPN service. Subscriber account registered under ketan.sharma.dev@gmail.com — Ketan S's known developer email. Confirms the AWS API calls came from his machine.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ketan_s",
+        "unlockedByMinigame": "vpn_decode",
+        "metadata": { "size": "0.3 MB", "modifier": "VPN Provider (subpoena)", "modifiedAt": "Post-incident" }
+      },
+      "minigame": {
+        "id": "vpn_decode",
+        "type": "caesar_cipher",
+        "title": "Decode VPN Subscriber Username",
+        "cipherText": "Nhwdq-V",
+        "hint": "Caesar shift -3. Whose VPN account is this?",
+        "solution": "Ketan-S",
+        "maxHints": 3,
+        "hints": [
+          "It is a developer's name followed by their initial.",
+          "Shift each letter 3 positions backward.",
+          "N→K, h→e, w→t..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_vpn_trace",
+          "message": "vpn_exit_node_trace.txt is now available in your file feed."
+        }
+      }
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_timing",
+          "label": "Leak to Launch Timeline",
+          "detail": "Credentials leaked via GitHub at 11:14 PM. Bot scraped them at 11:22 PM. Mining activity began 11 days later at 2:00 AM — suggesting a human who knew the credentials were valid used them deliberately, not the bot.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ketan_s",
+          "rows": [
+            { "key": "Credential Leak", "value": "11:14 PM (3 months ago)", "highlight": true },
+            { "key": "Bot Scrape", "value": "11:22 PM — 8 minutes later" },
+            { "key": "Mining Launch", "value": "11 days later — 2:00 AM", "highlight": true },
+            { "key": "Key Rotated?", "value": "Never — still valid at launch", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_instance_count",
+          "label": "GPU Instance Spread",
+          "detail": "47 p3.8xlarge instances across 3 AWS regions — designed to stay under each region's default vCPU limit to avoid triggering automatic AWS abuse detection. Shows awareness of AWS internal thresholds — someone with cloud knowledge.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ketan_s",
+          "rows": [
+            { "key": "Instances", "value": "47 × p3.8xlarge GPU" },
+            { "key": "Regions Used", "value": "us-east-1, eu-west-1, ap-south-1" },
+            { "key": "Per-Region Count", "value": "15/16/16 — just under vCPU limits", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_api_calls",
+          "label": "AWS API Call Origin",
+          "detail": "All 47 RunInstances API calls originated from IP 103.55.77.12 — a commercial VPN exit node. The same IP was used for all subsequent instance management calls. VPN subscriber records link it to Ketan S.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "ketan_s",
+          "rows": [
+            { "key": "API Origin IP", "value": "103.55.77.12", "highlight": true },
+            { "key": "VPN Service", "value": "Commercial VPN — subscriber traced", "highlight": true },
+            { "key": "Calls Made", "value": "47 RunInstances + 200+ management calls" }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+
+  "timeline": [
+    { "time": "3 Months Prior — 11:14 PM", "title": "Credentials Pushed to GitHub", "description": "Ketan S commits .env file with AWS root keys", "severity": "critical" },
+    { "time": "11:22 PM", "title": "Bot Scrapes Credentials", "description": "Automated scraper captures keys 8 minutes after push", "severity": "high" },
+    { "time": "11:23 PM", "title": "Commit Deleted", "description": "Ketan removes the commit — but never rotates the keys", "severity": "high" },
+    { "time": "11 Days Later — 2:00 AM", "title": "Mining Campaign Launched", "description": "47 GPU instances spun up across 3 AWS regions", "severity": "critical" },
+    { "time": "30 Days Later", "title": "Bill Alert Fires", "description": "AWS sends ₹14.2 lakh billing alert to startup", "severity": "critical" },
+    { "time": "Investigation Day 1", "title": "CloudTrail Pulled", "description": "API logs reveal root credential abuse from VPN IP", "severity": "high" }
+  ],
+
+  "winCondition": { "guiltySuspectId": "ketan_s", "minCorrectEvidence": 3 },
+  "correctEvidenceIds": ["chat_git_commit", "chat_mining_config", "file_cloudtrail", "file_gitleak", "file_wallet_trace", "meta_timing", "meta_instance_count", "ip_api_calls"],
+
+  "outcomes": {
+    "perfect": { "condition": "correct_suspect_and_evidence_gte_3", "title": "Case Solved!", "subtitle": "Ketan S exposed as the cloud mining fraudster.", "label": "CASE CLOSED", "xp": 10 },
+    "partial": { "condition": "correct_suspect_and_evidence_lt_3", "title": "Insufficient Evidence", "subtitle": "Correct suspect but thin evidence.", "label": "PARTIAL", "xp": 3 },
+    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Ketan S.", "label": "CASE FAILED", "xp": 0 },
+    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  },
+
+  "aria": {
+    "welcomeToHub": "...₹14 lakh. In one month. For 47 machines nobody authorised.\nThe keys were out there. Someone knew — and used them.\nFind who knew.",
+    "exploreFeeds": "CloudTrail logs. GitHub history. Blockchain traces.\nCloud crimes leave receipts. Read them.",
+    "viewEvidence": "The keys were never rotated. 11 days passed before launch.\nThis wasn't a random bot. This was deliberate.",
+    "markEvidence": "Good. The chain is forming.",
+    "decryptionHint": "The VPN account has a name behind it.\nDecode the subscriber username.",
+    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+  }
+}
