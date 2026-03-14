@@ -139,6 +139,7 @@ class CaseFile {
   final String caseNumber;
   final String status;
   final String estimatedDuration;
+  final int? timeLimitSeconds; // null = no timer; set for hard/advanced
   final bool tutorialEnabled;
 
   final CaseBriefing briefing;
@@ -160,6 +161,7 @@ class CaseFile {
     required this.caseNumber,
     required this.status,
     required this.estimatedDuration,
+    this.timeLimitSeconds,
     required this.tutorialEnabled,
     required this.briefing,
     required this.suspects,
@@ -261,6 +263,7 @@ class CaseFile {
       caseNumber: json['caseNumber'] as String,
       status: json['status'] as String,
       estimatedDuration: json['estimatedDuration'] as String,
+      timeLimitSeconds: json['timeLimitSeconds'] as int?,
       tutorialEnabled: json['tutorialEnabled'] as bool? ?? false,
       briefing: briefing,
       suspects: suspects,

@@ -4,27 +4,25 @@
   "shortDescription": "Fake Review Campaign",
   "difficulty": "easy",
   "theme": "Online Fraud & Impersonation",
-  "estimatedDuration": "15–20 min",
+  "estimatedDuration": "15\u201320 min",
   "caseNumber": "1003",
   "status": "Locked",
   "tutorialEnabled": false,
-
   "briefing": {
-    "incidentSummary": "A local restaurant received 47 five-star reviews in a single night — all from accounts created that same day.\n\nA rival restaurant owner is suspected of running a fake review campaign to boost their own ratings while filing false complaints to pull down the victim's listing.\n\nThe accounts all trace back to the same device.",
-    "missionText": "Your Mission:\n\n› Identify who created the fake accounts\n\n› Link the accounts to a single device\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+    "incidentSummary": "A local restaurant received 47 five-star reviews in a single night \u2014 all from accounts created that same day.\n\nA rival restaurant owner is suspected of running a fake review campaign to boost their own ratings while filing false complaints to pull down the victim's listing.\n\nThe accounts all trace back to the same device.",
+    "missionText": "Your Mission:\n\n\u203a Identify who created the fake accounts\n\n\u203a Link the accounts to a single device\n\n\u203a Collect at least 3 correct evidences\n\n\u203a Flag the right suspect"
   },
-
   "suspects": [
     {
       "id": "suresh_k",
       "name": "Suresh K",
       "role": "Rival Restaurant Owner",
-      "department": "Spice Garden Restaurant • Nearby",
+      "department": "Spice Garden Restaurant \u2022 Nearby",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "103.24.56.88 — 11:00 PM to 2:00 AM",
-        "deviceUsage": "Android Tablet — SURESH-TAB-01",
+        "ipActivity": "103.24.56.88 \u2014 11:00 PM to 2:00 AM",
+        "deviceUsage": "Android Tablet \u2014 SURESH-TAB-01",
         "locationTrace": "Spice Garden Restaurant, Back Office",
         "vpnCheck": "No VPN detected"
       },
@@ -34,12 +32,12 @@
       "id": "meera_j",
       "name": "Meera J",
       "role": "Disgruntled Ex-Employee",
-      "department": "Formerly — Victim Restaurant",
+      "department": "Formerly \u2014 Victim Restaurant",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "49.207.12.34 — 08:00 PM",
-        "deviceUsage": "iPhone — personal device",
+        "ipActivity": "49.207.12.34 \u2014 08:00 PM",
+        "deviceUsage": "iPhone \u2014 personal device",
         "locationTrace": "Home address, 3km away",
         "vpnCheck": "No VPN detected"
       },
@@ -49,19 +47,18 @@
       "id": "bot_agency",
       "name": "Unknown Agency",
       "role": "Suspected Bot Service",
-      "department": "External — Unverified",
+      "department": "External \u2014 Unverified",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Multiple IPs — scattered globally",
-        "deviceUsage": "Various — no consistent device",
+        "ipActivity": "Multiple IPs \u2014 scattered globally",
+        "deviceUsage": "Various \u2014 no consistent device",
         "locationTrace": "International origin suspected",
         "vpnCheck": "VPN detected on some IPs"
       },
       "profileNotes": "No consistent device fingerprint. Accounts show different browser agents unlike the fake campaign which had identical fingerprints."
     }
   ],
-
   "evidencePanels": [
     {
       "id": "files",
@@ -73,28 +70,40 @@
         {
           "id": "file_accountlog",
           "label": "fake_accounts_creation_log.csv",
-          "detail": "47 accounts created between 11:02 PM and 1:58 AM. All from IP 103.24.56.88. All accounts use the same email pattern: randomname+number@tempmail.com.",
+          "detail": "Account creation log from Foodie5Star platform's backend database. 47 user accounts were registered between 23:02 and 01:58 AM over a single night \u2014 all originating from IP 103.24.56.88. Each account was created with a unique email address following the pattern: random-word + 4-digit number @gmail or @yahoo. All 47 accounts bypassed the standard email verification step \u2014 logs show the verification token was generated and consumed within 200ms of issuance, consistent with an automated script hitting the verification endpoint directly. Post-creation, each account immediately posted a 5-star review for 'Spice Garden' restaurant before going dormant.",
           "isKeyEvidence": true,
           "pointsToSuspect": "suresh_k",
-          "metadata": { "size": "0.4 MB", "modifier": "Platform System", "modifiedAt": "Auto-generated" }
+          "metadata": {
+            "size": "0.4 MB",
+            "modifier": "Platform System",
+            "modifiedAt": "Auto-generated"
+          }
         },
         {
           "id": "file_devicefingerprint",
           "label": "device_fingerprint_report.txt",
-          "detail": "All 47 accounts share identical browser fingerprint: Android 13, Chrome 118, screen resolution 1280x800 — matching Suresh K's registered tablet SURESH-TAB-01.",
+          "detail": "Device fingerprint analysis from the platform's fraud detection system. All 47 accounts share an identical browser fingerprint: User-Agent string 'Mozilla/5.0 (Android 13; SM-G991B) Chrome/118.0.0.0', screen resolution 412\u00d7915, timezone Asia/Kolkata, canvas fingerprint hash 7f3a9c21. This is statistically impossible for organic users \u2014 the probability of 47 different humans sharing the same canvas hash is less than 1 in 10 billion. The fingerprint matches a headless Chrome instance running an Android emulator. The script also failed to randomise the WebGL renderer string, which reads 'ANGLE (Google, Vulkan 1.1.0 on NVIDIA GeForce RTX series, OpenGL ES 3.2)'.",
           "isKeyEvidence": true,
           "pointsToSuspect": "suresh_k",
-          "metadata": { "size": "0.2 MB", "modifier": "Platform Security", "modifiedAt": "Auto-generated" }
+          "metadata": {
+            "size": "0.2 MB",
+            "modifier": "Platform Security",
+            "modifiedAt": "Auto-generated"
+          }
         }
       ],
       "hiddenItem": {
         "id": "file_ipreg",
         "label": "ip_registration_record.txt",
-        "detail": "IP 103.24.56.88 is registered to a broadband account under 'Spice Garden Hospitality Pvt Ltd' — owned by Suresh K. Confirms the fake campaign originated from his restaurant.",
+        "detail": "WHOIS and ISP registration data for IP address 103.24.56.88. The IP is assigned to a residential broadband account registered under the business name 'Spice Garden Hospitality Pvt Ltd' \u2014 the owner entity of Spice Garden restaurant. The account holder's name on the ISP record is Suresh K, matching the restaurant's registered proprietor. The account address is the same as the restaurant's registered address. This IP has not previously appeared in any fraud database. The registration predates the fake review campaign by 14 months, confirming this is the operator's regular internet connection \u2014 not a VPN or proxy.",
         "isKeyEvidence": true,
         "pointsToSuspect": "suresh_k",
         "unlockedByMinigame": "ip_decode",
-        "metadata": { "size": "0.1 MB", "modifier": "ISP Registry", "modifiedAt": "Current" }
+        "metadata": {
+          "size": "0.1 MB",
+          "modifier": "ISP Registry",
+          "modifiedAt": "Current"
+        }
       },
       "minigame": {
         "id": "ip_decode",
@@ -105,9 +114,9 @@
         "solution": "Spice-Garden",
         "maxHints": 3,
         "hints": [
-          "It is a restaurant name — two words.",
+          "It is a restaurant name \u2014 two words.",
           "Shift each letter 3 positions backward.",
-          "V→S, s→p, l→i..."
+          "V\u2192S, s\u2192p, l\u2192i..."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_ipreg",
@@ -125,25 +134,46 @@
         {
           "id": "meta_timing",
           "label": "Account Creation Timing",
-          "detail": "Accounts were created in automated bursts — one every 3.6 minutes on average. This is consistent with a script or manual tab-switching, not organic user behavior.",
+          "detail": "Accounts were created in automated bursts \u2014 one every 3.6 minutes on average. This is consistent with a script or manual tab-switching, not organic user behavior.",
           "isKeyEvidence": false,
           "pointsToSuspect": null,
           "rows": [
-            { "key": "Total Accounts", "value": "47" },
-            { "key": "Time Window", "value": "11:02 PM – 1:58 AM" },
-            { "key": "Avg Interval", "value": "3.6 minutes/account" }
+            {
+              "key": "Total Accounts",
+              "value": "47"
+            },
+            {
+              "key": "Time Window",
+              "value": "11:02 PM \u2013 1:58 AM"
+            },
+            {
+              "key": "Avg Interval",
+              "value": "3.6 minutes/account"
+            }
           ]
         },
         {
           "id": "meta_location",
           "label": "IP Geolocation",
-          "detail": "IP 103.24.56.88 geolocates to the commercial district of Koramangala — same block as Spice Garden Restaurant.",
+          "detail": "IP 103.24.56.88 geolocates to the commercial district of Koramangala \u2014 same block as Spice Garden Restaurant.",
           "isKeyEvidence": true,
           "pointsToSuspect": "suresh_k",
           "rows": [
-            { "key": "IP", "value": "103.24.56.88", "highlight": true },
-            { "key": "Geolocation", "value": "Koramangala, Bengaluru", "highlight": true },
-            { "key": "Nearest Business", "value": "Spice Garden Restaurant", "highlight": true }
+            {
+              "key": "IP",
+              "value": "103.24.56.88",
+              "highlight": true
+            },
+            {
+              "key": "Geolocation",
+              "value": "Koramangala, Bengaluru",
+              "highlight": true
+            },
+            {
+              "key": "Nearest Business",
+              "value": "Spice Garden Restaurant",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -159,45 +189,115 @@
         {
           "id": "ip_single",
           "label": "Single Origin IP",
-          "detail": "All 47 accounts originate from one IP — 103.24.56.88. No proxy or VPN masking. The attacker made no attempt to hide their origin.",
+          "detail": "All 47 accounts originate from one IP \u2014 103.24.56.88. No proxy or VPN masking. The attacker made no attempt to hide their origin.",
           "isKeyEvidence": true,
           "pointsToSuspect": "suresh_k",
           "rows": [
-            { "key": "Origin IP", "value": "103.24.56.88", "highlight": true },
-            { "key": "Accounts Created", "value": "47", "highlight": true },
-            { "key": "VPN/Proxy", "value": "None detected" }
+            {
+              "key": "Origin IP",
+              "value": "103.24.56.88",
+              "highlight": true
+            },
+            {
+              "key": "Accounts Created",
+              "value": "47",
+              "highlight": true
+            },
+            {
+              "key": "VPN/Proxy",
+              "value": "None detected"
+            }
           ]
         }
       ],
       "minigame": null
     }
   ],
-
   "timeline": [
-    { "time": "11:02 PM", "title": "First Fake Account Created", "description": "Account 1 of 47 registered from IP 103.24.56.88", "severity": "medium" },
-    { "time": "11:02 PM–1:58 AM", "title": "Campaign Runs", "description": "47 accounts created, all leaving 5-star reviews", "severity": "high" },
-    { "time": "1:58 AM", "title": "Last Account Created", "description": "Campaign ends — all reviews posted", "severity": "high" },
-    { "time": "Next Morning", "title": "Victim Notices", "description": "Restaurant owner sees suspicious review spike", "severity": "medium" },
-    { "time": "Morning", "title": "Platform Flags Accounts", "description": "Review platform auto-flags bulk creation", "severity": "high" },
-    { "time": "Afternoon", "title": "Case Opened", "description": "Incident reported to cyber cell", "severity": "critical" }
+    {
+      "time": "11:02 PM",
+      "title": "First Fake Account Created",
+      "description": "Account 1 of 47 registered from IP 103.24.56.88",
+      "severity": "medium"
+    },
+    {
+      "time": "11:02 PM\u20131:58 AM",
+      "title": "Campaign Runs",
+      "description": "47 accounts created, all leaving 5-star reviews",
+      "severity": "high"
+    },
+    {
+      "time": "1:58 AM",
+      "title": "Last Account Created",
+      "description": "Campaign ends \u2014 all reviews posted",
+      "severity": "high"
+    },
+    {
+      "time": "Next Morning",
+      "title": "Victim Notices",
+      "description": "Restaurant owner sees suspicious review spike",
+      "severity": "medium"
+    },
+    {
+      "time": "Morning",
+      "title": "Platform Flags Accounts",
+      "description": "Review platform auto-flags bulk creation",
+      "severity": "high"
+    },
+    {
+      "time": "Afternoon",
+      "title": "Case Opened",
+      "description": "Incident reported to cyber cell",
+      "severity": "critical"
+    }
   ],
-
-  "winCondition": { "guiltySuspectId": "suresh_k", "minCorrectEvidence": 3 },
-  "correctEvidenceIds": ["file_accountlog", "file_devicefingerprint", "meta_location", "ip_single", "file_ipreg"],
-
-  "outcomes": {
-    "perfect": { "condition": "correct_suspect_and_evidence_gte_3", "title": "Case Solved!", "subtitle": "Suresh K exposed as the fake review fraudster.", "label": "CASE CLOSED", "xp": 8 },
-    "partial": { "condition": "correct_suspect_and_evidence_lt_3", "title": "Insufficient Evidence", "subtitle": "Correct suspect but thin evidence.", "label": "PARTIAL", "xp": 2 },
-    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Suresh K.", "label": "CASE FAILED", "xp": 0 },
-    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  "winCondition": {
+    "guiltySuspectId": "suresh_k",
+    "minCorrectEvidence": 3
   },
-
+  "correctEvidenceIds": [
+    "file_accountlog",
+    "file_devicefingerprint",
+    "meta_location",
+    "ip_single",
+    "file_ipreg"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Suresh K exposed as the fake review fraudster.",
+      "label": "CASE CLOSED",
+      "xp": 8
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect but thin evidence.",
+      "label": "PARTIAL",
+      "xp": 2
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The real culprit was Suresh K.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
   "aria": {
     "welcomeToHub": "...47 glowing five-star reviews. All fake. All from one night.\nSomeone wanted to win badly enough to cheat.\nFind them.",
     "exploreFeeds": "Device fingerprints. IP logs. Account metadata.\nThe trail is wider than you think.",
     "viewEvidence": "One IP. 47 accounts. That's not a coincidence.",
     "markEvidence": "Good. Keep building the chain.",
     "decryptionHint": "The business name is hidden in the ISP record.\nDecode it.",
-    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

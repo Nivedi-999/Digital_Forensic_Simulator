@@ -1,19 +1,17 @@
 {
-  "id": "echo_without_a_voice",
+  "id": "case_echowithoutavoice",
   "title": "Echo Without a Voice",
   "shortDescription": "An investigative journalist receives precise anonymous threats referencing unpublished drafts. The sender accounts vanish within minutes. As her routines change, the messages adapt.",
-  "difficulty": "Medium",
+  "difficulty": "hard",
   "theme": "Anonymous Harassment / Behavioral Fingerprinting",
   "estimatedDuration": "2h 30m",
-  "caseNumber": "2051",
+  "caseNumber": "3003",
   "status": "Locked",
   "tutorialEnabled": false,
-
   "briefing": {
-    "incidentSummary": "An investigative journalist reports receiving anonymous threats after publishing a sensitive exposé.\nThe messages arrive late at night, calm and precise.\nThere is no profanity, no panic, no rage.\nEach message references details not yet published — draft notes, unreleased edits.\n\nThe sender accounts disappear minutes after each message.\nNo trace remains. No usernames repeat. No clear attacker appears.\n\nThe journalist begins altering her routines.\nThe messages adapt immediately.\nWarnings become predictions.\n\nYou are assigned to determine whether this is random harassment, a personal stalker, or a calculated psychological operation — before the threats escalate into action.",
-    "missionText": "Your Mission:\n\n› Identify the single author behind the anonymous messages\n\n› Analyze linguistic patterns, account metadata, and IP routing\n\n› Collect at least 3 correct evidence items\n\n› Flag the correct suspect to close the case and protect the journalist"
+    "incidentSummary": "An investigative journalist reports receiving anonymous threats after publishing a sensitive expos\u00e9.\nThe messages arrive late at night, calm and precise.\nThere is no profanity, no panic, no rage.\nEach message references details not yet published \u2014 draft notes, unreleased edits.\n\nThe sender accounts disappear minutes after each message.\nNo trace remains. No usernames repeat. No clear attacker appears.\n\nThe journalist begins altering her routines.\nThe messages adapt immediately.\nWarnings become predictions.\n\nYou are assigned to determine whether this is random harassment, a personal stalker, or a calculated psychological operation \u2014 before the threats escalate into action.",
+    "missionText": "Your Mission:\n\n\u203a Identify the single author behind the anonymous messages\n\n\u203a Analyze linguistic patterns, account metadata, and IP routing\n\n\u203a Collect at least 3 correct evidence items\n\n\u203a Flag the correct suspect to close the case and protect the journalist"
   },
-
   "suspects": [
     {
       "id": "vikram_sen",
@@ -23,25 +21,25 @@
       "riskLevel": "low",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Residential IP — no VPN rotation",
-        "deviceUsage": "Single device — inconsistent activity",
-        "locationTrace": "City outskirts — confirmed address",
+        "ipActivity": "Residential IP \u2014 no VPN rotation",
+        "deviceUsage": "Single device \u2014 inconsistent activity",
+        "locationTrace": "City outskirts \u2014 confirmed address",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has a harassment history and uses burner accounts. However, his language is sloppy and emotionally volatile — the opposite of the controlled, professional tone in the threats. No timing discipline. Suspicion drops after Mini-Game #1 (linguistic analysis) confirms the author is trained and deliberate."
+      "profileNotes": "Has a harassment history and uses burner accounts. However, his language is sloppy and emotionally volatile \u2014 the opposite of the controlled, professional tone in the threats. No timing discipline. Suspicion drops after Mini-Game #1 (linguistic analysis) confirms the author is trained and deliberate."
     },
     {
       "id": "maya_kulkarni",
       "name": "Maya Kulkarni",
       "role": "Former Colleague",
-      "department": "Previously — Editorial Research Team",
+      "department": "Previously \u2014 Editorial Research Team",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "VPN rotation — 3 different countries per session",
+        "ipActivity": "VPN rotation \u2014 3 different countries per session",
         "deviceUsage": "Same device fingerprint across all sessions",
-        "locationTrace": "Obfuscated — VPN exit nodes vary",
-        "vpnCheck": "Systematic VPN rotation — disciplined"
+        "locationTrace": "Obfuscated \u2014 VPN exit nodes vary",
+        "vpnCheck": "Systematic VPN rotation \u2014 disciplined"
       },
       "profileNotes": "Former colleague with access to draft notes and unpublished edits during her time on the team. Professional tone, restrained language, matching sentence structures found in archived emails. Suspicion rises consistently across all three evidence phases. The key tell: her archived professional emails share exact cadence patterns with the threat messages."
     },
@@ -53,15 +51,14 @@
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Heavy VPN rotation — multiple exit nodes",
+        "ipActivity": "Heavy VPN rotation \u2014 multiple exit nodes",
         "deviceUsage": "Obfuscated fingerprint",
         "locationTrace": "Unverifiable",
-        "vpnCheck": "Tor + VPN layered — over-engineered"
+        "vpnCheck": "Tor + VPN layered \u2014 over-engineered"
       },
       "profileNotes": "Initially appears to be the strongest technical suspect due to heavy VPN usage and obfuscated fingerprint. However, the anonymity infrastructure is over-engineered relative to the emotional intelligence in the messages. A person with this level of technical discipline would not reference personal details they have legitimate access to. Emotional mismatch. Suspicion weakens after IP analysis."
     }
   ],
-
   "evidencePanels": [
     {
       "id": "chat",
@@ -79,8 +76,8 @@
         "maxHints": 3,
         "hints": [
           "Count the words per sentence across all three messages. Is the variation natural?",
-          "Look at the emotional tone — calm, professional, controlled throughout. No escalation.",
-          "Compare the sentence endings — do they share a grammatical pattern not common in casual writing?"
+          "Look at the emotional tone \u2014 calm, professional, controlled throughout. No escalation.",
+          "Compare the sentence endings \u2014 do they share a grammatical pattern not common in casual writing?"
         ],
         "onSuccess": {
           "unlocksPanel": "meta",
@@ -90,32 +87,108 @@
       "items": [
         {
           "id": "chat_threat_1",
-          "label": "Message 1 — 22:41: 'You still think hiding names protects you?'",
+          "label": "Message 1 \u2014 22:41: 'You still think hiding names protects you?'",
           "sender": "anon_7741",
           "isKeyEvidence": true,
           "isSuspectMessage": true,
-          "detail": "Sent at 22:41. No profanity. No rage. The sentence is a precise rhetorical question — not a taunt. References the journalist's source protection practice, which is known to colleagues but not public. Professional register suggests insider knowledge.",
+          "detail": "Sent at 22:41. No profanity. No rage. The sentence is a precise rhetorical question \u2014 not a taunt. References the journalist's source protection practice, which is known to colleagues but not public. Professional register suggests insider knowledge.",
           "pointsToSuspect": "maya_kulkarni"
         },
         {
           "id": "chat_threat_2",
-          "label": "Message 2 — 22:44: 'You missed something in your last article.'",
+          "label": "Message 2 \u2014 22:44: 'You missed something in your last article.'",
           "sender": "anon_8823",
           "isKeyEvidence": true,
           "isSuspectMessage": true,
-          "detail": "References an omission in an article that was only visible in the draft version — not the published piece. The sender had access to unpublished editing notes. A different account, sent 3 minutes later, but same sentence cadence and professional tone.",
+          "detail": "References an omission in an article that was only visible in the draft version \u2014 not the published piece. The sender had access to unpublished editing notes. A different account, sent 3 minutes later, but same sentence cadence and professional tone.",
           "pointsToSuspect": "maya_kulkarni"
         },
         {
           "id": "chat_threat_3",
-          "label": "Message 3 — 22:47: 'You should stop before someone gets hurt.'",
+          "label": "Message 3 \u2014 22:47: 'You should stop before someone gets hurt.'",
           "sender": "anon_9031",
           "isKeyEvidence": true,
           "isSuspectMessage": true,
-          "detail": "Third account, third message. The escalation pattern is controlled — each message increases pressure while maintaining the same calm register. No slang. Language mirrors professional email tone. Sentence structure identical to message 1.",
+          "detail": "Third account, third message. The escalation pattern is controlled \u2014 each message increases pressure while maintaining the same calm register. No slang. Language mirrors professional email tone. Sentence structure identical to message 1.",
           "pointsToSuspect": "maya_kulkarni"
         }
       ]
+    },
+    {
+      "id": "files",
+      "label": "Files",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_account_creation",
+          "label": "account_creation_logs.txt",
+          "detail": "Platform account creation logs for the three troll accounts used in the harassment campaign. Account 1 (@truthexposed_mk): created at 22:39:02, profile photo uploaded at 22:39:14, first message sent at 22:41:00. Account 2 (@realdirt_now): created at 22:39:08, first message at 22:43:00. Account 3 (@factcheck_official): created at 22:39:11, first message at 22:46:00. All three accounts were created within a 9-second window using the same device fingerprint. Each account used a temporary email address from a disposable mail service \u2014 all three email addresses were generated from the same disposable domain in sequential order. The account names were pre-planned: all three were registered before the first message was sent.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "maya_k",
+          "metadata": {
+            "size": "0.2 MB",
+            "modifier": "Platform Trust & Safety",
+            "modifiedAt": "Incident night"
+          }
+        },
+        {
+          "id": "file_draft_content",
+          "label": "recovered_drafts.pdf",
+          "detail": "Content recovered from the platform's draft message cache \u2014 messages that were typed but not sent, recovered via platform server logs. Three unsent drafts were found associated with the troll accounts, containing personal details about the victim that were not publicly available: her home neighbourhood, the name of her thesis supervisor, and the specific chapter her article drew from. This level of detail indicates the harasser had prior knowledge of the victim \u2014 consistent with a personal or professional acquaintance rather than a random internet user. The drafts were discarded, suggesting the harasser exercised caution about how much insider knowledge to reveal. The tone and vocabulary of the drafts match the written style of Maya Kulkarni's public blog posts.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "maya_k",
+          "metadata": {
+            "size": "0.4 MB",
+            "modifier": "Platform Server Cache",
+            "modifiedAt": "Incident night"
+          }
+        },
+        {
+          "id": "file_prior_dispute",
+          "label": "prior_dispute_record.pdf",
+          "detail": "Academic dispute record from the university's ethics committee, filed 8 months before the harassment incident. Maya Kulkarni filed a formal complaint alleging that the victim had used data from a shared research project without co-authorship credit in a published article. The committee investigated and found the claim unsubstantiated \u2014 the victim had used only publicly available methodology. Maya's complaint was dismissed. Following the dismissal, Maya sent two emails to the department head characterising the decision as 'biased' and the victim as 'a person of questionable academic integrity'. These emails are on record. The harassment campaign began 3 days after the victim published a second article in the same research area \u2014 a direct trigger.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "maya_k",
+          "metadata": {
+            "size": "0.6 MB",
+            "modifier": "University Ethics Committee",
+            "modifiedAt": "8 months prior"
+          }
+        }
+      ],
+      "hiddenItem": {
+        "id": "file_style_analysis",
+        "label": "linguistic_style_analysis.pdf",
+        "detail": "Forensic linguistic analysis comparing the troll messages against writing samples from 6 potential suspects including Maya Kulkarni. Analysis parameters: sentence length distribution, passive voice frequency, punctuation style, use of rhetorical questions, and characteristic vocabulary. Findings: the troll messages show a statistically significant match (p < 0.003) with Maya Kulkarni's writing samples on 4 of 5 parameters. The most distinctive marker: Maya habitually uses the phrase 'one must ask' as a rhetorical device \u2014 appearing in her academic papers 11 times and in the troll messages twice. No other suspect matched on more than 1 parameter. Report authored by a forensic linguist from the National Forensic Sciences University.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "maya_k",
+        "unlockedByMinigame": "alias_decode",
+        "metadata": {
+          "size": "1.1 MB",
+          "modifier": "NFSU Forensic Linguistics",
+          "modifiedAt": "Post-incident"
+        }
+      },
+      "minigame": {
+        "id": "alias_decode",
+        "type": "caesar_cipher",
+        "title": "Decode the Troll Account Creator",
+        "cipherText": "Pdbd-N",
+        "hint": "Caesar shift -3. Who created all three accounts?",
+        "solution": "Maya-K",
+        "maxHints": 3,
+        "hints": [
+          "It is a person's first name followed by their surname initial.",
+          "Shift each letter 3 positions backward.",
+          "P\u2192M, d\u2192a, b\u2192y..."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_style_analysis",
+          "message": "linguistic_style_analysis.pdf is now available in your file feed."
+        }
+      }
     },
     {
       "id": "meta",
@@ -128,12 +201,12 @@
         "type": "sequence_order",
         "title": "Account Lifespan Correlation",
         "description": "Align the creation, first message, and deletion times of all three accounts. Detect the interval pattern and operational rhythm.",
-        "hint": "Accounts created minutes before use and deleted within 10 minutes are not random — they follow a deployment script.",
+        "hint": "Accounts created minutes before use and deleted within 10 minutes are not random \u2014 they follow a deployment script.",
         "solution": "single_operator_rhythm",
         "maxHints": 3,
         "hints": [
           "Line up creation and deletion times. How long does each account live?",
-          "Each account lives for exactly 8–10 minutes. Is that a coincidence across three accounts?",
+          "Each account lives for exactly 8\u201310 minutes. Is that a coincidence across three accounts?",
           "The creation-to-first-message gap is always 2 minutes. The deletion follows 6 minutes after the message. This is scripted behavior."
         ],
         "onSuccess": {
@@ -147,13 +220,32 @@
           "label": "Account Lifespan Pattern",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "All three accounts follow an identical lifecycle: created 2 minutes before first message, deleted 6 minutes after. Zero personalization. Same obfuscated device fingerprint on all three. This is not three different people — it is one operator running a deployment routine.",
+          "detail": "All three accounts follow an identical lifecycle: created 2 minutes before first message, deleted 6 minutes after. Zero personalization. Same obfuscated device fingerprint on all three. This is not three different people \u2014 it is one operator running a deployment routine.",
           "rows": [
-            { "key": "anon_7741 Created", "value": "22:39 — 2 min before message", "highlight": true },
-            { "key": "anon_8823 Created", "value": "22:42 — 2 min before message", "highlight": true },
-            { "key": "anon_9031 Created", "value": "22:45 — 2 min before message", "highlight": true },
-            { "key": "All Deleted", "value": "8–10 minutes after creation" },
-            { "key": "Device Fingerprint", "value": "Identical across all three accounts", "highlight": true }
+            {
+              "key": "anon_7741 Created",
+              "value": "22:39 \u2014 2 min before message",
+              "highlight": true
+            },
+            {
+              "key": "anon_8823 Created",
+              "value": "22:42 \u2014 2 min before message",
+              "highlight": true
+            },
+            {
+              "key": "anon_9031 Created",
+              "value": "22:45 \u2014 2 min before message",
+              "highlight": true
+            },
+            {
+              "key": "All Deleted",
+              "value": "8\u201310 minutes after creation"
+            },
+            {
+              "key": "Device Fingerprint",
+              "value": "Identical across all three accounts",
+              "highlight": true
+            }
           ],
           "pointsToSuspect": "maya_kulkarni"
         },
@@ -162,12 +254,26 @@
           "label": "Device Fingerprint Match",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Despite using different account names, IP addresses, and browser agents, all three accounts share the same obfuscated hardware fingerprint. The obfuscation was applied manually — but the underlying signature persisted.",
+          "detail": "Despite using different account names, IP addresses, and browser agents, all three accounts share the same obfuscated hardware fingerprint. The obfuscation was applied manually \u2014 but the underlying signature persisted.",
           "rows": [
-            { "key": "Browser Agent", "value": "Spoofed — varies per account" },
-            { "key": "Hardware Fingerprint", "value": "Identical — same device", "highlight": true },
-            { "key": "Canvas Signature", "value": "Match confirmed across accounts" },
-            { "key": "Verdict", "value": "One device, one operator", "highlight": true }
+            {
+              "key": "Browser Agent",
+              "value": "Spoofed \u2014 varies per account"
+            },
+            {
+              "key": "Hardware Fingerprint",
+              "value": "Identical \u2014 same device",
+              "highlight": true
+            },
+            {
+              "key": "Canvas Signature",
+              "value": "Match confirmed across accounts"
+            },
+            {
+              "key": "Verdict",
+              "value": "One device, one operator",
+              "highlight": true
+            }
           ],
           "pointsToSuspect": "maya_kulkarni"
         }
@@ -186,13 +292,30 @@
           "label": "VPN Rotation Pattern",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Each message uses a different VPN exit node — different country, different IP. However, the latency signature is identical across all three connections: 34–36ms response time. The underlying internet connection is the same. The VPN rotation is cosmetic, not structural.",
+          "detail": "Each message uses a different VPN exit node \u2014 different country, different IP. However, the latency signature is identical across all three connections: 34\u201336ms response time. The underlying internet connection is the same. The VPN rotation is cosmetic, not structural.",
           "rows": [
-            { "key": "Connection 1 (22:41)", "value": "185.77.x.x — VPN, Region A" },
-            { "key": "Connection 2 (22:44)", "value": "103.42.x.x — VPN, Region B" },
-            { "key": "Connection 3 (22:47)", "value": "91.201.x.x — VPN, Region C" },
-            { "key": "Latency All Three", "value": "34–36ms — identical", "highlight": true },
-            { "key": "Verdict", "value": "Same base connection — VPN is cosmetic rotation", "highlight": true }
+            {
+              "key": "Connection 1 (22:41)",
+              "value": "185.77.x.x \u2014 VPN, Region A"
+            },
+            {
+              "key": "Connection 2 (22:44)",
+              "value": "103.42.x.x \u2014 VPN, Region B"
+            },
+            {
+              "key": "Connection 3 (22:47)",
+              "value": "91.201.x.x \u2014 VPN, Region C"
+            },
+            {
+              "key": "Latency All Three",
+              "value": "34\u201336ms \u2014 identical",
+              "highlight": true
+            },
+            {
+              "key": "Verdict",
+              "value": "Same base connection \u2014 VPN is cosmetic rotation",
+              "highlight": true
+            }
           ],
           "pointsToSuspect": "maya_kulkarni"
         },
@@ -201,33 +324,74 @@
           "label": "6-Minute Activity Window",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "All three connections are active within a 6-minute window (22:41–22:47). The session ends abruptly at 22:49 — consistent with a scripted session manager, not a human manually disconnecting. The same 6-minute window appears in session logs from the prior week.",
+          "detail": "All three connections are active within a 6-minute window (22:41\u201322:47). The session ends abruptly at 22:49 \u2014 consistent with a scripted session manager, not a human manually disconnecting. The same 6-minute window appears in session logs from the prior week.",
           "rows": [
-            { "key": "Session Start", "value": "22:41" },
-            { "key": "Session End", "value": "22:49 — abrupt", "highlight": true },
-            { "key": "Total Window", "value": "6 minutes across all connections" },
-            { "key": "Prior Week", "value": "Same window detected — pattern repeats", "highlight": true }
+            {
+              "key": "Session Start",
+              "value": "22:41"
+            },
+            {
+              "key": "Session End",
+              "value": "22:49 \u2014 abrupt",
+              "highlight": true
+            },
+            {
+              "key": "Total Window",
+              "value": "6 minutes across all connections"
+            },
+            {
+              "key": "Prior Week",
+              "value": "Same window detected \u2014 pattern repeats",
+              "highlight": true
+            }
           ],
           "pointsToSuspect": "maya_kulkarni"
         }
       ]
     }
   ],
-
   "timeline": [
-    { "time": "22:39", "title": "First Account Created", "description": "anon_7741 created — no activity yet.", "severity": "low" },
-    { "time": "22:41", "title": "First Threat Sent", "description": "'You still think hiding names protects you?' — references source protection.", "severity": "high" },
-    { "time": "22:42", "title": "Second Account Created", "description": "anon_8823 created during active session.", "severity": "medium" },
-    { "time": "22:44", "title": "Second Threat Sent", "description": "References omission in unpublished draft — insider knowledge confirmed.", "severity": "high" },
-    { "time": "22:47", "title": "Third Threat Sent", "description": "'You should stop before someone gets hurt.' — controlled escalation.", "severity": "high" },
-    { "time": "22:49", "title": "All Accounts Deleted", "description": "Scripted deletion — all three accounts vanish simultaneously.", "severity": "medium" }
+    {
+      "time": "22:39",
+      "title": "First Account Created",
+      "description": "anon_7741 created \u2014 no activity yet.",
+      "severity": "low"
+    },
+    {
+      "time": "22:41",
+      "title": "First Threat Sent",
+      "description": "'You still think hiding names protects you?' \u2014 references source protection.",
+      "severity": "high"
+    },
+    {
+      "time": "22:42",
+      "title": "Second Account Created",
+      "description": "anon_8823 created during active session.",
+      "severity": "medium"
+    },
+    {
+      "time": "22:44",
+      "title": "Second Threat Sent",
+      "description": "References omission in unpublished draft \u2014 insider knowledge confirmed.",
+      "severity": "high"
+    },
+    {
+      "time": "22:47",
+      "title": "Third Threat Sent",
+      "description": "'You should stop before someone gets hurt.' \u2014 controlled escalation.",
+      "severity": "high"
+    },
+    {
+      "time": "22:49",
+      "title": "All Accounts Deleted",
+      "description": "Scripted deletion \u2014 all three accounts vanish simultaneously.",
+      "severity": "medium"
+    }
   ],
-
   "winCondition": {
     "guiltySuspectId": "maya_kulkarni",
     "minCorrectEvidence": 3
   },
-
   "correctEvidenceIds": [
     "chat_threat_1",
     "chat_threat_2",
@@ -235,9 +399,12 @@
     "meta_account_lifecycle",
     "meta_fingerprint",
     "ip_vpn_rotation",
-    "ip_activity_window"
+    "ip_activity_window",
+    "file_account_creation",
+    "file_draft_content",
+    "file_prior_dispute",
+    "file_style_analysis"
   ],
-
   "outcomes": {
     "perfect": {
       "condition": "correct_suspect_and_evidence_gte_3",
@@ -268,12 +435,11 @@
       "xp": 0
     }
   },
-
   "aria": {
     "welcomeToHub": "...Signal acquired.\nSomeone is watching this journalist very closely.\nThe messages are calm. Precise. Personal.\nThat is not random. That is chosen.",
-    "exploreFeeds": "Three panels. The answer is in the pattern, not the content.\nStart with the chat logs — read the tone, not the words.\nSomething about the writing will feel familiar.",
+    "exploreFeeds": "Three panels. The answer is in the pattern, not the content.\nStart with the chat logs \u2014 read the tone, not the words.\nSomething about the writing will feel familiar.",
     "viewEvidence": "No rage. No slang. No mistakes.\nThis is a person who chose every word.\nMark everything that sounds too controlled for a stranger.",
-    "markEvidence": "Good. You're reading it right.\nNow check the accounts — how long do they live?\nA random troll doesn't delete on a schedule.",
+    "markEvidence": "Good. You're reading it right.\nNow check the accounts \u2014 how long do they live?\nA random troll doesn't delete on a schedule.",
     "decryptionHint": "The IPs rotate countries but the latency doesn't change.\nThe VPN is cosmetic. The connection underneath is the same.\nFind the fingerprint that persists across all three accounts.",
     "flagSuspect": "You have the linguistic match, the device fingerprint, and the routing pattern.\nOne person. One script. One motive.\nWho had access to those drafts?"
   }

@@ -122,7 +122,7 @@
         {
           "id": "file_simclone",
           "label": "sim_provisioning_log.txt",
-          "detail": "Backend log shows duplicate SIM issued for victim's number at 3:07 AM. Request initiated by employee ID VB-4421 \u2014 Vikram B \u2014 without any physical ID verification.",
+          "detail": "Backend provisioning log from the telecom operator's SIM management system. At 03:07 AM, a new SIM card was issued for the victim's mobile number +91-98XXXXXXXX. The request came from an internal operator terminal identified as workstation TL-TERM-14, assigned to the Vikram B. The request type was 'Emergency SIM Replacement' \u2014 a privileged operation that bypasses the standard 24-hour cooling period. The old SIM was deactivated at 03:07:44 AM. The new SIM was activated at 03:08:02 AM \u2014 an 18-second window. The victim's phone showed 'No Service' from 03:07 AM. This is a classic SIM swap attack executed from inside the operator's own provisioning system.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "metadata": {
@@ -134,7 +134,7 @@
         {
           "id": "file_banktransfer",
           "label": "bank_transfer_record.pdf",
-          "detail": "\u20b985,000 transferred at 3:14 AM to account ACC-9921-X. OTP authenticated at 3:13 AM from a different device than victim's registered phone.",
+          "detail": "Bank transaction record for the victim's savings account. At 03:13:52 AM, an OTP was sent to the victim's number \u2014 which by this time was ringing on the cloned SIM held by Vikram B. At 03:13:58 AM, the OTP was entered into the bank's mobile app \u2014 a 6-second turnaround, impossibly fast for a sleeping victim but consistent with a prepared attacker waiting. At 03:14:11 AM, \u20b985,000 was transferred to account ACC-9921-X. The transfer was marked as 'high-value first-time beneficiary' by the bank's fraud engine but was not blocked because the OTP was valid. The bank's session log shows the transfer was initiated from a device with IMEI 35XXXXXXXXX \u2014 not matching any device registered to the account holder.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "metadata": {
@@ -146,7 +146,7 @@
         {
           "id": "file_employeelog",
           "label": "employee_access_log.txt",
-          "detail": "Vikram B accessed the SIM provisioning portal at 3:05 AM \u2014 outside of his assigned shift hours (9 AM\u20136 PM). Unauthorized off-hours access.",
+          "detail": "Employee access log from the telecom operator's HR and shift management system. Vikram B's assigned shift is 09:00 AM \u2013 06:00 PM, Monday to Saturday. The SIM provisioning terminal TL-TERM-14 was accessed at 03:05 AM \u2014 9 hours outside his authorised shift window. The building access card log shows Vikram B badged into the operations floor at 02:58 AM using his employee card. He badged out at 03:19 AM \u2014 a 21-minute visit. No maintenance window, no overtime authorisation, and no incident ticket was open that would justify an off-hours visit. The access card and terminal login together place him at the scene at the exact time of the SIM swap.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "metadata": {
@@ -159,7 +159,7 @@
       "hiddenItem": {
         "id": "file_bankaccount",
         "label": "destination_account_trace.txt",
-        "detail": "Account ACC-9921-X traced to a mule account opened with Vikram B's Aadhaar number under a false name. Direct financial link to the perpetrator.",
+        "detail": "Bank KYC documents for account ACC-9921-X, the recipient of the \u20b985,000 transfer. The account was opened 3 weeks before the fraud at a cooperative bank branch. KYC documents submitted: Aadhaar card and PAN card both bearing the name 'Vikram Bhardwaj' \u2014 consistent with Vikram B's legal name. The account was opened with a minimum deposit of \u20b91,000. No other deposits were made until the fraud transfer. The account was not linked to any payroll, utility, or recurring payment \u2014 its sole purpose appears to be receiving and withdrawing fraud proceeds. ATM withdrawal of \u20b985,000 was made at 04:32 AM at a cash machine 2.1 km from the operator's office.",
         "isKeyEvidence": true,
         "pointsToSuspect": "vikram_b",
         "unlockedByMinigame": "account_decode",

@@ -57,7 +57,7 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
     });
   }
 
-  void _openAnalysis(String panelId, String itemId) {
+  void _openAnalysis(BuildContext context, String panelId, String itemId) {
     TutorialService().onFeedTapped();
     Navigator.push(
       context,
@@ -66,7 +66,6 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
         itemId: itemId,
       )),
     ).then((_) {
-      // Use read() so we don't trigger a rebuild on the callback itself
       final engine = CaseEngineProvider.read(context);
       final service = TutorialService();
       final count = engine.collectedEvidence.length;
@@ -133,6 +132,7 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                       setState(() => _activeFeed = key);
                       if (key != 'suspects') TutorialService().onFeedTapped();
                     },
+                    showSuspects: true,
                   ),
                   const SizedBox(height: 14),
 
@@ -144,8 +144,8 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                           minHeight: 80, maxHeight: 260),
                       child: SingleChildScrollView(
                         child: _activeFeed == 'suspects'
-                            ? _buildSuspectFeed(engine)
-                            : _buildEvidenceFeed(engine),
+                            ? _buildSuspectFeed(context, engine)
+                            : _buildEvidenceFeed(context, engine),
                       ),
                     ),
                   ),
@@ -192,48 +192,30 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
     );
   }
 
-  // ── Evidence feed for the active panel ──────────────────────
+  // ── Evidence feed for the active panel ──────────────────
 
-  Widget _buildEvidenceFeed(CaseEngine engine) {
+  Widget _buildEvidenceFeed(BuildContext context, CaseEngine engine) {
     final panel = engine.caseFile.panelById(_activeFeed);
     if (panel == null) return const SizedBox();
 
     final visibleItems = engine.visibleItemsForPanel(_activeFeed);
 
     return Column(
-      children: visibleItems.map((item) {
-        // FIX: Use item.sender for chat left-side, item.label for the right side
-        // This was the cause of vertical text — putting the full label in `left`
-        // without a bounded width caused the text to render character-by-character
-        // vertically in a narrow column.
-        final String leftText;
-        final String rightText;
-
-        if (panel.evidenceType == 'chat') {
-          leftText = item.sender ?? 'Unknown'; // e.g. "Ghost", "Admin"
-          rightText = item.label;              // the message text
-        } else if (panel.evidenceType == 'files') {
-          leftText = item.label;               // filename
-          rightText = item.metadata?.size ?? '';
-        } else {
-          // meta / ip — label on left, first row value on right (if any)
-          leftText = item.label;
-          rightText = item.rows.isNotEmpty ? item.rows.first.value : '';
-        }
-
+      children: List.generate(visibleItems.length, (index) {
+        final item = visibleItems[index];
         return LogRow(
-          left: leftText,
-          right: rightText,
-          highlighted: item.isKeyEvidence,
-          onTap: () => _openAnalysis(panel.id, item.id),
+          left: item.sender ?? item.label,
+          right: item.metadata?.size ?? item.label,
+          highlighted: index.isEven, // alternating rows — even=amber, odd=default
+          onTap: () => _openAnalysis(context, panel.id, item.id),
         );
-      }).toList(),
+      }),
     );
   }
 
-  // ── Suspect feed ─────────────────────────────────────────────
+  // ── Suspect feed ─────────────────────────────────────────
 
-  Widget _buildSuspectFeed(CaseEngine engine) {
+  Widget _buildSuspectFeed(BuildContext context, CaseEngine engine) {
     return Column(
       children: engine.suspectsByThreat.map((suspect) {
         return Padding(
@@ -272,7 +254,7 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
   }
 }
 
-// ── Case Header ─────────────────────────────────────────────────
+// ── Case Header ─────────────────────────────────────────────
 
 class _CaseHeader extends StatelessWidget {
   final CaseFile caseFile;
@@ -345,17 +327,19 @@ class _CaseHeader extends StatelessWidget {
   }
 }
 
-// ── Feed Tab Bar ─────────────────────────────────────────────────
+// ── Feed Tab Bar ─────────────────────────────────────────────
 
 class _FeedTabBar extends StatelessWidget {
   final List<EvidencePanel> panels;
   final String activeFeed;
   final ValueChanged<String> onTabChanged;
+  final bool showSuspects;
 
   const _FeedTabBar({
     required this.panels,
     required this.activeFeed,
     required this.onTabChanged,
+    this.showSuspects = true,
   });
 
   @override
@@ -374,14 +358,15 @@ class _FeedTabBar extends StatelessWidget {
             ),
           )),
           // Suspects tab is always present
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: FeedTabButton(
-              label: 'Suspects',
-              isActive: activeFeed == 'suspects',
-              onTap: () => onTabChanged('suspects'),
+          if (showSuspects)
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: FeedTabButton(
+                label: 'Suspects',
+                isActive: activeFeed == 'suspects',
+                onTap: () => onTabChanged('suspects'),
+              ),
             ),
-          ),
         ],
       ),
     );

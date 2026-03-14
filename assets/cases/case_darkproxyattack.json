@@ -4,79 +4,76 @@
   "shortDescription": "Masked DDoS via Proxy Chain",
   "difficulty": "hard",
   "theme": "DDoS Attack & Infrastructure Sabotage",
-  "estimatedDuration": "50–65 min",
+  "estimatedDuration": "50\u201365 min",
   "caseNumber": "3004",
   "status": "Locked",
   "tutorialEnabled": false,
-
   "briefing": {
-    "incidentSummary": "A fintech startup's payment gateway was taken offline for 9 hours during a peak transaction window.\n\nThe DDoS attack was routed through 14 proxy nodes across 6 countries — designed to look like organic global traffic.\n\nBut the attack originated from one source. Someone with intimate knowledge of the gateway's rate limits and architecture.",
-    "missionText": "Your Mission:\n\n› Trace the attack through the proxy chain\n\n› Identify who had architecture knowledge\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+    "incidentSummary": "A fintech startup's payment gateway was taken offline for 9 hours during a peak transaction window.\n\nThe DDoS attack was routed through 14 proxy nodes across 6 countries \u2014 designed to look like organic global traffic.\n\nBut the attack originated from one source. Someone with intimate knowledge of the gateway's rate limits and architecture.",
+    "missionText": "Your Mission:\n\n\u203a Trace the attack through the proxy chain\n\n\u203a Identify who had architecture knowledge\n\n\u203a Collect at least 4 correct evidences\n\n\u203a Flag the right suspect"
   },
-
   "suspects": [
     {
       "id": "dhruv_n",
       "name": "Dhruv N",
       "role": "Dismissed DevOps Engineer",
-      "department": "Formerly — PaySwift Fintech",
+      "department": "Formerly \u2014 PaySwift Fintech",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "185.220.101.45 — Entry node traced back",
-        "deviceUsage": "DHRUV-SERVER — custom VPS",
-        "locationTrace": "VPS hosted in Netherlands — registered to Dhruv N",
+        "ipActivity": "185.220.101.45 \u2014 Entry node traced back",
+        "deviceUsage": "DHRUV-SERVER \u2014 custom VPS",
+        "locationTrace": "VPS hosted in Netherlands \u2014 registered to Dhruv N",
         "vpnCheck": "14-hop proxy chain used"
       },
-      "profileNotes": "Dismissed 3 months ago after a performance dispute. Had full architecture access during employment — knew exact rate limit thresholds. Rented a VPS 2 weeks before the attack and built the proxy chain from it."
+      "profileNotes": "Dismissed 3 months ago after a performance dispute. Had full architecture access during employment \u2014 knew exact rate limit thresholds. Rented a VPS 2 weeks before the attack and built the proxy chain from it."
     },
     {
       "id": "competitor_cto",
       "name": "Siddharth R",
-      "role": "CTO — Rival Fintech",
+      "role": "CTO \u2014 Rival Fintech",
       "department": "RapidPay Technologies",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "49.207.55.33 — Corporate IP",
-        "deviceUsage": "CTO workstation — monitored",
+        "ipActivity": "49.207.55.33 \u2014 Corporate IP",
+        "deviceUsage": "CTO workstation \u2014 monitored",
         "locationTrace": "RapidPay HQ, Bengaluru",
         "vpnCheck": "Corporate VPN only"
       },
-      "profileNotes": "Benefited from the outage — gained market share. However no technical link to the attack infrastructure. Alibi confirmed by corporate access logs."
+      "profileNotes": "Benefited from the outage \u2014 gained market share. However no technical link to the attack infrastructure. Alibi confirmed by corporate access logs."
     },
     {
       "id": "insider_devops",
       "name": "Kavya T",
       "role": "Current DevOps Engineer",
-      "department": "PaySwift Fintech — Infrastructure",
+      "department": "PaySwift Fintech \u2014 Infrastructure",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "10.0.2.15 — Internal",
-        "deviceUsage": "Office terminal — monitored",
+        "ipActivity": "10.0.2.15 \u2014 Internal",
+        "deviceUsage": "Office terminal \u2014 monitored",
         "locationTrace": "PaySwift Office, Mumbai",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has current architecture access but no motive. Was actively working to mitigate the attack during the outage window — confirmed by incident response logs."
+      "profileNotes": "Has current architecture access but no motive. Was actively working to mitigate the attack during the outage window \u2014 confirmed by incident response logs."
     },
     {
       "id": "hacktivist",
-      "name": "Unknown Group — NullFront",
+      "name": "Unknown Group \u2014 NullFront",
       "role": "Suspected Hacktivist Collective",
-      "department": "External — Unverified",
+      "department": "External \u2014 Unverified",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Multiple — Tor exit nodes",
-        "deviceUsage": "Unknown — distributed",
+        "ipActivity": "Multiple \u2014 Tor exit nodes",
+        "deviceUsage": "Unknown \u2014 distributed",
         "locationTrace": "Untraced",
         "vpnCheck": "Tor detected"
       },
-      "profileNotes": "NullFront claimed responsibility on social media — but their signature attack patterns (slow-loris, HTTP flood) don't match the volumetric burst attack seen here. False flag claim."
+      "profileNotes": "NullFront claimed responsibility on social media \u2014 but their signature attack patterns (slow-loris, HTTP flood) don't match the volumetric burst attack seen here. False flag claim."
     }
   ],
-
   "evidencePanels": [
     {
       "id": "chat",
@@ -100,7 +97,7 @@
           "sender": "Dhruv N (archived Slack)",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Message from Dhruv N's archived Slack — from 5 months ago when he was still employed. The attack burst was exactly 8,200 req/sec — just above the threshold he knew.",
+          "detail": "Message from Dhruv N's archived Slack \u2014 from 5 months ago when he was still employed. The attack burst was exactly 8,200 req/sec \u2014 just above the threshold he knew.",
           "pointsToSuspect": "dhruv_n"
         },
         {
@@ -125,36 +122,52 @@
         {
           "id": "file_trafficanalysis",
           "label": "ddos_traffic_analysis.pdf",
-          "detail": "Attack traffic was 8,200 req/sec — exactly 2.5% above the documented internal threshold. No public source had knowledge of this threshold. Attack used a volumetric burst pattern, not NullFront's known slow-loris signature.",
+          "detail": "Network traffic analysis report from the target company's edge firewall. The DDoS attack peaked at 8,200 requests per second directed at the primary API gateway. This figure is precisely 2.5% above the company's documented internal load threshold of 8,000 req/sec \u2014 the exact level at which auto-scaling kicks in but cannot respond fast enough to prevent service degradation. This knowledge of internal thresholds is not public and does not appear in any public documentation. It is consistent with someone who had insider knowledge of the infrastructure \u2014 Dhruv N worked in the DevOps team for 2 years and would have had direct access to these parameters. The attack sustained this rate for 9 hours 14 minutes before tapering off \u2014 well beyond the auto-scaling recovery window.",
           "isKeyEvidence": true,
           "pointsToSuspect": "dhruv_n",
-          "metadata": { "size": "2.1 MB", "modifier": "Security SOC", "modifiedAt": "Post-incident" }
+          "metadata": {
+            "size": "2.1 MB",
+            "modifier": "Security SOC",
+            "modifiedAt": "Post-incident"
+          }
         },
         {
           "id": "file_proxytrace",
           "label": "proxy_chain_trace.txt",
-          "detail": "14-hop proxy chain traced using TTL analysis and timing correlation. Entry node: 185.220.101.45 (Netherlands). Exit nodes: 6 countries. Entry node registered to a VPS paid for with a prepaid card — traced to Dhruv N's address via delivery records.",
+          "detail": "14-hop proxy chain reconstruction using TTL (time-to-live) analysis and inter-node timing correlation. The chain traverses: India (entry VPS) \u2192 Netherlands \u2192 Romania \u2192 Singapore \u2192 Brazil \u2192 Japan \u2192 Canada \u2192 Germany \u2192 Ukraine \u2192 Hong Kong \u2192 France \u2192 Kenya \u2192 USA \u2192 final C2 node. Each hop added 18\u201334ms latency. The total round-trip time of 847ms is consistent with this geographic path. The entry VPS (first hop) was purchased under a ProtonMail identity \u2014 but the setup session was conducted from an unmasked home IP traced to Dhruv N. The exit node (hop 14) originated attack traffic that was fingerprinted as matching the same automated toolset (Slowloris variant) referenced in Dhruv N's dismissed DevOps employee review, which noted 'unauthorised stress-testing of production endpoints' as a reason for his termination.",
           "isKeyEvidence": true,
           "pointsToSuspect": "dhruv_n",
-          "metadata": { "size": "0.8 MB", "modifier": "Network Forensics", "modifiedAt": "Post-incident" }
+          "metadata": {
+            "size": "0.8 MB",
+            "modifier": "Network Forensics",
+            "modifiedAt": "Post-incident"
+          }
         },
         {
           "id": "file_vpspurchase",
           "label": "vps_purchase_record.txt",
-          "detail": "VPS purchased 14 days before attack from NordVPS. Paid via prepaid Visa card. Card purchased at a convenience store — CCTV footage shows Dhruv N making the purchase.",
+          "detail": "VPS purchase records obtained from NordVPS via law enforcement subpoena. A virtual private server (entry node of the 14-hop chain) was purchased 14 days before the attack using a prepaid Visa card. The card was purchased at a convenience store in Bengaluru \u2014 CCTV captured the buyer's face. Facial recognition matched Dhruv N with 94.7% confidence. The VPS was ordered using a ProtonMail address and configured remotely. However, during the initial VPS setup session, the buyer made one connectivity check from their home IP 115.99.31.88 \u2014 before activating the proxy chain. This unmasked IP is registered to a BSNL broadband account under Dhruv N's name at his last known residence. The setup session lasted 22 minutes and included installation of the Dante SOCKS5 proxy server.",
           "isKeyEvidence": true,
           "pointsToSuspect": "dhruv_n",
-          "metadata": { "size": "0.3 MB", "modifier": "Financial Investigation", "modifiedAt": "Post-incident" }
+          "metadata": {
+            "size": "0.3 MB",
+            "modifier": "Financial Investigation",
+            "modifiedAt": "Post-incident"
+          }
         }
       ],
       "hiddenItem": {
         "id": "file_configmatch",
         "label": "attack_config_analysis.txt",
-        "detail": "The proxy chain configuration script found on the entry VPS uses a code comment style and variable naming convention identical to Dhruv N's internal deployment scripts — still on file in PaySwift's code repository.",
+        "detail": "The proxy chain configuration script recovered from the entry VPS contains a distinctive code comment on line 47: '# delay between rotations must match heartbeat \u2014 ref: internal_ops_doc_v3.pdf'. This document reference is to an internal company operations document that was never published externally. Its existence is known only to current and former DevOps staff. The script also uses a non-standard port sequencing pattern that matches an internal network testing script Dhruv N authored during his employment \u2014 recovered from the company's Git repository and confirmed by 3 former colleagues as his coding style. The variable naming convention (snake_case with underscore prefixes for private vars) is consistent across both codebases. A senior developer estimated the probability of two independent authors producing this identical style at below 0.1%.",
         "isKeyEvidence": true,
         "pointsToSuspect": "dhruv_n",
         "unlockedByMinigame": "proxy_decode",
-        "metadata": { "size": "0.4 MB", "modifier": "Code Forensics", "modifiedAt": "Post-incident" }
+        "metadata": {
+          "size": "0.4 MB",
+          "modifier": "Code Forensics",
+          "modifiedAt": "Post-incident"
+        }
       },
       "minigame": {
         "id": "proxy_decode",
@@ -167,7 +180,7 @@
         "hints": [
           "It is a person's name followed by their initial.",
           "Shift each letter 3 positions backward.",
-          "G→D, k→h, u→r..."
+          "G\u2192D, k\u2192h, u\u2192r..."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_configmatch",
@@ -185,25 +198,47 @@
         {
           "id": "meta_timing",
           "label": "Attack Timing Correlation",
-          "detail": "Attack launched at 10:00 AM on a Monday — PaySwift's documented peak transaction window. This timing knowledge is in the company's internal SLA documents, not public information.",
+          "detail": "Attack launched at 10:00 AM on a Monday \u2014 PaySwift's documented peak transaction window. This timing knowledge is in the company's internal SLA documents, not public information.",
           "isKeyEvidence": true,
           "pointsToSuspect": "dhruv_n",
           "rows": [
-            { "key": "Attack Start", "value": "10:00 AM Monday", "highlight": true },
-            { "key": "Peak Window Doc", "value": "Internal SLA — not public", "highlight": true },
-            { "key": "Duration", "value": "9 hours 14 minutes" }
+            {
+              "key": "Attack Start",
+              "value": "10:00 AM Monday",
+              "highlight": true
+            },
+            {
+              "key": "Peak Window Doc",
+              "value": "Internal SLA \u2014 not public",
+              "highlight": true
+            },
+            {
+              "key": "Duration",
+              "value": "9 hours 14 minutes"
+            }
           ]
         },
         {
           "id": "meta_scriptmatch",
           "label": "Code Style Match",
-          "detail": "Variable names in the attack script (payload_burst, node_hop_delay) match Dhruv N's internal scripts verbatim — probability of coincidence less than 0.1%.",
+          "detail": "Variable names in the attack script (payload_burst, node_hop_delay) match Dhruv N's internal scripts verbatim \u2014 probability of coincidence less than 0.1%.",
           "isKeyEvidence": true,
           "pointsToSuspect": "dhruv_n",
           "rows": [
-            { "key": "Match Variables", "value": "payload_burst, node_hop_delay", "highlight": true },
-            { "key": "Found In", "value": "Dhruv N's internal scripts", "highlight": true },
-            { "key": "Coincidence Probability", "value": "< 0.1%" }
+            {
+              "key": "Match Variables",
+              "value": "payload_burst, node_hop_delay",
+              "highlight": true
+            },
+            {
+              "key": "Found In",
+              "value": "Dhruv N's internal scripts",
+              "highlight": true
+            },
+            {
+              "key": "Coincidence Probability",
+              "value": "< 0.1%"
+            }
           ]
         }
       ],
@@ -219,59 +254,152 @@
         {
           "id": "ip_entrynode",
           "label": "Proxy Chain Entry Node",
-          "detail": "IP 185.220.101.45 is the first node in the proxy chain. Netherlands VPS. Registered to a prepaid account — delivery address matches Dhruv N's home.",
+          "detail": "IP 185.220.101.45 is the first node in the proxy chain. Netherlands VPS. Registered to a prepaid account \u2014 delivery address matches Dhruv N's home.",
           "isKeyEvidence": true,
           "pointsToSuspect": "dhruv_n",
           "rows": [
-            { "key": "Entry IP", "value": "185.220.101.45", "highlight": true },
-            { "key": "Location", "value": "Netherlands VPS", "highlight": true },
-            { "key": "Linked To", "value": "Dhruv N (delivery records)", "highlight": true }
+            {
+              "key": "Entry IP",
+              "value": "185.220.101.45",
+              "highlight": true
+            },
+            {
+              "key": "Location",
+              "value": "Netherlands VPS",
+              "highlight": true
+            },
+            {
+              "key": "Linked To",
+              "value": "Dhruv N (delivery records)",
+              "highlight": true
+            }
           ]
         },
         {
           "id": "ip_tor_false",
           "label": "Tor Exit Nodes (NullFront)",
-          "detail": "NullFront's known exit nodes are Tor-based and do not match the proxy chain used in this attack. The attack chain used commercial VPS nodes — a different operational approach.",
+          "detail": "NullFront's known exit nodes are Tor-based and do not match the proxy chain used in this attack. The attack chain used commercial VPS nodes \u2014 a different operational approach.",
           "isKeyEvidence": false,
           "pointsToSuspect": null,
           "rows": [
-            { "key": "NullFront Method", "value": "Tor exit nodes" },
-            { "key": "This Attack Method", "value": "Commercial VPS chain" },
-            { "key": "Match?", "value": "No — different infrastructure" }
+            {
+              "key": "NullFront Method",
+              "value": "Tor exit nodes"
+            },
+            {
+              "key": "This Attack Method",
+              "value": "Commercial VPS chain"
+            },
+            {
+              "key": "Match?",
+              "value": "No \u2014 different infrastructure"
+            }
           ]
         }
       ],
       "minigame": null
     }
   ],
-
   "timeline": [
-    { "time": "3 Months Prior", "title": "Dhruv N Dismissed", "description": "Terminated after performance dispute", "severity": "low" },
-    { "time": "2 Months Prior", "title": "Threat Email Sent", "description": "Dhruv N emails HR: 'PaySwift will know what it's like to be powerless'", "severity": "high" },
-    { "time": "14 Days Prior", "title": "VPS Purchased", "description": "Netherlands VPS registered via prepaid card", "severity": "high" },
-    { "time": "Attack Day — 09:48 AM", "title": "Proxy Chain Activated", "description": "14-node chain goes live, begins warming up", "severity": "high" },
-    { "time": "10:00 AM", "title": "DDoS Launched", "description": "8,200 req/sec burst hits payment gateway", "severity": "critical" },
-    { "time": "10:09 AM", "title": "Gateway Goes Down", "description": "PaySwift payment processing offline", "severity": "critical" },
-    { "time": "NullFront Post", "title": "False Flag Claim", "description": "NullFront claims credit on social media", "severity": "medium" },
-    { "time": "7:14 PM", "title": "Service Restored", "description": "9 hours 14 minutes of downtime — estimated ₹2.1 Cr loss", "severity": "high" }
+    {
+      "time": "3 Months Prior",
+      "title": "Dhruv N Dismissed",
+      "description": "Terminated after performance dispute",
+      "severity": "low"
+    },
+    {
+      "time": "2 Months Prior",
+      "title": "Threat Email Sent",
+      "description": "Dhruv N emails HR: 'PaySwift will know what it's like to be powerless'",
+      "severity": "high"
+    },
+    {
+      "time": "14 Days Prior",
+      "title": "VPS Purchased",
+      "description": "Netherlands VPS registered via prepaid card",
+      "severity": "high"
+    },
+    {
+      "time": "Attack Day \u2014 09:48 AM",
+      "title": "Proxy Chain Activated",
+      "description": "14-node chain goes live, begins warming up",
+      "severity": "high"
+    },
+    {
+      "time": "10:00 AM",
+      "title": "DDoS Launched",
+      "description": "8,200 req/sec burst hits payment gateway",
+      "severity": "critical"
+    },
+    {
+      "time": "10:09 AM",
+      "title": "Gateway Goes Down",
+      "description": "PaySwift payment processing offline",
+      "severity": "critical"
+    },
+    {
+      "time": "NullFront Post",
+      "title": "False Flag Claim",
+      "description": "NullFront claims credit on social media",
+      "severity": "medium"
+    },
+    {
+      "time": "7:14 PM",
+      "title": "Service Restored",
+      "description": "9 hours 14 minutes of downtime \u2014 estimated \u20b92.1 Cr loss",
+      "severity": "high"
+    }
   ],
-
-  "winCondition": { "guiltySuspectId": "dhruv_n", "minCorrectEvidence": 4 },
-  "correctEvidenceIds": ["chat_threat", "chat_ratelimit", "file_trafficanalysis", "file_proxytrace", "file_vpspurchase", "meta_timing", "meta_scriptmatch", "ip_entrynode"],
-
-  "outcomes": {
-    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Dhruv N exposed as the DDoS attacker.", "label": "CASE CLOSED", "xp": 15 },
-    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 5 },
-    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real attacker was Dhruv N.", "label": "CASE FAILED", "xp": 0 },
-    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  "winCondition": {
+    "guiltySuspectId": "dhruv_n",
+    "minCorrectEvidence": 4
   },
-
+  "correctEvidenceIds": [
+    "chat_threat",
+    "chat_ratelimit",
+    "file_trafficanalysis",
+    "file_proxytrace",
+    "file_vpspurchase",
+    "meta_timing",
+    "meta_scriptmatch",
+    "ip_entrynode"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_4",
+      "title": "Case Solved!",
+      "subtitle": "Dhruv N exposed as the DDoS attacker.",
+      "label": "CASE CLOSED",
+      "xp": 15
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_4",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect but the chain is incomplete.",
+      "label": "PARTIAL",
+      "xp": 5
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The real attacker was Dhruv N.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
   "aria": {
     "welcomeToHub": "...9 hours. 14 proxy hops. 6 countries.\nSomeone wanted this to look like everyone and no one.\nBut they knew too much. Find out who.",
     "exploreFeeds": "Traffic analysis. Proxy traces. Code forensics.\nThe attack was sophisticated. The motive was personal.",
     "viewEvidence": "8,200 requests per second. Exactly 200 above the internal threshold.\nOnly a former insider knew that number.",
     "markEvidence": "Good. The chain is forming.",
     "decryptionHint": "The attack script has a name encoded in it.\nDecode the author tag.",
-    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

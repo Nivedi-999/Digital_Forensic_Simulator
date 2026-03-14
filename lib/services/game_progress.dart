@@ -15,23 +15,39 @@ class GameProgress {
   static int get casesSolved => _casesSolved;
 
   // ── Per-case completion guard ────────────────────────────────
-  // Tracks which case IDs have already awarded XP so replaying
-  // a case never grants XP a second time.
   static final Set<String> _completedCaseIds = {};
 
-  /// Returns true if XP was awarded (i.e. case not previously completed).
-  /// Returns false if the case was already completed — no XP granted.
-  static bool completeCaseWithXp(String caseId, int xpAmount) {
-    if (_completedCaseIds.contains(caseId)) return false;
+  /// Returns the XP actually awarded (after penalties), or 0 if already completed.
+  static int completeCaseWithXp(String caseId, int baseXp) {
+    if (_completedCaseIds.contains(caseId)) return 0;
     _completedCaseIds.add(caseId);
-    _xp += xpAmount;
+    final awarded = baseXp.clamp(0, 999);
+    _xp += awarded;
     _casesSolved++;
-    return true;
+    return awarded;
   }
 
-  /// Whether a case has already been won (used to show "already completed" badge).
   static bool isCaseCompleted(String caseId) =>
       _completedCaseIds.contains(caseId);
+
+  // ── Case unlock logic ────────────────────────────────────────
+  //
+  // A case is playable if:
+  //   (a) it is the FIRST case in its difficulty tier, OR
+  //   (b) the case immediately before it in the same tier is completed.
+  //
+  // The ordered list per tier is supplied by CaseRepository so
+  // GameProgress stays decoupled from asset paths.
+
+  static bool isCaseUnlocked(String caseId, List<String> orderedTierIds) {
+    if (orderedTierIds.isEmpty) return false;
+    // First case in tier is always unlocked
+    if (orderedTierIds.first == caseId) return true;
+    final idx = orderedTierIds.indexOf(caseId);
+    if (idx <= 0) return false;
+    // Unlocked if the previous case in the same tier is completed
+    return _completedCaseIds.contains(orderedTierIds[idx - 1]);
+  }
 
   // ── Accuracy ─────────────────────────────────────────────────
   static int _totalFlags = 0;
@@ -51,17 +67,6 @@ class GameProgress {
   static int get correctFlags => _correctFlags;
 
   // ── Title & Rank ─────────────────────────────────────────────
-  //
-  // Rank is driven by BOTH xp AND cases solved so the profile
-  // avatar initials and title are always consistent.
-  //
-  // Thresholds (cases solved takes priority over raw XP):
-  //   0 cases  → Beginner         initials: BE
-  //   1–3 cases → Analyst Trainee  initials: AT
-  //   4+ cases  → Junior Analyst   initials: JA
-  //   60+ XP   → Senior Analyst   initials: SA
-  //  100+ XP   → Lead Investigator initials: LI
-
   static String get title {
     if (_xp >= 100) return 'Lead Investigator';
     if (_xp >= 60)  return 'Senior Analyst';
@@ -70,14 +75,13 @@ class GameProgress {
     return 'Beginner';
   }
 
-  /// Two-letter initials for the profile avatar, derived from title.
   static String get avatarInitials {
     switch (title) {
       case 'Lead Investigator': return 'LI';
       case 'Senior Analyst':    return 'SA';
       case 'Junior Analyst':    return 'JA';
       case 'Analyst Trainee':   return 'AT';
-      default:                  return 'BE'; // Beginner
+      default:                  return 'BE';
     }
   }
 
@@ -86,7 +90,6 @@ class GameProgress {
   static int get xpToNextRank {
     if (_xp >= 100) return 0;
     if (_xp >= 60)  return 100 - _xp;
-    // Below 60 XP the next meaningful threshold is 60
     return 60 - _xp;
   }
 
@@ -120,13 +123,11 @@ class GameProgress {
   static bool get isBriefingUnlocked => _briefingUnlocked;
   static void unlockBriefing() => _briefingUnlocked = true;
 
-  // ── Reset (new session / testing) ────────────────────────────
+  // ── Reset ────────────────────────────────────────────────────
   static void resetForNewCase() {
     _briefingUnlocked = false;
-    // XP, cases, accuracy, and completedCaseIds persist across sessions.
   }
 
-  /// Full reset — use only in testing / dev.
   static void resetAll() {
     _xp = 0;
     _casesSolved = 0;

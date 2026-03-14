@@ -1,21 +1,15 @@
 // lib/logic/game_engine.dart
 //
-// CaseEngine is the single source of truth for everything that
-// changes during a case:  which evidence is collected, which
-// mini-games are solved, suspicion levels, and the final outcome.
+// CaseEngine — single source of truth for all in-case state.
 //
-// Screens never hold case state themselves — they read from the
-// engine and call its methods in response to player actions.
-//
-// Usage
-// -----
-//   final engine = CaseEngine(caseFile);
-//
-//   // in a screen:
-//   engine.collectEvidence('file_finance');
-//   engine.solveMinigame('decryption');
-//   final outcome = engine.evaluateAccusation('ankita_e');
+// NEW in this version:
+//   • hintsUsed counter  — incremented by recordHintUsed()
+//   • irrelevantEvidenceCount — derived from collected vs correctEvidenceIds
+//   • Timer support (hard/advanced only) — start/stop via startTimer()
+//   • computeFinalXp() — base XP minus hint and irrelevant evidence penalties
+//   • resolveOutcome() now penalises selecting ALL evidence (spam collect)
 
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../models/case.dart';
 import '../models/evidence.dart';
@@ -49,24 +43,75 @@ class CaseEngine extends ChangeNotifier {
     _initSuspicionLevels();
   }
 
-  // ── State ────────────────────────────────────────────────
+  // ── Core state ───────────────────────────────────────────
 
-  /// Evidence items the player has marked as relevant.
   final List<CollectedEvidence> _collected = [];
-
-  /// Mini-game IDs that have been successfully completed.
   final Set<String> _solvedMinigames = {};
-
-  /// Hidden item IDs that have been unlocked via mini-games.
   final Set<String> _unlockedHiddenItems = {};
-
-  /// Suspicion level (0.0–1.0) per suspect id.
   final Map<String, double> _suspicion = {};
 
-  /// Whether the player has made a final accusation.
   bool _caseClosed = false;
   String? _accusedSuspectId;
   OutcomeType? _outcomeType;
+
+  // ── Hint tracking ────────────────────────────────────────
+  // Each call to recordHintUsed() increments the counter.
+  // The outcome screen reads this to calculate XP penalties.
+  int _hintsUsed = 0;
+  int get hintsUsed => _hintsUsed;
+
+  /// Call this from the mini-game screen every time the player
+  /// taps a hint button.
+  void recordHintUsed() {
+    _hintsUsed++;
+    notifyListeners();
+  }
+
+  // ── Timer (hard / advanced only) ────────────────────────
+  // timeLimitSeconds comes from the case JSON.
+  // The timer starts when startTimer() is called (on hub load).
+
+  Timer? _ticker;
+  int _elapsedSeconds = 0;
+
+  int get elapsedSeconds => _elapsedSeconds;
+
+  bool get hasTimer {
+    final diff = caseFile.difficulty.toLowerCase();
+    return (diff == 'hard' || diff == 'advanced') &&
+        caseFile.timeLimitSeconds != null;
+  }
+
+  int? get timeLimitSeconds => caseFile.timeLimitSeconds;
+
+  /// Remaining seconds. Returns null if no timer.
+  int? get remainingSeconds {
+    if (!hasTimer) return null;
+    final remaining = timeLimitSeconds! - _elapsedSeconds;
+    return remaining.clamp(0, timeLimitSeconds!);
+  }
+
+  /// 0.0–1.0 progress of time used. 1.0 = time up.
+  double get timerProgress {
+    if (!hasTimer) return 0.0;
+    return (_elapsedSeconds / timeLimitSeconds!).clamp(0.0, 1.0);
+  }
+
+  bool get isTimeUp => hasTimer && _elapsedSeconds >= timeLimitSeconds!;
+
+  void startTimer() {
+    if (!hasTimer || _ticker != null || _caseClosed) return;
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      _elapsedSeconds++;
+      notifyListeners();
+      if (isTimeUp) _ticker?.cancel();
+    });
+  }
+
+  void _stopTimer() {
+    _ticker?.cancel();
+    _ticker = null;
+  }
 
   // ── Read-only accessors ──────────────────────────────────
 
@@ -95,48 +140,107 @@ class CaseEngine extends ChangeNotifier {
 
   // ── Derived helpers ──────────────────────────────────────
 
-  /// How many of the player's collected items are "correct" per the case def.
-  int get correctEvidenceCount {
-    return _collected
-        .where((e) => caseFile.correctEvidenceIds.contains(e.itemId))
-        .length;
-  }
+  int get correctEvidenceCount => _collected
+      .where((e) => caseFile.correctEvidenceIds.contains(e.itemId))
+      .length;
 
-  /// All suspects ordered by risk level: high → medium → low.
-  /// Uses the static riskLevel from the case JSON so the order
-  /// never changes as evidence is collected.
+  /// Evidence collected by the player that is NOT in correctEvidenceIds.
+  int get irrelevantEvidenceCount => _collected
+      .where((e) => !caseFile.correctEvidenceIds.contains(e.itemId))
+      .length;
+
   List<Suspect> get suspectsByThreat {
-    int _priority(String riskLevel) {
-      switch (riskLevel.toLowerCase()) {
-        case 'high':   return 0;
-        case 'medium': return 1;
-        default:       return 2;
-      }
-    }
     final sorted = List<Suspect>.from(caseFile.suspects);
     sorted.sort((a, b) =>
-        _priority(a.riskLevel).compareTo(_priority(b.riskLevel)));
+        suspicionFor(b.id).compareTo(suspicionFor(a.id)));
     return sorted;
   }
 
-  /// Whether the player has collected enough evidence to make an accusation.
   bool get canAccuse =>
       correctEvidenceCount >= caseFile.winCondition.minCorrectEvidence;
 
-  /// All evidence items visible to the player for a given panel
-  /// (respects hidden-item unlock state).
   List<EvidenceItem> visibleItemsForPanel(String panelId) {
     final panel = caseFile.panelById(panelId);
     if (panel == null) return [];
-
     final items = List<EvidenceItem>.from(panel.items);
-
-    // Append hidden item if its mini-game has been solved
     final hidden = panel.hiddenItem;
     if (hidden != null &&
         hidden.unlockedByMinigameId != null &&
         _solvedMinigames.contains(hidden.unlockedByMinigameId)) {
       items.add(hidden);
+    }
+    return items;
+  }
+
+  // ── XP calculation ───────────────────────────────────────
+  //
+  // Called by the outcome screen to get the final adjusted XP.
+  //
+  // Penalties:
+  //   −1 XP per hint used (max penalty = base XP − 1)
+  //   −1 XP per irrelevant evidence item collected
+  //   Timer penalty (hard/advanced only):
+  //     • Used 60–90% of time → −2 XP
+  //     • Used 90–100% of time → −4 XP
+  //     • Overtime (time ran out) → −6 XP
+  //
+  // XP floor: minimum 1 XP on a win (never drops to 0).
+
+  int computeFinalXp(int baseXp) {
+    int xp = baseXp;
+
+    // Hint penalty
+    xp -= _hintsUsed;
+
+    // Irrelevant evidence penalty
+    xp -= irrelevantEvidenceCount;
+
+    // Timer penalty (hard/advanced only)
+    if (hasTimer && timeLimitSeconds != null && timeLimitSeconds! > 0) {
+      final ratio = _elapsedSeconds / timeLimitSeconds!;
+      if (ratio > 1.0) {
+        xp -= 6; // overtime
+      } else if (ratio > 0.9) {
+        xp -= 4;
+      } else if (ratio > 0.6) {
+        xp -= 2;
+      }
+    }
+
+    return xp.clamp(1, baseXp); // floor 1, ceiling = base
+  }
+
+  // ── XP breakdown for the outcome screen ─────────────────
+  //
+  // Returns a list of (label, delta) pairs so the UI can show
+  // exactly why XP was added or deducted.
+
+  List<XpBreakdownItem> xpBreakdown(int baseXp) {
+    final items = <XpBreakdownItem>[];
+    items.add(XpBreakdownItem('Base XP', baseXp, positive: true));
+
+    if (_hintsUsed > 0) {
+      items.add(XpBreakdownItem(
+          'Hints used (×$_hintsUsed)', -_hintsUsed,
+          positive: false));
+    }
+
+    if (irrelevantEvidenceCount > 0) {
+      items.add(XpBreakdownItem(
+          'Irrelevant evidence (×$irrelevantEvidenceCount)',
+          -irrelevantEvidenceCount,
+          positive: false));
+    }
+
+    if (hasTimer && timeLimitSeconds != null && timeLimitSeconds! > 0) {
+      final ratio = _elapsedSeconds / timeLimitSeconds!;
+      if (ratio > 1.0) {
+        items.add(const XpBreakdownItem('Time ran out', -6, positive: false));
+      } else if (ratio > 0.9) {
+        items.add(const XpBreakdownItem('Tight finish (>90% time)', -4, positive: false));
+      } else if (ratio > 0.6) {
+        items.add(const XpBreakdownItem('Slow solve (>60% time)', -2, positive: false));
+      }
     }
 
     return items;
@@ -144,8 +248,6 @@ class CaseEngine extends ChangeNotifier {
 
   // ── Mutations ────────────────────────────────────────────
 
-  /// Mark an evidence item as collected.
-  /// Safe to call multiple times — duplicates are ignored.
   void collectEvidence(String panelId, String itemId) {
     if (_caseClosed) return;
     if (isEvidenceCollected(itemId)) return;
@@ -164,10 +266,10 @@ class CaseEngine extends ChangeNotifier {
       collectedAt: DateTime.now(),
     ));
 
+    _branching.applyEvidenceEffects(itemId, _suspicion);
     notifyListeners();
   }
 
-  /// Remove a previously collected evidence item.
   void removeEvidence(String itemId) {
     if (_caseClosed) return;
     final before = _collected.length;
@@ -175,21 +277,17 @@ class CaseEngine extends ChangeNotifier {
     if (_collected.length != before) notifyListeners();
   }
 
-  /// Clear all collected evidence (e.g. "Clear All" button).
   void clearEvidence() {
     if (_caseClosed) return;
     _collected.clear();
-    _initSuspicionLevels(); // reset suspicion too
+    _initSuspicionLevels();
     notifyListeners();
   }
 
-  /// Record a successful mini-game completion.
-  /// Applies any unlock side-effects defined in the case JSON.
   void solveMinigame(String minigameId) {
     if (_solvedMinigames.contains(minigameId)) return;
     _solvedMinigames.add(minigameId);
 
-    // Check if this mini-game unlocks a hidden evidence item
     for (final panel in caseFile.evidencePanels) {
       final mg = panel.minigame;
       if (mg != null && mg.id == minigameId) {
@@ -201,28 +299,31 @@ class CaseEngine extends ChangeNotifier {
       }
     }
 
+    _branching.applyMinigameEffects(minigameId, _suspicion);
     notifyListeners();
   }
 
-  /// Make a final accusation. Returns the resolved OutcomeType.
-  /// After calling this the engine is locked (caseClosed = true).
   OutcomeType accuse(String suspectId) {
     if (_caseClosed) return _outcomeType!;
 
+    _stopTimer();
     _accusedSuspectId = suspectId;
     _caseClosed = true;
 
     _outcomeType = _branching.resolveOutcome(
       accusedSuspectId: suspectId,
       correctEvidenceCount: correctEvidenceCount,
+      irrelevantEvidenceCount: irrelevantEvidenceCount,
+      totalEvidenceCount: _collected.length,
+      totalAvailableEvidence: _totalAvailableEvidenceCount(),
       winCondition: caseFile.winCondition,
+      isTimeUp: isTimeUp,
     );
 
     notifyListeners();
     return _outcomeType!;
   }
 
-  /// Get the full OutcomeConfig for the resolved outcome type.
   OutcomeConfig? get resolvedOutcomeConfig {
     if (_outcomeType == null) return null;
     return caseFile.outcomes[_outcomeType];
@@ -233,15 +334,38 @@ class CaseEngine extends ChangeNotifier {
   void _initSuspicionLevels() {
     _suspicion.clear();
     for (final suspect in caseFile.suspects) {
-      // Seed from risk level so the UI looks alive before any evidence
       _suspicion[suspect.id] = _branching.initialSuspicion(suspect.riskLevel);
     }
   }
 
-  // Sentinel used to avoid nullable gymnastics in collectEvidence
+  /// Count of all evidence items the player COULD collect in this case.
+  int _totalAvailableEvidenceCount() {
+    int count = 0;
+    for (final panel in caseFile.evidencePanels) {
+      count += panel.items.length;
+      if (panel.hiddenItem != null) count++;
+    }
+    return count;
+  }
+
+  @override
+  void dispose() {
+    _stopTimer();
+    super.dispose();
+  }
+
   static final EvidenceItem _sentinel = const EvidenceItem(
     id: '__sentinel__',
     label: '',
     detail: '',
   );
+}
+
+// ── XP breakdown item ─────────────────────────────────────────
+
+class XpBreakdownItem {
+  final String label;
+  final int delta;
+  final bool positive;
+  const XpBreakdownItem(this.label, this.delta, {required this.positive});
 }

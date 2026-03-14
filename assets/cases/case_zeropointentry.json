@@ -4,16 +4,14 @@
   "shortDescription": "Zero-Day Exploit in Critical Infrastructure",
   "difficulty": "advanced",
   "theme": "Zero-Day Exploit & State-Level Attack",
-  "estimatedDuration": "80–100 min",
+  "estimatedDuration": "80\u2013100 min",
   "caseNumber": "4003",
   "status": "Locked",
   "tutorialEnabled": false,
-
   "briefing": {
-    "incidentSummary": "A zero-day vulnerability in a power grid SCADA system was exploited, causing a controlled blackout in an industrial zone for 6 hours.\n\nThe attacker didn't cause maximum damage — they demonstrated capability. A warning shot.\n\nThe exploit code was custom-built and vendor-specific. No patch existed. Only three people in the country had ever audited this SCADA system's codebase.",
-    "missionText": "Your Mission:\n\n› Identify who wrote the zero-day exploit\n\n› Determine if this was state-sponsored or rogue\n\n› Trace the controlled nature of the attack — why stop early?\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
+    "incidentSummary": "A zero-day vulnerability in a power grid SCADA system was exploited, causing a controlled blackout in an industrial zone for 6 hours.\n\nThe attacker didn't cause maximum damage \u2014 they demonstrated capability. A warning shot.\n\nThe exploit code was custom-built and vendor-specific. No patch existed. Only three people in the country had ever audited this SCADA system's codebase.",
+    "missionText": "Your Mission:\n\n\u203a Identify who wrote the zero-day exploit\n\n\u203a Determine if this was state-sponsored or rogue\n\n\u203a Trace the controlled nature of the attack \u2014 why stop early?\n\n\u203a Collect at least 4 correct evidences\n\n\u203a Flag the right suspect"
   },
-
   "suspects": [
     {
       "id": "ronak_s",
@@ -23,60 +21,59 @@
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "45.61.185.22 — jump server traced",
-        "deviceUsage": "AIR-GAPPED-LAP-01 — research machine",
-        "locationTrace": "Research lab — after hours",
-        "vpnCheck": "Custom VPN — non-commercial"
+        "ipActivity": "45.61.185.22 \u2014 jump server traced",
+        "deviceUsage": "AIR-GAPPED-LAP-01 \u2014 research machine",
+        "locationTrace": "Research lab \u2014 after hours",
+        "vpnCheck": "Custom VPN \u2014 non-commercial"
       },
-      "profileNotes": "One of only 3 researchers with SCADA codebase access. Discreetly sold the exploit to a foreign intelligence intermediary for $280,000 — but panicked and triggered the shutdown early, preventing full infrastructure damage. Financial trail leads to a Mauritius account."
+      "profileNotes": "One of only 3 researchers with SCADA codebase access. Discreetly sold the exploit to a foreign intelligence intermediary for $280,000 \u2014 but panicked and triggered the shutdown early, preventing full infrastructure damage. Financial trail leads to a Mauritius account."
     },
     {
       "id": "state_actor",
       "name": "Unknown Foreign Actor",
       "role": "Suspected Intelligence Operator",
-      "department": "External — Unattributed",
+      "department": "External \u2014 Unattributed",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Tor + custom proxy — untraced",
+        "ipActivity": "Tor + custom proxy \u2014 untraced",
         "deviceUsage": "Unknown",
         "locationTrace": "Origin untraced",
         "vpnCheck": "Advanced obfuscation"
       },
-      "profileNotes": "Purchased the exploit — was the buyer. However the technical authorship of the zero-day and the decision to trigger it belong to Ronak S. The buyer only provided direction — Ronak executed."
+      "profileNotes": "Purchased the exploit \u2014 was the buyer. However the technical authorship of the zero-day and the decision to trigger it belong to Ronak S. The buyer only provided direction \u2014 Ronak executed."
     },
     {
       "id": "vendor_engineer",
       "name": "Supriya K",
       "role": "SCADA Vendor Engineer",
-      "department": "GridCore Technologies — Support",
+      "department": "GridCore Technologies \u2014 Support",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "192.168.12.5 — vendor remote access",
-        "deviceUsage": "Vendor terminal — scheduled maintenance",
+        "ipActivity": "192.168.12.5 \u2014 vendor remote access",
+        "deviceUsage": "Vendor terminal \u2014 scheduled maintenance",
         "locationTrace": "GridCore HQ, Pune",
-        "vpnCheck": "Vendor VPN — authorized"
+        "vpnCheck": "Vendor VPN \u2014 authorized"
       },
-      "profileNotes": "Had remote access for scheduled maintenance but was on leave during the attack window. Access token was active but not used — confirms she did not execute the exploit."
+      "profileNotes": "Had remote access for scheduled maintenance but was on leave during the attack window. Access token was active but not used \u2014 confirms she did not execute the exploit."
     },
     {
       "id": "whistleblower",
       "name": "Devraj M",
       "role": "Retired Infrastructure Security Officer",
-      "department": "Formerly — National Grid Authority",
+      "department": "Formerly \u2014 National Grid Authority",
       "riskLevel": "low",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "49.207.8.44 — home network",
-        "deviceUsage": "Personal laptop — no privileged access",
-        "locationTrace": "Retired — Chennai",
+        "ipActivity": "49.207.8.44 \u2014 home network",
+        "deviceUsage": "Personal laptop \u2014 no privileged access",
+        "locationTrace": "Retired \u2014 Chennai",
         "vpnCheck": "No VPN detected"
       },
       "profileNotes": "Had warned about this vulnerability 2 years ago in an internal memo that was ignored. No current system access. His old memo makes him a witness, not a suspect."
     }
   ],
-
   "evidencePanels": [
     {
       "id": "chat",
@@ -100,7 +97,7 @@
           "sender": "Ronak S (encrypted app)",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Sent at 2:47 AM — 4 hours into the blackout, 2 hours before the buyer expected full escalation. Ronak S panicked and remotely triggered the shutdown sequence, cutting the attack short.",
+          "detail": "Sent at 2:47 AM \u2014 4 hours into the blackout, 2 hours before the buyer expected full escalation. Ronak S panicked and remotely triggered the shutdown sequence, cutting the attack short.",
           "pointsToSuspect": "ronak_s"
         },
         {
@@ -125,36 +122,52 @@
         {
           "id": "file_exploit_code",
           "label": "zeroday_exploit_analysis.pdf",
-          "detail": "Reverse-engineered exploit targets a buffer overflow in GridCore SCADA firmware v4.2.1 — a vulnerability that was never publicly disclosed. Code style analysis matches Ronak S's published research papers: identical comment formatting, variable naming, and error handling patterns.",
+          "detail": "Reverse-engineered exploit code targeting CVE-2024-XXXX \u2014 a buffer overflow in GridCore SCADA firmware version 4.2.1, present in substations across 3 states. The exploit achieves arbitrary code execution via a malformed UDP packet on port 47808 (BACnet). The code is written in C with inline assembly for the ROP chain. What distinguishes this from a generic exploit: the author demonstrated knowledge of GridCore's proprietary memory layout that is not documented in any public source. This layout knowledge could only come from access to GridCore's internal SDK \u2014 restricted to licensed researchers. Of the 3 researchers with SCADA codebase access at this facility, only Ronak S also held an active GridCore SDK licence. His licence was revoked 2 weeks after this exploit was first observed on dark web markets.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
-          "metadata": { "size": "5.1 MB", "modifier": "CERT-IN Forensics", "modifiedAt": "Post-incident" }
+          "metadata": {
+            "size": "5.1 MB",
+            "modifier": "CERT-IN Forensics",
+            "modifiedAt": "Post-incident"
+          }
         },
         {
           "id": "file_financial",
           "label": "mauritius_account_trace.pdf",
-          "detail": "$280,000 transferred in 3 tranches to a Mauritius shell account. Account opened under a name matching Ronak S's alias used in academic conferences. Traced via SWIFT correspondent banking logs.",
+          "detail": "$280,000 transferred in 3 tranches across 8 weeks to a Mauritius-registered shell account (AXIS-OFFSHORE-7741). Tranche details: $80,000 on Week 2 (2 days after the zero-day was confirmed viable in testing), $100,000 on Week 5 (after SCADA deployment code was delivered), $100,000 on Week 8 (after remote trigger capability was verified). Each transfer originated from a UAE-based intermediary account and passed through two additional jurisdictions before reaching Mauritius. The payments were structured below the $10,000 FATF reporting threshold per transaction. Cross-referencing the Mauritius account's beneficial ownership registry (obtained via MLAT) identifies the account controller as using Ronak S's passport number as the KYC document.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
-          "metadata": { "size": "1.3 MB", "modifier": "Financial Intelligence Unit", "modifiedAt": "Post-incident" }
+          "metadata": {
+            "size": "1.3 MB",
+            "modifier": "Financial Intelligence Unit",
+            "modifiedAt": "Post-incident"
+          }
         },
         {
           "id": "file_scada_access",
           "label": "codebase_access_log.txt",
-          "detail": "Of the 3 researchers with SCADA codebase access, only Ronak S accessed the firmware module containing the exploited buffer overflow — 14 times in the past 4 months. The other 2 researchers never accessed that specific module.",
+          "detail": "SCADA codebase access log from the research facility's version control system. The GridCore firmware repository contains the proprietary memory layout that was used in the exploit's ROP chain. Three researchers had read access: Ronak S, Dr. Priya T, and Ajay M. Access logs show Ronak S cloned the full repository at 11:47 PM on a Saturday \u2014 outside normal working hours. He accessed specifically the memory_map.h and firmware_structs.h header files, which contain the exact memory offsets used in the exploit. Dr. Priya T's last access was 3 weeks prior and limited to the configuration module. Ajay M had his access suspended 2 months ago due to a leave of absence. The Saturday night clone is the only anomalous access event in the 6-month log window.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
-          "metadata": { "size": "0.5 MB", "modifier": "Research Lab Access Control", "modifiedAt": "Auto-generated" }
+          "metadata": {
+            "size": "0.5 MB",
+            "modifier": "Research Lab Access Control",
+            "modifiedAt": "Auto-generated"
+          }
         }
       ],
       "hiddenItem": {
         "id": "file_pgp_key",
         "label": "nullvector_pgp_identity.txt",
-        "detail": "The PGP key used by forum handle 'NullVector' was cross-referenced against Ronak S's academic email signature. They share the same RSA 4096-bit key fingerprint — confirming Ronak S is NullVector.",
+        "detail": "The PGP public key used by forum handle 'NullVector' on the dark web exploit marketplace was extracted and submitted to key servers for cross-referencing. The key's UID field contains the email address ronak.sec.research@proton.me. A Proton account under this address was created 4 months ago. The key's creation timestamp predates the first listing by 11 days. More significantly, the key's subkey fingerprint was cross-referenced against a key Ronak S used to sign a paper submitted to a security conference 8 months ago \u2014 the master key matches. Ronak S appears to have generated a new UID for the dark web identity but reused his existing PGP master key, creating a cryptographic link between his real identity and the NullVector alias.",
         "isKeyEvidence": true,
         "pointsToSuspect": "ronak_s",
         "unlockedByMinigame": "pgp_decode",
-        "metadata": { "size": "0.2 MB", "modifier": "Cryptographic Analysis", "modifiedAt": "Post-incident" }
+        "metadata": {
+          "size": "0.2 MB",
+          "modifier": "Cryptographic Analysis",
+          "modifiedAt": "Post-incident"
+        }
       },
       "minigame": {
         "id": "pgp_decode",
@@ -167,7 +180,7 @@
         "hints": [
           "It is a researcher's name followed by their initial.",
           "Shift each letter 3 positions backward.",
-          "U→R, r→o, q→n..."
+          "U\u2192R, r\u2192o, q\u2192n..."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_pgp_key",
@@ -185,13 +198,25 @@
         {
           "id": "meta_controlled_shutdown",
           "label": "Controlled Shutdown Analysis",
-          "detail": "The blackout was terminated via a shutdown command sent over the same channel as the exploit — remotely, from the attacker's side. This was not a defensive response by the grid operators. The attacker chose to stop. This suggests remorse or fear — not state-level discipline.",
+          "detail": "The blackout was terminated via a shutdown command sent over the same channel as the exploit \u2014 remotely, from the attacker's side. This was not a defensive response by the grid operators. The attacker chose to stop. This suggests remorse or fear \u2014 not state-level discipline.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
           "rows": [
-            { "key": "Shutdown Origin", "value": "Attacker's C2 channel", "highlight": true },
-            { "key": "Time", "value": "4 hours into attack", "highlight": true },
-            { "key": "Operator Response?", "value": "No — attacker self-terminated", "highlight": true }
+            {
+              "key": "Shutdown Origin",
+              "value": "Attacker's C2 channel",
+              "highlight": true
+            },
+            {
+              "key": "Time",
+              "value": "4 hours into attack",
+              "highlight": true
+            },
+            {
+              "key": "Operator Response?",
+              "value": "No \u2014 attacker self-terminated",
+              "highlight": true
+            }
           ]
         },
         {
@@ -201,9 +226,19 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
           "rows": [
-            { "key": "Top Match", "value": "Ronak S — 91.3%", "highlight": true },
-            { "key": "Second Match", "value": "41% — no strong candidate" },
-            { "key": "Method", "value": "Code stylometry analysis" }
+            {
+              "key": "Top Match",
+              "value": "Ronak S \u2014 91.3%",
+              "highlight": true
+            },
+            {
+              "key": "Second Match",
+              "value": "41% \u2014 no strong candidate"
+            },
+            {
+              "key": "Method",
+              "value": "Code stylometry analysis"
+            }
           ]
         }
       ],
@@ -219,47 +254,130 @@
         {
           "id": "ip_jumpserver",
           "label": "Jump Server Trace",
-          "detail": "Attack was routed through a custom VPN terminating at IP 45.61.185.22 — a jump server in Singapore. Server was rented using a credit card in Ronak S's name at a past conference hotel.",
+          "detail": "Attack was routed through a custom VPN terminating at IP 45.61.185.22 \u2014 a jump server in Singapore. Server was rented using a credit card in Ronak S's name at a past conference hotel.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
           "rows": [
-            { "key": "Jump Server IP", "value": "45.61.185.22", "highlight": true },
-            { "key": "Location", "value": "Singapore VPS" },
-            { "key": "Registered To", "value": "Credit card — Ronak S (conference)", "highlight": true }
+            {
+              "key": "Jump Server IP",
+              "value": "45.61.185.22",
+              "highlight": true
+            },
+            {
+              "key": "Location",
+              "value": "Singapore VPS"
+            },
+            {
+              "key": "Registered To",
+              "value": "Credit card \u2014 Ronak S (conference)",
+              "highlight": true
+            }
           ]
         }
       ],
       "minigame": null
     }
   ],
-
   "timeline": [
-    { "time": "2 Years Prior", "title": "Vulnerability Identified — Ignored", "description": "Devraj M files memo about CVE-GRID-0091. Shelved.", "severity": "medium" },
-    { "time": "4 Months Prior", "title": "Codebase Access Pattern", "description": "Ronak S accesses buffer overflow module 14 times", "severity": "high" },
-    { "time": "3 Months Prior", "title": "Dark Web Negotiation", "description": "NullVector (Ronak S) auctions exploit on dark web forum", "severity": "critical" },
-    { "time": "2 Weeks Prior", "title": "Payment Received", "description": "$280,000 in 3 tranches to Mauritius shell account", "severity": "critical" },
-    { "time": "Attack Night — 10:45 PM", "title": "Exploit Triggered", "description": "Zero-day executed on GridCore SCADA system", "severity": "critical" },
-    { "time": "10:52 PM", "title": "Blackout Begins", "description": "Industrial zone loses power — 6 facilities offline", "severity": "critical" },
-    { "time": "2:47 AM", "title": "Attacker Self-Terminates", "description": "Ronak S sends abort command — panic shutdown", "severity": "critical" },
-    { "time": "4:50 AM", "title": "Power Restored", "description": "Grid operators restore service", "severity": "high" }
+    {
+      "time": "2 Years Prior",
+      "title": "Vulnerability Identified \u2014 Ignored",
+      "description": "Devraj M files memo about CVE-GRID-0091. Shelved.",
+      "severity": "medium"
+    },
+    {
+      "time": "4 Months Prior",
+      "title": "Codebase Access Pattern",
+      "description": "Ronak S accesses buffer overflow module 14 times",
+      "severity": "high"
+    },
+    {
+      "time": "3 Months Prior",
+      "title": "Dark Web Negotiation",
+      "description": "NullVector (Ronak S) auctions exploit on dark web forum",
+      "severity": "critical"
+    },
+    {
+      "time": "2 Weeks Prior",
+      "title": "Payment Received",
+      "description": "$280,000 in 3 tranches to Mauritius shell account",
+      "severity": "critical"
+    },
+    {
+      "time": "Attack Night \u2014 10:45 PM",
+      "title": "Exploit Triggered",
+      "description": "Zero-day executed on GridCore SCADA system",
+      "severity": "critical"
+    },
+    {
+      "time": "10:52 PM",
+      "title": "Blackout Begins",
+      "description": "Industrial zone loses power \u2014 6 facilities offline",
+      "severity": "critical"
+    },
+    {
+      "time": "2:47 AM",
+      "title": "Attacker Self-Terminates",
+      "description": "Ronak S sends abort command \u2014 panic shutdown",
+      "severity": "critical"
+    },
+    {
+      "time": "4:50 AM",
+      "title": "Power Restored",
+      "description": "Grid operators restore service",
+      "severity": "high"
+    }
   ],
-
-  "winCondition": { "guiltySuspectId": "ronak_s", "minCorrectEvidence": 4 },
-  "correctEvidenceIds": ["chat_exploit_sale", "chat_early_kill", "file_exploit_code", "file_financial", "file_scada_access", "meta_controlled_shutdown", "meta_code_style", "ip_jumpserver"],
-
-  "outcomes": {
-    "perfect": { "condition": "correct_suspect_and_evidence_gte_4", "title": "Case Solved!", "subtitle": "Ronak S exposed as the zero-day seller who panicked mid-attack.", "label": "CASE CLOSED", "xp": 20 },
-    "partial": { "condition": "correct_suspect_and_evidence_lt_4", "title": "Insufficient Evidence", "subtitle": "Correct suspect but the chain is incomplete.", "label": "PARTIAL", "xp": 6 },
-    "wrongAccusation": { "condition": "wrong_suspect", "title": "Wrong Suspect", "subtitle": "The real culprit was Ronak S.", "label": "CASE FAILED", "xp": 0 },
-    "coldCase": { "condition": "correct_suspect_and_evidence_eq_0", "title": "Case Gone Cold", "subtitle": "No evidence collected.", "label": "COLD CASE", "xp": 0 }
+  "winCondition": {
+    "guiltySuspectId": "ronak_s",
+    "minCorrectEvidence": 4
   },
-
+  "correctEvidenceIds": [
+    "chat_exploit_sale",
+    "chat_early_kill",
+    "file_exploit_code",
+    "file_financial",
+    "file_scada_access",
+    "meta_controlled_shutdown",
+    "meta_code_style",
+    "ip_jumpserver"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_4",
+      "title": "Case Solved!",
+      "subtitle": "Ronak S exposed as the zero-day seller who panicked mid-attack.",
+      "label": "CASE CLOSED",
+      "xp": 20
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_4",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect but the chain is incomplete.",
+      "label": "PARTIAL",
+      "xp": 6
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The real culprit was Ronak S.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
   "aria": {
-    "welcomeToHub": "...A blackout. 6 hours. A warning shot — not a killing blow.\nWhoever did this could have gone further. They chose not to.\nThat tells you something. Find out who flinched.",
-    "exploreFeeds": "Exploit code. Financial transfers. Dark web traces.\nThis was a researcher who crossed a line — and then tried to step back.",
+    "welcomeToHub": "...A blackout. 6 hours. A warning shot \u2014 not a killing blow.\nWhoever did this could have gone further. They chose not to.\nThat tells you something. Find out who flinched.",
+    "exploreFeeds": "Exploit code. Financial transfers. Dark web traces.\nThis was a researcher who crossed a line \u2014 and then tried to step back.",
     "viewEvidence": "The code style. The codebase access. The controlled shutdown.\nThis was personal knowledge, not just technical skill.",
     "markEvidence": "Good. The evidence is forming a portrait.",
-    "decryptionHint": "The forum identity is encoded. Decode it — the PGP key will confirm everything.",
-    "flagSuspect": "A trace is forming.\nYou're on to something — keep pulling the thread.\nMore fragments remain. Don't stop now."
+    "decryptionHint": "The forum identity is encoded. Decode it \u2014 the PGP key will confirm everything.",
+    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }
