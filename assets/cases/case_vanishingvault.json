@@ -108,6 +108,16 @@
           "isSuspect": false,
           "detail": "Internal Slack message from 3 weeks before the attack. Parth gave Ishaan elevated vault access for the audit \u2014 access Ishaan never relinquished and later exploited.",
           "pointsToSuspect": "ishaan_m"
+        },
+        {
+          "id": "chat_contractor",
+          "label": "The storage vendor had on-site access last month for the NAS upgrade. They had physical access to the vault room.",
+          "sender": "CTO (incident response notes)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The CTO initially flagged the storage vendor's recent on-site visit as a possible attack vector. The vendor team had physical access to the server room during the NAS upgrade 3 weeks before the wiper deployed. However, the wiper was deployed remotely via authenticated session \u2014 not a physical device. Physical access would not explain the PAM log showing Ishaan M's audit credentials being used.",
+          "pointsToSuspect": "storage_vendor",
+          "irrelevantReason": "The attack was remote via authenticated PAM session using Ishaan M's audit credentials \u2014 not a physical intrusion. Vendor access is irrelevant."
         }
       ],
       "minigame": null

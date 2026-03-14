@@ -108,6 +108,16 @@
           "isSuspect": false,
           "detail": "Rohan S was a customer \u2014 not the perpetrator. Shows demand existed but does not link to the actual breach.",
           "pointsToSuspect": null
+        },
+        {
+          "id": "chat_offer",
+          "label": "i can get your attendance sorted. 500 per subject. dm me.",
+          "sender": "Unknown Student (college forum, anonymous post)",
+          "isKeyEvidence": false,
+          "isSuspect": true,
+          "detail": "Post found on the college's unofficial student forum, timestamped 2 weeks before the breach. The post advertises attendance manipulation for \u20b9500 per subject. The post account was deleted. However, Tanmay D's modification affected only his own records \u2014 not a paid service pattern. Also the modification method used DB-level SQL access, far beyond what a forum tout would offer.",
+          "pointsToSuspect": "unknown_student",
+          "irrelevantReason": "This is a separate actor offering a different (manual) service. The database-level SQL attack on Tanmay D's records requires internal credential access \u2014 not consistent with a paid forum service."
         }
       ],
       "minigame": null

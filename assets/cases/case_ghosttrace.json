@@ -406,7 +406,6 @@
   },
   "correctEvidenceIds": [
     "file_finance",
-    "file_credentials",
     "file_debug",
     "meta_lastuser",
     "ip_internal",

@@ -108,6 +108,16 @@
           "isSuspect": false,
           "detail": "Public social media post. Analysis shows NullFront's typical attack signature does not match the volumetric burst used in this attack. Likely a false flag to misdirect investigators.",
           "pointsToSuspect": null
+        },
+        {
+          "id": "chat_ratelimit",
+          "label": "We got a threatening email last week from a DDoS-for-hire group. Could be them.",
+          "sender": "IT Manager (internal incident report)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The company received a DDoS extortion email 8 days before the attack from a group calling themselves 'NullFront'. The IT manager flagged this as a possible connection. However, NullFront's known attack signature uses UDP amplification \u2014 the actual attack was HTTP-layer (Layer 7) Slowloris. Furthermore the attack's knowledge of internal vCPU thresholds rules out an external group with no insider knowledge.",
+          "pointsToSuspect": "nullfront_group",
+          "irrelevantReason": "NullFront uses UDP amplification, not HTTP-layer attacks. The internal threshold knowledge eliminates external actors \u2014 only a former employee could know this."
         }
       ],
       "minigame": null

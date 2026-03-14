@@ -126,7 +126,7 @@
           "label": "account_creation_logs.txt",
           "detail": "Platform account creation logs for the three troll accounts used in the harassment campaign. Account 1 (@truthexposed_mk): created at 22:39:02, profile photo uploaded at 22:39:14, first message sent at 22:41:00. Account 2 (@realdirt_now): created at 22:39:08, first message at 22:43:00. Account 3 (@factcheck_official): created at 22:39:11, first message at 22:46:00. All three accounts were created within a 9-second window using the same device fingerprint. Each account used a temporary email address from a disposable mail service \u2014 all three email addresses were generated from the same disposable domain in sequential order. The account names were pre-planned: all three were registered before the first message was sent.",
           "isKeyEvidence": true,
-          "pointsToSuspect": "maya_k",
+          "pointsToSuspect": "maya_kulkarni",
           "metadata": {
             "size": "0.2 MB",
             "modifier": "Platform Trust & Safety",
@@ -138,7 +138,7 @@
           "label": "recovered_drafts.pdf",
           "detail": "Content recovered from the platform's draft message cache \u2014 messages that were typed but not sent, recovered via platform server logs. Three unsent drafts were found associated with the troll accounts, containing personal details about the victim that were not publicly available: her home neighbourhood, the name of her thesis supervisor, and the specific chapter her article drew from. This level of detail indicates the harasser had prior knowledge of the victim \u2014 consistent with a personal or professional acquaintance rather than a random internet user. The drafts were discarded, suggesting the harasser exercised caution about how much insider knowledge to reveal. The tone and vocabulary of the drafts match the written style of Maya Kulkarni's public blog posts.",
           "isKeyEvidence": true,
-          "pointsToSuspect": "maya_k",
+          "pointsToSuspect": "maya_kulkarni",
           "metadata": {
             "size": "0.4 MB",
             "modifier": "Platform Server Cache",
@@ -150,7 +150,7 @@
           "label": "prior_dispute_record.pdf",
           "detail": "Academic dispute record from the university's ethics committee, filed 8 months before the harassment incident. Maya Kulkarni filed a formal complaint alleging that the victim had used data from a shared research project without co-authorship credit in a published article. The committee investigated and found the claim unsubstantiated \u2014 the victim had used only publicly available methodology. Maya's complaint was dismissed. Following the dismissal, Maya sent two emails to the department head characterising the decision as 'biased' and the victim as 'a person of questionable academic integrity'. These emails are on record. The harassment campaign began 3 days after the victim published a second article in the same research area \u2014 a direct trigger.",
           "isKeyEvidence": true,
-          "pointsToSuspect": "maya_k",
+          "pointsToSuspect": "maya_kulkarni",
           "metadata": {
             "size": "0.6 MB",
             "modifier": "University Ethics Committee",
@@ -163,7 +163,7 @@
         "label": "linguistic_style_analysis.pdf",
         "detail": "Forensic linguistic analysis comparing the troll messages against writing samples from 6 potential suspects including Maya Kulkarni. Analysis parameters: sentence length distribution, passive voice frequency, punctuation style, use of rhetorical questions, and characteristic vocabulary. Findings: the troll messages show a statistically significant match (p < 0.003) with Maya Kulkarni's writing samples on 4 of 5 parameters. The most distinctive marker: Maya habitually uses the phrase 'one must ask' as a rhetorical device \u2014 appearing in her academic papers 11 times and in the troll messages twice. No other suspect matched on more than 1 parameter. Report authored by a forensic linguist from the National Forensic Sciences University.",
         "isKeyEvidence": true,
-        "pointsToSuspect": "maya_k",
+        "pointsToSuspect": "maya_kulkarni",
         "unlockedByMinigame": "alias_decode",
         "metadata": {
           "size": "1.1 MB",
@@ -346,6 +346,34 @@
             }
           ],
           "pointsToSuspect": "maya_kulkarni"
+        },
+        {
+          "id": "ip_vikram_home",
+          "label": "Vikram Sen Home IP \u2014 Active That Night",
+          "detail": "Vikram Sen's home broadband IP (122.177.44.90) shows activity on social media platforms between 22:30 and 23:15 \u2014 overlapping the harassment window. This initially appeared suspicious. However, the activity was on a different platform (Instagram, not the journalism platform targeted) and his IP does not appear in any of the three troll account session logs. The VPN rotation pattern used in the attack is also inconsistent with a home connection.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": "vikram_sen",
+          "rows": [
+            {
+              "key": "Vikram's Home IP",
+              "value": "122.177.44.90"
+            },
+            {
+              "key": "Activity Window",
+              "value": "22:30\u201323:15 (overlap)",
+              "highlight": true
+            },
+            {
+              "key": "Platform",
+              "value": "Instagram \u2014 not the targeted platform"
+            },
+            {
+              "key": "Troll Session Logs",
+              "value": "Vikram's IP absent from all 3",
+              "highlight": true
+            }
+          ],
+          "irrelevantReason": "Vikram's IP appears on a different platform and is absent from all three troll account session logs. The attack used VPN rotation inconsistent with a home connection."
         }
       ]
     }

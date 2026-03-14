@@ -93,6 +93,16 @@
           "isSuspect": false,
           "detail": "Real CFO contacted the company from the destination airport. Flight records confirm she was airborne during the fraud window.",
           "pointsToSuspect": null
+        },
+        {
+          "id": "chat_it_admin",
+          "label": "The company's IT admin has root access to the email server. Could they have spoofed it from inside?",
+          "sender": "Security Consultant (investigation note)",
+          "isKeyEvidence": false,
+          "isSuspect": true,
+          "detail": "The security consultant raised the possibility that an internal IT admin with email server access could have spoofed the CFO's email from within. However, the email header trace shows the message originated from an external transactional email service \u2014 not the internal mail server. An inside job via the mail server would have a different header signature.",
+          "pointsToSuspect": "it_admin",
+          "irrelevantReason": "The email originated from an external transactional email service, not the internal server. The header trace eliminates any internal mail server manipulation."
         }
       ],
       "minigame": null
@@ -200,6 +210,34 @@
             {
               "key": "Registrant",
               "value": "Anonymous privacy proxy"
+            }
+          ]
+        },
+        {
+          "id": "meta_domain",
+          "label": "Homoglyph Domain Registration",
+          "detail": "Domain logistlcs-corp.com (the spoofed sender domain) was registered 3 weeks before the attack. WHOIS shows registrant email: arpit.chand.consulting@gmail.com \u2014 consistent with Arpit C's known email pattern. The domain was registered using a privacy proxy but the registrant email was not masked. The registration used a debit card traced to a prepaid card purchased at a shop near Arpit C's last known address.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "arpit_c",
+          "rows": [
+            {
+              "key": "Spoofed Domain",
+              "value": "logistlcs-corp.com (extra 'l')",
+              "highlight": true
+            },
+            {
+              "key": "Registered",
+              "value": "3 weeks before attack"
+            },
+            {
+              "key": "Registrant Email",
+              "value": "arpit.chand.consulting@gmail.com",
+              "highlight": true
+            },
+            {
+              "key": "Payment",
+              "value": "Prepaid card \u2014 near Arpit C's address",
+              "highlight": true
             }
           ]
         }

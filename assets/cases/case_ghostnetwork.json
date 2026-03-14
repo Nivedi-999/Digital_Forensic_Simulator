@@ -108,6 +108,16 @@
           "isSuspect": false,
           "detail": "The automated canary system flagged access to the honeypot document. This is the event that opened the investigation. The file had no legitimate reason to be accessed \u2014 it existed only to identify insider threats.",
           "pointsToSuspect": "nalini_v"
+        },
+        {
+          "id": "chat_recruitment",
+          "label": "The new network engineer joined 15 months ago and requested access to 3 systems outside his role in his first week. Flagged at the time but approved.",
+          "sender": "IT Admin (retrospective access audit)",
+          "isKeyEvidence": false,
+          "isSuspect": true,
+          "detail": "The new network engineer's unusual early access requests were flagged during the retrospective audit. He joined 1 month before Nalini V \u2014 the timing overlaps with the APT campaign start. However, his access requests were all to systems within the network engineering scope. His accounts show no access outside authorised systems, and no steganographic data was found in his documents.",
+          "pointsToSuspect": "new_engineer",
+          "irrelevantReason": "The new engineer's access requests were within scope. Steganographic analysis found no hidden data in his documents. All lateral movement traces back to NALINI-WS."
         }
       ],
       "minigame": null

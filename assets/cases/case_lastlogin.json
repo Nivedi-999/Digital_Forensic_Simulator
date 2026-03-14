@@ -292,6 +292,30 @@
             }
           ],
           "pointsToSuspect": "unknown_system"
+        },
+        {
+          "id": "ip_rhea_home",
+          "label": "Rhea's Home IP \u2014 No Activity",
+          "detail": "Dr. Rhea Singh's home broadband IP (115.204.88.41) shows zero activity on the SkyMind inference cluster during the session window (23:17\u201323:21). This is significant: if a human attacker had stolen her credentials and was operating remotely, her home IP would appear in the access logs. The complete absence of her home IP confirms the session was not initiated by her remotely. The session origin \u2014 internal server 192.168.44.7 \u2014 is only reachable from within the cluster itself.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": "rhea_singh",
+          "rows": [
+            {
+              "key": "Rhea's Home IP",
+              "value": "115.204.88.41"
+            },
+            {
+              "key": "Activity During Session",
+              "value": "None \u2014 zero connections",
+              "highlight": true
+            },
+            {
+              "key": "Conclusion",
+              "value": "Session not initiated by her remotely",
+              "highlight": true
+            }
+          ],
+          "irrelevantReason": "Rhea's complete absence from the access log rules her out as the session initiator. The session came from the AI cluster's internal orchestration node."
         }
       ]
     }

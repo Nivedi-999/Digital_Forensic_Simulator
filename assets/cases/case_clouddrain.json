@@ -108,6 +108,16 @@
           "isSuspect": true,
           "detail": "User data script embedded in all 47 GPU instance launches. Installs XMRig \u2014 a Monero mining tool \u2014 immediately on boot. The pool config points to a mining pool wallet traced to Ketan S.",
           "pointsToSuspect": "ketan_s"
+        },
+        {
+          "id": "chat_ex_intern",
+          "label": "aman left 5 months ago but he used to handle AWS stuff. maybe check him?",
+          "sender": "Prerna A (internal Slack, to security team)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Prerna A flagged Aman V, a former intern, as a potential suspect during the initial investigation. Aman did handle AWS configurations during his internship. However, his IAM access was fully revoked on his last day \u2014 confirmed by the IAM policy audit log. The breach used root credentials from the .env file, not IAM keys. Aman never had access to root credentials.",
+          "pointsToSuspect": "ex_intern",
+          "irrelevantReason": "Aman V's access was revoked on departure and he never had root credentials. The breach used the root access key committed to GitHub by Ketan S."
         }
       ],
       "minigame": null

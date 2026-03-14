@@ -108,6 +108,16 @@
           "isSuspect": false,
           "detail": "Phishing call transcript from the day before. Collected account number but not the critical OTP \u2014 the OTP interception happened separately via SIM clone.",
           "pointsToSuspect": null
+        },
+        {
+          "id": "chat_social_eng_suspect",
+          "label": "Did you get a call from someone pretending to be the bank? My neighbour got scammed that way last week.",
+          "sender": "Victim's friend (WhatsApp)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The victim's friend suggested the attack might be a social engineering call from an external fraudster pretending to be a bank employee. This is a common fraud pattern (vishing). However, the OTP was sent to the victim's original SIM which was simultaneously deactivated \u2014 ruling out vishing. The attacker had physical control of the cloned SIM, which requires insider telecom access.",
+          "pointsToSuspect": "external_fraudster",
+          "irrelevantReason": "A vishing attack cannot explain SIM deactivation. The simultaneous SIM swap requires insider access to the telecom operator's provisioning system \u2014 pointing to Vikram B."
         }
       ],
       "minigame": null

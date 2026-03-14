@@ -186,6 +186,33 @@
               "value": "~3:00 AM"
             }
           ]
+        },
+        {
+          "id": "meta_other_device",
+          "label": "Second Unknown Device \u2014 Flat 401",
+          "detail": "Router logs also show a second unregistered device (MAC: A8:54:B2:11:CC:04) connecting briefly on 3 occasions between 1\u20132 AM. This MAC resolves to an Apple iPhone, not a laptop. The device connected for under 4 minutes each time and downloaded minimal data \u2014 likely a phone checking notifications while its owner was awake. This device is from Flat 401, not Flat 302. It is not responsible for the sustained 3.8GB nightly downloads.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": "flat401_resident",
+          "rows": [
+            {
+              "key": "MAC",
+              "value": "A8:54:B2:11:CC:04"
+            },
+            {
+              "key": "Device Type",
+              "value": "Apple iPhone (OUI match)"
+            },
+            {
+              "key": "Sessions",
+              "value": "3 brief connections, <4 min each"
+            },
+            {
+              "key": "Data Used",
+              "value": "~120MB total \u2014 not the culprit",
+              "highlight": true
+            }
+          ],
+          "irrelevantReason": "This device is from a different flat and used minimal data. The sustained high-volume theft is entirely attributable to NEIL-LAPTOP from Flat 302."
         }
       ],
       "minigame": null

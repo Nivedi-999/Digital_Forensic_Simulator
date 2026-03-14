@@ -304,6 +304,33 @@
             }
           ],
           "pointsToSuspect": "hidden_operator"
+        },
+        {
+          "id": "meta_lab_manager",
+          "label": "Lab Manager Access During Window",
+          "detail": "The lab manager (Dr. K. Verma) had badge access to all three labs on the night the files appeared. He entered Lab A at 22:14, Lab B at 22:31, and Lab C at 22:48 \u2014 covering the deployment window. However, badge access logs show he was in each lab for under 3 minutes \u2014 routine night rounds. The malware was deployed remotely via an authenticated session, not physically introduced via USB. Physical presence is a red herring.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": "lab_manager",
+          "rows": [
+            {
+              "key": "Lab A Entry",
+              "value": "22:14 \u2014 3 min visit"
+            },
+            {
+              "key": "Lab B Entry",
+              "value": "22:31 \u2014 2 min visit"
+            },
+            {
+              "key": "Lab C Entry",
+              "value": "22:48 \u2014 3 min visit"
+            },
+            {
+              "key": "Deployment Method",
+              "value": "Remote \u2014 not physical",
+              "highlight": true
+            }
+          ],
+          "irrelevantReason": "The malware was deployed via authenticated remote session \u2014 not a physical USB drop. The lab manager's physical presence is coincidental."
         }
       ]
     },

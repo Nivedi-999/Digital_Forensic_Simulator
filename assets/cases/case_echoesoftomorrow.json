@@ -126,6 +126,16 @@
           "isSuspectMessage": false,
           "detail": "Normal operational message. No anomaly. Serves as the baseline \u2014 the action that was anticipated before it was made.",
           "pointsToSuspect": null
+        },
+        {
+          "id": "chat_confusion",
+          "label": "Someone ran diagnostics before I requested them. Could be the automated scheduler?",
+          "sender": "Dr. Priya T (team lead, internal message)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Dr. Priya T initially assumed the early diagnostic archive was triggered by the lab's automated maintenance scheduler. The scheduler does run diagnostics, but its logs show no scheduled task was due for another 4 days. The scheduled tasks run under a service account \u2014 not under MANAV-R-SESSION-7. This message documents her initial misattribution, not the actual cause.",
+          "pointsToSuspect": "auto_scheduler",
+          "irrelevantReason": "The automated scheduler was not due for 4 days and runs under a different service account. The archive was manually triggered under Manav R's session."
         }
       ]
     },

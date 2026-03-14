@@ -108,6 +108,16 @@
           "isSuspect": false,
           "detail": "Farhan K's Slack message to the team after routine dependency update. He had no knowledge of the backdoor embedded in 2.1.4.",
           "pointsToSuspect": null
+        },
+        {
+          "id": "chat_maintainer",
+          "label": "I reviewed the v2.1.4 PR and approved it. I didn't see anything suspicious.",
+          "sender": "Open Source Maintainer (NeuralLog GitHub issue)",
+          "isKeyEvidence": false,
+          "isSuspect": true,
+          "detail": "The NeuralLog project maintainer approved the pull request containing the backdoor. The PR was submitted by Zoya R's GitHub account and the maintainer merged it without detecting the malicious addition. The maintainer is a suspect only in terms of negligence \u2014 the added code was syntactically valid and the commit message was plausible. Forensic analysis confirms the maintainer's own commits contain no malicious code.",
+          "pointsToSuspect": "oss_maintainer",
+          "irrelevantReason": "The maintainer approved a malicious PR but did not write the backdoor. The GPG-signed commit and UPI payment trace to the domain both lead to Zoya R."
         }
       ],
       "minigame": null

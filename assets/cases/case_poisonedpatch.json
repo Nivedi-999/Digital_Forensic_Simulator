@@ -240,6 +240,34 @@
               "highlight": true
             }
           ]
+        },
+        {
+          "id": "meta_qa_flag",
+          "label": "QA Engineer Sign-off Timing",
+          "detail": "Shilpa R (QA Engineer) approved build 4.1.9 at 14:22 \u2014 48 hours after Cyrus F's malicious commit and 24 hours before release. The approval came after her standard test suite passed. A security researcher suggested Shilpa may have been complicit since she approved the build. However, post-build script changes are not within the standard QA test scope \u2014 they run after the binary is compiled and tested. The injection point was specifically chosen to be post-QA.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": "vendor_qa",
+          "rows": [
+            {
+              "key": "QA Approval",
+              "value": "Shilpa R \u2014 14:22, 48hrs post-commit"
+            },
+            {
+              "key": "Test Scope",
+              "value": "Binary functionality \u2014 not post-build scripts",
+              "highlight": true
+            },
+            {
+              "key": "Injection Point",
+              "value": "Post-build script \u2014 outside QA scope",
+              "highlight": true
+            },
+            {
+              "key": "Conclusion",
+              "value": "Negligent oversight \u2014 not complicit"
+            }
+          ],
+          "irrelevantReason": "Post-build script changes fall outside standard QA scope. The injection was deliberately placed there to avoid detection. Shilpa is not complicit."
         }
       ],
       "minigame": null

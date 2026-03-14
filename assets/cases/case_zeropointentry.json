@@ -108,6 +108,16 @@
           "isSuspect": false,
           "detail": "Devraj M warned about this exact vulnerability 2 years ago. His memo was classified and shelved. He is a witness to negligence, not a suspect.",
           "pointsToSuspect": null
+        },
+        {
+          "id": "chat_old_memo",
+          "label": "Dr. Priya submitted a paper on GridCore vulnerabilities 6 months ago. She knows the internals better than anyone.",
+          "sender": "Security Lead (internal investigation note)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Dr. Priya T published a peer-reviewed paper on GridCore SCADA security 6 months ago and was initially flagged as a suspect due to her deep technical knowledge. However, her paper used only publicly documented GridCore interfaces \u2014 not the proprietary memory layout used in the exploit. Her SDK licence was also never activated for the specific firmware version targeted. She was cleared after the SCADA access log confirmed she had not accessed the relevant repository files.",
+          "pointsToSuspect": "dr_priya_t",
+          "irrelevantReason": "Dr. Priya T's knowledge came from public documentation. The exploit used proprietary memory layout only accessible via Ronak S's SDK licence."
         }
       ],
       "minigame": null

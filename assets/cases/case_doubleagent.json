@@ -108,6 +108,16 @@
           "isSuspect": true,
           "detail": "Cross-company network forensics finding. PayAxis breach started at 2:11 AM, ClearVault breach at 2:15 AM \u2014 same relay IP, 4 minutes apart. Statistically impossible coincidence. One operator ran both sessions simultaneously.",
           "pointsToSuspect": "ananya_v"
+        },
+        {
+          "id": "chat_colleague_flag",
+          "label": "Rahil kept asking about model checkpoint paths. That's outside his scope too. Have you checked him?",
+          "sender": "ClearVault Security Team (investigation note)",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "ClearVault's security team briefly considered Rahil D as a suspect because he had raised questions about checkpoint file paths \u2014 the same files that were exfiltrated. However, it was Rahil who reported 'Anya Verma's' suspicious behaviour to security 3 days before the breach. His own machine (CLEAR-ENG-04) shows no anomalous outbound traffic. The exfiltration came from CLEAR-ENG-07, assigned to 'Anya Verma'.",
+          "pointsToSuspect": "rahil_d",
+          "irrelevantReason": "Rahil D was the whistleblower, not the attacker. His machine shows no anomalous traffic. The breach originated from CLEAR-ENG-07 assigned to 'Anya Verma' (Ananya V)."
         }
       ],
       "minigame": null
