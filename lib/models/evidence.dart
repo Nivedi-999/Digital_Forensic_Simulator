@@ -1,6 +1,5 @@
 // lib/models/evidence.dart
 
-/// A single row inside a metadata/IP evidence item (key-value pair).
 class EvidenceRow {
   final String key;
   final String value;
@@ -21,7 +20,6 @@ class EvidenceRow {
   }
 }
 
-/// Metadata attached to a file evidence item.
 class FileMetadata {
   final String size;
   final String modifier;
@@ -42,35 +40,55 @@ class FileMetadata {
   }
 }
 
-/// Configuration for the Caesar-cipher (or future) mini-game
-/// embedded inside an evidence panel.
+/// Minigame config — supports all 4 types:
+///   caesar_cipher    — Easy
+///   ip_trace         — Medium  (find IP from list)
+///   code_crack       — Hard    (3-reel alphanumeric)
+///   phishing_analysis — Advanced (report or delete email)
 class MinigameConfig {
   final String id;
-  final String type; // e.g. 'caesar_cipher', 'timeline_sort', 'route_trace'
+  final String type;
   final String title;
-
-  // caesar_cipher specific
-  final String? cipherText;
-  final String? solution;
   final int maxHints;
   final List<String> hints;
-  final String? hint; // short hint shown below the cipher
-
-  // What happens on success
+  final String? hint;
   final String? unlocksHiddenItemId;
   final String? successMessage;
+
+  // caesar_cipher
+  final String? cipherText;
+  final String? solution;
+
+  // ip_trace
+  final List<String> decoys; // list of IP addresses including the correct one
+
+  // code_crack
+  // uses solution field (3-char code e.g. "4F7")
+
+  // phishing_analysis
+  final String? emailFrom;
+  final String? emailSubject;
+  final String? emailBody;
+  final List<String> redFlags;
+  final String? correctAction; // 'report' | 'delete'
 
   const MinigameConfig({
     required this.id,
     required this.type,
     required this.title,
-    this.cipherText,
-    this.solution,
     this.maxHints = 3,
     this.hints = const [],
     this.hint,
     this.unlocksHiddenItemId,
     this.successMessage,
+    this.cipherText,
+    this.solution,
+    this.decoys = const [],
+    this.emailFrom,
+    this.emailSubject,
+    this.emailBody,
+    this.redFlags = const [],
+    this.correctAction,
   });
 
   factory MinigameConfig.fromJson(Map<String, dynamic> json) {
@@ -79,8 +97,6 @@ class MinigameConfig {
       id: json['id'] as String,
       type: json['type'] as String,
       title: json['title'] as String,
-      cipherText: json['cipherText'] as String?,
-      solution: json['solution'] as String?,
       maxHints: json['maxHints'] as int? ?? 3,
       hints: (json['hints'] as List<dynamic>?)
           ?.map((e) => e as String)
@@ -89,33 +105,35 @@ class MinigameConfig {
       hint: json['hint'] as String?,
       unlocksHiddenItemId: onSuccess?['unlocksHiddenItem'] as String?,
       successMessage: onSuccess?['message'] as String?,
+      cipherText: json['cipherText'] as String?,
+      solution: json['solution'] as String?,
+      decoys: (json['decoys'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+          [],
+      emailFrom: json['emailFrom'] as String?,
+      emailSubject: json['emailSubject'] as String?,
+      emailBody: json['emailBody'] as String?,
+      redFlags: (json['redFlags'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+          [],
+      correctAction: json['correctAction'] as String?,
     );
   }
 }
 
-/// A single evidence item (chat message, file, metadata row, IP entry).
 class EvidenceItem {
   final String id;
   final String label;
   final String detail;
   final bool isKeyEvidence;
   final String? pointsToSuspectId;
-
-  /// Shown in the Case Analysis screen when this item is NOT key evidence.
-  /// Explains why the player's intuition was off, or why it's a red herring.
   final String? irrelevantReason;
-
-  // chat-specific
   final String? sender;
   final bool isSuspectMessage;
-
-  // file-specific
   final FileMetadata? metadata;
-
-  // metadata/ip-specific – ordered key-value rows
   final List<EvidenceRow> rows;
-
-  // Whether this item is hidden behind a mini-game unlock
   final bool isHidden;
   final String? unlockedByMinigameId;
 
@@ -158,15 +176,14 @@ class EvidenceItem {
   }
 }
 
-/// A panel grouping evidence items of one type (chat / files / meta / ip).
 class EvidencePanel {
   final String id;
   final String label;
-  final String iconName; // maps to IconData in UI
+  final String iconName;
   final String evidenceType;
-  final String? unlockedBy; // panel id that must be completed first, or null
+  final String? unlockedBy;
   final List<EvidenceItem> items;
-  final EvidenceItem? hiddenItem; // unlocked via mini-game
+  final EvidenceItem? hiddenItem;
   final MinigameConfig? minigame;
 
   const EvidencePanel({

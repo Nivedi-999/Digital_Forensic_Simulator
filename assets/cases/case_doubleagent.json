@@ -181,20 +181,28 @@
       },
       "minigame": {
         "id": "relay_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Relay Server Owner",
-        "cipherText": "Dqdqbd-Y",
-        "hint": "Caesar shift -3. Who owned the relay server?",
-        "solution": "Ananya-V",
+        "type": "phishing_analysis",
+        "title": "Analyse Buyer Confirmation Email",
+        "emailFrom": "ops@meridian-capital-sg.com",
+        "emailSubject": "Re: Package Delivery Confirmed \u2014 Both Datasets",
+        "emailBody": "Confirmed receipt of both packages as of 02:19 AM.\n\nPayAxis dataset: verified \u2014 fraud detection model weights intact.\nClearVault dataset: verified \u2014 risk scoring engine complete.\n\nInitiating transfer: $550K + $550K as agreed.\n\nFurther engagement subject to quality review.\n\n\u2014 Meridian Capital Operations",
+        "redFlags": [
+          "Confirms receipt of both companies' stolen datasets",
+          "Timestamps match 02:19 AM breach window exactly",
+          "Names specific model types \u2014 insider knowledge",
+          "Meridian Capital is the Singapore hedge fund buyer"
+        ],
+        "correctAction": "report",
+        "hint": "This email confirms the sale of both stolen datasets. Every detail is evidence.",
         "maxHints": 3,
         "hints": [
-          "It is the real name behind both identities \u2014 followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "D\u2192A, q\u2192n, d\u2192a..."
+          "The email confirms both PayAxis and ClearVault datasets were received.",
+          "The 02:19 AM timestamp matches the blockchain transfer exactly.",
+          "This is direct evidence of the sale \u2014 report it."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_relay_ownership",
-          "message": "relay_server_ownership.txt is now available in your file feed."
+          "message": "Buyer communication flagged. Relay server ownership is now unlocked."
         }
       }
     },

@@ -112,7 +112,7 @@
         {
           "id": "chat_offer",
           "label": "i can get your attendance sorted. 500 per subject. dm me.",
-          "sender": "Unknown Student (college forum, anonymous post)",
+          "sender": "Unknown Student (anonymous post)",
           "isKeyEvidence": false,
           "isSuspect": true,
           "detail": "Post found on the college's unofficial student forum, timestamped 2 weeks before the breach. The post advertises attendance manipulation for \u20b9500 per subject. The post account was deleted. However, Tanmay D's modification affected only his own records \u2014 not a paid service pattern. Also the modification method used DB-level SQL access, far beyond what a forum tout would offer.",
@@ -169,20 +169,26 @@
       },
       "minigame": {
         "id": "hostel_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Hostel Network Log",
-        "cipherText": "Wdqpdb-G",
-        "hint": "Caesar shift -3. Whose device was on the hostel network?",
-        "solution": "Tanmay-D",
+        "type": "ip_trace",
+        "title": "Trace the Breach IP",
+        "hint": "One of these IPs accessed the database from the hostel network. Find it.",
+        "solution": "10.20.33.41",
+        "decoys": [
+          "192.168.1.1",
+          "172.16.0.5",
+          "10.0.0.254",
+          "10.20.33.41",
+          "192.168.100.10"
+        ],
         "maxHints": 3,
         "hints": [
-          "It is a student's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "W\u2192T, d\u2192a, q\u2192n..."
+          "The hostel WiFi gateway is on the 10.20.x.x subnet.",
+          "Block C gateway \u2014 third octet is 33.",
+          "The full IP is 10.20.33.41"
         ],
         "onSuccess": {
-          "unlocksHiddenItem": "file_hostelwifi",
-          "message": "hostel_wifi_log.txt is now available in your file feed."
+          "unlocksHiddenItem": "file_credential_dump",
+          "message": "Database breach IP confirmed. Credential dump is now unlocked."
         }
       }
     },

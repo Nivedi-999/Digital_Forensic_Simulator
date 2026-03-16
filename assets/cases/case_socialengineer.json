@@ -166,20 +166,26 @@
       },
       "minigame": {
         "id": "vendor_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Vendor Record",
-        "cipherText": "Dusfw-F",
-        "hint": "Caesar shift -3. Which ex-vendor is this?",
-        "solution": "Arpit-C",
+        "type": "ip_trace",
+        "title": "Trace the Spoof Email Origin",
+        "hint": "Find the IP that sent the fraudulent CFO email.",
+        "solution": "103.77.88.201",
+        "decoys": [
+          "192.168.0.1",
+          "103.77.88.201",
+          "8.8.8.8",
+          "172.31.255.0",
+          "10.10.20.1"
+        ],
         "maxHints": 3,
         "hints": [
-          "It is an ex-vendor's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "D\u2192A, u\u2192r, s\u2192p..."
+          "The residential IP starts with 103.",
+          "Second octet is 77, third is 88.",
+          "The full IP is 103.77.88.201"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_vendorhistory",
-          "message": "arpit_vendor_history.txt is now available in your file feed."
+          "message": "Email origin traced. Vendor history is now unlocked."
         }
       }
     },

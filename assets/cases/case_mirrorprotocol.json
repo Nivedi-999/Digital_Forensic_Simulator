@@ -181,20 +181,28 @@
       },
       "minigame": {
         "id": "commit_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Commit Author Tag",
-        "cipherText": "Crbd-U",
-        "hint": "Caesar shift -3. Who signed the malicious commit?",
-        "solution": "Zoya-R",
+        "type": "phishing_analysis",
+        "title": "Analyse Suspicious Pull Request",
+        "emailFrom": "noreply@github.com",
+        "emailSubject": "Pull Request: fix: memory leak in checkpoint buffer \u2014 NeuralLog v2.1.4",
+        "emailBody": "zoya-r-ml opened a pull request:\n\nfix: memory leak in checkpoint buffer\n\nThis PR addresses the memory leak issue reported in #441. The _checkpoint_flush() method now properly clears the buffer after serialisation.\n\nFiles changed: tensor_serializer.py (+4 lines)\n\nReview and merge when ready.",
+        "redFlags": [
+          "Only 4 lines added but no lines removed \u2014 not a typical memory leak fix",
+          "Change is in _checkpoint_flush() \u2014 a method that runs on every save",
+          "No linked issue, no test coverage mentioned",
+          "Contributor has no prior commits to this file"
+        ],
+        "correctAction": "report",
+        "hint": "A memory leak fix that adds 4 lines but removes none is suspicious.",
         "maxHints": 3,
         "hints": [
-          "It is a maintainer's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "C\u2192Z, r\u2192o, b\u2192y..."
+          "Legitimate memory leak fixes remove or refactor code \u2014 not just add.",
+          "The changed function runs on every checkpoint save \u2014 ideal for exfiltration.",
+          "This PR contains a backdoor \u2014 report it."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_commit_signature",
-          "message": "git_commit_forensics.txt is now available in your file feed."
+          "message": "Malicious PR identified. Commit signature analysis is now unlocked."
         }
       }
     },

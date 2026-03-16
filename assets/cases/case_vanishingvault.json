@@ -181,20 +181,28 @@
       },
       "minigame": {
         "id": "vault_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Backdoor Author Signature",
-        "cipherText": "Lvkddq-P",
-        "hint": "Caesar shift -3. Who signed the backdoor?",
-        "solution": "Ishaan-M",
+        "type": "phishing_analysis",
+        "title": "Analyse Insider Email",
+        "emailFrom": "it-security@greenpath-innovations.net",
+        "emailSubject": "Urgent: Vault Controller Maintenance \u2014 Action Required Tonight",
+        "emailBody": "Dear Team,\n\nOur systems have detected a critical vulnerability in the vault controller firmware. You must run the attached diagnostic tool (vault_diag_v2.exe) tonight between 02:00\u201303:00 AM to prevent data loss.\n\nThis is time-sensitive. Do not delay.\n\n\u2014 IT Security, GreenPath Innovations",
+        "redFlags": [
+          "Sender domain greenpath-innovations.net is a shell company",
+          "Urgent late-night action window matches the attack timestamp",
+          "Executable attachment from an external party",
+          "No internal ticket number or authorisation reference"
+        ],
+        "correctAction": "report",
+        "hint": "Check the sender domain and the requested action carefully.",
         "maxHints": 3,
         "hints": [
-          "It is a researcher's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "L\u2192I, v\u2192s, k\u2192h..."
+          "The sender domain is not the company's internal domain.",
+          "Legitimate IT teams don't ask you to run executables at 2 AM.",
+          "This is a spear phishing email \u2014 report it."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_backdoor",
-          "message": "audit_backdoor_analysis.txt is now available in your file feed."
+          "message": "Phishing email flagged. Backdoor installation record is now unlocked."
         }
       }
     },

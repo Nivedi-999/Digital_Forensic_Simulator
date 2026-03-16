@@ -181,20 +181,26 @@
       },
       "minigame": {
         "id": "account_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Account Reference",
-        "cipherText": "Ylnudp-E",
-        "hint": "Caesar shift -3. Whose name is linked to the mule account?",
-        "solution": "Vikram-B",
+        "type": "ip_trace",
+        "title": "Trace the SIM Swap Terminal",
+        "hint": "Find the internal terminal IP used for the unauthorised SIM swap.",
+        "solution": "10.44.12.87",
+        "decoys": [
+          "192.168.1.254",
+          "10.0.0.1",
+          "10.44.12.87",
+          "172.20.10.1",
+          "10.44.99.3"
+        ],
         "maxHints": 3,
         "hints": [
-          "It is a person's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "Y\u2192V, l\u2192i, n\u2192k..."
+          "The operator's internal network is on 10.44.x.x.",
+          "Terminal 14 is on subnet .12.x",
+          "The full IP is 10.44.12.87"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_bankaccount",
-          "message": "destination_account_trace.txt is now available in your file feed."
+          "message": "Terminal identified. Bank account trace is now unlocked."
         }
       }
     },

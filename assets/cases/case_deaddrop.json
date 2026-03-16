@@ -82,21 +82,20 @@
       "evidenceType": "files",
       "unlockedBy": null,
       "minigame": {
-        "id": "binary_pattern",
-        "type": "pattern_match",
-        "title": "Binary Pattern Analysis",
-        "description": "Align binary blocks from the three executables. Identify repeating structures and isolate variable bytes.",
-        "hint": "Files that share an opcode structure but differ in a few bytes are encoding something in those differences.",
-        "solution": "command_containers",
+        "id": "dead_drop_decode",
+        "type": "code_crack",
+        "title": "Bypass Hacker Terminal",
+        "hint": "Crack the 3-character exfiltration node access code.",
+        "solution": "4F7",
         "maxHints": 3,
         "hints": [
-          "Align the three files byte-by-byte. Where do they differ?",
-          "The differing bytes appear at the same offset in each file.",
-          "Variable bytes at a fixed offset encode instructions \u2014 this is a command container pattern."
+          "The first character is a number between 1\u20139.",
+          "The second character is a hex letter (A\u2013F).",
+          "The code is 4F7"
         ],
         "onSuccess": {
-          "unlocksPanel": "meta",
-          "message": "Metadata panel is now accessible. Files confirmed as command containers."
+          "unlocksHiddenItem": "file_operator_id",
+          "message": "Terminal breached. Operator identity record is now unlocked."
         }
       },
       "items": [

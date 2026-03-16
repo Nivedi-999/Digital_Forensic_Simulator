@@ -171,20 +171,19 @@
       },
       "minigame": {
         "id": "c2_decode",
-        "type": "caesar_cipher",
-        "title": "Decode C2 Operator Identity",
-        "cipherText": "Fbuxv-I",
-        "hint": "Caesar shift -3. Who injected the shell code?",
-        "solution": "Cyrus-F",
+        "type": "code_crack",
+        "title": "Access C2 Server Admin Panel",
+        "hint": "Crack the C2 server's 3-character authentication token.",
+        "solution": "7E1",
         "maxHints": 3,
         "hints": [
-          "It is a firmware engineer's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "F\u2192C, b\u2192y, x\u2192u..."
+          "The first character is an odd single digit.",
+          "The second is a hex letter near the middle of the alphabet.",
+          "The code is 7E1"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_c2_server",
-          "message": "reverse_shell_c2_trace.txt is now available in your file feed."
+          "message": "C2 server accessed. Ownership record is now unlocked."
         }
       }
     },

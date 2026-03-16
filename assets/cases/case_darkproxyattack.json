@@ -181,20 +181,19 @@
       },
       "minigame": {
         "id": "proxy_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Config Author Tag",
-        "cipherText": "Gkuxz-Q",
-        "hint": "Caesar shift -3. Who authored the attack script?",
-        "solution": "Dhruv-N",
+        "type": "code_crack",
+        "title": "Breach Proxy Entry Node",
+        "hint": "Crack the entry node's admin lock to retrieve the VPS owner record.",
+        "solution": "D5C",
         "maxHints": 3,
         "hints": [
-          "It is a person's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "G\u2192D, k\u2192h, u\u2192r..."
+          "The first character is a hex letter in the second half of the alphabet.",
+          "The second is a single digit.",
+          "The code is D5C"
         ],
         "onSuccess": {
-          "unlocksHiddenItem": "file_configmatch",
-          "message": "attack_config_analysis.txt is now available in your file feed."
+          "unlocksHiddenItem": "file_vpspurchase",
+          "message": "Entry node breached. VPS purchase record is now unlocked."
         }
       }
     },

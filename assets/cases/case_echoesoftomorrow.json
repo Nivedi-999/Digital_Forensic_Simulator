@@ -146,21 +146,20 @@
       "evidenceType": "files",
       "unlockedBy": "intent_patterning",
       "minigame": {
-        "id": "sequence_reconstruction",
-        "type": "sequence_order",
-        "title": "Sequence Reconstruction",
-        "description": "Arrange file events in correct chronological order. Detect the anticipation window \u2014 how far in advance were files moved?",
-        "hint": "A file archived before it is requested suggests the system knew it would be needed.",
-        "solution": "2_to_4_minute_anticipation",
+        "id": "echoes_decode",
+        "type": "code_crack",
+        "title": "Crack Model Archive Access Code",
+        "hint": "Break into the staging directory lock to retrieve the operator session record.",
+        "solution": "9A2",
         "maxHints": 3,
         "hints": [
-          "Sort the file events: Archive \u2192 Request \u2192 Use. Which comes first?",
-          "The archive action happens before any user request. How much earlier?",
-          "2\u20134 minutes of anticipation is consistent across all events. That is a prediction window, not a coincidence."
+          "The first character is a single digit.",
+          "The second is a letter from A\u2013F.",
+          "The code is 9A2"
         ],
         "onSuccess": {
-          "unlocksPanel": "ip",
-          "message": "IP Traces now accessible. System confirmed predicting actions 2\u20134 minutes ahead."
+          "unlocksHiddenItem": "file_session_record",
+          "message": "Archive unlocked. Operator session record retrieved."
         }
       },
       "items": [

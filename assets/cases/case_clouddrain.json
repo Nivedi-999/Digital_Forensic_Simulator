@@ -181,20 +181,26 @@
       },
       "minigame": {
         "id": "vpn_decode",
-        "type": "caesar_cipher",
-        "title": "Decode VPN Subscriber Username",
-        "cipherText": "Nhwdq-V",
-        "hint": "Caesar shift -3. Whose VPN account is this?",
-        "solution": "Ketan-S",
+        "type": "ip_trace",
+        "title": "Trace the AWS API Origin",
+        "hint": "Find the VPN exit node used to make the fraudulent AWS API calls.",
+        "solution": "103.55.77.12",
+        "decoys": [
+          "45.33.11.8",
+          "103.55.77.12",
+          "172.217.0.1",
+          "198.51.100.4",
+          "10.0.0.1"
+        ],
         "maxHints": 3,
         "hints": [
-          "It is a developer's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "N\u2192K, h\u2192e, w\u2192t..."
+          "The IP starts with 103.",
+          "Second octet is 55, third is 77.",
+          "The full IP is 103.55.77.12"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_vpn_trace",
-          "message": "vpn_exit_node_trace.txt is now available in your file feed."
+          "message": "VPN exit node identified. Subscriber record is now unlocked."
         }
       }
     },

@@ -211,34 +211,6 @@
               "value": "Wix \u2014 free plan"
             }
           ]
-        },
-        {
-          "id": "meta_portal_admin",
-          "label": "Portal Moderator Approval Log",
-          "detail": "The job listing was manually approved by portal moderator Vikash T at 09:14 AM \u2014 3 days before victims began applying. The approval was given without verifying the company's CIN (Corporate Identification Number) or calling the listed contact number. Vikash's approval timestamp is logged and his account credentials were used. However, the listing content itself was entirely submitted by the fraudster \u2014 the moderator only approved its publication.",
-          "isKeyEvidence": false,
-          "pointsToSuspect": "job_portal_admin",
-          "rows": [
-            {
-              "key": "Approved By",
-              "value": "Vikash T (Moderator ID: QH-MOD-44)",
-              "highlight": true
-            },
-            {
-              "key": "Approval Time",
-              "value": "09:14 AM"
-            },
-            {
-              "key": "Company Verified?",
-              "value": "No \u2014 CIN check skipped",
-              "highlight": true
-            },
-            {
-              "key": "Conclusion",
-              "value": "Negligent but not complicit"
-            }
-          ],
-          "irrelevantReason": "Vikash T approved the listing but did not create the fraud. The domain registration, UPI account, and victim contact all trace to Ramesh P."
         }
       ],
       "minigame": null

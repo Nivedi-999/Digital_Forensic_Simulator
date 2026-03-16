@@ -181,20 +181,28 @@
       },
       "minigame": {
         "id": "pgp_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Forum Identity",
-        "cipherText": "Urqdn-V",
-        "hint": "Caesar shift -3. What is the real name behind NullVector?",
-        "solution": "Ronak-S",
+        "type": "phishing_analysis",
+        "title": "Analyse Dark Web Listing Email",
+        "emailFrom": "nullvector@exploit-market.onion.to",
+        "emailSubject": "Re: GridCore 0-day \u2014 Proof of Concept Available",
+        "emailBody": "Interested parties,\n\nA working exploit for CVE-2024-XXXX targeting GridCore SCADA v4.2.1 is available. PoC confirmed on live substations. Price: $280,000 USD in 3 tranches.\n\nContact via PGP only. Key on keyserver.\n\nNullVector",
+        "redFlags": [
+          "Onion-to proxy domain \u2014 dark web communication",
+          "Claims live substation testing \u2014 implies criminal access",
+          "Payment structure matches financial trace (3 tranches)",
+          "PGP key matches researcher's known key fingerprint"
+        ],
+        "correctAction": "report",
+        "hint": "This is a criminal solicitation. The domain, payment terms, and PGP key are all evidence.",
         "maxHints": 3,
         "hints": [
-          "It is a researcher's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "U\u2192R, r\u2192o, q\u2192n..."
+          "The onion-to proxy exposes a dark web communication.",
+          "The 3-tranche payment structure matches the financial forensics.",
+          "This must be reported \u2014 it is direct evidence of the sale."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_pgp_key",
-          "message": "nullvector_pgp_identity.txt is now available in your file feed."
+          "message": "Dark web listing flagged. PGP key analysis is now unlocked."
         }
       }
     },

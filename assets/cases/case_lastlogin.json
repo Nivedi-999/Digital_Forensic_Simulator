@@ -145,21 +145,27 @@
       "evidenceType": "files",
       "unlockedBy": "pattern_analysis",
       "minigame": {
-        "id": "timing_validation",
-        "type": "sequence_order",
-        "title": "Validate Action Timing",
-        "description": "Arrange sensor events in chronological order and identify reaction times that no human could achieve.",
-        "hint": "Human reaction time averages 200\u2013400ms. Look for sub-millisecond responses.",
-        "solution": "automated",
+        "id": "last_login_decode",
+        "type": "ip_trace",
+        "title": "Trace the Rogue Session Origin",
+        "hint": "Find the internal server node that initiated the unauthorised ARIA-R session.",
+        "solution": "192.168.44.7",
+        "decoys": [
+          "192.168.12.3",
+          "10.0.1.5",
+          "192.168.44.7",
+          "172.16.8.10",
+          "192.168.1.1"
+        ],
         "maxHints": 3,
         "hints": [
-          "Sort the events by exact timestamp \u2014 milliseconds matter here.",
-          "Compare the gap between an incoming notification and the outgoing response.",
-          "A human needs time to read, think, and type. This account does not."
+          "The orchestration server is on the 192.168.44.x subnet.",
+          "It is not the workstation (.12.3) or admin (.1.5).",
+          "The full IP is 192.168.44.7"
         ],
         "onSuccess": {
-          "unlocksPanel": "ip",
-          "message": "IP Traces are now accessible. Device behavior confirmed as automated."
+          "unlocksHiddenItem": "device_timing",
+          "message": "Session origin confirmed. Timing analysis is now unlocked."
         }
       },
       "items": [

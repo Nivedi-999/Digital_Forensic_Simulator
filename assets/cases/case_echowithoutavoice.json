@@ -173,20 +173,19 @@
       },
       "minigame": {
         "id": "alias_decode",
-        "type": "caesar_cipher",
-        "title": "Decode the Troll Account Creator",
-        "cipherText": "Pdbd-N",
-        "hint": "Caesar shift -3. Who created all three accounts?",
-        "solution": "Maya-K",
+        "type": "code_crack",
+        "title": "Crack Troll Account Lock",
+        "hint": "Bypass the encrypted alias record to reveal the account creator.",
+        "solution": "3B8",
         "maxHints": 3,
         "hints": [
-          "It is a person's first name followed by their surname initial.",
-          "Shift each letter 3 positions backward.",
-          "P\u2192M, d\u2192a, b\u2192y..."
+          "The first character is a low single digit.",
+          "The second is a hex letter.",
+          "The code is 3B8"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_style_analysis",
-          "message": "linguistic_style_analysis.pdf is now available in your file feed."
+          "message": "Alias cracked. Linguistic analysis report is now unlocked."
         }
       }
     },

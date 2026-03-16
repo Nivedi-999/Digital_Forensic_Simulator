@@ -181,20 +181,28 @@
       },
       "minigame": {
         "id": "handler_decode",
-        "type": "caesar_cipher",
-        "title": "Decode Handler Contact Name",
-        "cipherText": "Qdolql-Y",
-        "hint": "Caesar shift -3. Whose device shows the handler communications?",
-        "solution": "Nalini-V",
+        "type": "phishing_analysis",
+        "title": "Analyse Handler Communication",
+        "emailFrom": "datasync-ops@metricsync-advisory.com",
+        "emailSubject": "Monthly Deliverable Confirmation \u2014 SPARROW",
+        "emailBody": "SPARROW,\n\nMonthly package received and verified. Disbursement of \u20b92.2L initiated.\n\nNext cycle: standard 28-day window. Priority targets: network topology update and Q4 personnel clearance list.\n\nMaintain protocol. No deviations.\n\n\u2014 Handler",
+        "redFlags": [
+          "Codename 'SPARROW' matches the handler communication intercept",
+          "\u20b92.2L matches the exact monthly deposit amount",
+          "28-day cycle matches financial payment cadence",
+          "Sender domain is a shell company (metricsync-advisory.com)"
+        ],
+        "correctAction": "report",
+        "hint": "The codename, amount, and cadence match the financial forensics exactly.",
         "maxHints": 3,
         "hints": [
-          "It is an insider's name followed by their initial.",
-          "Shift each letter 3 positions backward.",
-          "Q\u2192N, d\u2192a, o\u2192l..."
+          "SPARROW is Nalini V's handler codename from the intercept.",
+          "\u20b92.2L every 28 days matches her secondary account deposits exactly.",
+          "This is handler-agent communication \u2014 report it immediately."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_handler_identity",
-          "message": "handler_comms_analysis.txt is now available in your file feed."
+          "message": "Handler communication flagged. Identity analysis is now unlocked."
         }
       }
     },
