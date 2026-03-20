@@ -202,7 +202,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_commit_signature",
-          "message": "Malicious PR identified. Commit signature analysis is now unlocked."
+          "message": "BREAKTHROUGH \u2014 git_commit_forensics.txt confirmed. The malicious commit is GPG-signed with Zoya R's own key. She cannot deny authorship \u2014 the cryptographic proof is irrefutable."
         }
       }
     },
@@ -360,7 +360,8 @@
     "file_domain_reg",
     "meta_model_similarity",
     "meta_exfil_pattern",
-    "ip_exfil_server"
+    "ip_exfil_server",
+    "file_commit_signature"
   ],
   "outcomes": {
     "perfect": {

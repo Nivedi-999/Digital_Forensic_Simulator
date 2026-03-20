@@ -201,15 +201,14 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
     final visibleItems = engine.visibleItemsForPanel(_activeFeed);
 
     return Column(
-      children: List.generate(visibleItems.length, (index) {
-        final item = visibleItems[index];
+      children: visibleItems.map((item) {
         return LogRow(
           left: item.sender ?? item.label,
           right: item.metadata?.size ?? item.label,
-          highlighted: index.isEven, // alternating rows — even=amber, odd=default
+          highlighted: item.isKeyEvidence,
           onTap: () => _openAnalysis(context, panel.id, item.id),
         );
-      }),
+      }).toList(),
     );
   }
 
@@ -224,6 +223,7 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
             name: suspect.name,
             role: suspect.role,
             riskLevel: suspect.riskLevel,
+            suspicionValue: engine.suspicionFor(suspect.id),
             onTap: () {
               Navigator.push(
                 context,

@@ -56,36 +56,35 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
     super.dispose();
   }
 
-  // Score-based colour: >=70% → red, >=35% → amber, else green
-  Color _scoreColor(double score) {
-    if (score >= 0.70) return CyberColors.neonRed;
-    if (score >= 0.35) return CyberColors.neonAmber;
-    return CyberColors.neonGreen;
+
+  IconData _avatarIcon(String role) {
+    final r = role.toLowerCase();
+    if (r.contains('engineer') || r.contains('developer') || r.contains('devops')) return Icons.code;
+    if (r.contains('finance') || r.contains('analyst') || r.contains('account')) return Icons.account_balance_outlined;
+    if (r.contains('admin') || r.contains('manager') || r.contains('director')) return Icons.manage_accounts_outlined;
+    if (r.contains('hr') || r.contains('human')) return Icons.people_outline;
+    if (r.contains('student') || r.contains('intern')) return Icons.school_outlined;
+    if (r.contains('security') || r.contains('forensic')) return Icons.security;
+    if (r.contains('vendor') || r.contains('consultant')) return Icons.business_center_outlined;
+    if (r.contains('network') || r.contains('telecom')) return Icons.router_outlined;
+    return Icons.person_outline;
   }
 
-  // Score-based label: >=70% → Critical, >=35% → Moderate, else Low
-  String _scoreText(double score) {
-    if (score >= 0.70) return 'Critical';
-    if (score >= 0.35) return 'Moderate';
-    return 'Low';
-  }
-
-  // Fixed display score from riskLevel — never changes during gameplay
-  double _fixedScore(String riskLevel) {
-    switch (riskLevel.toLowerCase()) {
-      case 'high':   return 0.75;
-      case 'medium': return 0.50;
-      default:       return 0.20;
-    }
-  }
-
-  // Kept for reference
   Color _riskColor(String riskLevel) {
     switch (riskLevel.toLowerCase()) {
-      case 'high':   return CyberColors.neonRed;
-      case 'medium': return CyberColors.neonAmber;
-      default:       return CyberColors.neonGreen;
+      case 'high':
+        return CyberColors.neonRed;
+      case 'medium':
+        return CyberColors.neonAmber;
+      default:
+        return CyberColors.neonGreen;
     }
+  }
+
+  String _suspicionText(double value) {
+    if (value >= 0.7) return 'Critical';
+    if (value >= 0.4) return 'Moderate';
+    return 'Low';
   }
 
   @override
@@ -94,14 +93,8 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
     final suspect = engine.caseFile.suspectById(widget.suspectId);
     if (suspect == null) return const SizedBox();
 
-    // Suspicion display is FIXED — derived entirely from the JSON riskLevel.
-    // It never reads from the engine's dynamic score, so collecting evidence
-    // cannot change what the player sees on this screen.
-    //   high   → 0.75  (Critical)
-    //   medium → 0.50  (Moderate)
-    //   low    → 0.20  (Low)
-    final double suspicionValue = _fixedScore(suspect.riskLevel);
-    final riskColor = _scoreColor(suspicionValue);
+    final suspicionValue = engine.suspicionFor(suspect.id);
+    final riskColor = _riskColor(suspect.riskLevel);
     final footprint = suspect.digitalFootprint;
 
     return AppShell(
@@ -139,18 +132,28 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
                             ),
                           ],
                         ),
-                        child: Center(
-                          child: Text(
-                            suspect.name.substring(0, 1).toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 42,
-                              color: riskColor,
-                              fontFamily: 'DotMatrix',
-                              shadows: [
-                                Shadow(color: riskColor, blurRadius: 12)
-                              ],
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Role-based background icon
+                            Icon(
+                              _avatarIcon(suspect.role),
+                              color: riskColor.withOpacity(0.2),
+                              size: 52,
                             ),
-                          ),
+                            // Large initial on top
+                            Text(
+                              suspect.name.substring(0, 1).toUpperCase(),
+                              style: TextStyle(
+                                fontSize: 42,
+                                color: riskColor,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(color: riskColor, blurRadius: 16)
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 16),
@@ -171,7 +174,8 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
                               .copyWith(color: CyberColors.textSecondary)),
                       const SizedBox(height: 12),
                       StatusChip(
-                        label: 'THREAT: ${_scoreText(suspicionValue).toUpperCase()}',
+                        label:
+                        'THREAT: ${suspect.risk.toUpperCase()}',
                         color: riskColor,
                       ),
                     ],
@@ -204,7 +208,7 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Current: ${_scoreText(suspicionValue)}',
+                          'Current: ${_suspicionText(suspicionValue)}',
                           style: TextStyle(
                             color: riskColor,
                             fontSize: 13,

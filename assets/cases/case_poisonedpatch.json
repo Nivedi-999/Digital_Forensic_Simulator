@@ -183,7 +183,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_c2_server",
-          "message": "C2 server accessed. Ownership record is now unlocked."
+          "message": "BREAKTHROUGH \u2014 reverse_shell_c2_trace.txt confirmed. The C2 server is owned by the same shell company that paid Cyrus F. The backdoor and the payment are from the same source."
         }
       }
     },
@@ -386,7 +386,8 @@
     "meta_build_access",
     "meta_shell_timing",
     "ip_c2",
-    "ip_build_machine"
+    "ip_build_machine",
+    "file_c2_server"
   ],
   "outcomes": {
     "perfect": {

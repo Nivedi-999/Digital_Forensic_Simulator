@@ -185,7 +185,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_vendorhistory",
-          "message": "Email origin traced. Vendor history is now unlocked."
+          "message": "BREAKTHROUGH \u2014 arpit_vendor_history.txt recovered. Arpit C's termination dispute and written threat to the CFO establish clear motive and premeditation."
         }
       }
     },
@@ -334,7 +334,8 @@
     "file_vendoraccount",
     "file_voiceanalysis",
     "meta_domain",
-    "ip_spoof_origin"
+    "ip_spoof_origin",
+    "file_vendorhistory"
   ],
   "outcomes": {
     "perfect": {

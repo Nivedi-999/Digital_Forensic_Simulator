@@ -202,7 +202,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_backdoor",
-          "message": "Phishing email flagged. Backdoor installation record is now unlocked."
+          "message": "BREAKTHROUGH \u2014 audit_backdoor_analysis.txt confirmed. Ishaan M planted a persistent backdoor during his own security audit \u2014 4 months before deploying the wiper. Premeditation is proven."
         }
       }
     },
@@ -365,7 +365,8 @@
     "file_salary_trace",
     "meta_backup_deletion",
     "meta_c2_silence",
-    "ip_internal_ws"
+    "ip_internal_ws",
+    "file_backdoor"
   ],
   "outcomes": {
     "perfect": {

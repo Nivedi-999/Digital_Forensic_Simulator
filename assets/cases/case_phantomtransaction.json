@@ -200,7 +200,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_bankaccount",
-          "message": "Terminal identified. Bank account trace is now unlocked."
+          "message": "BREAKTHROUGH \u2014 destination_account_trace.txt confirmed. The fraud account is KYC-linked to Vikram B's Aadhaar. The money trail leads directly to him."
         }
       }
     },
@@ -320,7 +320,8 @@
     "file_banktransfer",
     "file_employeelog",
     "meta_otpdevice",
-    "ip_backend"
+    "ip_backend",
+    "file_bankaccount"
   ],
   "outcomes": {
     "perfect": {

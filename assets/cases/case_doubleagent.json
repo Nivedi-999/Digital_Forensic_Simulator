@@ -202,7 +202,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_relay_ownership",
-          "message": "Buyer communication flagged. Relay server ownership is now unlocked."
+          "message": "BREAKTHROUGH \u2014 relay_server_ownership.txt confirmed. The relay server was bought with Ananya V's own credit card and configured from her home IP. She operated both breaches herself."
         }
       }
     },
@@ -388,7 +388,8 @@
     "meta_same_home_ip",
     "meta_tool_signature",
     "meta_timeline_overlap",
-    "ip_relay"
+    "ip_relay",
+    "file_relay_ownership"
   ],
   "outcomes": {
     "perfect": {

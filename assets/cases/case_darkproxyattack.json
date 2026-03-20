@@ -193,7 +193,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_vpspurchase",
-          "message": "Entry node breached. VPS purchase record is now unlocked."
+          "message": "BREAKTHROUGH \u2014 attack_config_analysis.txt confirmed. The proxy script contains internal documentation references only Dhruv N could know. Authorship is now forensically linked."
         }
       }
     },
@@ -371,7 +371,8 @@
     "file_vpspurchase",
     "meta_timing",
     "meta_scriptmatch",
-    "ip_entrynode"
+    "ip_entrynode",
+    "file_configmatch"
   ],
   "outcomes": {
     "perfect": {

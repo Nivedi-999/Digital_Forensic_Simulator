@@ -112,7 +112,7 @@
         {
           "id": "chat_offer",
           "label": "i can get your attendance sorted. 500 per subject. dm me.",
-          "sender": "Unknown Student (anonymous post)",
+          "sender": "Unknown Student (college forum, anonymous post)",
           "isKeyEvidence": false,
           "isSuspect": true,
           "detail": "Post found on the college's unofficial student forum, timestamped 2 weeks before the breach. The post advertises attendance manipulation for \u20b9500 per subject. The post account was deleted. However, Tanmay D's modification affected only his own records \u2014 not a paid service pattern. Also the modification method used DB-level SQL access, far beyond what a forum tout would offer.",
@@ -188,7 +188,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_credential_dump",
-          "message": "Database breach IP confirmed. Credential dump is now unlocked."
+          "message": "BREAKTHROUGH \u2014 hostel_wifi_log.txt confirmed. TANMAY-LAPTOP was connected from Block C at exactly the time of the database breach. Physical location is now proven."
         }
       }
     },
@@ -308,7 +308,8 @@
     "file_dblog",
     "file_sqlqueries",
     "meta_credentials",
-    "ip_hostel"
+    "ip_hostel",
+    "file_hostelwifi"
   ],
   "outcomes": {
     "perfect": {

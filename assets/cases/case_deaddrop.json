@@ -95,7 +95,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_operator_id",
-          "message": "Terminal breached. Operator identity record is now unlocked."
+          "message": "BREAKTHROUGH \u2014 operator_identity_fragment.enc decrypted. A workstation username and wallet fragment point to a named individual. The hidden operator may not be hidden for long."
         }
       },
       "items": [
@@ -202,7 +202,20 @@
           ],
           "pointsToSuspect": "hidden_operator"
         }
-      ]
+      ],
+      "hiddenItem": {
+        "id": "file_operator_id",
+        "label": "operator_identity_fragment.enc",
+        "detail": "DECRYPTED \u2014 Partial Operator Identity Fragment recovered from the malware binary's encrypted config block. The config contains an embedded PDB path string: 'C:\\\\Users\\\\NV_workstation\\\\projects\\\\simexfil\\\\'. The username 'NV_workstation' matches the initials and workstation naming convention of Nalini V \u2014 Senior Systems Analyst with infrastructure access across all three labs. A second fragment contains a partially decoded wallet address used for the operator's payment \u2014 the first 6 characters match a Monero address later linked to Nalini V's secondary income deposits. The fragment also reveals the malware was compiled exactly 14 months ago \u2014 matching the date Nalini V was granted cross-lab infrastructure access. This file is the only direct technical link between the malware author and a named individual in this investigation.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "hidden_operator",
+        "unlockedByMinigame": "dead_drop_decode",
+        "metadata": {
+          "size": "0.3 MB",
+          "modifier": "Malware Config Decryption",
+          "modifiedAt": "Post-incident forensics"
+        }
+      }
     },
     {
       "id": "meta",
@@ -456,7 +469,8 @@
     "meta_render_test",
     "meta_weekly_cycle",
     "ip_internal_relay",
-    "ip_dead_drop"
+    "ip_dead_drop",
+    "file_operator_id"
   ],
   "outcomes": {
     "perfect": {

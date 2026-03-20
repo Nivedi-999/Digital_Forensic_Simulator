@@ -120,7 +120,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_ipreg",
-          "message": "ip_registration_record.txt is now available in your file feed."
+          "message": "BREAKTHROUGH \u2014 ip_registration_record.txt confirmed. IP 103.24.56.88 is registered to Suresh K at Spice Garden's address. The fake review campaign is directly tied to the rival restaurant owner."
         }
       }
     },
@@ -175,6 +175,29 @@
               "highlight": true
             }
           ]
+        },
+        {
+          "id": "meta_rival_check",
+          "label": "BiryaniHub Review Pattern",
+          "detail": "A separate automated check of BiryaniHub's reviews was triggered by an anonymous tip suggesting they also ran fake review campaigns. Analysis shows BiryaniHub received 12 reviews over the same period \u2014 spread across 9 different IP addresses, 6 different device types, over 4 days. This is an organic distribution pattern. No IP clustering, no device fingerprint match, no account batch creation. The anonymous tip appears to be a misdirection attempt, possibly by the actual fraudster.",
+          "isKeyEvidence": false,
+          "pointsToSuspect": "biryani_hub_owner",
+          "rows": [
+            {
+              "key": "Reviews Checked",
+              "value": "12 reviews"
+            },
+            {
+              "key": "IP Distribution",
+              "value": "9 different IPs \u2014 organic",
+              "highlight": true
+            },
+            {
+              "key": "Verdict",
+              "value": "No fraud detected \u2014 misdirection tip"
+            }
+          ],
+          "irrelevantReason": "BiryaniHub's review pattern is organic. The anonymous tip was a misdirection. All fake review activity traces to 103.24.56.88 \u2014 Spice Garden's IP."
         }
       ],
       "minigame": null

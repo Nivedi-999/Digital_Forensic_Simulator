@@ -202,7 +202,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_pgp_key",
-          "message": "Dark web listing flagged. PGP key analysis is now unlocked."
+          "message": "BREAKTHROUGH \u2014 nullvector_pgp_identity.txt confirmed. The dark web alias NullVector's PGP key shares a master key with Ronak S's known identity. The two identities are the same person."
         }
       }
     },
@@ -358,7 +358,8 @@
     "file_scada_access",
     "meta_controlled_shutdown",
     "meta_code_style",
-    "ip_jumpserver"
+    "ip_jumpserver",
+    "file_pgp_key"
   ],
   "outcomes": {
     "perfect": {

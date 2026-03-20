@@ -187,8 +187,8 @@
       ],
       "hiddenItem": {
         "id": "file_credentials",
-        "label": "credentials.pdf",
-        "detail": "DECRYPTED \u2014 Internal Credential Export. Exported by Ankita E (Employee ID AE-4471) from workstation FIN-WS-114 at 10:43:22 AM. Contains DB admin credentials for FINDB-PROD-01. Target account: offshore ACC-4482-X. Destination IP: 202.56.23.101.",
+        "label": "credentials_export_log.pdf",
+        "detail": "DECRYPTED \u2014 Internal Credential Export Log. Exported by Ankita E (Employee ID AE-4471) from workstation FIN-WS-114 at 10:43:22 AM. The export contains full DB admin credentials for FINDB-PROD-01 \u2014 the production financial database. The credentials were written to a portable archive and transferred via SMB to 172.16.44.21 before being routed to external IP 202.56.23.101 \u2014 an offshore server with no legitimate business relationship to the company. The export log shows 14,847 employee financial records were accessed. Most critically, the log confirms the credentials were used to execute the three anomalous transactions found in finance_report_q3.pdf \u2014 connecting Ankita E directly to the data exfiltration and the offshore account transfer. This file is the single most important piece of evidence in the case \u2014 it closes the loop between database access, credential theft, and the offshore fund transfer.",
         "isKeyEvidence": true,
         "pointsToSuspect": "ankita_e",
         "unlockedByMinigame": "decryption",
@@ -213,7 +213,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_credentials",
-          "message": "credentials.pdf is now available in your file feed."
+          "message": "BREAKTHROUGH \u2014 credentials_export_log.pdf decrypted. Ankita E's credential export directly links her to the offshore transfer. Case evidence chain is now complete."
         }
       }
     },
@@ -406,11 +406,11 @@
   },
   "correctEvidenceIds": [
     "file_finance",
-    "file_credentials",
     "file_debug",
     "meta_lastuser",
     "ip_internal",
-    "ip_external"
+    "ip_external",
+    "file_credentials"
   ],
   "outcomes": {
     "perfect": {

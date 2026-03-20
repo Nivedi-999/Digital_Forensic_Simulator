@@ -342,7 +342,7 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame>
                 Row(children: [
                   Expanded(
                     child: CyberButton(
-                      label: 'Submit',
+                      label: 'Decrypt',
                       icon: Icons.check_outlined,
                       onTap: () => _check(engine),
                     ),

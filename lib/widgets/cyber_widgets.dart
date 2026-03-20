@@ -419,6 +419,9 @@ class SuspectCard extends StatelessWidget {
   final String name;
   final String role;
   final String riskLevel; // 'high' | 'medium' | 'low'
+  /// Live suspicion value from CaseEngine (0.0–1.0).
+  /// Drives the mini suspicion bar shown on the card.
+  final double suspicionValue;
   final VoidCallback? onTap;
 
   const SuspectCard({
@@ -426,82 +429,234 @@ class SuspectCard extends StatelessWidget {
     required this.name,
     required this.role,
     required this.riskLevel,
+    this.suspicionValue = 0.05,
     this.onTap,
   });
 
   Color get _riskColor {
     switch (riskLevel.toLowerCase()) {
-      case 'high':
-        return CyberColors.neonRed;
-      case 'medium':
-        return CyberColors.neonAmber;
-      default:
-        return CyberColors.neonGreen;
+      case 'high':   return CyberColors.neonRed;
+      case 'medium': return CyberColors.neonAmber;
+      default:       return CyberColors.neonGreen;
+    }
+  }
+
+  /// Suspicion bar colour shifts from cyan → amber → red as value rises.
+  Color _suspicionColor(double v) {
+    if (v >= 0.65) return CyberColors.neonRed;
+    if (v >= 0.35) return CyberColors.neonAmber;
+    return CyberColors.neonCyan;
+  }
+
+  String _suspicionLabel(double v) {
+    if (v >= 0.65) return 'HIGH';
+    if (v >= 0.35) return 'MED';
+    return 'LOW';
+  }
+
+  /// Returns an icon that represents the suspect's role visually.
+  IconData _avatarIcon() {
+    final r = role.toLowerCase();
+    if (r.contains('engineer') || r.contains('developer') || r.contains('devops')) {
+      return Icons.code;
+    } else if (r.contains('finance') || r.contains('analyst') || r.contains('account')) {
+      return Icons.account_balance_outlined;
+    } else if (r.contains('admin') || r.contains('manager') || r.contains('director')) {
+      return Icons.manage_accounts_outlined;
+    } else if (r.contains('hr') || r.contains('human')) {
+      return Icons.people_outline;
+    } else if (r.contains('student') || r.contains('intern')) {
+      return Icons.school_outlined;
+    } else if (r.contains('security') || r.contains('forensic')) {
+      return Icons.security;
+    } else if (r.contains('vendor') || r.contains('consultant')) {
+      return Icons.business_center_outlined;
+    } else if (r.contains('network') || r.contains('telecom')) {
+      return Icons.router_outlined;
+    } else {
+      return Icons.person_outline;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = _riskColor;
+    final riskColor = _riskColor;
+    final susColor = _suspicionColor(suspicionValue);
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: CyberRadius.medium,
-        child: Container(
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: CyberColors.bgCard,
             borderRadius: CyberRadius.medium,
-            border: Border.all(color: color.withOpacity(0.35), width: 1.5),
+            border: Border.all(
+              // Border glows with suspicion colour once elevated
+              color: suspicionValue >= 0.35
+                  ? susColor.withOpacity(0.5)
+                  : riskColor.withOpacity(0.25),
+              width: suspicionValue >= 0.35 ? 1.8 : 1.2,
+            ),
+            boxShadow: suspicionValue >= 0.65
+                ? [BoxShadow(
+              color: susColor.withOpacity(0.18),
+              blurRadius: 12,
+              spreadRadius: 1,
+            )]
+                : null,
           ),
-          child: Row(
+          child: Column(
             children: [
-              // Avatar
-              Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color.withOpacity(0.1),
-                  border: Border.all(color: color.withOpacity(0.5), width: 1.5),
-                ),
-                child: Center(
-                  child: Text(
-                    name.isNotEmpty ? name[0].toUpperCase() : '?',
-                    style: TextStyle(
-                      color: color,
-                      fontSize: 18,
-                      fontFamily: 'DotMatrix',
+              Row(
+                children: [
+                  // ── Photo-realistic avatar placeholder ──
+                  // Uses a layered design: background gradient + role icon + initials
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          riskColor.withOpacity(0.25),
+                          riskColor.withOpacity(0.08),
+                        ],
+                      ),
+                      border: Border.all(
+                        color: suspicionValue >= 0.35
+                            ? susColor.withOpacity(0.7)
+                            : riskColor.withOpacity(0.5),
+                        width: 2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: riskColor.withOpacity(0.2),
+                          blurRadius: 8,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Role-based background icon (large, faded)
+                        Icon(
+                          _avatarIcon(),
+                          color: riskColor.withOpacity(0.25),
+                          size: 28,
+                        ),
+                        // Initials overlay
+                        Text(
+                          name.isNotEmpty ? name[0].toUpperCase() : '?',
+                          style: TextStyle(
+                            color: riskColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
+                  const SizedBox(width: 12),
+
+                  // ── Name + role ──
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: const TextStyle(
+                            color: CyberColors.textPrimary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(role, style: CyberText.caption),
+                      ],
+                    ),
+                  ),
+
+                  // ── Suspicion badge ──
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: susColor.withOpacity(0.12),
+                      borderRadius: CyberRadius.pill,
+                      border: Border.all(
+                          color: susColor.withOpacity(0.4), width: 1),
+                    ),
+                    child: Text(
+                      _suspicionLabel(suspicionValue),
                       style: TextStyle(
-                        color: CyberColors.textPrimary,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                        color: susColor,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
                       ),
                     ),
-                    const SizedBox(height: 3),
-                    Text(role, style: CyberText.caption),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(Icons.chevron_right,
+                      color: riskColor.withOpacity(0.4), size: 18),
+                ],
               ),
-              StatusChip(
-                label: riskLevel.toUpperCase(),
-                color: color,
+
+              // ── Live suspicion bar ──
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const SizedBox(width: 62), // align under name
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'SUSPICION',
+                              style: TextStyle(
+                                color: CyberColors.textMuted,
+                                fontSize: 9,
+                                letterSpacing: 1.2,
+                              ),
+                            ),
+                            Text(
+                              '${(suspicionValue * 100).toInt()}%',
+                              style: TextStyle(
+                                color: susColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(3),
+                          child: LinearProgressIndicator(
+                            value: suspicionValue,
+                            minHeight: 5,
+                            backgroundColor:
+                            CyberColors.borderSubtle.withOpacity(0.5),
+                            valueColor:
+                            AlwaysStoppedAnimation(susColor),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 6),
-              Icon(Icons.chevron_right,
-                  color: color.withOpacity(0.5), size: 18),
             ],
           ),
         ),

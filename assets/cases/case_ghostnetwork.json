@@ -202,7 +202,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_handler_identity",
-          "message": "Handler communication flagged. Identity analysis is now unlocked."
+          "message": "BREAKTHROUGH \u2014 handler_comms_analysis.txt confirmed. The handler's communication patterns match a known foreign intelligence directorate. Nalini V was a recruited agent for 14 months."
         }
       }
     },
@@ -348,7 +348,8 @@
     "file_financial_trace",
     "meta_access_pattern",
     "meta_stego_timing",
-    "ip_canary_access"
+    "ip_canary_access",
+    "file_handler_identity"
   ],
   "outcomes": {
     "perfect": {

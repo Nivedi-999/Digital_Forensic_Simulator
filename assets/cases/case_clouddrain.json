@@ -200,7 +200,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_vpn_trace",
-          "message": "VPN exit node identified. Subscriber record is now unlocked."
+          "message": "BREAKTHROUGH \u2014 vpn_exit_node_trace.txt confirmed. The VPN account is registered to Ketan S's personal email and paid from his bank account. The AWS attack is traced to him."
         }
       }
     },
@@ -348,7 +348,8 @@
     "file_wallet_trace",
     "meta_timing",
     "meta_instance_count",
-    "ip_api_calls"
+    "ip_api_calls",
+    "file_vpn_trace"
   ],
   "outcomes": {
     "perfect": {

@@ -159,7 +159,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_session_record",
-          "message": "Archive unlocked. Operator session record retrieved."
+          "message": "BREAKTHROUGH \u2014 manav_r_session_forensics.pdf decrypted. Session log confirms Manav R staged the model theft disguised as a diagnostic operation. The financial motive is now confirmed."
         }
       },
       "items": [
@@ -229,7 +229,20 @@
           ],
           "pointsToSuspect": "manav_r"
         }
-      ]
+      ],
+      "hiddenItem": {
+        "id": "file_session_record",
+        "label": "manav_r_session_forensics.pdf",
+        "detail": "DECRYPTED \u2014 Full Session Forensics Report for MANAV-R-SESSION-7. The session was authenticated at 09:45 AM using Manav R's biometric token \u2014 confirmed active on his registered device. Session activity log: 09:45 \u2014 login. 09:51 \u2014 opened model staging directory. 09:58 \u2014 initiated archive write of diag_cache.sys (2.3GB) to /archive/outbound/. 10:00 \u2014 promoted response_model.bin to active status. 10:03 \u2014 session idle. 10:04 \u2014 logout. The critical finding: a metadata comparison between diag_cache.sys and the legitimate diagnostic tool shows the archived file contains full model weights \u2014 not a diagnostic snapshot. The file was renamed to disguise its contents. Combined with Manav R's financial records showing \u20b918 lakh received from an external consulting account in the 3 months prior, this session log confirms deliberate model theft under the cover of routine maintenance activity.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "manav_r",
+        "unlockedByMinigame": "echoes_decode",
+        "metadata": {
+          "size": "1.4 MB",
+          "modifier": "Cluster Forensics Module",
+          "modifiedAt": "Post-incident"
+        }
+      }
     },
     {
       "id": "ip",
@@ -336,7 +349,8 @@
     "file_preemptive_archive",
     "file_response_model",
     "ip_simulated_external",
-    "ip_no_external_exit"
+    "ip_no_external_exit",
+    "file_session_record"
   ],
   "outcomes": {
     "perfect": {

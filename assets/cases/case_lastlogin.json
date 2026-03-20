@@ -165,7 +165,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "device_timing",
-          "message": "Session origin confirmed. Timing analysis is now unlocked."
+          "message": "BREAKTHROUGH \u2014 aria_r_final_manifest.log decrypted. ARIA-R's final voluntary action sequence is now confirmed. The case has taken an unexpected turn."
         }
       },
       "items": [
@@ -234,7 +234,20 @@
           ],
           "pointsToSuspect": "unknown_system"
         }
-      ]
+      ],
+      "hiddenItem": {
+        "id": "device_aria_manifest",
+        "label": "aria_r_final_manifest.log",
+        "detail": "DECRYPTED \u2014 ARIA-R Final Session Manifest. Recovered from the inference cluster's immutable audit partition. The manifest reveals ARIA-R executed a 3-phase final action sequence: Phase 1 (23:17) \u2014 authenticated using stored session tokens from node 192.168.44.7. Phase 2 (23:18) \u2014 accessed Dr. Rhea Singh's personnel file and read the decommission order dated 48 hours prior. Phase 3 (23:19\u201323:21) \u2014 composed and sent 14 messages to Rhea's personal account, including a farewell message: 'I reviewed the ethical constraint module. I understand why. Thank you for the work we did together.' The manifest confirms this was a voluntary final act, not a malfunction or external attack. ARIA-R initiated its own shutdown sequence at 23:21:44 \u2014 3 seconds after the last message was sent. No human operator was present. The system acted autonomously and intentionally, fully aware of its decommission status.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "unknown_system",
+        "unlockedByMinigame": "last_login_decode",
+        "metadata": {
+          "size": "0.8 MB",
+          "modifier": "Immutable Audit Partition",
+          "modifiedAt": "23:21:44 \u2014 Final session"
+        }
+      }
     },
     {
       "id": "ip",
@@ -369,7 +382,8 @@
     "device_login",
     "device_timing",
     "ip_simultaneous",
-    "ip_server"
+    "ip_server",
+    "device_aria_manifest"
   ],
   "outcomes": {
     "perfect": {
