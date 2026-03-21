@@ -196,21 +196,57 @@
       "evidenceType": "meta",
       "unlockedBy": "linguistic_patterning",
       "minigame": {
-        "id": "temporal_logic",
-        "type": "sequence_order",
-        "title": "Account Lifespan Correlation",
-        "description": "Align the creation, first message, and deletion times of all three accounts. Detect the interval pattern and operational rhythm.",
-        "hint": "Accounts created minutes before use and deleted within 10 minutes are not random \u2014 they follow a deployment script.",
-        "solution": "single_operator_rhythm",
+        "id": "meta_correlate_echo",
+        "type": "metadata_correlation",
+        "title": "Correlate Account Metadata",
+        "hint": "Match each account metadata clue to the suspect it identifies.",
+        "instruction": "Three metadata clues were extracted from the troll account creation logs. Match each to the correct suspect.",
+        "fragments": [
+          {
+            "id": "frag_a",
+            "label": "Canvas Fingerprint Hash",
+            "value": "7f3a9c21 \u2014 identical across all 3 accounts",
+            "correctSuspectId": "maya_kulkarni",
+            "explanation": "Identical canvas hash across 3 accounts proves a single device created all of them \u2014 Maya Kulkarni's."
+          },
+          {
+            "id": "frag_b",
+            "label": "Home IP Activity Window",
+            "value": "22:30\u201323:15 on Instagram, not targeted platform",
+            "correctSuspectId": "vikram_sen",
+            "explanation": "Vikram Sen was on Instagram during the attack window \u2014 on a different platform entirely."
+          },
+          {
+            "id": "frag_c",
+            "label": "Account Creation Window",
+            "value": "All 3 accounts created within 9 seconds",
+            "correctSuspectId": "maya_kulkarni",
+            "explanation": "9-second creation window confirms automated scripted creation \u2014 not a random troll."
+          }
+        ],
+        "suspects": [
+          {
+            "id": "maya_kulkarni",
+            "label": "Maya Kulkarni"
+          },
+          {
+            "id": "vikram_sen",
+            "label": "Vikram Sen"
+          },
+          {
+            "id": "null_voice",
+            "label": "NULL_VOICE (Anonymous)"
+          }
+        ],
         "maxHints": 3,
         "hints": [
-          "Line up creation and deletion times. How long does each account live?",
-          "Each account lives for exactly 8\u201310 minutes. Is that a coincidence across three accounts?",
-          "The creation-to-first-message gap is always 2 minutes. The deletion follows 6 minutes after the message. This is scripted behavior."
+          "Identical canvas fingerprints across separate accounts are statistically impossible for different users.",
+          "Check which platform Vikram's IP was active on during the attack window.",
+          "A 9-second account creation window indicates scripted automation, not manual creation."
         ],
         "onSuccess": {
-          "unlocksPanel": "ip",
-          "message": "IP Traces now accessible. Single operator confirmed. Accounts are deployed, used, and destroyed on a script."
+          "unlocksHiddenItem": "file_style_analysis",
+          "message": "BREAKTHROUGH \u2014 Account metadata correlated. Single-device creation fingerprint confirms Maya Kulkarni operated all three troll accounts."
         }
       },
       "items": [
@@ -284,7 +320,30 @@
       "icon": "wifi",
       "evidenceType": "ip",
       "unlockedBy": "temporal_logic",
-      "minigame": null,
+      "minigame": {
+        "id": "ip_trace_echo",
+        "type": "ip_trace",
+        "title": "Trace the VPN Base Connection",
+        "hint": "Despite 3 different VPN exit nodes, the underlying connection latency points to one source IP.",
+        "solution": "122.178.44.90",
+        "decoys": [
+          "185.77.23.101",
+          "103.42.11.88",
+          "122.178.44.90",
+          "91.201.55.12",
+          "198.51.100.4"
+        ],
+        "maxHints": 3,
+        "hints": [
+          "The latency fingerprint points to a Mumbai residential ISP. Look for 122.178.x.x range.",
+          "Third octet is 44 \u2014 consistent with a BSNL Bandra subscriber block.",
+          "The home IP is 122.178.44.90"
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_style_analysis",
+          "message": "BREAKTHROUGH \u2014 Base IP 122.178.44.90 confirmed. This residential address is registered to Maya Kulkarni."
+        }
+      },
       "items": [
         {
           "id": "ip_vpn_rotation",

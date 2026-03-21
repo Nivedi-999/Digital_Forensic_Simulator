@@ -148,7 +148,7 @@ class BranchingLogic {
     // Lab manager's bar only drops late when remote-session evidence appears
     'file_sim_cache':     {'hidden_operator': 0.18},
     'file_render_test':   {'hidden_operator': 0.18},
-    'file_calc_patch':    {'hidden_operator': 0.18},
+    'file_calc_patch':    {'hidden_operator': 0.18, 'lab_manager': -0.15},
     'meta_sim_cache':     {'hidden_operator': 0.15},
     'meta_render_test':   {'hidden_operator': 0.15},
     'meta_weekly_cycle':  {'hidden_operator': 0.18},
@@ -156,7 +156,6 @@ class BranchingLogic {
     'ip_dead_drop':       {'hidden_operator': 0.22},
     // Red herring — lab manager rises until remote-session evidence clears him
     'meta_lab_manager':   {'lab_manager': 0.18},
-     // remote deploy clears him
 
     // ── Echoes of Tomorrow (Hard) ────────────────────────────
     'file_preemptive_archive': {'manav_r': 0.22, 'auto_scheduler': -0.15},
@@ -336,8 +335,11 @@ class BranchingLogic {
     if (correctEvidenceCount < winCondition.minCorrectEvidence) {
       return OutcomeType.partial;
     }
+    // Only penalise if player collected MORE than correct evidence (red herrings too)
+    // Threshold raised to 0.95 so collecting all correct items doesn't force partial
     final spamming = totalAvailableEvidence > 0 &&
-        totalEvidenceCount / totalAvailableEvidence >= 0.8;
+        totalEvidenceCount / totalAvailableEvidence >= 0.95 &&
+        irrelevantEvidenceCount > 0;
     if (spamming || isTimeUp) return OutcomeType.partial;
     return OutcomeType.perfect;
   }

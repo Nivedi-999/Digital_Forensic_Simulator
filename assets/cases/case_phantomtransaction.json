@@ -2,10 +2,10 @@
   "id": "case_phantomtransaction",
   "title": "Phantom Transaction",
   "shortDescription": "Unauthorized Bank Transfer",
-  "difficulty": "hard",
+  "difficulty": "medium",
   "theme": "Financial Fraud",
   "estimatedDuration": "30\u201340 min",
-  "caseNumber": "3006",
+  "caseNumber": "2006",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -194,9 +194,9 @@
         ],
         "maxHints": 3,
         "hints": [
-          "The operator's internal network is on 10.44.x.x.",
-          "Terminal 14 is on subnet .12.x",
-          "The full IP is 10.44.12.87"
+          "The SIM swap terminal is on the telecom operator's internal network \u2014 look for a 10.44.x.x range.",
+          "Terminal 14 is in subnet .12.x \u2014 you need 10.44.12.x",
+          "The terminal's exact IP is 10.44.12.87"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_bankaccount",
@@ -235,7 +235,50 @@
           ]
         }
       ],
-      "minigame": null
+      "minigame": {
+        "id": "alibi_verify_phantom",
+        "type": "alibi_verify",
+        "title": "Verify Suspect Alibis",
+        "hint": "Cross-reference each alibi against the timeline. One doesn't hold up.",
+        "instruction": "The SIM swap occurred at 03:07 AM. Review each suspect's alibi and identify which one is contradicted by the evidence.",
+        "timelineEvent": {
+          "time": "03:07 AM",
+          "event": "Unauthorised SIM swap executed from terminal TL-TERM-14 inside the telecom operator's office."
+        },
+        "alibis": [
+          {
+            "id": "alibi_vikram",
+            "suspectName": "Vikram B",
+            "alibi": "I was at home sleeping. I don't work night shifts. You can check my building's security footage.",
+            "isContradicted": true,
+            "contradiction": "Building access card log shows Vikram B badged INTO the operations floor at 02:58 AM and OUT at 03:19 AM \u2014 physically placing him at the terminal during the SIM swap."
+          },
+          {
+            "id": "alibi_rahul",
+            "suspectName": "Rahul V (Victim's Nephew)",
+            "alibi": "I was with my family all evening. We had dinner together and I left by 10 PM.",
+            "isContradicted": false,
+            "contradiction": ""
+          },
+          {
+            "id": "alibi_deepa",
+            "suspectName": "Deepa S (Store Manager)",
+            "alibi": "The retail store closes at 9 PM. I locked up and went home. I have no access to the backend systems.",
+            "isContradicted": false,
+            "contradiction": "Retail staff confirmed \u2014 Deepa has no backend provisioning access."
+          }
+        ],
+        "maxHints": 3,
+        "hints": [
+          "Building access card systems log every badge-in and badge-out event.",
+          "The terminal used was TL-TERM-14 on the operations floor \u2014 not a retail terminal.",
+          "Check who physically entered the operations floor between 2:30 AM and 3:30 AM."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_bankaccount",
+          "message": "BREAKTHROUGH \u2014 Alibi contradicted. Vikram B's badge records place him at the terminal at exactly 03:07 AM. His alibi is false."
+        }
+      }
     },
     {
       "id": "ip",

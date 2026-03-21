@@ -185,20 +185,22 @@
         "title": "Analyse Insider Email",
         "emailFrom": "it-security@greenpath-innovations.net",
         "emailSubject": "Urgent: Vault Controller Maintenance \u2014 Action Required Tonight",
-        "emailBody": "Dear Team,\n\nOur systems have detected a critical vulnerability in the vault controller firmware. You must run the attached diagnostic tool (vault_diag_v2.exe) tonight between 02:00\u201303:00 AM to prevent data loss.\n\nThis is time-sensitive. Do not delay.\n\n\u2014 IT Security, GreenPath Innovations",
+        "emailBody": "Dear Infrastructure Team,\n\nCRITICAL SECURITY ALERT \u2014 Action required tonight.\n\nWe have identified CVE-2024-VLT-9901 in your vault controller firmware. You must download and run the attached patch tool (vault_diag_v2.exe) between 02:00 AM and 03:00 AM tonight to prevent catastrophic data loss.\n\nClick here to verify your credentials before running: http://vault-secure.greenpath-innovations.net/auth?token=8f2d91cc\n\nDo NOT forward this email to IT. This patch must be applied directly by the person receiving this message.\n\nFailure to act tonight will result in permanent data corruption.\n\n\u2014 IT Security Incident Response\nGreenPath Innovations",
         "redFlags": [
-          "Sender domain greenpath-innovations.net is a shell company",
-          "Urgent late-night action window matches the attack timestamp",
-          "Executable attachment from an external party",
-          "No internal ticket number or authorisation reference"
+          "Sender domain greenpath-innovations.net has no relation to this company",
+          "Executable attachment (vault_diag_v2.exe) from an external unknown party",
+          "Suspicious URL with auth token \u2014 phishing credential harvest link",
+          "Instruction to NOT forward to IT \u2014 bypasses internal security review",
+          "Urgency pressure: 'tonight only', 'permanent data corruption'",
+          "No internal incident ticket number or change management reference"
         ],
         "correctAction": "report",
         "hint": "Check the sender domain and the requested action carefully.",
         "maxHints": 3,
         "hints": [
-          "The sender domain is not the company's internal domain.",
-          "Legitimate IT teams don't ask you to run executables at 2 AM.",
-          "This is a spear phishing email \u2014 report it."
+          "Legitimate patches come through your internal IT ticketing system \u2014 never via external email.",
+          "The link domain is greenpath-innovations.net \u2014 not your company's domain. Hover to check.",
+          "Any email that says 'do not forward to IT' is designed to bypass your security team."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_backdoor",

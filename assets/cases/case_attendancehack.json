@@ -110,7 +110,7 @@
           "pointsToSuspect": null
         },
         {
-          "id": "chat_offer",
+          "id": "chat_offer_anon",
           "label": "i can get your attendance sorted. 500 per subject. dm me.",
           "sender": "Unknown Student (college forum, anonymous post)",
           "isKeyEvidence": false,
@@ -182,9 +182,9 @@
         ],
         "maxHints": 3,
         "hints": [
-          "The hostel WiFi gateway is on the 10.20.x.x subnet.",
-          "Block C gateway \u2014 third octet is 33.",
-          "The full IP is 10.20.33.41"
+          "Look at the subnet \u2014 hostel networks use private 10.x.x.x ranges. The gateway will be on 10.20.x.x.",
+          "Block C is the third block \u2014 that means the third octet is 33. You're looking for 10.20.33.x",
+          "The gateway IP ends in .41 \u2014 type: 10.20.33.41"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_credential_dump",

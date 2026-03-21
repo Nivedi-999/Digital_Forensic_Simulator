@@ -85,12 +85,12 @@
         "id": "dead_drop_decode",
         "type": "code_crack",
         "title": "Bypass Hacker Terminal",
-        "hint": "Crack the 3-character exfiltration node access code.",
+        "hint": "The access code is hidden in the file metadata. Check the weekly cycle timestamps \u2014 the pattern reveals 3 characters.",
         "solution": "4F7",
         "maxHints": 3,
         "hints": [
-          "The first character is a number between 1\u20139.",
-          "The second character is a hex letter (A\u2013F).",
+          "Look at the metadata panel. The three files have timestamps: 02:12:58, 02:13:00, 02:14:30. Extract the non-zero digits: 4, F, 7.",
+          "First character: the drop count across 3 weeks = 4. Second: hex letter from the relay node suffix = F.",
           "The code is 4F7"
         ],
         "onSuccess": {
@@ -224,21 +224,57 @@
       "evidenceType": "meta",
       "unlockedBy": "binary_pattern",
       "minigame": {
-        "id": "timeline_logic",
-        "type": "sequence_order",
-        "title": "Timeline Sequence Logic",
-        "description": "Reorder file events across all three labs. Convert time gaps into signal patterns and detect repeating cycles.",
-        "hint": "If three files on three different machines are created, executed, and deleted at the exact same second \u2014 that is not coincidence.",
-        "solution": "weekly_test_cycle",
+        "id": "meta_correlate_deaddrop",
+        "type": "metadata_correlation",
+        "title": "Correlate Metadata Fragments",
+        "hint": "Match each metadata clue to the suspect it points to.",
+        "instruction": "Three metadata fragments were recovered from the malware deployment. Match each fragment to the correct suspect profile.",
+        "fragments": [
+          {
+            "id": "frag_a",
+            "label": "PDB Path Username",
+            "value": "NV_workstation",
+            "correctSuspectId": "hidden_operator",
+            "explanation": "Initials NV match the hidden operator's workstation naming convention."
+          },
+          {
+            "id": "frag_b",
+            "label": "Badge Access \u2014 Lab A",
+            "value": "22:14 \u2014 3 min visit, night rounds",
+            "correctSuspectId": "lab_manager",
+            "explanation": "Brief 3-minute visit matches the lab manager's routine night rounds \u2014 not enough time to plant malware."
+          },
+          {
+            "id": "frag_c",
+            "label": "Malware Compile Timestamp",
+            "value": "14 months ago \u2014 matches cross-lab access grant",
+            "correctSuspectId": "hidden_operator",
+            "explanation": "Compiled exactly when cross-lab infrastructure access was granted to the hidden operator."
+          }
+        ],
+        "suspects": [
+          {
+            "id": "hidden_operator",
+            "label": "Hidden Operator"
+          },
+          {
+            "id": "lab_manager",
+            "label": "Lab Manager (Dr. K. Verma)"
+          },
+          {
+            "id": "internal_admin",
+            "label": "Internal Administrator"
+          }
+        ],
         "maxHints": 3,
         "hints": [
-          "Line up the create, execute, and delete timestamps for all three files.",
-          "The gap between creation and execution is always 2 seconds. The gap to deletion is always 90 seconds.",
-          "Check the server logs for previous weeks \u2014 this pattern repeats every 7 days."
+          "PDB paths contain the machine username of whoever compiled the code.",
+          "A 3-minute visit is too short to deploy malware physically.",
+          "The compile timestamp matches when cross-lab access was first granted."
         ],
         "onSuccess": {
-          "unlocksPanel": "ip",
-          "message": "IP Traces now accessible. Weekly test cycle confirmed \u2014 this is rehearsal, not attack."
+          "unlocksHiddenItem": "file_operator_id",
+          "message": "BREAKTHROUGH \u2014 Metadata fragments correlated. The hidden operator's workstation signature is confirmed across all three labs."
         }
       },
       "items": [
@@ -294,7 +330,7 @@
           "label": "Previous Week Log Comparison",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Server logs reveal this exact pattern occurred 7 days prior and 14 days prior. A weekly on/off signal cycle \u2014 the attacker is testing delivery reliability on a regular schedule.",
+          "detail": "Server logs reveal this exact pattern occurred 7 days prior and 14 days prior. A weekly on/off signal cycle \u2014 the attacker is testing delivery reliability on a regular schedule. Analyst observation: the drop occurred exactly 3 times, the relay node suffix is 0xF (hex), and the execution gap is always 2 seconds \u2014 giving the pattern signature 4\u00b7F\u00b77. This 3-character sequence may be the access token for the exfiltration node.",
           "rows": [
             {
               "key": "Week 1",
@@ -354,20 +390,56 @@
       "unlockedBy": "timeline_logic",
       "minigame": {
         "id": "route_tracing",
-        "type": "node_connect",
-        "title": "Network Route Tracing",
-        "description": "Connect network nodes, eliminate fake exits, and identify the dead-drop relay point.",
-        "hint": "Traffic that never leaves the campus but mimics external routing is designed to fool network monitors.",
-        "solution": "dead_drop_relay",
+        "type": "metadata_correlation",
+        "title": "Trace the Network Route",
+        "hint": "Match each network hop to what it tells you about the attack.",
+        "instruction": "Three network observations were captured. Match each to the correct conclusion about the attacker's infrastructure.",
+        "fragments": [
+          {
+            "id": "hop_a",
+            "label": "Hop Latency: 208\u2013210ms between internal nodes",
+            "value": "10.4.22.18 \u2192 10.4.9.3 \u2192 172.16.0.7",
+            "correctSuspectId": "internal_routing",
+            "explanation": "High latency between internal IPs is artificial \u2014 simulated to mimic external hops and mislead investigators."
+          },
+          {
+            "id": "hop_b",
+            "label": "External Traffic Volume",
+            "value": "0 bytes exfiltrated outside campus boundary",
+            "correctSuspectId": "no_exfil",
+            "explanation": "Despite routing that looks like data theft, nothing left the campus. This is a delivery system test, not an active exfiltration."
+          },
+          {
+            "id": "hop_c",
+            "label": "Final Node 172.16.0.7",
+            "value": "Receives all traffic \u2014 no onward destination",
+            "correctSuspectId": "dead_drop",
+            "explanation": "A dead-drop relay stores commands without a live connection. The operator retrieves them later \u2014 no real-time C2 needed."
+          }
+        ],
+        "suspects": [
+          {
+            "id": "internal_routing",
+            "label": "Simulated external routing (misdirection)"
+          },
+          {
+            "id": "no_exfil",
+            "label": "No data left the campus (test run)"
+          },
+          {
+            "id": "dead_drop",
+            "label": "Dead-drop relay node (command storage)"
+          }
+        ],
         "maxHints": 3,
         "hints": [
-          "Trace each hop. Does any traffic actually leave the campus IP range?",
-          "The final node (172.16.0.7) has no external destination \u2014 it terminates internally.",
-          "A dead-drop relay stores and relays commands without a live connection to the operator."
+          "208ms between two machines in the same building is physically impossible \u2014 it must be artificial.",
+          "Real exfiltration leaves egress logs at the campus boundary router.",
+          "A node that receives traffic but sends nothing onward is a storage relay \u2014 a dead drop."
         ],
         "onSuccess": {
-          "unlocksPanel": "suspects",
-          "message": "Suspect Profiles unlocked. Dead-drop relay confirmed. Threat levels updated."
+          "unlocksHiddenItem": null,
+          "message": "Network route decoded. The dead-drop relay at 172.16.0.7 is confirmed. Suspect profiles updated."
         }
       },
       "items": [

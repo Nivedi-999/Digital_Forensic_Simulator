@@ -416,6 +416,7 @@ class FeedTabButton extends StatelessWidget {
 //  SuspectCard
 // ─────────────────────────────────────────────────────────────
 class SuspectCard extends StatelessWidget {
+  final String suspectId; // used to load assets/avatars/<suspectId>.png
   final String name;
   final String role;
   final String riskLevel; // 'high' | 'medium' | 'low'
@@ -426,6 +427,7 @@ class SuspectCard extends StatelessWidget {
 
   const SuspectCard({
     super.key,
+    required this.suspectId,
     required this.name,
     required this.role,
     required this.riskLevel,
@@ -542,25 +544,33 @@ class SuspectCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // Role-based background icon (large, faded)
-                        Icon(
-                          _avatarIcon(),
-                          color: riskColor.withOpacity(0.25),
-                          size: 28,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/avatars/$suspectId.png',
+                        width: 50,
+                        height: 50,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Role-based background icon (large, faded)
+                            Icon(
+                              _avatarIcon(),
+                              color: riskColor.withOpacity(0.25),
+                              size: 28,
+                            ),
+                            // Initials overlay
+                            Text(
+                              name.isNotEmpty ? name[0].toUpperCase() : '?',
+                              style: TextStyle(
+                                color: riskColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        // Initials overlay
-                        Text(
-                          name.isNotEmpty ? name[0].toUpperCase() : '?',
-                          style: TextStyle(
-                            color: riskColor,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),

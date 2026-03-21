@@ -220,6 +220,7 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: SuspectCard(
+            suspectId: suspect.id,
             name: suspect.name,
             role: suspect.role,
             riskLevel: suspect.riskLevel,

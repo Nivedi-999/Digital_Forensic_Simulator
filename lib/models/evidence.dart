@@ -40,11 +40,65 @@ class FileMetadata {
   }
 }
 
-/// Minigame config — supports all 4 types:
-///   caesar_cipher    — Easy
-///   ip_trace         — Medium  (find IP from list)
-///   code_crack       — Hard    (3-reel alphanumeric)
-///   phishing_analysis — Advanced (report or delete email)
+/// Used by metadata_correlation mini-game.
+/// mini_game.dart accesses: id, label, value, hint, correctSuspectId, explanation
+class MetadataFragment {
+  final String id;
+  final String label;
+  final String value;
+  final String hint;
+  final String correctSuspectId;
+  final String explanation;
+
+  const MetadataFragment({
+    required this.id,
+    required this.label,
+    required this.value,
+    required this.hint,
+    required this.correctSuspectId,
+    required this.explanation,
+  });
+
+  factory MetadataFragment.fromJson(Map<String, dynamic> json) =>
+      MetadataFragment(
+        id: json['id'] as String,
+        label: json['label'] as String,
+        value: json['value'] as String,
+        hint: json['hint'] as String? ?? '',
+        correctSuspectId: json['correctSuspectId'] as String? ?? '',
+        explanation: json['explanation'] as String? ?? '',
+      );
+}
+
+/// Used by alibi_verify mini-game.
+/// mini_game.dart accesses: id, suspectId, suspectName, alibi, isContradicted, contradiction
+class AlibiEntry {
+  final String id;
+  final String suspectId;
+  final String suspectName;
+  final String alibi;
+  final bool isContradicted;
+  final String contradiction;
+
+  const AlibiEntry({
+    required this.id,
+    required this.suspectId,
+    required this.suspectName,
+    required this.alibi,
+    required this.isContradicted,
+    this.contradiction = '',
+  });
+
+  factory AlibiEntry.fromJson(Map<String, dynamic> json) => AlibiEntry(
+    id: json['id'] as String? ?? json['suspectId'] as String,
+    suspectId: json['suspectId'] as String,
+    suspectName: json['suspectName'] as String,
+    alibi: json['alibi'] as String,
+    isContradicted: json['isContradicted'] as bool? ?? false,
+    contradiction: json['contradiction'] as String? ?? '',
+  );
+}
+
 class MinigameConfig {
   final String id;
   final String type;
@@ -60,17 +114,23 @@ class MinigameConfig {
   final String? solution;
 
   // ip_trace
-  final List<String> decoys; // list of IP addresses including the correct one
-
-  // code_crack
-  // uses solution field (3-char code e.g. "4F7")
+  final List<String> decoys;
 
   // phishing_analysis
   final String? emailFrom;
   final String? emailSubject;
   final String? emailBody;
   final List<String> redFlags;
-  final String? correctAction; // 'report' | 'delete'
+  final String? correctAction;
+
+  // metadata_correlation
+  final String? instruction;
+  final List<MetadataFragment> fragments;
+  final List<Map<String, String>> metaSuspects;
+
+  // alibi_verify
+  final List<AlibiEntry> alibis;
+  final Map<String, String>? timelineEvent;
 
   const MinigameConfig({
     required this.id,
@@ -89,6 +149,11 @@ class MinigameConfig {
     this.emailBody,
     this.redFlags = const [],
     this.correctAction,
+    this.instruction,
+    this.fragments = const [],
+    this.metaSuspects = const [],
+    this.alibis = const [],
+    this.timelineEvent,
   });
 
   factory MinigameConfig.fromJson(Map<String, dynamic> json) {
@@ -98,27 +163,31 @@ class MinigameConfig {
       type: json['type'] as String,
       title: json['title'] as String,
       maxHints: json['maxHints'] as int? ?? 3,
-      hints: (json['hints'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-          [],
+      hints: (json['hints'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       hint: json['hint'] as String?,
       unlocksHiddenItemId: onSuccess?['unlocksHiddenItem'] as String?,
       successMessage: onSuccess?['message'] as String?,
       cipherText: json['cipherText'] as String?,
       solution: json['solution'] as String?,
-      decoys: (json['decoys'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-          [],
+      decoys: (json['decoys'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       emailFrom: json['emailFrom'] as String?,
       emailSubject: json['emailSubject'] as String?,
       emailBody: json['emailBody'] as String?,
-      redFlags: (json['redFlags'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-          [],
+      redFlags: (json['redFlags'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       correctAction: json['correctAction'] as String?,
+      instruction: json['instruction'] as String?,
+      fragments: (json['fragments'] as List<dynamic>?)
+          ?.map((e) => MetadataFragment.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
+      metaSuspects: (json['suspects'] as List<dynamic>?)
+          ?.map((e) => Map<String, String>.from(e as Map))
+          .toList() ?? [],
+      alibis: (json['alibis'] as List<dynamic>?)
+          ?.map((e) => AlibiEntry.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
+      timelineEvent: json['timelineEvent'] != null
+          ? Map<String, String>.from(json['timelineEvent'] as Map)
+          : null,
     );
   }
 }
@@ -168,8 +237,7 @@ class EvidenceItem {
           : null,
       rows: (json['rows'] as List<dynamic>?)
           ?.map((r) => EvidenceRow.fromJson(r as Map<String, dynamic>))
-          .toList() ??
-          [],
+          .toList() ?? [],
       isHidden: isHidden,
       unlockedByMinigameId: json['unlockedByMinigame'] as String?,
     );
@@ -200,7 +268,6 @@ class EvidencePanel {
   factory EvidencePanel.fromJson(Map<String, dynamic> json) {
     final hiddenJson = json['hiddenItem'] as Map<String, dynamic>?;
     final minigameJson = json['minigame'] as Map<String, dynamic>?;
-
     return EvidencePanel(
       id: json['id'] as String,
       label: json['label'] as String,

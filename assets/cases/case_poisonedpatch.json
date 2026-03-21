@@ -269,7 +269,60 @@
           "irrelevantReason": "Post-build script changes fall outside standard QA scope. The injection was deliberately placed there to avoid detection. Shilpa is not complicit."
         }
       ],
-      "minigame": null
+      "minigame": {
+        "id": "meta_correlate_patch",
+        "type": "metadata_correlation",
+        "title": "Correlate Build Pipeline Metadata",
+        "hint": "Match each build metadata fragment to the engineer it identifies.",
+        "instruction": "Three metadata fragments from the CI build pipeline. Match each to the correct team member.",
+        "fragments": [
+          {
+            "id": "frag_a",
+            "label": "Git Commit Author IP",
+            "value": "172.16.8.55 \u2014 dedicated to CYRUS-WS",
+            "correctSuspectId": "cyrus_f",
+            "explanation": "Static internal IP permanently assigned to Cyrus F's build workstation \u2014 no shared access."
+          },
+          {
+            "id": "frag_b",
+            "label": "QA Approval Timestamp",
+            "value": "14:22 \u2014 48hrs after malicious commit",
+            "correctSuspectId": "vendor_qa",
+            "explanation": "Shilpa R approved the build 48 hours after the injection \u2014 post-build scripts are outside QA scope."
+          },
+          {
+            "id": "frag_c",
+            "label": "CI Pipeline Write Access",
+            "value": "Only 3 engineers \u2014 2 on leave during window",
+            "correctSuspectId": "cyrus_f",
+            "explanation": "Of 3 engineers with write access, only Cyrus F was present during the injection window."
+          }
+        ],
+        "suspects": [
+          {
+            "id": "cyrus_f",
+            "label": "Cyrus F \u2014 Firmware Engineer"
+          },
+          {
+            "id": "vendor_qa",
+            "label": "Shilpa R \u2014 QA Engineer"
+          },
+          {
+            "id": "ci_admin",
+            "label": "Farida K \u2014 CI Admin"
+          }
+        ],
+        "maxHints": 3,
+        "hints": [
+          "Static internal IPs are assigned permanently to specific workstations.",
+          "QA engineers sign off on binary functionality \u2014 not post-build scripts.",
+          "If 2 of 3 engineers are on leave, the field of suspects narrows significantly."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_c2_server",
+          "message": "BREAKTHROUGH \u2014 Build pipeline metadata correlated. Cyrus F is the only engineer with both access and presence during the injection window."
+        }
+      }
     },
     {
       "id": "ip",
@@ -326,7 +379,30 @@
           ]
         }
       ],
-      "minigame": null
+      "minigame": {
+        "id": "ip_trace_patch",
+        "type": "ip_trace",
+        "title": "Trace the C2 Server Connection",
+        "hint": "The reverse shell beacons came from 6 factories. Trace them back to the C2 server IP.",
+        "solution": "185.220.88.44",
+        "decoys": [
+          "172.16.8.55",
+          "185.220.88.44",
+          "192.168.100.5",
+          "10.0.0.254",
+          "45.33.99.12"
+        ],
+        "maxHints": 3,
+        "hints": [
+          "The C2 server is hosted on a Frankfurt VPS. Look for a 185.x.x.x range.",
+          "Second octet is 220 \u2014 consistent with a German data centre block.",
+          "The C2 server IP is 185.220.88.44"
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "file_c2_server",
+          "message": "BREAKTHROUGH \u2014 C2 server at 185.220.88.44 confirmed. Ownership traces back to Cyrus F's shell company."
+        }
+      }
     }
   ],
   "timeline": [

@@ -132,28 +132,36 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
                             ),
                           ],
                         ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // Role-based background icon
-                            Icon(
-                              _avatarIcon(suspect.role),
-                              color: riskColor.withOpacity(0.2),
-                              size: 52,
+                        child: ClipOval(
+                          child: Image.asset(
+                            'assets/avatars/${suspect.id}.png',
+                            width: 96,
+                            height: 96,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                // Role-based background icon (fallback)
+                                Icon(
+                                  _avatarIcon(suspect.role),
+                                  color: riskColor.withOpacity(0.2),
+                                  size: 52,
+                                ),
+                                // Large initial on top (fallback)
+                                Text(
+                                  suspect.name.substring(0, 1).toUpperCase(),
+                                  style: TextStyle(
+                                    fontSize: 42,
+                                    color: riskColor,
+                                    fontWeight: FontWeight.bold,
+                                    shadows: [
+                                      Shadow(color: riskColor, blurRadius: 16)
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                            // Large initial on top
-                            Text(
-                              suspect.name.substring(0, 1).toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 42,
-                                color: riskColor,
-                                fontWeight: FontWeight.bold,
-                                shadows: [
-                                  Shadow(color: riskColor, blurRadius: 16)
-                                ],
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),

@@ -24,6 +24,9 @@ flutter:
 
   assets:
 
+    # ── Avatars ───────────────────────────────────────────
+    - assets/avatars/
+
     # ── Easy (5) ──────────────────────────────────────────
     - assets/cases/case_passwordheist.json
     - assets/cases/case_wifithief.json
