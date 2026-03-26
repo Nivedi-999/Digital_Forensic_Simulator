@@ -1,6 +1,6 @@
 // lib/theme/app_shell.dart
 // ═══════════════════════════════════════════════════════════════
-//  APP SHELL — Bottom nav navigates correctly through the engine tree
+//  APP SHELL — Bottom nav with 4 tabs including Evidence Chain
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
@@ -8,6 +8,7 @@ import '../theme/cyber_theme.dart';
 import '../screens/evidence_collected_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/investigation_hub_screen.dart';
+import '../screens/evidence_chain_screen.dart';
 import '../state/active_case.dart';
 import '../state/case_engine_provider.dart';
 import '../widgets/cyber_widgets.dart';
@@ -37,8 +38,7 @@ class AppShell extends StatefulWidget {
 class _AppShellState extends State<AppShell> {
   void _onItemTapped(int index) {
     if (index == 0) {
-      // Push a fresh hub wrapped in CaseEngineProvider.
-      // ActiveCase.engine is always available once a case has been started.
+      // Investigation Hub
       if (ActiveCase.isActive) {
         Navigator.push(
           context,
@@ -51,8 +51,25 @@ class _AppShellState extends State<AppShell> {
         );
       }
     } else if (index == 1) {
+      // Evidence Locker
       Navigator.push(context, _route(const EvidencesCollectedScreen()));
     } else if (index == 2) {
+      // Evidence Chain — only available when a case is active
+      if (ActiveCase.isActive) {
+        Navigator.push(context, _route(const EvidenceChainScreen()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Start an investigation to view the chain.'),
+            backgroundColor: CyberColors.bgCard,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(borderRadius: CyberRadius.medium),
+          ),
+        );
+      }
+    } else if (index == 3) {
+      // Profile
       Navigator.push(context, _route(const ProfileScreen()));
     }
   }
@@ -235,7 +252,7 @@ class _TopBar extends StatelessWidget {
   }
 }
 
-// ── Bottom Nav ────────────────────────────────────────────────
+// ── Bottom Nav — 4 tabs ───────────────────────────────────────
 
 class _CyberBottomNav extends StatelessWidget {
   final int currentIndex;
@@ -286,10 +303,17 @@ class _CyberBottomNav extends StatelessWidget {
             onTap: () => onTap(1),
           ),
           _NavItem(
+            icon: Icons.hub_outlined,
+            label: 'Chain',
+            isActive: currentIndex == 2,
+            accentColor: CyberColors.neonPurple,
+            onTap: () => onTap(2),
+          ),
+          _NavItem(
             icon: Icons.person_outline,
             label: 'Profile',
-            isActive: currentIndex == 2,
-            onTap: () => onTap(2),
+            isActive: currentIndex == 3,
+            onTap: () => onTap(3),
           ),
         ],
       ),
@@ -302,29 +326,31 @@ class _NavItem extends StatelessWidget {
   final String label;
   final bool isActive;
   final VoidCallback onTap;
+  final Color? accentColor;
 
   const _NavItem({
     required this.icon,
     required this.label,
     required this.isActive,
     required this.onTap,
+    this.accentColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final color = accentColor ?? CyberColors.neonCyan;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
           color: isActive
-              ? CyberColors.neonCyan.withOpacity(0.12)
+              ? color.withOpacity(0.12)
               : Colors.transparent,
           borderRadius: CyberRadius.medium,
           border: isActive
-              ? Border.all(
-              color: CyberColors.neonCyan.withOpacity(0.3), width: 1)
+              ? Border.all(color: color.withOpacity(0.3), width: 1)
               : null,
         ),
         child: Column(
@@ -332,7 +358,7 @@ class _NavItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: isActive ? CyberColors.neonCyan : CyberColors.textMuted,
+              color: isActive ? color : CyberColors.textMuted,
               size: 22,
             ),
             const SizedBox(height: 3),
@@ -340,8 +366,7 @@ class _NavItem extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 10,
-                color:
-                isActive ? CyberColors.neonCyan : CyberColors.textMuted,
+                color: isActive ? color : CyberColors.textMuted,
                 fontWeight:
                 isActive ? FontWeight.bold : FontWeight.normal,
                 letterSpacing: 0.5,

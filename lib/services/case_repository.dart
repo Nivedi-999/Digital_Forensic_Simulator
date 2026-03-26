@@ -15,6 +15,9 @@ class CaseRepository {
     'assets/cases/case_fakereview.json',
     'assets/cases/case_ghosttrace.json',
     'assets/cases/case_jobscam.json',
+    'assets/cases/case_vanishing_report.json',   // ← new
+    'assets/cases/case_lost_usb.json',           // ← new
+    'assets/cases/case_altered_image.json',      // ← new
 
     // ── MEDIUM ────────────────────────────────────────────
     'assets/cases/case_phantomtransaction.json',
@@ -22,6 +25,9 @@ class CaseRepository {
     'assets/cases/case_socialengineer.json',
     'assets/cases/case_lastlogin.json',
     'assets/cases/case_clouddrain.json',
+    'assets/cases/case_missing_logs.json',       // ← new
+    'assets/cases/case_deleted_documents.json',  // ← new
+    'assets/cases/case_midnight_timeline.json',  // ← new
 
     // ── HARD ──────────────────────────────────────────────
     'assets/cases/case_deaddrop.json',
@@ -29,6 +35,8 @@ class CaseRepository {
     'assets/cases/case_echowithoutavoice.json',
     'assets/cases/case_darkproxyattack.json',
     'assets/cases/case_poisonedpatch.json',
+    'assets/cases/case_unknownusb.json',        // ← new
+    'assets/cases/case_disguisedfile.json',     // ← new
 
     // ── ADVANCED ──────────────────────────────────────────
     'assets/cases/case_vanishingvault.json',
@@ -36,6 +44,8 @@ class CaseRepository {
     'assets/cases/case_zeropointentry.json',
     'assets/cases/case_ghostnetwork.json',
     'assets/cases/case_doubleagent.json',
+    'assets/cases/case_phantom_process.json',
+    'assets/cases/case_double_identity.json',
   ];
 
   // Key: filename stem (e.g. "case_ghosttrace"), Value: loaded CaseFile

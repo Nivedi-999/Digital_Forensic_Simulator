@@ -174,32 +174,29 @@ class CaseEngine extends ChangeNotifier {
 
   // ── XP calculation ───────────────────────────────────────
   //
-  // Called by the outcome screen to get the final adjusted XP.
+  // XP scales with how many correct evidence items the player found:
+  //   proportionalXp = baseXp × (correctCollected / totalCorrectIds)
   //
-  // Penalties:
-  //   −1 XP per hint used (max penalty = base XP − 1)
-  //   −1 XP per irrelevant evidence item collected
-  //   Timer penalty (hard/advanced only):
-  //     • Used 60–90% of time → −2 XP
-  //     • Used 90–100% of time → −4 XP
-  //     • Overtime (time ran out) → −6 XP
+  // Then penalties reduce that amount:
+  //   −1 XP per wrong evidence item collected
+  //   −1 XP per hint used
+  //   Timer penalty (hard/advanced): −2 / −4 / −6 XP
   //
-  // XP floor: minimum 1 XP on a win (never drops to 0).
+  // Floor: minimum 1 XP on any win.
 
   int computeFinalXp(int baseXp) {
-    int xp = baseXp;
+    final totalCorrect = caseFile.correctEvidenceIds.length;
+    final double proportion =
+    totalCorrect == 0 ? 0.0 : correctEvidenceCount / totalCorrect;
+    int xp = (baseXp * proportion).round();
 
-    // Hint penalty
     xp -= _hintsUsed;
-
-    // Irrelevant evidence penalty
     xp -= irrelevantEvidenceCount;
 
-    // Timer penalty (hard/advanced only)
     if (hasTimer && timeLimitSeconds != null && timeLimitSeconds! > 0) {
       final ratio = _elapsedSeconds / timeLimitSeconds!;
       if (ratio > 1.0) {
-        xp -= 6; // overtime
+        xp -= 6;
       } else if (ratio > 0.9) {
         xp -= 4;
       } else if (ratio > 0.6) {
@@ -207,27 +204,31 @@ class CaseEngine extends ChangeNotifier {
       }
     }
 
-    return xp.clamp(1, baseXp); // floor 1, ceiling = base
+    return xp.clamp(1, baseXp);
   }
 
   // ── XP breakdown for the outcome screen ─────────────────
-  //
-  // Returns a list of (label, delta) pairs so the UI can show
-  // exactly why XP was added or deducted.
 
   List<XpBreakdownItem> xpBreakdown(int baseXp) {
+    final totalCorrect = caseFile.correctEvidenceIds.length;
+    final double proportion =
+    totalCorrect == 0 ? 0.0 : correctEvidenceCount / totalCorrect;
+    final int proportionalBase = (baseXp * proportion).round();
+
     final items = <XpBreakdownItem>[];
-    items.add(XpBreakdownItem('Base XP', baseXp, positive: true));
+    items.add(XpBreakdownItem(
+        'Evidence found ($correctEvidenceCount/$totalCorrect)',
+        proportionalBase,
+        positive: true));
 
     if (_hintsUsed > 0) {
       items.add(XpBreakdownItem(
-          'Hints used (×$_hintsUsed)', -_hintsUsed,
-          positive: false));
+          'Hints used (×$_hintsUsed)', -_hintsUsed, positive: false));
     }
 
     if (irrelevantEvidenceCount > 0) {
       items.add(XpBreakdownItem(
-          'Irrelevant evidence (×$irrelevantEvidenceCount)',
+          'Wrong evidence (×$irrelevantEvidenceCount)',
           -irrelevantEvidenceCount,
           positive: false));
     }

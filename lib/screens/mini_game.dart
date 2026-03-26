@@ -5,6 +5,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
@@ -82,8 +83,7 @@ class _SuccessOverlay extends StatelessWidget {
               child: const Icon(Icons.check_rounded, color: CyberColors.neonGreen, size: 52),
             ),
             const SizedBox(height: 24),
-            const Text('SUCCESS', style: TextStyle(fontFamily: 'DotMatrix', color: CyberColors.neonGreen,
-                fontSize: 28, letterSpacing: 3, shadows: [Shadow(color: CyberColors.neonGreen, blurRadius: 16)])),
+            Text('SUCCESS', style: GoogleFonts.orbitron(color: CyberColors.neonGreen, fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: 3, shadows: [Shadow(color: CyberColors.neonGreen, blurRadius: 16)])),
             const SizedBox(height: 12),
             Text(message, style: CyberText.bodySmall.copyWith(color: CyberColors.textPrimary, height: 1.6),
                 textAlign: TextAlign.center),
@@ -167,7 +167,7 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame> with TickerProvide
               NeonContainer(padding: const EdgeInsets.all(20), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text('ENCODED TEXT', style: CyberText.caption.copyWith(letterSpacing: 2)),
                 const SizedBox(height: 12),
-                Text(mg.cipherText ?? '', style: const TextStyle(fontFamily: 'DotMatrix', fontSize: 28,
+                Text(mg.cipherText ?? '', style: const TextStyle(fontSize: 28,
                     color: CyberColors.neonAmber, letterSpacing: 4,
                     shadows: [Shadow(color: CyberColors.neonAmber, blurRadius: 12)])),
               ])),
@@ -176,7 +176,7 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame> with TickerProvide
                 Text('DECODED TEXT', style: CyberText.caption.copyWith(letterSpacing: 2)),
                 const SizedBox(height: 10),
                 TextField(controller: _ctrl,
-                    style: const TextStyle(color: CyberColors.neonCyan, fontSize: 20, fontFamily: 'DotMatrix'),
+                    style: const TextStyle(color: CyberColors.neonCyan, fontSize: 20),
                     decoration: InputDecoration(hintText: 'Type decoded text...',
                         hintStyle: TextStyle(color: CyberColors.textMuted.withOpacity(0.5)), border: InputBorder.none),
                     onSubmitted: (_) => _check(engine)),
@@ -305,7 +305,7 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
                         child: Row(children: [
                           const Icon(Icons.wifi_find, color: CyberColors.neonCyan, size: 20),
                           const SizedBox(width: 10),
-                          Text(mg.title, style: const TextStyle(fontFamily: 'DotMatrix', color: CyberColors.neonCyan, fontSize: 14, letterSpacing: 1)),
+                          Text(mg.title, style: const TextStyle(color: CyberColors.neonCyan, fontSize: 14, letterSpacing: 1)),
                           const Spacer(),
                           Text('$_remaining s', style: TextStyle(color: timerColor, fontWeight: FontWeight.bold, fontSize: 14)),
                         ])),
@@ -321,8 +321,7 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
                                 color: isH ? CyberColors.neonAmber.withOpacity(0.1 + _flash.value * 0.1) : CyberColors.neonCyan.withOpacity(0.04),
                                 borderRadius: CyberRadius.small,
                                 border: Border.all(color: isH ? CyberColors.neonAmber.withOpacity(0.6) : CyberColors.borderSubtle)),
-                            child: Text(ip, style: TextStyle(fontFamily: 'DotMatrix',
-                                color: isH ? CyberColors.neonAmber : CyberColors.textPrimary, fontSize: 15, letterSpacing: 1.5))));
+                            child: Text(ip, style: TextStyle(color: isH ? CyberColors.neonAmber : CyberColors.textPrimary, fontSize: 15, letterSpacing: 1.5))));
                       }),
                     ])),
                     Container(margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -331,8 +330,7 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
                             border: Border.all(color: CyberColors.neonCyan.withOpacity(0.5))),
                         child: Row(children: [
                           Expanded(child: Text(_typed.isEmpty ? 'Enter IP address...' : _typed,
-                              style: TextStyle(fontFamily: 'DotMatrix',
-                                  color: _typed.isEmpty ? CyberColors.textMuted : CyberColors.neonCyan, fontSize: 18, letterSpacing: 2))),
+                              style: TextStyle(color: _typed.isEmpty ? CyberColors.textMuted : CyberColors.neonCyan, fontSize: 18, letterSpacing: 2))),
                           if (_feedback.isNotEmpty) const Icon(Icons.error_outline, color: CyberColors.neonRed, size: 18),
                         ])),
                     if (_feedback.isNotEmpty) Padding(padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -353,7 +351,7 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
               padding: const EdgeInsets.all(32), child: Column(mainAxisSize: MainAxisSize.min, children: [
             const Icon(Icons.timer_off_outlined, color: CyberColors.neonRed, size: 64),
             const SizedBox(height: 16),
-            const Text('TIME OUT', style: TextStyle(fontFamily: 'DotMatrix', color: CyberColors.neonRed, fontSize: 28, letterSpacing: 3)),
+            Text('TIME OUT', style: GoogleFonts.orbitron(color: CyberColors.neonRed, fontSize: 26, fontWeight: FontWeight.w700, letterSpacing: 3)),
             const SizedBox(height: 12),
             Text('The trace window expired.', style: CyberText.bodySmall),
             const SizedBox(height: 24),
@@ -385,7 +383,7 @@ class _NumericKeypad extends StatelessWidget {
                           child: Center(child: isDelete
                               ? const Icon(Icons.backspace_outlined, color: CyberColors.neonRed, size: 20)
                               : isSubmit ? const Icon(Icons.check_rounded, color: CyberColors.neonCyan, size: 22)
-                              : Text(key, style: const TextStyle(fontFamily: 'DotMatrix', color: CyberColors.textPrimary, fontSize: 18))))))));
+                              : Text(key, style: const TextStyle(color: CyberColors.textPrimary, fontSize: 18))))))));
         }).toList())).toList()));
   }
 }
@@ -471,7 +469,7 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
                   margin: const EdgeInsets.symmetric(horizontal: 4), width: 44, height: 44,
                   decoration: BoxDecoration(color: CyberColors.neonAmber.withOpacity(0.1), borderRadius: CyberRadius.small,
                       border: Border.all(color: CyberColors.neonAmber.withOpacity(0.5))),
-                  child: Center(child: Text(c, style: const TextStyle(fontFamily: 'DotMatrix', color: CyberColors.neonAmber,
+                  child: Center(child: Text(c, style: const TextStyle(color: CyberColors.neonAmber,
                       fontSize: 22, shadows: [Shadow(color: CyberColors.neonAmber, blurRadius: 8)]))))),
             ]),
             const SizedBox(height: 32),
@@ -486,18 +484,18 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
                         border: Border.all(color: CyberColors.neonCyan.withOpacity(0.2))),
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                       const Icon(Icons.keyboard_arrow_up, color: CyberColors.neonCyan, size: 22),
-                      Text(prv, style: const TextStyle(color: CyberColors.textMuted, fontSize: 16, fontFamily: 'DotMatrix'))]))),
+                      Text(prv, style: const TextStyle(color: CyberColors.textMuted, fontSize: 16))]))),
                 Container(width: 64, height: 72,
                     decoration: BoxDecoration(color: CyberColors.neonCyan.withOpacity(0.12),
                         border: Border.all(color: CyberColors.neonCyan, width: 2), boxShadow: CyberShadows.neonCyan(intensity: 0.4)),
-                    child: Center(child: Text(cur, style: const TextStyle(fontFamily: 'DotMatrix', fontSize: 36,
+                    child: Center(child: Text(cur, style: const TextStyle(fontSize: 36,
                         color: CyberColors.neonCyan, shadows: [Shadow(color: CyberColors.neonCyan, blurRadius: 16)])))),
                 GestureDetector(onTap: () => _scroll(reel, 1), child: Container(width: 64, height: 44,
                     decoration: BoxDecoration(color: CyberColors.neonCyan.withOpacity(0.05),
                         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
                         border: Border.all(color: CyberColors.neonCyan.withOpacity(0.2))),
                     child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      Text(nxt, style: const TextStyle(color: CyberColors.textMuted, fontSize: 16, fontFamily: 'DotMatrix')),
+                      Text(nxt, style: const TextStyle(color: CyberColors.textMuted, fontSize: 16)),
                       const Icon(Icons.keyboard_arrow_down, color: CyberColors.neonCyan, size: 22)]))),
               ]));
             })),
@@ -530,7 +528,7 @@ class _TerminalLine extends StatelessWidget {
   const _TerminalLine(this.text, this.color);
   @override
   Widget build(BuildContext context) => Padding(padding: const EdgeInsets.only(bottom: 4),
-      child: Text(text, style: TextStyle(fontFamily: 'DotMatrix', color: color, fontSize: 12, letterSpacing: 0.5)));
+      child: Text(text, style: TextStyle(color: color, fontSize: 12, letterSpacing: 0.5)));
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -764,7 +762,7 @@ class _MetadataCorrelationGameState extends State<_MetadataCorrelationGame> {
                             Container(width: double.infinity, padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(color: Colors.black.withOpacity(0.3), borderRadius: CyberRadius.small,
                                     border: Border.all(color: CyberColors.borderSubtle)),
-                                child: Text(frag.value, style: const TextStyle(fontFamily: 'DotMatrix', color: CyberColors.textPrimary, fontSize: 13, letterSpacing: 0.3))),
+                                child: Text(frag.value, style: const TextStyle(color: CyberColors.textPrimary, fontSize: 13, letterSpacing: 0.3))),
                             const SizedBox(height: 10),
                             Text('POINTS TO:', style: CyberText.caption.copyWith(letterSpacing: 1.2)),
                             const SizedBox(height: 6),
@@ -876,7 +874,7 @@ class _AlibiVerifyGameState extends State<_AlibiVerifyGame> {
                       Row(children: [const Icon(Icons.access_time, color: CyberColors.neonCyan, size: 14), const SizedBox(width: 6),
                         Text('CONFIRMED EVENT', style: CyberText.caption.copyWith(color: CyberColors.neonCyan, letterSpacing: 1.2))]),
                       const SizedBox(height: 6),
-                      Text(timeline['time'] ?? '', style: const TextStyle(fontFamily: 'DotMatrix', color: CyberColors.neonCyan, fontSize: 14, letterSpacing: 0.5)),
+                      Text(timeline['time'] ?? '', style: const TextStyle(color: CyberColors.neonCyan, fontSize: 14, letterSpacing: 0.5)),
                       const SizedBox(height: 4),
                       Text(timeline['event'] ?? '', style: CyberText.bodySmall.copyWith(height: 1.6)),
                     ])),

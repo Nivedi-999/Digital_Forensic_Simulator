@@ -4,6 +4,7 @@
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/cyber_theme.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -199,11 +200,11 @@ class _StatusChipState extends State<StatusChip>
             ],
             Text(
               widget.label,
-              style: TextStyle(
+              style: GoogleFonts.shareTechMono(
                 color: widget.color,
-                fontSize: 10,
+                fontSize: 9,
                 fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
+                letterSpacing: 1.2,
               ),
             ),
           ],
@@ -272,8 +273,11 @@ class CyberSectionHeader extends StatelessWidget {
 class LogRow extends StatelessWidget {
   final String left;
   final String right;
-  final bool highlighted;
+  final bool highlighted; // kept for API compat — no longer drives amber colour
   final VoidCallback? onTap;
+  /// When non-null, alternating rows get a subtle zebra stripe.
+  /// Pass the item index from the parent list.
+  final int? index;
 
   const LogRow({
     super.key,
@@ -281,12 +285,16 @@ class LogRow extends StatelessWidget {
     required this.right,
     this.highlighted = false,
     this.onTap,
+    this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-    final accentColor =
-    highlighted ? CyberColors.neonAmber : CyberColors.neonCyan;
+    // Alternating rows: odd index gets a very subtle background tint
+    final bool isOdd = (index ?? 0).isOdd;
+    final Color rowBg = isOdd
+        ? CyberColors.neonCyan.withOpacity(0.03)
+        : Colors.transparent;
 
     return Material(
       color: Colors.transparent,
@@ -295,29 +303,21 @@ class LogRow extends StatelessWidget {
         borderRadius: CyberRadius.small,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          margin: const EdgeInsets.only(bottom: 2),
+          margin: const EdgeInsets.only(bottom: 1),
           decoration: BoxDecoration(
-            color: highlighted
-                ? CyberColors.neonAmber.withOpacity(0.06)
-                : Colors.transparent,
+            color: rowBg,
             borderRadius: CyberRadius.small,
-            border: highlighted
-                ? Border.all(
-                color: CyberColors.neonAmber.withOpacity(0.25), width: 1)
-                : null,
           ),
           child: Row(
             children: [
-              // ── Left: sender / filename — fixed max width, never shrinks
-              //    to zero which was causing vertical character stacking
               ConstrainedBox(
                 constraints: const BoxConstraints(minWidth: 60, maxWidth: 90),
                 child: Text(
                   left,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: accentColor,
+                  style: const TextStyle(
+                    color: CyberColors.neonCyan,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.3,
@@ -325,27 +325,21 @@ class LogRow extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-
-              // ── Right: message / value — takes all remaining space
               Expanded(
                 child: Text(
                   right,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: highlighted
-                        ? CyberColors.neonAmber
-                        : CyberColors.textSecondary,
+                  style: const TextStyle(
+                    color: CyberColors.textSecondary,
                     fontSize: 12.5,
                   ),
                 ),
               ),
-
-              // ── Chevron
               if (onTap != null)
-                Icon(
+                const Icon(
                   Icons.chevron_right,
-                  color: accentColor.withOpacity(0.5),
+                  color: CyberColors.neonCyan,
                   size: 16,
                 ),
             ],
@@ -854,10 +848,10 @@ class MetricTile extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   value,
-                  style: TextStyle(
+                  style: GoogleFonts.orbitron(
                     color: c,
                     fontSize: 22,
-                    fontFamily: 'DotMatrix',
+                    fontWeight: FontWeight.w700,
                     shadows: [Shadow(color: c, blurRadius: 10)],
                   ),
                 ),

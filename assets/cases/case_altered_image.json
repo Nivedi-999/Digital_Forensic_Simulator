@@ -1,0 +1,329 @@
+{
+  "id": "case_alteredimage",
+  "title": "The Altered Image",
+  "shortDescription": "Digital Image Authenticity Investigation",
+  "difficulty": "easy",
+  "theme": "Evidence Authenticity",
+  "estimatedDuration": "20–30 min",
+  "caseNumber": "2003",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "A photograph submitted as key evidence in a burglary case shows suspect Arjun Mehta near a research facility at 10:11 PM.\n\nThe suspect denies being there. Forensic analysts suspect the image may have been digitally manipulated.\n\nYour job: prove whether this photo is real — or a frame-up.",
+    "missionText": "Your Mission:\n\n› Analyze the image for signs of manipulation\n\n› Examine EXIF metadata for editing traces\n\n› Cross-reference camera records with the photo timestamp\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+  "suspects": [
+    {
+      "id": "unknown_editor",
+      "name": "Unknown Editor",
+      "role": "Unidentified — Digital Manipulator",
+      "department": "Unknown",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "Unknown — no login trace",
+        "deviceUsage": "Adobe Photoshop — high-end workstation",
+        "locationTrace": "Unconfirmed",
+        "vpnCheck": "Possible VPN use — IP masked"
+      },
+      "profileNotes": "Evidence strongly points to a skilled editor who obtained the original photograph, composited Arjun Mehta's image into the scene, and re-exported the file. The use of professional editing software is confirmed by EXIF metadata. True identity unestablished."
+    },
+    {
+      "id": "witness_photographer",
+      "name": "Witness Photographer",
+      "role": "Resident — Submitted the photo",
+      "department": "Civilian",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Home network — 192.168.1.45",
+        "deviceUsage": "Canon R5 Camera — personal device",
+        "locationTrace": "Residential area — 400m from facility",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Camera records do not match the evidence photo's timestamp. May have unknowingly shared an original image that was later manipulated by a third party. No confirmed motive to fabricate evidence. Camera sequence log is missing the 22:11 entry."
+    },
+    {
+      "id": "arjun_mehta",
+      "name": "Arjun Mehta",
+      "role": "Former Employee — Research Facility",
+      "department": "Research Facility — Dismissed Staff",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Home broadband — 49.36.xx.xx",
+        "deviceUsage": "Personal laptop — general use only",
+        "locationTrace": "Home address — alibi unverified",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "The suspect in the photograph. Denied being at the facility. No editing software found on his devices. No image access history. Evidence supports his claim that the photo is fabricated — but his motive for the burglary (wrongful dismissal dispute) remains noted."
+    },
+    {
+      "id": "internal_staff",
+      "name": "Internal Staff Member",
+      "role": "Research Facility — Administrative",
+      "department": "Research Facility — Admin Wing",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.2.21 — business hours only",
+        "deviceUsage": "Office terminal — document management",
+        "locationTrace": "Admin Office — on-site",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Had access to internal file systems. Could theoretically have distributed the image internally. However, no editing software access was found, and no motive has been established. Remains a peripheral suspect."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "image",
+      "label": "Image File",
+      "icon": "image_outlined",
+      "evidenceType": "image",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "img_file_info",
+          "label": "crime_scene_photo.jpg — 5472 × 3648",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The photograph shows a dimly lit parking area near the facility's rear service entrance. A man matching Arjun Mehta's description is visible standing near the doorway. At first glance, lighting and shadows appear consistent with the environment. No obvious visual anomalies are visible without enhancement tools.",
+          "pointsToSuspect": null
+        },
+        {
+          "id": "img_edge_artifacts",
+          "label": "Edge Artifact Detected — Subject Boundary",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Zoom and contrast enhancement reveals faint blur artifacts along the edges of the subject's outline — particularly around the shoulders and hairline. These artifacts are consistent with image compositing: the subject was likely cut from a separate photograph and placed onto this background. The blur pattern is inconsistent with the camera's natural depth-of-field behavior at this distance.",
+          "pointsToSuspect": "unknown_editor"
+        }
+      ],
+      "minigame": {
+        "id": "edge_inspector",
+        "type": "image_zoom_detect",
+        "title": "Edge Artifact Inspector",
+        "hint": "Use zoom and contrast sliders to reveal blur artifacts around the suspect in the image. Highlight the compositing boundary.",
+        "instruction": "Drag the contrast slider up and zoom into the subject's outline. Flag the region where blur artifacts indicate image compositing.",
+        "solution": "shoulder_hairline_boundary",
+        "targetRegions": [
+          { "id": "shoulder_hairline_boundary", "label": "Shoulder & Hairline Edge", "isCorrect": true },
+          { "id": "background_wall", "label": "Background Wall", "isCorrect": false },
+          { "id": "door_frame", "label": "Door Frame", "isCorrect": false },
+          { "id": "ground_shadow", "label": "Ground Shadow", "isCorrect": false }
+        ],
+        "maxHints": 3,
+        "hints": [
+          "Look at the edges of the subject's body — not the background. Compositing artifacts appear where two images meet.",
+          "Increase contrast to 80%. The blur becomes visible around the shoulder and hairline boundary.",
+          "The correct region is the shoulder and hairline edge — this is where the subject was cut from a different photo and placed onto this background."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "exif",
+          "message": "ANOMALY CONFIRMED — Edge artifacts detected. This image shows signs of compositing. The subject may have been inserted from a different photograph. EXIF Metadata panel now unlocked."
+        }
+      }
+    },
+    {
+      "id": "exif",
+      "label": "EXIF Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": "edge_inspector",
+      "items": [
+        {
+          "id": "exif_camera",
+          "label": "Camera Model — Canon R5",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Camera model listed as Canon R5. Consistent with the witness photographer's registered device. File format is JPEG. Resolution matches Canon R5 native output (5472 × 3648). At surface level, the metadata appears genuine.",
+          "pointsToSuspect": null,
+          "rows": [
+            { "key": "Camera Model", "value": "Canon EOS R5", "highlight": false },
+            { "key": "Timestamp", "value": "22:11:04", "highlight": false },
+            { "key": "File Format", "value": "JPEG", "highlight": false },
+            { "key": "Resolution", "value": "5472 × 3648", "highlight": false }
+          ]
+        },
+        {
+          "id": "exif_software",
+          "label": "Software Tag — Adobe Photoshop Detected",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Hidden within the EXIF data is a Software tag that reads 'Adobe Photoshop 2024 (Windows)'. This tag is automatically written by Photoshop whenever a file is saved or exported. It confirms that this JPEG was opened, edited, and re-exported using professional image editing software after it was originally captured. A photograph exported directly from a Canon R5 would carry the camera's own software tag — not Photoshop's.",
+          "pointsToSuspect": "unknown_editor",
+          "rows": [
+            { "key": "Software Tag", "value": "Adobe Photoshop 2024 (Windows)", "highlight": true },
+            { "key": "Expected Tag", "value": "Canon Digital Photo Professional", "highlight": true },
+            { "key": "Implication", "value": "File was re-exported after editing", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "camera_records",
+      "label": "Camera Records",
+      "icon": "photo_camera_outlined",
+      "evidenceType": "files",
+      "unlockedBy": "edge_inspector",
+      "items": [
+        {
+          "id": "cam_sequence_log",
+          "label": "camera_sequence_log.txt — Canon R5",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "The camera's internal sequence log records every photo taken in chronological order by file number and timestamp. The log shows: IMG_1051 at 22:05, IMG_1052 at 22:06, IMG_1053 at 22:07 — then jumps directly to IMG_1055 at 23:14. There is no entry for IMG_1054, and no record of any photo taken at 22:11. The evidence photo is labeled IMG_1054 with a timestamp of 22:11 — a timestamp that does not appear anywhere in the camera's own internal log. This is a direct contradiction: the photo claims to come from this camera at 22:11, but the camera has no record of taking that shot.",
+          "pointsToSuspect": "unknown_editor",
+          "metadata": {
+            "size": "0.1 MB",
+            "modifier": "Canon R5 Internal Log",
+            "modifiedAt": "Auto-generated by camera firmware"
+          }
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "suspects_panel",
+      "label": "Suspect Profiles",
+      "icon": "person_outlined",
+      "evidenceType": "profiles",
+      "unlockedBy": null,
+      "items": [],
+      "minigame": null
+    }
+  ],
+  "timeline": [
+    {
+      "time": "22:05 – 22:07",
+      "title": "Photographer Takes Photos",
+      "description": "Witness captures IMG_1051–1053 near the facility. Camera log confirms all three entries.",
+      "severity": "low"
+    },
+    {
+      "time": "22:11",
+      "title": "Claimed Photo Timestamp",
+      "description": "Evidence photo IMG_1054 is timestamped 22:11 — but this entry is MISSING from the camera log.",
+      "severity": "critical"
+    },
+    {
+      "time": "Unknown — Post-Capture",
+      "title": "Image Edited in Photoshop",
+      "description": "EXIF Software tag confirms the file was opened and re-exported using Adobe Photoshop 2024.",
+      "severity": "critical"
+    },
+    {
+      "time": "Next Morning",
+      "title": "Photo Submitted as Evidence",
+      "description": "Witness hands over the photograph to investigators as proof of Arjun Mehta's presence at the scene.",
+      "severity": "medium"
+    },
+    {
+      "time": "Investigation Start",
+      "title": "Forensic Analysis Requested",
+      "description": "Suspect denies being at the scene. Forensic team begins authenticating the image.",
+      "severity": "medium"
+    }
+  ],
+  "suspicionSystem": {
+    "initialScore": 30,
+    "levels": [
+      { "range": "0–20", "label": "Very Low" },
+      { "range": "21–40", "label": "Low" },
+      { "range": "41–60", "label": "Moderate" },
+      { "range": "61–80", "label": "High" },
+      { "range": "81–100", "label": "Critical" }
+    ],
+    "updates": [
+      {
+        "trigger": "img_edge_artifacts_found",
+        "changes": {
+          "witness_photographer": "+10",
+          "arjun_mehta": "+15",
+          "unknown_editor": "+20",
+          "internal_staff": "+10"
+        },
+        "note": "Multiple suspects appear involved after edge artifact discovery."
+      },
+      {
+        "trigger": "exif_software_found",
+        "changes": {
+          "witness_photographer": "+20",
+          "arjun_mehta": "-10",
+          "unknown_editor": "+25",
+          "internal_staff": "+10"
+        },
+        "note": "Photoshop tag shifts suspicion heavily toward an unknown editor. Arjun has no editing access."
+      },
+      {
+        "trigger": "cam_sequence_log_found",
+        "changes": {
+          "witness_photographer": "+25",
+          "arjun_mehta": "-5",
+          "unknown_editor": "+20",
+          "internal_staff": "+15"
+        },
+        "note": "Camera mismatch is damning. Photographer's credibility falls. Unknown editor rises to Critical."
+      }
+    ]
+  },
+  "winCondition": {
+    "guiltySuspectId": "unknown_editor",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "img_edge_artifacts",
+    "exif_software",
+    "cam_sequence_log"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Image confirmed as fabricated. True editor identified as an unknown insider.",
+      "label": "CASE CLOSED",
+      "xp": 10,
+      "metrics": [
+        "Image Authenticity Score",
+        "Metadata Analysis Accuracy",
+        "Evidence Interpretation",
+        "Decision Confidence"
+      ]
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "You identified the right suspect but the evidence chain is incomplete.",
+      "label": "PARTIAL",
+      "xp": 3
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "Arjun Mehta was framed. The real culprit was an unknown editor who manipulated the photograph.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The manipulated photo remains accepted as truth.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "finalTwist": {
+    "title": "The Frame-Up Revealed",
+    "description": "The photograph was originally taken by the witness — but was later obtained by an unknown third party, edited using professional software to composite Arjun Mehta into the scene, and re-submitted as authentic evidence. The scene itself may be real. The suspect placement is not.",
+    "conclusion": "✔ Image confirmed as manipulated\n✔ Evidence authenticity compromised\n✔ Arjun Mehta was framed\n✔ True editor's identity remains unestablished"
+  },
+  "aria": {
+    "welcomeToHub": "A photograph. A suspect. A convenient story.\nBut cameras don't lie — editors do.\nFind out what this image is really hiding.",
+    "exploreFeeds": "EXIF data. Edge artifacts. Camera logs.\nSomeone opened this file in Photoshop — and it wasn't the camera.",
+    "viewEvidence": "Editing traces in the metadata. A timestamp the camera never recorded.\nThis photo has been through more than one pair of hands.",
+    "markEvidence": "Good. Keep building the chain.",
+    "decryptionHint": "The camera's own sequence log has no record of this photo.\nFind out why.",
+    "flagSuspect": "The image was altered by someone who knew exactly what they were doing.\nFollow the software trail — it leads somewhere."
+  }
+}

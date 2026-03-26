@@ -1,0 +1,317 @@
+{
+  "id": "case_deleteddocuments",
+  "title": "The Deleted Documents",
+  "shortDescription": "Deleted File Recovery Investigation",
+  "difficulty": "medium",
+  "theme": "File System Forensics",
+  "estimatedDuration": "35–45 min",
+  "caseNumber": "0005",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "Rohan Verma, a senior developer at DataCore Solutions, resigned suddenly — skipping the standard two-week notice and leaving the same day.\n\nWhen IT reviewed his workstation, several critical project files were missing. System logs confirmed the files were deleted shortly before his resignation.\n\nFortunately, a full forensic disk image was captured before the machine was reassigned.\n\nThe question is: were those files permanently wiped — or can they still be recovered?",
+    "missionText": "Your Mission:\n\n› Scan the disk image for deleted file fragments\n\n› Reconstruct the deleted documents from recovered fragments\n\n› Build the deletion timeline to prove intentional removal\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+  "suspects": [
+    {
+      "id": "rohan_verma",
+      "name": "Rohan Verma",
+      "role": "Senior Developer",
+      "department": "Development Department",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 20, "reason": "Primary user of the workstation — all file activity maps to his session" },
+        { "phase": 2, "delta": 25, "reason": "Deleted files directly linked to his active session just before shutdown" },
+        { "phase": 3, "delta": 30, "reason": "Deletion timeline proves intentional removal minutes before departure" },
+        { "phase": "final", "label": "Critical" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.5.34 — final session 18:30–18:52",
+        "deviceUsage": "Dev Workstation WS-07 — sole assigned user",
+        "locationTrace": "Development Floor, Desk 14",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Sole assigned user of workstation WS-07. His final login session ran from 18:30 to 18:52. During this session, confidential project files were accessed at 18:42, deleted at 18:47, and the system was shut down at 18:52. The rapid sequence — access, delete, shut down — is strongly consistent with deliberate data destruction prior to departure. No other user accessed the workstation in this window."
+    },
+    {
+      "id": "it_staff",
+      "name": "IT Staff",
+      "role": "IT Support",
+      "department": "IT Department",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 5, "reason": "Has system-level access to all workstations" },
+        { "phase": 2, "delta": 5, "reason": "No after-hours activity recorded on WS-07" },
+        { "phase": 3, "delta": -10, "reason": "No direct evidence of involvement — deletion maps exclusively to Rohan's session" },
+        { "phase": "final", "label": "Low" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.7 — business hours only",
+        "deviceUsage": "IT Admin Console — no remote session to WS-07 in evening",
+        "locationTrace": "IT Support Room, Floor 1",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Has administrative access to workstations for maintenance purposes. However, no remote session or admin login to WS-07 is recorded during the evening window. Correctly followed forensic protocol by capturing a disk image before reassignment. No motive identified."
+    },
+    {
+      "id": "external_actor",
+      "name": "External Actor",
+      "role": "Unknown",
+      "department": "External / Unknown",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 10, "reason": "Remote intrusion cannot be immediately ruled out" },
+        { "phase": 2, "delta": 5, "reason": "No inbound network connections detected on WS-07 during the session" },
+        { "phase": 3, "delta": -10, "reason": "Network logs confirm no external access — local user action only" },
+        { "phase": "final", "label": "Very Low" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "No external IPs detected on WS-07",
+        "deviceUsage": "No remote desktop or VPN session recorded",
+        "locationTrace": "Unknown",
+        "vpnCheck": "No VPN detected on target machine"
+      },
+      "profileNotes": "Network traffic logs show no inbound connections to WS-07 during the final session. No RDP, SSH, or VPN tunnels were active. The deletion was performed locally by the logged-in user — Rohan Verma."
+    },
+    {
+      "id": "insider_collab",
+      "name": "Insider Collaborator",
+      "role": "Unknown — Possible Internal Contact",
+      "department": "Unknown",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 10, "reason": "Possible that Rohan acted on behalf of a competitor or internal contact" },
+        { "phase": 2, "delta": 10, "reason": "Recovered documents include competitor-sensitive roadmap data" },
+        { "phase": 3, "delta": 5, "reason": "No direct evidence of a collaborator — Rohan acted alone on the workstation" },
+        { "phase": "final", "label": "Moderate — possible motive link, no direct evidence" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "Unknown",
+        "deviceUsage": "Unknown",
+        "locationTrace": "Unknown",
+        "vpnCheck": "Unknown"
+      },
+      "profileNotes": "It is possible Rohan was acting in coordination with a competitor or had already exfiltrated the data before deleting it. However, investigation of WS-07 alone cannot confirm this. The deletion is attributable to Rohan regardless of motive or collaboration."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "disk",
+      "label": "Disk Image",
+      "icon": "storage",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "disk_image_scan",
+          "label": "Disk Image — Unallocated Space Analysis",
+          "detail": "The forensic disk image of workstation WS-07 (System Drive C: — 500 GB) reveals significant unallocated space containing data remnants. When files are deleted on a standard Windows NTFS system, the file system marks the storage blocks as available but does not immediately overwrite the data. Analysis of unallocated sectors identifies three recoverable file fragments matching the names, sizes, and internal metadata of the missing project documents: Client_Report.docx, Architecture_Diagram.pdf, and Strategy_Presentation.pptx. The data is intact — the files were deleted using the standard Windows delete function, not a secure wipe utility.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "rohan_verma",
+          "metadata": {
+            "driveLabel": "System Drive (C:)",
+            "totalSize": "500 GB",
+            "unallocatedSpace": "12.4 GB — contains recoverable fragments",
+            "recoveredFiles": [
+              { "name": "Client_Report.docx", "status": "Recoverable" },
+              { "name": "Architecture_Diagram.pdf", "status": "Recoverable" },
+              { "name": "Strategy_Presentation.pptx", "status": "Recoverable" }
+            ]
+          }
+        }
+      ],
+      "minigame": {
+        "id": "unallocated_scanner",
+        "type": "sector_scan",
+        "title": "Unallocated Space Scanner",
+        "description": "Scan the disk image sectors and identify which blocks still contain deleted file fragments. Highlight the sectors showing residual data from the three missing documents.",
+        "sectors": [
+          { "id": "sec_001", "label": "Sector 0x0041A2", "hasFragment": false, "fileHint": null },
+          { "id": "sec_002", "label": "Sector 0x0041A3", "hasFragment": true, "fileHint": "Client_Report.docx — header bytes detected" },
+          { "id": "sec_003", "label": "Sector 0x0041A4", "hasFragment": false, "fileHint": null },
+          { "id": "sec_004", "label": "Sector 0x008C11", "hasFragment": true, "fileHint": "Architecture_Diagram.pdf — PDF magic bytes %PDF-1.6" },
+          { "id": "sec_005", "label": "Sector 0x008C12", "hasFragment": false, "fileHint": null },
+          { "id": "sec_006", "label": "Sector 0x00FF3E", "hasFragment": true, "fileHint": "Strategy_Presentation.pptx — ZIP/OOXML structure detected" }
+        ],
+        "hint": "Look for sectors with recognisable file signatures — DOCX starts with PK, PDF starts with %PDF.",
+        "maxHints": 2,
+        "hints": [
+          "Three of the six sectors contain fragments. Look for file magic bytes in the hint column.",
+          "Sectors 0x0041A3, 0x008C11, and 0x00FF3E each show residual file data."
+        ],
+        "onSuccess": {
+          "message": "FRAGMENTS LOCATED — All three deleted files exist in unallocated space. The data was never securely wiped. Proceeding to reconstruction.",
+          "unlocksPanel": "deleted_records"
+        }
+      }
+    },
+    {
+      "id": "deleted_records",
+      "label": "Deleted File Records",
+      "icon": "folder_off",
+      "evidenceType": "files",
+      "unlockedBy": "unallocated_scanner",
+      "items": [
+        {
+          "id": "file_deleted_list",
+          "label": "Recovered File Records — Deletion Confirmed",
+          "detail": "Master File Table (MFT) analysis confirms three files were deleted from the workstation during Rohan Verma's final session. The MFT retains metadata for deleted files including original filename, size, creation date, last modified date, and deletion timestamp. Client_Report.docx — deleted 18:47. Architecture_Diagram.pdf — deleted 18:47. Strategy_Presentation.pptx — deleted 18:47. All three files were deleted in the same 60-second window, strongly indicating a batch deletion action rather than accidental removal. File content is recoverable from unallocated space.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "rohan_verma",
+          "rows": [
+            { "key": "Client_Report.docx", "value": "Deleted — 18:47", "highlight": true },
+            { "key": "Architecture_Diagram.pdf", "value": "Deleted — 18:47", "highlight": true },
+            { "key": "Strategy_Presentation.pptx", "value": "Deleted — 18:47", "highlight": true },
+            { "key": "Deletion Method", "value": "Standard Windows delete — not securely wiped", "highlight": false },
+            { "key": "Active User at Time of Deletion", "value": "DATACORE\\rverma (Rohan Verma)", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "deletion_timeline",
+        "type": "timeline_builder",
+        "title": "Deletion Timeline Builder",
+        "description": "Plot the key events from Rohan's final session onto the timeline in the correct order. Arrange: file access, batch deletion, and system shutdown to prove the sequence was intentional.",
+        "events": [
+          { "id": "ev_login", "label": "Session login — DATACORE\\rverma", "time": "18:30" },
+          { "id": "ev_access", "label": "Confidential project files accessed", "time": "18:42" },
+          { "id": "ev_delete", "label": "All three files deleted (batch)", "time": "18:47" },
+          { "id": "ev_shutdown", "label": "Workstation shut down", "time": "18:52" }
+        ],
+        "solution_order": ["ev_login", "ev_access", "ev_delete", "ev_shutdown"],
+        "hint": "Arrange the four events from earliest to latest using the timestamps.",
+        "maxHints": 2,
+        "hints": [
+          "The session starts at 18:30 and ends at 18:52 with shutdown. Place login first and shutdown last.",
+          "The sequence is: Login (18:30) → Access files (18:42) → Delete files (18:47) → Shutdown (18:52)."
+        ],
+        "onSuccess": {
+          "message": "TIMELINE CONFIRMED — Files were accessed, then deleted, then the machine was shut down — all within 22 minutes. This is not accidental deletion. This is deliberate data destruction immediately before departure."
+        }
+      }
+    },
+    {
+      "id": "recovery_timeline",
+      "label": "File Recovery Timeline",
+      "icon": "history",
+      "evidenceType": "meta",
+      "unlockedBy": "deletion_timeline",
+      "items": [
+        {
+          "id": "meta_recovery",
+          "label": "Recovered Document Contents — Confidential Project Data",
+          "detail": "Forensic reconstruction of the three recovered files confirms their contents. Client_Report.docx contained a completed deliverable for a major client including financial projections and proprietary methodology. Architecture_Diagram.pdf contained the system architecture for an unreleased product feature. Strategy_Presentation.pptx contained a 3-year business roadmap marked CONFIDENTIAL — INTERNAL ONLY. All three documents are classified as trade secrets under the company's data classification policy. Their deletion immediately before Rohan's departure — without authorisation — constitutes a potential breach of his employment contract and applicable data protection law.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "rohan_verma",
+          "rows": [
+            { "key": "Client_Report.docx", "value": "Client financials + proprietary methodology", "highlight": false },
+            { "key": "Architecture_Diagram.pdf", "value": "Unreleased product architecture — trade secret", "highlight": true },
+            { "key": "Strategy_Presentation.pptx", "value": "3-year roadmap — CONFIDENTIAL — INTERNAL ONLY", "highlight": true },
+            { "key": "Classification", "value": "Trade secrets — protected under employment contract", "highlight": true },
+            { "key": "Authorised for Deletion", "value": "NO", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+  "timeline": [
+    {
+      "time": "Prior Weeks",
+      "title": "Rohan Works on Confidential Projects",
+      "description": "Rohan Verma regularly accesses Client_Report, Architecture_Diagram, and Strategy_Presentation as part of his role.",
+      "severity": "low"
+    },
+    {
+      "time": "Day of Resignation — 18:30",
+      "title": "Final Session Begins",
+      "description": "Rohan logs into WS-07. This is his last recorded login session.",
+      "severity": "medium"
+    },
+    {
+      "time": "18:42",
+      "title": "Confidential Files Accessed",
+      "description": "All three project files are opened during the final session.",
+      "severity": "high"
+    },
+    {
+      "time": "18:47",
+      "title": "Files Deleted — Batch",
+      "description": "All three files deleted within a 60-second window using standard Windows delete.",
+      "severity": "critical"
+    },
+    {
+      "time": "18:52",
+      "title": "Workstation Shut Down",
+      "description": "Rohan shuts down the workstation and departs the building.",
+      "severity": "critical"
+    },
+    {
+      "time": "Following Day",
+      "title": "IT Captures Disk Image",
+      "description": "IT department creates forensic disk image before reassigning the workstation. Deleted fragments preserved.",
+      "severity": "medium"
+    },
+    {
+      "time": "Investigation",
+      "title": "Files Successfully Recovered",
+      "description": "Forensic analysis recovers all three documents from unallocated space.",
+      "severity": "low"
+    }
+  ],
+  "winCondition": {
+    "guiltySuspectId": "rohan_verma",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "disk_image_scan",
+    "file_deleted_list",
+    "meta_recovery"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Rohan Verma confirmed — deliberately deleted confidential project files minutes before resigning.",
+      "label": "CASE CLOSED",
+      "xp": 10
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect, but more forensic evidence is needed to build the full picture.",
+      "label": "PARTIAL",
+      "xp": 3
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The deletion maps exclusively to Rohan Verma's final session on WS-07.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The deletion goes unexplained.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "aria": {
+    "welcomeToHub": "...He left in a day. The files left with him.\nExcept — deleted doesn't always mean gone.\nThe disk remembers everything.",
+    "exploreFeeds": "Unallocated sectors. MFT records. A 22-minute window.\nSomething was erased in a hurry. Find out what — and prove who.",
+    "viewEvidence": "Three files. One session. A shutdown five minutes later.\nThis wasn't accidental. Prove it.",
+    "markEvidence": "Good. The fragments are forming a picture.",
+    "decryptionHint": "Scan the sectors — look for file signatures in the unallocated blocks.",
+    "flagSuspect": "The timeline doesn't leave room for doubt.\nAccess. Delete. Shutdown. All in 22 minutes.\nWho was logged in?"
+  }
+}

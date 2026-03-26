@@ -90,6 +90,22 @@ class BranchingLogic {
     'ip_registration':    {'ramesh_p': 0.22},
     'meta_portal_admin':  {'job_portal_admin': 0.18},
 
+    // ── CASE 01: THE VANISHING REPORT (Easy) ──
+    'file_report_comparison': {'it_admin': 0.20, 'neha_sharma': -0.10},
+    'file_metadata_vanishing': {'it_admin': 0.15, 'finance_manager': 0.10},
+    'hash_verification_v':     {'it_admin': 0.25},
+    'service_account_log':    {'it_admin': 0.22},
+
+    // ── CASE 02: THE LOST USB (Easy) ──
+    'usb_file_list':           {'dept_manager': 0.15, 'security_guard': 0.10},
+    'chain_of_custody_usb':    {'dept_manager': 0.20, 'it_technician': -0.05},
+    'workstation_logs_usb':    {'dept_manager': 0.25},
+
+    // ── CASE 03: THE ALTERED IMAGE (Easy) ──
+    'image_analysis':          {'unknown_editor': 0.20, 'arjun_mehta': -0.10},
+    'exif_metadata_image':     {'unknown_editor': 0.25, 'photographer': -0.15},
+    'camera_records_image':    {'unknown_editor': 0.20},
+
     // ── Phantom Transaction (Medium) ─────────────────────────
     // Medium: culprit rises clearly but red herring keeps one innocent elevated
     'file_simclone':         {'vikram_b': 0.20, 'external_fraudster': -0.15},
@@ -143,6 +159,21 @@ class BranchingLogic {
     'ip_api_calls':       {'ketan_s': 0.20},
     'chat_ex_intern':     {'ex_intern': 0.18},
 
+    // ── CASE 04: THE MISSING LOGS (Medium) ──
+    'system_logs_gap':         {'sys_admin': 0.20, 'external_hacker': 0.15},
+    'timeline_reconstruction': {'sys_admin': 0.25, 'it_support': -0.10},
+    'log_clear_source':        {'sys_admin': 0.22},
+
+    // ── CASE 05: THE DELETED DOCUMENTS (Medium) ──
+    'file_carve_pdf':          {'rohan_verma': 0.25},
+    'hex_signature_pdf':       {'rohan_verma': 0.20},
+    'deletion_timestamp':      {'rohan_verma': 0.18},
+
+    // ── CASE 06: THE MIDNIGHT TIMELINE (Medium) ──
+    'midnight_login_trace':    {'employee': 0.22, 'remote_attacker': 0.12},
+    'file_access_cluster':     {'employee': 0.25},
+    'local_session_proof':     {'employee': 0.20, 'remote_attacker': -0.15},
+
     // ── Dead Drop Signal (Hard) ──────────────────────────────
     // Hard: two suspects rise together — operator and lab manager
     // Lab manager's bar only drops late when remote-session evidence appears
@@ -156,6 +187,16 @@ class BranchingLogic {
     'ip_dead_drop':       {'hidden_operator': 0.22},
     // Red herring — lab manager rises until remote-session evidence clears him
     'meta_lab_manager':   {'lab_manager': 0.18},
+
+    // ── CASE 07: THE UNKNOWN USB (Hard) ──
+    'registry_usb_artifact':   {'workstation_owner': 0.22},
+    'serial_number_match':     {'workstation_owner': 0.25},
+    'correlation_window':      {'workstation_owner': 0.18},
+
+    // ── CASE 08: THE DISGUISED FILE (Hard) ──
+    'double_extension_trace':  {'external_attacker': 0.20, 'employee_victim': 0.10},
+    'mz_header_proof':         {'external_attacker': 0.25},
+    'spoofed_email_header':    {'external_attacker': 0.22, 'it_staff': -0.10},
 
     // ── Echoes of Tomorrow (Hard) ────────────────────────────
     'file_preemptive_archive': {'manav_r': 0.22, 'auto_scheduler': -0.15},
@@ -215,6 +256,16 @@ class BranchingLogic {
     'file_backdoor':        {'ishaan_m': 0.20},
     'ip_wiper_deploy':      {'ishaan_m': 0.18},
     'chat_contractor':      {'storage_vendor': 0.18},
+
+    // ── CASE 09: THE PHANTOM PROCESS (Advanced) ──
+    'process_memory_dump':     {'aryan_mehta': 0.15, 'unknown_insider': 0.15},
+    'vad_map_rwx':             {'aryan_mehta': 0.20},
+    'api_hook_intercept':      {'aryan_mehta': 0.25, 'patch_reviewer': 0.10},
+
+    // ── CASE 10: THE DOUBLE IDENTITY (Advanced) ──
+    'jwt_token_iat':           {'silverkey_broker': 0.20, 'espionage_group': 0.15},
+    'fingerprint_mismatch_log':{'silverkey_broker': 0.25, 'riya_desai': -0.15},
+    'phishing_redirect_trace': {'silverkey_broker': 0.20},
 
     // ── Mirror Protocol (Advanced) ───────────────────────────
     'file_diff_analysis':    {'zoya_r': 0.15},
@@ -307,6 +358,16 @@ class BranchingLogic {
     'binary_pattern':     {'hidden_operator': 0.12},
     'intent_patterning':  {'manav_r': 0.12},
     'linguistic_patterning': {'maya_kulkarni': 0.15},
+    // NEW FORENSIC MINIGAMES
+    'hash_validate':           {'it_admin': 0.12},
+    'handler_sorter':          {'dept_manager': 0.10},
+    'exif_audit':              {'unknown_editor': 0.15},
+    'log_rebuild':             {'sys_admin': 0.12},
+    'file_carving':            {'rohan_verma': 0.12},
+    'artifact_inspector':      {'employee': 0.12},
+    'extension_detect':        {'external_attacker': 0.12},
+    'memory_analysis':         {'aryan_mehta': 0.15},
+    'token_trace':             {'silverkey_broker': 0.15},
   };
 
   void applyMinigameEffects(String minigameId, Map<String, double> suspicion) {

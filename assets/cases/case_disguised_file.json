@@ -1,0 +1,368 @@
+{
+  "id": "case_disguisedfile",
+  "title": "The Disguised File",
+  "shortDescription": "File Extension Spoofing & Malware Detection",
+  "difficulty": "hard",
+  "theme": "Malware Detection",
+  "estimatedDuration": "45–60 min",
+  "caseNumber": "0008",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "An employee at a mid-sized company received an email with an attachment labelled invoice.pdf.exe.\n\nAt first glance — a routine invoice. But seconds after opening it, the workstation began behaving strangely. IT isolated the machine immediately.\n\nThe attachment was not a PDF. It was an executable disguised with a double extension — a classic social engineering attack.\n\nBut who sent it? And where did it really come from?",
+    "missionText": "Your Mission:\n\n› Identify the double extension spoofing technique used\n\n› Inspect the file header to confirm its true type\n\n› Trace the email headers back to the spoofed sender domain\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+  "suspects": [
+    {
+      "id": "external_attacker",
+      "name": "External Attacker",
+      "role": "Unknown — Malicious Actor",
+      "department": "External",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 25, "reason": "Double extension technique is characteristic of targeted phishing — not accidental" },
+        { "phase": 2, "delta": 25, "reason": "MZ header confirms executable — deliberate crafting required technical skill" },
+        { "phase": 3, "delta": 20, "reason": "Email header trace reveals spoofed domain registered 3 weeks prior — planned attack" },
+        { "phase": "final", "label": "Critical" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "185.220.101.47 — Tor exit node, Eastern Europe",
+        "deviceUsage": "Remote — email delivered via compromised relay server",
+        "locationTrace": "Unknown — routed through anonymisation network",
+        "vpnCheck": "Tor exit node detected — deliberate anonymisation"
+      },
+      "profileNotes": "The email was sent from a spoofed domain (invoices-payroll.net) registered 3 weeks before the attack — consistent with a pre-planned phishing campaign. The sending IP traces to a known Tor exit node, indicating deliberate anonymisation. The executable payload was crafted to display a fake invoice PDF and execute a background process — this level of preparation points to an experienced external threat actor, not an opportunistic attack."
+    },
+    {
+      "id": "employee_victim",
+      "name": "Employee (Recipient)",
+      "role": "Accounts Payable Clerk",
+      "department": "Finance Department",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 15, "reason": "Executed the file — technically triggered the infection" },
+        { "phase": 2, "delta": -10, "reason": "File was designed to deceive — victim role confirmed by double extension analysis" },
+        { "phase": 3, "delta": -15, "reason": "No prior relationship with the sending domain — clearly targeted, not complicit" },
+        { "phase": "final", "label": "Very Low — victim of social engineering" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.6.21 — Finance workstation FIN-WS-03",
+        "deviceUsage": "FIN-WS-03 — normal business hours activity, no anomalies prior to attachment execution",
+        "locationTrace": "Finance Department, Floor 2",
+        "vpnCheck": "No VPN"
+      },
+      "profileNotes": "The employee received the email via the company's standard mail system and opened the attachment believing it was a legitimate vendor invoice. The double extension (invoice.pdf.exe) was designed specifically to exploit Windows' default behaviour of hiding known file extensions, making the file appear as invoice.pdf. The employee has no technical background and no prior contact with the sending domain. Victim status confirmed."
+    },
+    {
+      "id": "email_sender_spoofed",
+      "name": "Spoofed Sender Identity",
+      "role": "Fake Vendor — invoices-payroll.net",
+      "department": "External — Fabricated",
+      "riskLevel": "high",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 20, "reason": "Display name mimics a legitimate vendor — designed to deceive" },
+        { "phase": 2, "delta": 10, "reason": "Domain invoices-payroll.net is not associated with any known legitimate business" },
+        { "phase": 3, "delta": -10, "reason": "Domain is a tool of the attacker — not an independent actor" },
+        { "phase": "final", "label": "Moderate — a vehicle for the attack, controlled by the external attacker" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "185.220.101.47 — same Tor exit node as the external attacker",
+        "deviceUsage": "Phishing domain — registered via anonymous registrar",
+        "locationTrace": "Domain registered to a privacy-protected address",
+        "vpnCheck": "Anonymous registrar — no real identity exposed"
+      },
+      "profileNotes": "The sending address accounts@invoices-payroll.net was crafted to resemble a legitimate accounts payable vendor. The domain was registered 3 weeks before the attack through a privacy-protection service. It resolves to no real business. This identity is entirely fabricated — it is an instrument of the external attacker, not a separate actor."
+    },
+    {
+      "id": "it_staff",
+      "name": "IT Security Staff",
+      "role": "IT Security Analyst",
+      "department": "IT Department",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 5, "reason": "Responsible for email filtering — failure to catch the attachment could indicate negligence or complicity" },
+        { "phase": 2, "delta": -5, "reason": "The executable's PDF disguise bypassed signature-based detection — a known gap" },
+        { "phase": 3, "delta": -10, "reason": "Email header analysis confirms the spoofed domain passed basic SPF checks — a systemic gap, not individual fault" },
+        { "phase": "final", "label": "Very Low — systemic gap, not individual culpability" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.0.11 — IT security console",
+        "deviceUsage": "Email gateway — standard filtering in place at time of delivery",
+        "locationTrace": "IT Security Operations, Floor 1",
+        "vpnCheck": "No VPN"
+      },
+      "profileNotes": "The email gateway had standard spam and malware filtering active. The attacker's use of a freshly-registered domain (under 30 days old — below most reputation blacklist thresholds) and a double-extension executable (bypassing signature detection looking only for .exe attachments) exploited two known gaps in the filtering configuration. This is a systemic security posture issue, not individual negligence."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "file_properties",
+      "label": "File Properties",
+      "icon": "insert_drive_file",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_directory_listing",
+          "label": "Directory Listing — Double Extension Identified",
+          "detail": "A directory listing of the employee's Downloads folder reveals the suspicious attachment alongside other recently received files. The listing shows: quarterly_report.pdf (legitimate), meeting_notes.docx (legitimate), invoice.pdf.exe (SUSPICIOUS — double extension). The file invoice.pdf.exe uses two extensions. On a Windows system with 'Hide extensions for known file types' enabled (the default setting), this file would display as invoice.pdf — the .exe extension would be invisible to the user. The file icon would also render as a generic document icon rather than an executable icon, further reinforcing the deception.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "external_attacker",
+          "metadata": {
+            "files": [
+              { "name": "quarterly_report.pdf", "type": "PDF Document", "suspicious": false },
+              { "name": "meeting_notes.docx", "type": "Word Document", "suspicious": false },
+              { "name": "invoice.pdf.exe", "type": "Application — DOUBLE EXTENSION", "suspicious": true }
+            ]
+          }
+        }
+      ],
+      "minigame": {
+        "id": "double_extension_spotter",
+        "type": "directory_scan",
+        "title": "Double Extension Spotter",
+        "description": "Scan the directory listing and identify all files using double extensions to disguise their true file type. Flag every file whose final extension differs from what its name implies.",
+        "directoryContents": [
+          { "id": "f1", "filename": "quarterly_report.pdf", "trueType": "PDF", "suspicious": false },
+          { "id": "f2", "filename": "meeting_notes.docx", "trueType": "Word Document", "suspicious": false },
+          { "id": "f3", "filename": "invoice.pdf.exe", "trueType": "Windows Executable", "suspicious": true },
+          { "id": "f4", "filename": "budget_summary.xlsx", "trueType": "Excel Spreadsheet", "suspicious": false },
+          { "id": "f5", "filename": "cv_update.doc.bat", "trueType": "Batch Script", "suspicious": true },
+          { "id": "f6", "filename": "onboarding_guide.pdf", "trueType": "PDF", "suspicious": false }
+        ],
+        "hint": "A double extension file has two dot-separated extensions. The last one is the true type — and it's dangerous when it's .exe or .bat.",
+        "maxHints": 2,
+        "hints": [
+          "Look at each filename carefully. Files with two extensions — like name.pdf.exe — are hiding their true type behind a fake one.",
+          "Two files in this directory use double extensions: invoice.pdf.exe and cv_update.doc.bat. Both should be flagged."
+        ],
+        "onSuccess": {
+          "message": "DOUBLE EXTENSIONS CONFIRMED — invoice.pdf.exe and cv_update.doc.bat both disguise executables as harmless documents. The technique exploits Windows' default hide-extensions behaviour. Now inspect the file header to cryptographically confirm the true type.",
+          "unlocksPanel": "file_header"
+        }
+      }
+    },
+    {
+      "id": "file_header",
+      "label": "Executable Analysis",
+      "icon": "code",
+      "evidenceType": "files",
+      "unlockedBy": "double_extension_spotter",
+      "items": [
+        {
+          "id": "file_header_analysis",
+          "label": "File Header — MZ Magic Bytes Confirm Executable",
+          "detail": "Hexadecimal inspection of the first 4 bytes of invoice.pdf.exe reveals the following: 4D 5A 90 00. The bytes 4D 5A decode to the ASCII characters 'MZ' — the Windows Portable Executable (PE) file magic number, named after Mark Zbikowski, one of the original MS-DOS architects. Any file beginning with the MZ header is a Windows executable regardless of its extension or displayed name. A genuine PDF file would begin with 25 50 44 46 — the ASCII string '%PDF'. This file begins with MZ — it is unambiguously a Windows executable. The PDF extension is cosmetic only.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "external_attacker",
+          "rows": [
+            { "key": "First 4 Bytes (Hex)", "value": "4D 5A 90 00", "highlight": true },
+            { "key": "ASCII Decode", "value": "MZ — Windows PE Magic Number", "highlight": true },
+            { "key": "True File Type", "value": "Windows Executable (.exe)", "highlight": true },
+            { "key": "Expected PDF Header", "value": "25 50 44 46 (%PDF) — NOT present", "highlight": true },
+            { "key": "Verdict", "value": "Executable disguised as PDF — confirmed", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "file_header_analyser",
+        "type": "hex_inspect",
+        "title": "File Header Analyser",
+        "description": "Inspect the first 4 bytes of invoice.pdf.exe in the hex viewer. Identify the magic number and match it to the correct file type. Determine whether this is a PDF or an executable.",
+        "hexDump": [
+          { "offset": "0x0000", "hex": "4D 5A 90 00  03 00 00 00", "ascii": "MZ......" },
+          { "offset": "0x0008", "hex": "04 00 00 00  FF FF 00 00", "ascii": "........" },
+          { "offset": "0x0010", "hex": "B8 00 00 00  00 00 00 00", "ascii": "........" }
+        ],
+        "magicNumbers": [
+          { "bytes": "4D 5A", "ascii": "MZ", "fileType": "Windows Executable (.exe / .dll)", "match": true },
+          { "bytes": "25 50 44 46", "ascii": "%PDF", "fileType": "PDF Document", "match": false },
+          { "bytes": "50 4B 03 04", "ascii": "PK..", "fileType": "ZIP / Office Document (.docx, .xlsx)", "match": false },
+          { "bytes": "FF D8 FF", "ascii": "...", "fileType": "JPEG Image", "match": false }
+        ],
+        "solution": "MZ",
+        "hint": "The magic number is in the very first two bytes. Match 4D 5A to the reference table.",
+        "maxHints": 2,
+        "hints": [
+          "4D in ASCII is the letter M. 5A is the letter Z. Together: MZ.",
+          "MZ is the Windows Portable Executable magic number. Any file starting with MZ is a Windows executable — regardless of its extension."
+        ],
+        "onSuccess": {
+          "message": "EXECUTABLE CONFIRMED — MZ header at offset 0x0000 proves this is a Windows PE file. No PDF content exists. The file was crafted to deceive. Now trace the email it arrived in to find who sent it.",
+          "unlocksPanel": "email_headers"
+        }
+      }
+    },
+    {
+      "id": "email_headers",
+      "label": "Email Header Trace",
+      "icon": "email",
+      "evidenceType": "meta",
+      "unlockedBy": "file_header_analyser",
+      "items": [
+        {
+          "id": "meta_email_headers",
+          "label": "Email Header Analysis — Spoofed Sender Domain",
+          "detail": "Full email header analysis of the message carrying invoice.pdf.exe reveals the following. Display Name: Accounts Payable — FinancePro Ltd. From Address: accounts@invoices-payroll.net. The display name was crafted to mimic a known vendor. The sending domain invoices-payroll.net was registered via a privacy-protection service (WhoisGuard) 21 days before the email was sent — a fresh domain with no reputation history. The originating IP in the Received header chain is 185.220.101.47, a known Tor exit node. SPF record check: invoices-payroll.net has a permissive SPF record (v=spf1 +all) that allowed the email to pass basic authentication — a deliberate configuration by the attacker to bypass SPF-based filtering. DKIM: Not present. DMARC: Not enforced.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "external_attacker",
+          "rows": [
+            { "key": "Display Name", "value": "Accounts Payable — FinancePro Ltd (spoofed)", "highlight": true },
+            { "key": "From Address", "value": "accounts@invoices-payroll.net", "highlight": true },
+            { "key": "Domain Age", "value": "21 days — registered specifically for this attack", "highlight": true },
+            { "key": "Originating IP", "value": "185.220.101.47 — Tor exit node", "highlight": true },
+            { "key": "SPF Result", "value": "PASS — attacker set permissive +all record to bypass filters", "highlight": true },
+            { "key": "DKIM", "value": "NOT PRESENT", "highlight": false },
+            { "key": "DMARC", "value": "NOT ENFORCED", "highlight": false }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "email_reconstructor",
+        "type": "email_header_trace",
+        "title": "Phishing Email Reconstructor",
+        "description": "Trace the email header chain from the recipient's inbox back to the originating server. Identify the spoofed display name, the true sending domain, the domain registration age, and the originating IP to expose the attacker's infrastructure.",
+        "headerChain": [
+          {
+            "hop": 1,
+            "header": "Delivered-To",
+            "value": "employee@company.com",
+            "note": "Final recipient — company mail server"
+          },
+          {
+            "hop": 2,
+            "header": "Received",
+            "value": "from mail.company.com (10.0.0.25) by mx.company.com",
+            "note": "Internal mail relay — normal"
+          },
+          {
+            "hop": 3,
+            "header": "Received",
+            "value": "from smtp-relay.invoices-payroll.net (185.220.101.47)",
+            "note": "SUSPICIOUS — originating IP is a known Tor exit node"
+          },
+          {
+            "hop": 4,
+            "header": "From",
+            "value": "\"Accounts Payable - FinancePro Ltd\" <accounts@invoices-payroll.net>",
+            "note": "Display name spoofs a known vendor — actual domain is invoices-payroll.net"
+          },
+          {
+            "hop": 5,
+            "header": "Domain Registration",
+            "value": "invoices-payroll.net — registered 21 days ago via WhoisGuard",
+            "note": "Fresh domain — no reputation history, registered for this attack"
+          }
+        ],
+        "redFlags": [
+          { "id": "rf1", "label": "Display name mimics a legitimate vendor", "flagged": false },
+          { "id": "rf2", "label": "Sending domain is not the vendor's real domain", "flagged": false },
+          { "id": "rf3", "label": "Domain registered only 21 days ago", "flagged": false },
+          { "id": "rf4", "label": "Originating IP is a Tor exit node", "flagged": false }
+        ],
+        "hint": "Work through the header chain from hop 3 onward. Flag every item in the red flags checklist that the headers confirm.",
+        "maxHints": 2,
+        "hints": [
+          "Hop 3 reveals the originating IP (185.220.101.47 — Tor exit node). Hop 4 shows the spoofed display name and real sending domain.",
+          "All four red flags are confirmed by the header chain. Flag all of them."
+        ],
+        "onSuccess": {
+          "message": "ATTACK INFRASTRUCTURE EXPOSED — Tor exit node. 21-day-old domain. Spoofed vendor display name. Permissive SPF to bypass filters. This was a planned, targeted phishing attack by an experienced external threat actor."
+        }
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "time": "21 Days Before",
+      "title": "Attack Domain Registered",
+      "description": "invoices-payroll.net registered via WhoisGuard privacy service. Attack infrastructure being prepared.",
+      "severity": "high"
+    },
+    {
+      "time": "Attack Day — Morning",
+      "title": "Phishing Email Sent",
+      "description": "Email with invoice.pdf.exe attachment sent from accounts@invoices-payroll.net via Tor exit node 185.220.101.47.",
+      "severity": "critical"
+    },
+    {
+      "time": "Attack Day — 11:24",
+      "title": "Employee Opens Attachment",
+      "description": "Employee sees invoice.pdf in their downloads (Windows hides .exe extension). Opens file expecting a vendor invoice.",
+      "severity": "critical"
+    },
+    {
+      "time": "11:24 — Seconds Later",
+      "title": "Executable Runs",
+      "description": "MZ-header Windows executable runs. Fake invoice PDF displayed to user. Background process executes payload.",
+      "severity": "critical"
+    },
+    {
+      "time": "11:27",
+      "title": "IT Detects Anomalous Behaviour",
+      "description": "Monitoring system flags unusual process activity on FIN-WS-03. IT isolates machine from network.",
+      "severity": "high"
+    },
+    {
+      "time": "Investigation",
+      "title": "Forensic Analysis Begins",
+      "description": "File header confirms executable. Email headers traced to spoofed domain and Tor exit node.",
+      "severity": "medium"
+    }
+  ],
+  "winCondition": {
+    "guiltySuspectId": "external_attacker",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "file_directory_listing",
+    "file_header_analysis",
+    "meta_email_headers"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "External attacker confirmed — crafted a double-extension executable, routed through Tor, sent via a 21-day-old spoofed domain.",
+      "label": "CASE CLOSED",
+      "xp": 15
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct attacker identified, but the file header and email header traces need to be fully documented.",
+      "label": "PARTIAL",
+      "xp": 5
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The employee was a victim. The attack infrastructure — Tor node, 21-day domain, MZ executable — points entirely to an external actor.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The origin of the malicious file goes untraced.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "aria": {
+    "welcomeToHub": "...An invoice that wasn't an invoice.\nA PDF that was never a PDF.\nSomeone built this to be believed — and it worked.",
+    "exploreFeeds": "Double extensions. Magic bytes. Email headers.\nThe deception has layers. Peel them back one at a time.",
+    "viewEvidence": "4D 5A. MZ. That is not a PDF header.\nSomebody crafted this — and routed it through the dark.",
+    "markEvidence": "Good. Each layer of the disguise is falling away.",
+    "decryptionHint": "Check the first two bytes of the hex dump. MZ is the tell.",
+    "flagSuspect": "Tor node. 21-day domain. Permissive SPF.\nThis was planned. This was professional.\nWho built the infrastructure?"
+  }
+}

@@ -1,0 +1,286 @@
+{
+  "id": "case_lostusb",
+  "title": "The Lost USB",
+  "shortDescription": "Chain of Custody Investigation",
+  "difficulty": "easy",
+  "theme": "Evidence Handling",
+  "estimatedDuration": "20–30 min",
+  "caseNumber": "0002",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "A USB drive was found in a company parking lot near the employee entrance.\n\nThe device was passed from security to management to IT before forensic analysis could begin.\n\nWhen IT finally examined it, a suspicious file — unknown.exe — had appeared on the drive. It wasn't there originally.\n\nSomebody introduced it during the chain of custody. But who?",
+    "missionText": "Your Mission:\n\n› Reconstruct who handled the USB and when\n\n› Identify the window in which unknown.exe appeared\n\n› Spot the missing documentation steps that broke the chain\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+  "suspects": [
+    {
+      "id": "security_guard",
+      "name": "Security Guard",
+      "role": "Security Staff",
+      "department": "Building Security",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 5, "reason": "Had initial physical access to the USB" },
+        { "phase": 2, "delta": -5, "reason": "No system interaction detected during their possession" },
+        { "phase": "final", "label": "Low" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "N/A — no system login recorded",
+        "deviceUsage": "Security Desk terminal — no USB connection detected",
+        "locationTrace": "Front Security Desk",
+        "vpnCheck": "No VPN"
+      },
+      "profileNotes": "Found the USB in the parking lot at 09:50. Kept it at the security desk briefly before handing it to the department manager. No workstation or computer access occurred during this window. Physical handling only — no digital interaction."
+    },
+    {
+      "id": "dept_manager",
+      "name": "Department Manager",
+      "role": "Department Manager",
+      "department": "HR Department",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 20, "reason": "USB was actively connected to a workstation during their possession" },
+        { "phase": 2, "delta": 25, "reason": "unknown.exe appears at 10:17 — squarely within the manager's custody window (10:05–10:25)" },
+        { "phase": "final", "label": "High" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.4.22 — 10:05–10:25",
+        "deviceUsage": "Manager Workstation — USB device connection logged at 10:06",
+        "locationTrace": "HR Manager Office, Floor 2",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Received the USB from security at 10:05 and connected it to their personal workstation to 'inspect the contents' before forwarding to IT. This is a direct violation of evidence handling protocol. The suspicious file unknown.exe was created at 10:17 — 11 minutes after the USB was connected to this workstation. Whether the file was intentionally placed or copied via malware/auto-run is not confirmed, but this manager is the only one who connected the device to a computer before IT received it."
+    },
+    {
+      "id": "it_technician",
+      "name": "IT Technician",
+      "role": "IT Forensics Technician",
+      "department": "IT Department",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 10, "reason": "Technical capability to introduce files onto a USB" },
+        { "phase": 2, "delta": 5, "reason": "Received device at 10:25 — after unknown.exe already existed" },
+        { "phase": "final", "label": "Moderate — received after file appeared, unlikely to be the source" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.9 — 10:25 onward",
+        "deviceUsage": "Forensic Workstation — USB connected at 10:26 for imaging",
+        "locationTrace": "IT Lab, Floor 1",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Received the USB from the manager at 10:25. By this point, unknown.exe already existed on the drive (created at 10:17). Began forensic imaging preparation according to protocol. No evidence linking them to the file's creation. High technical skill but received the contaminated device — not the source of contamination."
+    },
+    {
+      "id": "unknown_external",
+      "name": "Unknown External Actor",
+      "role": "Unknown",
+      "department": "External / Unknown",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 15, "reason": "USB found in parking lot — could have been planted or infected externally" },
+        { "phase": 2, "delta": 10, "reason": "Auto-run malware or OS-triggered file creation cannot be ruled out" },
+        { "phase": "final", "label": "Moderate — contamination may have been automatic, not deliberate" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "Unknown",
+        "deviceUsage": "Unknown — possible prior infection of the USB",
+        "locationTrace": "Unknown — device found in parking lot",
+        "vpnCheck": "Unknown"
+      },
+      "profileNotes": "The USB was found in a public area before any chain of custody was established. It is possible the drive was pre-infected or that unknown.exe was introduced automatically when the manager connected it to their workstation via auto-run or background OS processes. Without proper forensic isolation at the point of discovery, this cannot be conclusively ruled out. However, the manager's decision to connect the device is the identifiable failure point."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "files",
+      "label": "USB File List",
+      "icon": "usb",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_usb_contents",
+          "label": "USB Drive File List",
+          "detail": "The USB drive contains three files. salary.xlsx and bonus_data.xlsx are legitimate HR documents — both created at 10:02, consistent with their origin from the HR department's internal systems. A third file, unknown.exe, is an executable program. It was not part of the original HR document set. It was created at 10:17 — 15 minutes after the HR files, and after the USB had been found and passed through the chain of custody. The file has no business justification for being on the drive.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": null,
+          "metadata": {
+            "files": [
+              { "name": "salary.xlsx", "created": "10:02", "type": "Spreadsheet — HR" },
+              { "name": "bonus_data.xlsx", "created": "10:02", "type": "Spreadsheet — HR" },
+              { "name": "unknown.exe", "created": "10:17", "type": "Executable — SUSPICIOUS" }
+            ]
+          }
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "custody",
+      "label": "Chain of Custody",
+      "icon": "receipt_long",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_custody_log",
+          "label": "Chain of Custody Log — Missing Documentation",
+          "detail": "The custody log reveals multiple critical failures. The USB device was never placed in an evidence bag. No custody tag was applied. No official transfer form was completed between the security guard and the manager, or between the manager and IT. The device was not photographed or documented at the point of discovery. Additionally, the device was connected to at least one workstation before forensic acquisition. Each of these failures violates standard digital forensic evidence handling protocols. Because the chain is broken, it is legally impossible to definitively prove that unknown.exe was not on the drive when it was found — or that it was not introduced at multiple points.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "dept_manager",
+          "rows": [
+            { "key": "Evidence Bag Used", "value": "NO", "highlight": true },
+            { "key": "Custody Tag Applied", "value": "NO", "highlight": true },
+            { "key": "Transfer Form Completed", "value": "NO", "highlight": true },
+            { "key": "Device Photographed at Discovery", "value": "NO", "highlight": true },
+            { "key": "Connected to Workstation Before Imaging", "value": "YES — Manager's workstation at 10:06", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "ip",
+      "label": "Workstation Logs",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_manager_workstation",
+          "label": "USB Connection — Manager Workstation",
+          "detail": "Workstation logs confirm that a USB mass storage device was connected to the Department Manager's workstation at 10:06. The device remained connected until 10:22. During this window, at 10:17, unknown.exe was created on the drive. The file creation timestamp places it squarely within the manager's custody and within the active USB connection session. No other workstation connection is recorded for this device prior to the IT Technician's forensic workstation at 10:26.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "dept_manager",
+          "rows": [
+            { "key": "USB Connected", "value": "Manager Workstation — 10:06", "highlight": true },
+            { "key": "USB Disconnected", "value": "10:22", "highlight": false },
+            { "key": "unknown.exe Created", "value": "10:17 — during active connection", "highlight": true },
+            { "key": "Next Connection", "value": "IT Forensic Workstation — 10:26 (after file existed)", "highlight": false }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "file_mapper",
+        "type": "timeline_map",
+        "title": "File Appearance Mapper",
+        "description": "Match the unknown.exe creation time (10:17) to the correct handler window on the timeline bar. Which handler had the device when the file appeared?",
+        "timelineWindows": [
+          { "handler": "Security Guard", "start": "09:50", "end": "10:05" },
+          { "handler": "Department Manager", "start": "10:05", "end": "10:25" },
+          { "handler": "IT Technician", "start": "10:25", "end": "10:45" }
+        ],
+        "fileCreationTime": "10:17",
+        "solution": "Department Manager",
+        "hint": "Place 10:17 on the timeline and see which handler's window it falls within.",
+        "maxHints": 2,
+        "hints": [
+          "10:17 is after 10:05 and before 10:25 — that's the manager's window.",
+          "The Security Guard had the device from 09:50–10:05. IT had it from 10:25 onward. 10:17 falls in between — with the manager."
+        ],
+        "onSuccess": {
+          "message": "FILE ORIGIN CONFIRMED — unknown.exe was created at 10:17, during the Department Manager's custody window. The manager connected the USB to their workstation at 10:06. The file appeared 11 minutes later."
+        }
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "time": "09:50",
+      "title": "USB Found in Parking Lot",
+      "description": "Security guard discovers USB device near the employee entrance. No evidence bag or documentation.",
+      "severity": "medium"
+    },
+    {
+      "time": "10:02",
+      "title": "HR Files on Drive",
+      "description": "salary.xlsx and bonus_data.xlsx created at 10:02 — the only legitimate files on the device.",
+      "severity": "low"
+    },
+    {
+      "time": "10:05",
+      "title": "USB Handed to Manager",
+      "description": "Security guard passes device to Department Manager. No transfer form. No custody tag.",
+      "severity": "high"
+    },
+    {
+      "time": "10:06",
+      "title": "Manager Connects USB to Workstation",
+      "description": "Manager plugs device into personal workstation to inspect contents — direct protocol violation.",
+      "severity": "critical"
+    },
+    {
+      "time": "10:17",
+      "title": "unknown.exe Appears",
+      "description": "Suspicious executable created on the USB drive during the active connection to the manager's workstation.",
+      "severity": "critical"
+    },
+    {
+      "time": "10:25",
+      "title": "USB Passed to IT",
+      "description": "Manager forwards device to IT Technician. unknown.exe already exists at this point.",
+      "severity": "high"
+    },
+    {
+      "time": "10:26",
+      "title": "IT Forensic Imaging Begins",
+      "description": "IT Technician connects device to forensic workstation. Discovers unknown.exe. Investigation launched.",
+      "severity": "medium"
+    }
+  ],
+  "winCondition": {
+    "guiltySuspectId": "dept_manager",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "file_usb_contents",
+    "file_custody_log",
+    "ip_manager_workstation"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Department Manager identified — connected the USB before forensic isolation, introducing the suspicious file.",
+      "label": "CASE CLOSED",
+      "xp": 10
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect but the chain of custody breakdown needs more documentation.",
+      "label": "PARTIAL",
+      "xp": 3
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The evidence points to the Department Manager — the only one who connected the device to a workstation before IT.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The origin of unknown.exe remains unexplained.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "aria": {
+    "welcomeToHub": "...A USB in a parking lot. Passed hand to hand.\nBy the time the right people touched it — it wasn't clean anymore.\nFind the moment it changed.",
+    "exploreFeeds": "File timestamps. Custody logs. Workstation connections.\nOne person connected this drive before they should have.",
+    "viewEvidence": "The file appeared at 10:17. Three people had the device.\nOnly one connected it to a computer.",
+    "markEvidence": "Good. Build the timeline.",
+    "decryptionHint": "Match the file creation time to the handler windows. One window fits perfectly.",
+    "flagSuspect": "You're close.\nThe broken chain tells the story — find who broke it and where."
+  }
+}

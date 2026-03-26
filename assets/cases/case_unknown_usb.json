@@ -1,0 +1,357 @@
+{
+  "id": "case_unknownusb",
+  "title": "The Unknown USB",
+  "shortDescription": "USB Device History & Registry Artifact Analysis",
+  "difficulty": "hard",
+  "theme": "System Artifact Investigation",
+  "estimatedDuration": "45–60 min",
+  "caseNumber": "0007",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "A technology company suspects confidential project files were copied off a workstation using a removable USB drive.\n\nThe files were transferred without going through email or the internet — no digital trail on the network. But the device is gone.\n\nHere's what investigators know: Windows never forgets a USB. Even after the drive is removed, the registry retains a full record of every device ever connected.\n\nThe question isn't whether a USB was used. The question is who used it — and when.",
+    "missionText": "Your Mission:\n\n› Navigate the Windows Registry to locate the USB device artifact\n\n› Decode the device serial number to identify manufacturer and model\n\n› Correlate the connection window with file access logs to prove data theft\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+  "suspects": [
+    {
+      "id": "employee",
+      "name": "Employee (Workstation Owner)",
+      "role": "Project Lead",
+      "department": "Product Development",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 20, "reason": "Primary user of the workstation — logged in during the USB connection window" },
+        { "phase": 2, "delta": 25, "reason": "Confidential files opened at 22:18 — 3 minutes after USB connected at 22:15" },
+        { "phase": 3, "delta": 20, "reason": "Device fingerprint identifies a personal-grade USB brand inconsistent with company-issue storage" },
+        { "phase": "final", "label": "Critical" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.5.88 — local workstation WS-12",
+        "deviceUsage": "WS-12 — sole assigned user, active session 21:50–22:30",
+        "locationTrace": "Product Development Floor, Desk 07",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Sole assigned user of workstation WS-12. Was logged in during the entire USB connection window (22:15–22:27). The confidential files were opened at 22:18 — three minutes after the USB connected — and the device was disconnected at 22:27, four minutes after file access ended. The sequence is consistent with a copy operation. The employee has legitimate access to the files but no authorisation to copy them to removable media."
+    },
+    {
+      "id": "it_admin",
+      "name": "IT Administrator",
+      "role": "System Administrator",
+      "department": "IT Department",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 10, "reason": "Has system-level access and could theoretically connect a USB for maintenance" },
+        { "phase": 2, "delta": -10, "reason": "No IT maintenance task was scheduled for WS-12 that evening" },
+        { "phase": 3, "delta": -10, "reason": "Device fingerprint does not match any IT-issue equipment catalogue entry" },
+        { "phase": "final", "label": "Low" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.0.5 — no remote session to WS-12 at 22:15",
+        "deviceUsage": "IT console — no logged activity on WS-12 that evening",
+        "locationTrace": "IT Department — badge logs show no after-hours presence",
+        "vpnCheck": "No VPN session active"
+      },
+      "profileNotes": "No maintenance was scheduled for WS-12. No remote session from the IT admin account is logged during the evening. Building badge logs confirm the IT Administrator did not enter the office after 18:00. Cannot have physically connected the USB."
+    },
+    {
+      "id": "external_visitor",
+      "name": "External Visitor",
+      "role": "Unknown",
+      "department": "External",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 15, "reason": "Visitor access logs show one external guest in the building during the evening" },
+        { "phase": 2, "delta": 10, "reason": "Guest was in a different wing — no badge access to the Product Dev floor" },
+        { "phase": 3, "delta": -15, "reason": "Access control logs confirm guest did not reach WS-12's location" },
+        { "phase": "final", "label": "Low — eliminated by access control records" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "Visitor WiFi — separate VLAN, no workstation access",
+        "deviceUsage": "No workstation connection — guest network only",
+        "locationTrace": "Reception and Meeting Room B — Wing A only",
+        "vpnCheck": "No VPN"
+      },
+      "profileNotes": "One external visitor was registered in the building during the relevant timeframe. However, building access control records show the guest's badge was restricted to Wing A — reception and meeting rooms. The Product Development floor (Wing C) requires a separate clearance level. The visitor did not and could not have accessed WS-12."
+    },
+    {
+      "id": "insider_collab",
+      "name": "Insider Collaborator",
+      "role": "Unknown — Possible Internal Contact",
+      "department": "Unknown",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 15, "reason": "Data theft at this level often involves a buyer or recipient" },
+        { "phase": 2, "delta": 10, "reason": "Files copied include competitor-sensitive roadmap and client data" },
+        { "phase": 3, "delta": 5, "reason": "No evidence of a collaborator found within WS-12 forensics — requires further investigation" },
+        { "phase": "final", "label": "Moderate — possible recipient of stolen data, not confirmed" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "Unknown",
+        "deviceUsage": "Unknown — USB drive physically removed, contents unconfirmed",
+        "locationTrace": "Unknown",
+        "vpnCheck": "Unknown"
+      },
+      "profileNotes": "The data on the USB drive is unknown as the physical device was removed. It is possible the employee was acting as a source for an external party — a competitor, recruiter, or corporate espionage actor. This cannot be confirmed from workstation forensics alone and would require a separate investigation track."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "registry",
+      "label": "USB Registry Analysis",
+      "icon": "account_tree",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "reg_usbstor",
+          "label": "Windows Registry — USBSTOR Entry",
+          "detail": "The Windows Registry on WS-12 retains a full record of every USB storage device ever connected. Navigation to HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Enum\\USBSTOR reveals one recent entry: VID_0781&PID_5583. The VID (Vendor ID) 0781 is assigned to SanDisk Corporation. The PID (Product ID) 5583 corresponds to the SanDisk Ultra USB 3.0 series — a consumer-grade personal storage device, not a company-issued drive. The entry includes a device serial number and a last-connected timestamp of 22:15. The registry key was not deleted after the device was removed, which is standard Windows behaviour — the record persists indefinitely.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "employee",
+          "rows": [
+            { "key": "Registry Path", "value": "HKLM\\SYSTEM\\CurrentControlSet\\Enum\\USBSTOR", "highlight": false },
+            { "key": "Vendor ID", "value": "VID_0781 — SanDisk Corporation", "highlight": true },
+            { "key": "Product ID", "value": "PID_5583 — SanDisk Ultra USB 3.0", "highlight": true },
+            { "key": "Last Connected", "value": "22:15", "highlight": true },
+            { "key": "Company-Issue Device", "value": "NO — personal consumer device", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "registry_explorer",
+        "type": "registry_nav",
+        "title": "Registry Key Explorer",
+        "description": "Navigate the simulated Windows Registry tree to locate the USBSTOR entry containing VID_0781. Expand the correct hive branches to find the USB device record.",
+        "tree": {
+          "HKEY_LOCAL_MACHINE": {
+            "SOFTWARE": { "_leaf": false },
+            "SYSTEM": {
+              "CurrentControlSet": {
+                "Control": { "_leaf": false },
+                "Enum": {
+                  "USB": { "_leaf": false },
+                  "USBSTOR": {
+                    "Disk&Ven_SanDisk&Prod_Ultra_USB_3.0": {
+                      "VID_0781&PID_5583": {
+                        "_leaf": true,
+                        "_target": true,
+                        "LastConnected": "22:15",
+                        "SerialNumber": "AA00112233445566",
+                        "DeviceDesc": "SanDisk Ultra USB 3.0"
+                      }
+                    }
+                  }
+                },
+                "Services": { "_leaf": false }
+              }
+            },
+            "HARDWARE": { "_leaf": false }
+          }
+        },
+        "targetPath": "HKEY_LOCAL_MACHINE > SYSTEM > CurrentControlSet > Enum > USBSTOR > Disk&Ven_SanDisk > VID_0781&PID_5583",
+        "hint": "Start at HKEY_LOCAL_MACHINE. The USB device records live under SYSTEM > CurrentControlSet > Enum > USBSTOR.",
+        "maxHints": 3,
+        "hints": [
+          "Expand HKEY_LOCAL_MACHINE first, then navigate into SYSTEM.",
+          "Inside SYSTEM, open CurrentControlSet > Enum. You are looking for USBSTOR, not USB.",
+          "Inside USBSTOR, expand the SanDisk entry to find the VID_0781 key with the last connected timestamp."
+        ],
+        "onSuccess": {
+          "message": "REGISTRY ENTRY FOUND — USBSTOR record confirmed. SanDisk Ultra USB 3.0, last connected 22:15. This is a personal consumer device — not company-issued. Now decode the serial number to build the full device fingerprint.",
+          "unlocksPanel": "device_fingerprint"
+        }
+      }
+    },
+    {
+      "id": "device_fingerprint",
+      "label": "Device Fingerprint",
+      "icon": "fingerprint",
+      "evidenceType": "meta",
+      "unlockedBy": "registry_explorer",
+      "items": [
+        {
+          "id": "meta_fingerprint",
+          "label": "USB Device Serial Number — Decoded",
+          "detail": "The serial number extracted from the USBSTOR registry entry is AA00112233445566. Decoding this against SanDisk's known serial number format confirms: manufacturer prefix AA — SanDisk production batch identifier. Production year encoded in positions 3–4: 00 maps to 2021 manufacturing run. The full serial resolves to a SanDisk Ultra 64GB USB 3.0 unit, retail SKU SDCZ48-064G, manufactured Q2 2021. Cross-referencing with the company's IT asset register confirms this serial number does not appear in any company-issued equipment log. This is a personal device brought in by someone with physical access to the workstation.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "employee",
+          "rows": [
+            { "key": "Serial Number", "value": "AA00112233445566", "highlight": false },
+            { "key": "Manufacturer", "value": "SanDisk Corporation", "highlight": false },
+            { "key": "Model", "value": "Ultra 64GB USB 3.0 — SDCZ48-064G", "highlight": true },
+            { "key": "Manufacturing Date", "value": "Q2 2021", "highlight": false },
+            { "key": "In Company Asset Register", "value": "NO — personal device", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "device_fingerprint_decoder",
+        "type": "serial_decode",
+        "title": "Device Fingerprint Decoder",
+        "description": "Decode the USB serial number AA00112233445566 using the SanDisk serial format key. Identify the manufacturer prefix, production year, and model SKU — then confirm whether this device appears in the company asset register.",
+        "serialNumber": "AA00112233445566",
+        "formatKey": [
+          { "positions": "1–2", "field": "Manufacturer Prefix", "value": "AA", "decoded": "SanDisk Corporation" },
+          { "positions": "3–4", "field": "Production Year Code", "value": "00", "decoded": "2021 manufacturing run" },
+          { "positions": "5–16", "field": "Unit Identifier", "value": "112233445566", "decoded": "Unique device ID — SDCZ48-064G series" }
+        ],
+        "assetRegisterCheck": {
+          "serialNumber": "AA00112233445566",
+          "found": false,
+          "result": "NOT FOUND — device is not company-issued"
+        },
+        "hint": "Break the serial into its three segments using the format key, then run the asset register check.",
+        "maxHints": 2,
+        "hints": [
+          "The first two characters (AA) identify the manufacturer. The next two (00) encode the production year as 2021.",
+          "After decoding, run the serial against the asset register — it will return NOT FOUND, confirming this is a personal device."
+        ],
+        "onSuccess": {
+          "message": "DEVICE IDENTIFIED — SanDisk Ultra 64GB, personal device, not in the company asset register. Someone brought their own drive. Now correlate the connection window with the file access logs to prove what was copied.",
+          "unlocksPanel": "connection_timeline"
+        }
+      }
+    },
+    {
+      "id": "connection_timeline",
+      "label": "Connection Timeline",
+      "icon": "cable",
+      "evidenceType": "files",
+      "unlockedBy": "device_fingerprint_decoder",
+      "items": [
+        {
+          "id": "file_connection_log",
+          "label": "USB Connection Window vs File Access Log",
+          "detail": "Cross-referencing the USB connection window with the file access log reveals a precise overlap. USB device connected: 22:15. Confidential files opened: 22:18 (project_roadmap.docx), 22:19 (client_data.xlsx). File access ended: 22:23. USB device disconnected: 22:27. The files were opened 3 minutes after the USB connected and the device remained connected for 4 minutes after file access ended — consistent with a file copy operation completing before safe-eject. No network transfer of these files is recorded in the same window. The only plausible exfiltration route is the USB device.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "employee",
+          "rows": [
+            { "key": "USB Connected", "value": "22:15", "highlight": false },
+            { "key": "project_roadmap.docx Opened", "value": "22:18", "highlight": true },
+            { "key": "client_data.xlsx Opened", "value": "22:19", "highlight": true },
+            { "key": "File Access Ended", "value": "22:23", "highlight": false },
+            { "key": "USB Disconnected", "value": "22:27", "highlight": true },
+            { "key": "Network Transfer Detected", "value": "NO", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "connection_correlator",
+        "type": "window_correlate",
+        "title": "Connection Window Correlator",
+        "description": "Match the USB connect (22:15) → file open (22:18) → file access end (22:23) → USB disconnect (22:27) events with the file access logs. Confirm the overlap that proves a copy operation occurred.",
+        "events": [
+          { "id": "ev_connect", "label": "USB device connected", "time": "22:15", "source": "Registry / Device log" },
+          { "id": "ev_file1", "label": "project_roadmap.docx opened", "time": "22:18", "source": "File access log" },
+          { "id": "ev_file2", "label": "client_data.xlsx opened", "time": "22:19", "source": "File access log" },
+          { "id": "ev_access_end", "label": "File access ended", "time": "22:23", "source": "File access log" },
+          { "id": "ev_disconnect", "label": "USB device disconnected", "time": "22:27", "source": "Registry / Device log" }
+        ],
+        "overlapWindow": { "start": "22:15", "end": "22:27" },
+        "solution": "All five events fall within the 22:15–22:27 USB connection window. File access started 3 minutes after connect and the device remained connected 4 minutes after access ended — consistent with a file copy and safe-eject sequence.",
+        "hint": "Plot all five events on the timeline. The USB connection window is 22:15–22:27. Does all file activity fall within it?",
+        "maxHints": 2,
+        "hints": [
+          "USB was connected at 22:15 and disconnected at 22:27 — that's a 12-minute window.",
+          "Both file opens (22:18, 22:19) and file access end (22:23) all fall inside the 22:15–22:27 window. The overlap is complete."
+        ],
+        "onSuccess": {
+          "message": "COPY OPERATION CONFIRMED — File access began 3 minutes after USB connected. USB remained connected 4 minutes after access ended. No network transfer. The data left on that drive."
+        }
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "time": "Prior Days",
+      "title": "Confidential Files Exist on WS-12",
+      "description": "project_roadmap.docx and client_data.xlsx stored on employee's workstation — authorised access only.",
+      "severity": "low"
+    },
+    {
+      "time": "22:15",
+      "title": "Unknown USB Connected",
+      "description": "SanDisk Ultra USB 3.0 (personal device, not company-issued) connected to WS-12. Registry record created.",
+      "severity": "critical"
+    },
+    {
+      "time": "22:18–22:19",
+      "title": "Confidential Files Opened",
+      "description": "project_roadmap.docx and client_data.xlsx opened — 3 minutes after USB connection.",
+      "severity": "critical"
+    },
+    {
+      "time": "22:23",
+      "title": "File Access Ends",
+      "description": "Both files closed. USB device still connected.",
+      "severity": "high"
+    },
+    {
+      "time": "22:27",
+      "title": "USB Disconnected — Device Removed",
+      "description": "USB safely ejected and physically removed. No network transfer detected at any point.",
+      "severity": "critical"
+    },
+    {
+      "time": "Investigation",
+      "title": "Registry Artifact Recovered",
+      "description": "USBSTOR registry entry persists after device removal. Full device history recoverable.",
+      "severity": "medium"
+    }
+  ],
+  "winCondition": {
+    "guiltySuspectId": "employee",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "reg_usbstor",
+    "meta_fingerprint",
+    "file_connection_log"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Employee confirmed — connected a personal SanDisk USB and copied confidential project files during a 12-minute window.",
+      "label": "CASE CLOSED",
+      "xp": 15
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect, but the registry, device fingerprint, and connection correlation all need to be documented.",
+      "label": "PARTIAL",
+      "xp": 5
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The registry artifact, device fingerprint, and connection window all point to the workstation's assigned employee.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The USB connection goes unexplained.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "aria": {
+    "welcomeToHub": "...No email trail. No network transfer.\nBut something left this machine.\nWindows remembered the device — even after it was pulled.",
+    "exploreFeeds": "Registry keys. Serial numbers. A 12-minute window.\nThe drive is gone. The record is not.",
+    "viewEvidence": "VID_0781. SanDisk. Personal device.\nConnected at 22:15. Files opened at 22:18. Gone by 22:27.\nThat's not a coincidence.",
+    "markEvidence": "Good. Build the chain from registry to file to disconnect.",
+    "decryptionHint": "Navigate HKLM > SYSTEM > CurrentControlSet > Enum > USBSTOR. That is where devices leave their mark.",
+    "flagSuspect": "The device was personal. The files were confidential.\nThe window is too clean to be accidental.\nWho was at that desk?"
+  }
+}

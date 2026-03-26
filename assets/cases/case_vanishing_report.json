@@ -1,0 +1,304 @@
+{
+  "id": "case_vanishingreport",
+  "title": "The Vanishing Report",
+  "shortDescription": "Evidence Integrity Investigation",
+  "difficulty": "easy",
+  "theme": "Evidence Tampering",
+  "estimatedDuration": "20–30 min",
+  "caseNumber": "0001",
+  "status": "Locked",
+  "tutorialEnabled": true,
+  "briefing": {
+    "incidentSummary": "Neha Sharma, an internal auditor at a multinational consulting firm, uploaded a confidential fraud report to the company's secure system.\n\nTwo days later, the audit committee opened the report — and something was wrong. Financial values had changed. Key sections were missing. Certain paragraphs were deleted.\n\nSystem logs showed no unauthorized access, no login anomalies, no external breach. Neha claims she never edited the file again.",
+    "missionText": "Your Mission:\n\n› Determine how the document was altered without leaving a trace\n\n› Identify which suspect had the means and access\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+  "suspects": [
+    {
+      "id": "neha_sharma",
+      "name": "Neha Sharma",
+      "role": "Internal Auditor",
+      "department": "Audit Department",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 15, "reason": "Had original full access to the file" },
+        { "phase": 2, "delta": -5, "reason": "No evidence of re-access after upload" },
+        { "phase": 3, "delta": -10, "reason": "Hash mismatch exonerates her — file was changed after her upload" },
+        { "phase": "final", "label": "Low" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.2.21 — 9:00 AM–6:00 PM",
+        "deviceUsage": "Audit Workstation — business hours only",
+        "locationTrace": "Audit Department, Floor 3",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Prepared and uploaded the fraud report. System logs show she uploaded the file at 09:10 and did not access it again. Credible alibi supported by access logs. No motive identified — the report served her own investigation."
+    },
+    {
+      "id": "it_admin",
+      "name": "IT Administrator",
+      "role": "System Administrator",
+      "department": "IT Department",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 10, "reason": "Has server-level access to all documents" },
+        { "phase": 2, "delta": 20, "reason": "Only role capable of modifying metadata and timestamps" },
+        { "phase": 3, "delta": 25, "reason": "Hash mismatch points to post-upload modification via privileged access" },
+        { "phase": "final", "label": "High" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.0.5 — irregular hours detected",
+        "deviceUsage": "Admin Terminal — after-hours session logged",
+        "locationTrace": "Server Room / Remote Access",
+        "vpnCheck": "Internal admin VPN used"
+      },
+      "profileNotes": "Has full server-level access including the document storage system. The modification required someone with the ability to alter file contents, manipulate timestamps, and avoid standard audit logs. A hidden service account with elevated privileges — not visible in standard logs — was used to access and modify the file. The service account matches credentials managed by the IT Administrator."
+    },
+    {
+      "id": "finance_manager",
+      "name": "Finance Manager",
+      "role": "Finance Manager",
+      "department": "Finance Department",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 5, "reason": "Financial data in the report was directly relevant to their operations" },
+        { "phase": 2, "delta": 5, "reason": "Could have accessed financial systems" },
+        { "phase": 3, "delta": 10, "reason": "Motive strengthens — altered financial values benefited this department" },
+        { "phase": "final", "label": "Moderate" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "10.0.3.11 — 9:00 AM–5:30 PM",
+        "deviceUsage": "Finance Workstation — no after-hours sessions",
+        "locationTrace": "Finance Department, Floor 2",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Has access to financial systems but not to the document storage system directly. No after-hours access detected. Motive exists (report implicated vendors they approved), but no technical capability to alter the stored document without server-level access."
+    },
+    {
+      "id": "unknown_insider",
+      "name": "Unknown Insider",
+      "role": "Unknown",
+      "department": "Unknown",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "suspicionBaseline": 30,
+      "suspicionTrack": [
+        { "phase": 1, "delta": 10, "reason": "Possibility of undiscovered internal actor" },
+        { "phase": 2, "delta": 10, "reason": "Service account usage suggests someone with inside knowledge" },
+        { "phase": 3, "delta": 15, "reason": "Elevated access pattern narrows to IT-privileged roles" },
+        { "phase": "final", "label": "Moderate — likely the IT Admin acting under a hidden account" }
+      ],
+      "digitalFootprint": {
+        "ipActivity": "Unknown",
+        "deviceUsage": "Service Account — not visible in standard logs",
+        "locationTrace": "Unknown",
+        "vpnCheck": "Unknown"
+      },
+      "profileNotes": "Placeholder suspect representing the possibility of an unidentified internal actor. As investigation progresses, evidence converges on the IT Administrator using a privileged service account."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "files",
+      "label": "Evidence File",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_comparison",
+          "label": "Report Comparison — v1 vs v2",
+          "detail": "Two versions of the fraud report appear identical at first glance: same filename, same file size, same upload timestamp. However, side-by-side inspection reveals that financial values have been altered — three vendor payment totals are lower in the current version, and two paragraphs documenting suspicious approval patterns are completely absent. The changes are not visible in the system's version history because no new version was formally saved. This indicates the modification was made directly to the stored file rather than through the document management workflow.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "it_admin",
+          "metadata": {
+            "fileV1": "fraud_report_original.docx",
+            "fileV2": "fraud_report_current.docx",
+            "size": "1.2 MB",
+            "modifier": "Unknown — no version record",
+            "modifiedAt": "Within 48 hours of upload"
+          }
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "meta",
+      "label": "File Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_timestamps",
+          "label": "Document Metadata — Timestamp Anomaly",
+          "detail": "The file metadata shows: Created 09:10, Modified 09:12, Last Accessed 09:12. No further edit timestamps exist in the standard metadata record. However, the modification timestamp matches the upload time exactly — suggesting either the file was edited immediately on upload, or the timestamp was manipulated to suppress evidence of a later edit. The file size on disk does not match the expected size for the reported page count, indicating content was removed after the metadata timestamp was locked.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "it_admin",
+          "rows": [
+            { "key": "Created", "value": "09:10", "highlight": false },
+            { "key": "Modified", "value": "09:12", "highlight": true },
+            { "key": "Last Accessed", "value": "09:12", "highlight": false },
+            { "key": "File Size on Disk", "value": "Does not match page count", "highlight": true },
+            { "key": "Timestamp Manipulation", "value": "Suspected — no post-upload edits recorded despite content change", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "hash",
+      "label": "Hash Verification",
+      "icon": "lock_outlined",
+      "evidenceType": "hash",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "hash_mismatch",
+          "label": "SHA-256 Hash Mismatch — Upload vs Current",
+          "detail": "The document storage system automatically generates a SHA-256 hash of every file at the moment of upload and stores it in a separate verification database. Comparing the stored upload hash against the hash of the current file on disk reveals a mismatch. Upload Hash: a3f7d219c84b1e02f6d4c830ab2794e1f05c3d88a9b7e64f3c21d05e78b4f930. Current File Hash: 7c2b94e03f1a5d84b726c3f097e84a21c06b4d99f2c8e75a4d32b16e89c5f041. These two values are completely different, which cryptographically proves the file was modified after upload. Even a single character change produces a completely different hash — and here, entire paragraphs were removed.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "it_admin",
+          "rows": [
+            { "key": "Upload Hash (SHA-256)", "value": "a3f7d219...4f930", "highlight": false },
+            { "key": "Current File Hash (SHA-256)", "value": "7c2b94e0...5f041", "highlight": true },
+            { "key": "Match", "value": "NO — File was modified after upload", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "hash_validate",
+        "type": "hash_validation",
+        "title": "Hash Validation Decoder",
+        "description": "Compare the two SHA-256 hash strings character by character. Find where they diverge to confirm the file was modified after upload.",
+        "hashA": "a3f7d219c84b1e02f6d4c830ab2794e1",
+        "hashB": "7c2b94e03f1a5d84b726c3f097e84a21",
+        "hint": "Start from the left. The first character that differs marks the point of divergence.",
+        "maxHints": 2,
+        "hints": [
+          "The two hashes are completely different — they diverge at the very first character.",
+          "When hashes differ this dramatically, it means significant content was changed — not just a minor edit."
+        ],
+        "onSuccess": {
+          "message": "HASH MISMATCH CONFIRMED — Cryptographic proof that the file was altered after upload. The metadata lied. The hash does not.",
+          "unlocksPanel": "service_account"
+        }
+      }
+    },
+    {
+      "id": "service_account",
+      "label": "Service Account Activity",
+      "icon": "manage_accounts",
+      "evidenceType": "meta",
+      "unlockedBy": "hash_validate",
+      "items": [
+        {
+          "id": "meta_service_account",
+          "label": "Hidden Service Account — Privileged File Access",
+          "detail": "A deep system audit reveals a service account — SVC_DOCSTORE_ADMIN — that does not appear in standard user activity logs. This account has read/write access to all document storage locations, including the secure audit file repository. The account's last activity record shows a file write operation on the audit report file occurring 11 hours after Neha's upload. The service account credentials are managed and rotated exclusively by the IT Administrator. No other user role has access to manage or operate this account. The operation performed matches the exact changes observed: financial values modified, specific paragraphs deleted, file size reduced.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "it_admin",
+          "rows": [
+            { "key": "Service Account", "value": "SVC_DOCSTORE_ADMIN", "highlight": true },
+            { "key": "Visible in Standard Logs", "value": "NO — hidden account", "highlight": true },
+            { "key": "Last Activity", "value": "File write — 11 hours after upload", "highlight": true },
+            { "key": "Account Manager", "value": "IT Administrator (sole owner)", "highlight": true },
+            { "key": "Operation Performed", "value": "Content modification — matches observed changes", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+  "timeline": [
+    {
+      "time": "1 Month Prior",
+      "title": "Audit Investigation Begins",
+      "description": "Neha Sharma begins reviewing vendor invoices, payment approvals, and bank transfer records.",
+      "severity": "low"
+    },
+    {
+      "time": "Day 0 — 09:10 AM",
+      "title": "Report Uploaded",
+      "description": "Neha uploads the completed fraud report to the secure document system. Upload hash is recorded.",
+      "severity": "medium"
+    },
+    {
+      "time": "Day 0 — 09:12 AM",
+      "title": "Metadata Timestamp Locked",
+      "description": "System metadata records 09:12 as the last modified time. No further edits officially recorded.",
+      "severity": "medium"
+    },
+    {
+      "time": "Day 0 — ~8:00 PM",
+      "title": "Hidden Service Account Activated",
+      "description": "SVC_DOCSTORE_ADMIN account accesses the document outside standard hours. Not visible in standard logs.",
+      "severity": "critical"
+    },
+    {
+      "time": "Day 0 — ~8:15 PM",
+      "title": "Report Content Altered",
+      "description": "Financial values reduced. Two paragraphs documenting suspicious vendor patterns deleted. File size decreases.",
+      "severity": "critical"
+    },
+    {
+      "time": "Day 2 — Morning",
+      "title": "Audit Committee Review",
+      "description": "Committee opens the report. Discovers missing sections and altered figures. Investigation launched.",
+      "severity": "high"
+    }
+  ],
+  "winCondition": {
+    "guiltySuspectId": "it_admin",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "file_comparison",
+    "meta_timestamps",
+    "hash_mismatch",
+    "meta_service_account"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "The IT Administrator exposed — used a hidden service account to alter the fraud report.",
+      "label": "CASE CLOSED",
+      "xp": 10
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect identified but not enough evidence collected to close the case.",
+      "label": "PARTIAL",
+      "xp": 3
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "The real culprit was the IT Administrator — operating through a hidden service account.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The report alteration goes unexplained.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "aria": {
+    "welcomeToHub": "...A report that exposes fraud. Then it doesn't.\nSame file. Same timestamp. Different contents.\nSomething — or someone — reached inside the system.",
+    "exploreFeeds": "File metadata. Hash mismatches. A service account that shouldn't exist.\nThe alteration was clean. But clean doesn't mean invisible.",
+    "viewEvidence": "Timestamps can lie. Hashes cannot.\nSomeone with server access made this look routine.",
+    "markEvidence": "Good. The chain is forming.",
+    "decryptionHint": "The hash comparison will tell you what the metadata was designed to hide.",
+    "flagSuspect": "You're closing in.\nThe service account is the key — who controls it?\nKeep pulling."
+  }
+}

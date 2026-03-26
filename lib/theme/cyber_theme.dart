@@ -1,10 +1,12 @@
 // lib/theme/cyber_theme.dart
 // ═══════════════════════════════════════════════════════════════
 //  CYBER INVESTIGATOR — Design System
-//  Dark navy base · Neon cyan/purple accents · Glow effects
+//  Dark obsidian base · Neon cyan/purple accents · Glow effects
+//  Fonts: Orbitron (display/headings) · ShareTechMono (labels/terminal)
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // ──────────────────────────────────────────────────────────────
 //  COLOR PALETTE
@@ -13,43 +15,43 @@ class CyberColors {
   CyberColors._();
 
   // ── Backgrounds ──
-  static const Color bgDeep       = Color(0xFF060D17);   // near-black navy
-  static const Color bgBase       = Color(0xFF0B1C2D);   // primary dark navy
-  static const Color bgMid        = Color(0xFF0F2540);   // panel background
-  static const Color bgCard       = Color(0xFF112236);   // card surface
-  static const Color bgCardLight  = Color(0xFF163050);   // elevated card
-  static const Color bgOverlay    = Color(0xFF0B1C2Dcc); // 80% opacity overlay
+  static const Color bgDeep       = Color(0xFF040A0F);   // obsidian black
+  static const Color bgBase       = Color(0xFF060D18);   // primary dark
+  static const Color bgMid        = Color(0xFF0A1628);   // panel background
+  static const Color bgCard       = Color(0xFF0C1A2E);   // card surface
+  static const Color bgCardLight  = Color(0xFF112236);   // elevated card
+  static const Color bgOverlay    = Color(0xFF060D18CC); // 80% overlay
 
   // ── Neon Accents ──
-  static const Color neonCyan     = Color(0xFF00E5FF);   // primary accent
-  static const Color neonPurple   = Color(0xFFBB86FC);   // secondary accent
-  static const Color neonBlue     = Color(0xFF448AFF);   // tertiary accent
-  static const Color neonGreen    = Color(0xFF00E676);   // success/confirmed
-  static const Color neonRed      = Color(0xFFFF1744);   // danger/wrong
-  static const Color neonAmber    = Color(0xFFFFAB00);   // warning/partial
+  static const Color neonCyan     = Color(0xFF00E5FF);
+  static const Color neonPurple   = Color(0xFFBB86FC);
+  static const Color neonBlue     = Color(0xFF448AFF);
+  static const Color neonGreen    = Color(0xFF00E676);
+  static const Color neonRed      = Color(0xFFFF1744);
+  static const Color neonAmber    = Color(0xFFFFAB00);
 
   // ── Text ──
-  static const Color textPrimary  = Color(0xFFE8F4FD);
-  static const Color textSecondary= Color(0xFF8BAFC9);
-  static const Color textMuted    = Color(0xFF4A6B8A);
-  static const Color textOnNeon   = Color(0xFF060D17);   // text on bright buttons
+  static const Color textPrimary  = Color(0xFFD8EEF8);
+  static const Color textSecondary= Color(0xFF7A9DB8);
+  static const Color textMuted    = Color(0xFF3A5570);
+  static const Color textOnNeon   = Color(0xFF040A0F);
 
   // ── Borders ──
-  static const Color borderSubtle = Color(0xFF1A3A5C);
-  static const Color borderGlow   = Color(0xFF00E5FF33); // 20% cyan border
+  static const Color borderSubtle = Color(0xFF142030);
+  static const Color borderGlow   = Color(0xFF00E5FF22);
 
   // ── Gradients ──
   static const LinearGradient backgroundGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [Color(0xFF060D17), Color(0xFF0B1C2D), Color(0xFF071525)],
+    colors: [Color(0xFF040A0F), Color(0xFF060D18), Color(0xFF040A0F)],
     stops: [0.0, 0.5, 1.0],
   );
 
   static const LinearGradient cardGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFF163050), Color(0xFF0F2540)],
+    colors: [Color(0xFF112236), Color(0xFF0A1628)],
   );
 
   static const LinearGradient neonCyanGradient = LinearGradient(
@@ -84,155 +86,101 @@ class CyberShadows {
   CyberShadows._();
 
   static List<BoxShadow> neonCyan({double intensity = 1.0}) => [
-    BoxShadow(
-      color: CyberColors.neonCyan.withOpacity(0.35 * intensity),
-      blurRadius: 20,
-      spreadRadius: 0,
-    ),
-    BoxShadow(
-      color: CyberColors.neonCyan.withOpacity(0.15 * intensity),
-      blurRadius: 40,
-      spreadRadius: 4,
-    ),
+    BoxShadow(color: CyberColors.neonCyan.withOpacity(0.32 * intensity), blurRadius: 18),
+    BoxShadow(color: CyberColors.neonCyan.withOpacity(0.12 * intensity), blurRadius: 36, spreadRadius: 2),
   ];
 
   static List<BoxShadow> neonPurple({double intensity = 1.0}) => [
-    BoxShadow(
-      color: CyberColors.neonPurple.withOpacity(0.35 * intensity),
-      blurRadius: 20,
-      spreadRadius: 0,
-    ),
-    BoxShadow(
-      color: CyberColors.neonPurple.withOpacity(0.12 * intensity),
-      blurRadius: 40,
-      spreadRadius: 4,
-    ),
+    BoxShadow(color: CyberColors.neonPurple.withOpacity(0.32 * intensity), blurRadius: 18),
+    BoxShadow(color: CyberColors.neonPurple.withOpacity(0.10 * intensity), blurRadius: 36, spreadRadius: 2),
   ];
 
   static List<BoxShadow> card = [
-    BoxShadow(
-      color: Colors.black.withOpacity(0.5),
-      blurRadius: 16,
-      offset: const Offset(0, 4),
-    ),
-    BoxShadow(
-      color: CyberColors.neonCyan.withOpacity(0.04),
-      blurRadius: 24,
-      spreadRadius: 1,
-    ),
+    BoxShadow(color: Colors.black.withOpacity(0.6), blurRadius: 16, offset: const Offset(0, 4)),
+    BoxShadow(color: CyberColors.neonCyan.withOpacity(0.03), blurRadius: 20, spreadRadius: 1),
   ];
 
   static List<BoxShadow> danger({double intensity = 1.0}) => [
-    BoxShadow(
-      color: CyberColors.neonRed.withOpacity(0.35 * intensity),
-      blurRadius: 20,
-      spreadRadius: 0,
-    ),
+    BoxShadow(color: CyberColors.neonRed.withOpacity(0.35 * intensity), blurRadius: 18),
   ];
 
   static List<BoxShadow> success({double intensity = 1.0}) => [
-    BoxShadow(
-      color: CyberColors.neonGreen.withOpacity(0.35 * intensity),
-      blurRadius: 20,
-      spreadRadius: 0,
-    ),
+    BoxShadow(color: CyberColors.neonGreen.withOpacity(0.35 * intensity), blurRadius: 18),
   ];
 }
 
 // ──────────────────────────────────────────────────────────────
 //  TEXT STYLES
+//  Orbitron  → display, headings, section titles
+//  Inter → body text, labels, captions (readable sans-serif)
+//  ShareTechMono → terminal/monospace data labels only
 // ──────────────────────────────────────────────────────────────
 class CyberText {
   CyberText._();
 
-  // Display / Hero
-  static const TextStyle displayLarge = TextStyle(
-    fontFamily: 'DotMatrix',
-    fontSize: 42,
-    color: CyberColors.neonCyan,
-    letterSpacing: 2.0,
-    height: 1.2,
+  // Display / Hero — Orbitron
+  static TextStyle get displayLarge => GoogleFonts.orbitron(
+    fontSize: 40, fontWeight: FontWeight.w700,
+    color: CyberColors.neonCyan, letterSpacing: 2.0, height: 1.2,
   );
 
-  static const TextStyle displayMedium = TextStyle(
-    fontFamily: 'DotMatrix',
-    fontSize: 32,
-    color: CyberColors.neonCyan,
-    letterSpacing: 1.5,
+  static TextStyle get displayMedium => GoogleFonts.orbitron(
+    fontSize: 30, fontWeight: FontWeight.w700,
+    color: CyberColors.neonCyan, letterSpacing: 1.5,
   );
 
-  static const TextStyle displaySmall = TextStyle(
-    fontFamily: 'DotMatrix',
-    fontSize: 24,
-    color: CyberColors.neonCyan,
-    letterSpacing: 1.0,
+  static TextStyle get displaySmall => GoogleFonts.orbitron(
+    fontSize: 22, fontWeight: FontWeight.w600,
+    color: CyberColors.neonCyan, letterSpacing: 1.0,
   );
 
-  // Section titles
-  static const TextStyle sectionTitle = TextStyle(
-    fontFamily: 'DotMatrix',
-    fontSize: 18,
-    color: CyberColors.neonCyan,
-    letterSpacing: 1.2,
+  // Section titles — Orbitron
+  static TextStyle get sectionTitle => GoogleFonts.orbitron(
+    fontSize: 16, fontWeight: FontWeight.w600,
+    color: CyberColors.neonCyan, letterSpacing: 1.0,
   );
 
-  // Body
-  static const TextStyle bodyLarge = TextStyle(
-    fontSize: 16,
-    color: CyberColors.textPrimary,
-    height: 1.6,
+  // Body — ShareTechMono for that terminal feel
+  // Body — Inter for readability
+  static TextStyle get bodyLarge => GoogleFonts.inter(
+    fontSize: 15, color: CyberColors.textPrimary, height: 1.65,
   );
 
-  static const TextStyle bodyMedium = TextStyle(
-    fontSize: 14,
-    color: CyberColors.textPrimary,
-    height: 1.5,
+  static TextStyle get bodyMedium => GoogleFonts.inter(
+    fontSize: 13, color: CyberColors.textPrimary, height: 1.55,
   );
 
-  static const TextStyle bodySmall = TextStyle(
-    fontSize: 12,
-    color: CyberColors.textSecondary,
-    height: 1.4,
+  static TextStyle get bodySmall => GoogleFonts.inter(
+    fontSize: 12, color: CyberColors.textSecondary, height: 1.5,
   );
 
-  static const TextStyle caption = TextStyle(
-    fontSize: 11,
-    color: CyberColors.textMuted,
-    letterSpacing: 0.5,
+  static TextStyle get caption => GoogleFonts.inter(
+    fontSize: 10.5, color: CyberColors.textMuted, letterSpacing: 0.2,
   );
 
-  // Labels
-  static const TextStyle label = TextStyle(
-    fontFamily: 'DotMatrix',
-    fontSize: 12,
-    color: CyberColors.neonCyan,
-    letterSpacing: 1.5,
+  // Labels — ShareTechMono for terminal / monospace data labels only
+  static TextStyle get label => GoogleFonts.shareTechMono(
+    fontSize: 11, color: CyberColors.neonCyan, letterSpacing: 1.5,
+    fontWeight: FontWeight.bold,
   );
 
-  static TextStyle neonPurple({double size = 16}) => TextStyle(
-    fontSize: size,
-    color: CyberColors.neonPurple,
-    letterSpacing: 0.5,
+  static TextStyle neonPurple({double size = 14}) => GoogleFonts.inter(
+    fontSize: size, color: CyberColors.neonPurple, letterSpacing: 0.2,
   );
 }
 
 // ──────────────────────────────────────────────────────────────
-//  BORDER RADIUS CONSTANTS
+//  BORDER RADIUS
 // ──────────────────────────────────────────────────────────────
 class CyberRadius {
   CyberRadius._();
-
-  static const BorderRadius small  = BorderRadius.all(Radius.circular(8));
-  static const BorderRadius medium = BorderRadius.all(Radius.circular(14));
-  static const BorderRadius large  = BorderRadius.all(Radius.circular(20));
+  static const BorderRadius small  = BorderRadius.all(Radius.circular(6));
+  static const BorderRadius medium = BorderRadius.all(Radius.circular(10));
+  static const BorderRadius large  = BorderRadius.all(Radius.circular(16));
   static const BorderRadius pill   = BorderRadius.all(Radius.circular(999));
-
-  // Asymmetric "cyber cut" corners
   static const BorderRadius cutTop = BorderRadius.only(
-    topLeft: Radius.circular(16),
-    topRight: Radius.circular(4),
-    bottomLeft: Radius.circular(4),
-    bottomRight: Radius.circular(16),
+    topLeft: Radius.circular(12), topRight: Radius.circular(3),
+    bottomLeft: Radius.circular(3), bottomRight: Radius.circular(12),
   );
 }
 
@@ -243,7 +191,7 @@ ThemeData buildCyberTheme() {
   return ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: CyberColors.bgBase,
+    scaffoldBackgroundColor: CyberColors.bgDeep,
     colorScheme: const ColorScheme.dark(
       primary: CyberColors.neonCyan,
       secondary: CyberColors.neonPurple,
@@ -253,7 +201,7 @@ ThemeData buildCyberTheme() {
       onSurface: CyberColors.textPrimary,
       error: CyberColors.neonRed,
     ),
-    textTheme: const TextTheme(
+    textTheme: TextTheme(
       displayLarge: CyberText.displayLarge,
       bodyLarge: CyberText.bodyLarge,
       bodyMedium: CyberText.bodyMedium,
@@ -266,7 +214,7 @@ ThemeData buildCyberTheme() {
         elevation: 0,
         padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
         shape: RoundedRectangleBorder(borderRadius: CyberRadius.medium),
-        textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        textStyle: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14, letterSpacing: 0.3),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -293,8 +241,8 @@ ThemeData buildCyberTheme() {
         borderRadius: CyberRadius.medium,
         borderSide: const BorderSide(color: CyberColors.neonCyan, width: 1.5),
       ),
-      labelStyle: const TextStyle(color: CyberColors.textSecondary),
-      hintStyle: const TextStyle(color: CyberColors.textMuted),
+      labelStyle: GoogleFonts.inter(color: CyberColors.textSecondary),
+      hintStyle: GoogleFonts.inter(color: CyberColors.textMuted),
     ),
     dividerTheme: const DividerThemeData(
       color: CyberColors.borderSubtle,
@@ -302,7 +250,7 @@ ThemeData buildCyberTheme() {
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: CyberColors.bgCardLight,
-      contentTextStyle: const TextStyle(color: CyberColors.textPrimary),
+      contentTextStyle: GoogleFonts.inter(color: CyberColors.textPrimary),
       shape: RoundedRectangleBorder(borderRadius: CyberRadius.medium),
       behavior: SnackBarBehavior.floating,
     ),

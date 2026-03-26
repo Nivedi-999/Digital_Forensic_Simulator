@@ -1,0 +1,521 @@
+{
+  "id": "case_phantomprocess",
+  "title": "The Phantom Process",
+  "shortDescription": "Fileless Malware & Memory Forensics",
+  "difficulty": "advanced",
+  "theme": "Fileless Malware & Memory Forensics",
+  "estimatedDuration": "55–70 min",
+  "caseNumber": "2009",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "NovaPay processes 40,000 transactions per day. For three weeks, micro-amounts between ₹1 and ₹9 have been silently siphoned from transactions — routed through dormant accounts and consolidated into a single external wallet at 03:00 AM every night.\n\nA full antivirus scan returned clean. No malicious files found. No suspicious executables. No unauthorized scripts.\n\nBut the transfers kept happening.\n\nThe malware has no file on disk. It lives entirely in memory, hidden inside a legitimate running process.",
+    "missionText": "Your Mission:\n\n› Identify the injected process thread with no on-disk binary\n\n› Locate the RWX memory region used as a shellcode staging area\n\n› Trace the covert C2 network channel to the external wallet\n\n› Expose the API hooks intercepting transaction commit calls\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+  },
+  "suspects": [
+    {
+      "id": "aryan_mehta",
+      "name": "Aryan Mehta",
+      "role": "DevOps Engineer — NovaPay",
+      "department": "Infrastructure & Deployments",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.22 — deployment access 4 days before incident",
+        "deviceUsage": "DevOps Workstation — ARYAN-WS-01",
+        "locationTrace": "Office — Server Room Badge Access confirmed",
+        "vpnCheck": "Internal VPN — authorized"
+      },
+      "profileNotes": "Deployed the last server patch 4 days before anomalous transactions began. The patch included an undocumented change to service account permissions — specifically allowing a new thread under svchost.exe to persist across reboots without triggering integrity checks. No legitimate reason for this permission change has been documented. CCTV footage near a hardware wallet store resolves to an individual matching Aryan's description. The patch was reviewed by a second engineer before deployment — their role remains an open thread."
+    },
+    {
+      "id": "priya_nair",
+      "name": "Priya Nair",
+      "role": "Backend Developer — NovaPay",
+      "department": "Core Banking Platform",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.55 — development environment only",
+        "deviceUsage": "Developer Workstation — PRIYA-DEV-02",
+        "locationTrace": "Engineering Floor",
+        "vpnCheck": "Dev VPN — authorized"
+      },
+      "profileNotes": "Authored the transaction processing module targeted by the API hook. Understands NtCommitTransaction deeply — theoretically capable of designing the hook. However, has no server-level deployment access. Cannot execute code on production infrastructure. Git commits from the relevant period are under review but show no suspicious changes."
+    },
+    {
+      "id": "sanjay_kulkarni",
+      "name": "Sanjay Kulkarni",
+      "role": "Database Administrator — NovaPay",
+      "department": "Transaction Database",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "10.0.1.10 — DB cluster only",
+        "deviceUsage": "DBA Terminal — DB-ADMIN-01",
+        "locationTrace": "DB Operations Room",
+        "vpnCheck": "No VPN — internal only"
+      },
+      "profileNotes": "Access is limited to the database layer. The injection operates at OS process level — outside Sanjay's access scope entirely. Memory evidence clears him: no DBA credential was used in any server-level operation during the breach window."
+    },
+    {
+      "id": "unknown_insider",
+      "name": "Unknown Insider / External Actor",
+      "role": "Unidentified",
+      "department": "Unknown",
+      "riskLevel": "high",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "C2 Server — 185.220.101.77 — Eastern Europe VPS",
+        "deviceUsage": "Unknown — automated tooling",
+        "locationTrace": "External — VPS registered with prepaid card",
+        "vpnCheck": "Multiple VPN hops detected"
+      },
+      "profileNotes": "The C2 server IP resolves to a VPS registered using a prepaid card via a cryptocurrency transaction chain. The final wallet address was purchased at a store near NovaPay's office. An external actor working with an internal collaborator cannot be ruled out — but the deployment access trail points inward."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "process_list",
+      "label": "Process List",
+      "icon": "developer_board_outlined",
+      "evidenceType": "process",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "proc_orphan_thread",
+          "label": "svchost.exe PID 1024 — Orphan Thread — No On-Disk Binary",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "The running process list from the transaction server shows svchost.exe appearing twice under PID 1024. The first instance has a legitimate on-disk binary at C:\\Windows\\System32\\svchost.exe. The second entry — thread 7 within the same PID — has no associated disk binary path at all: the field reads NONE. A legitimate svchost.exe thread always corresponds to a file on disk. A thread with no disk binary inside a trusted process is the primary indicator of process injection — malicious shellcode written directly into the process's memory space without ever being saved to disk. Standard antivirus tools scan files on disk; this technique evades them entirely.",
+          "pointsToSuspect": "aryan_mehta",
+          "rows": [
+            { "key": "PID", "value": "1024", "highlight": false },
+            { "key": "Process Name", "value": "svchost.exe (thread 7)", "highlight": false },
+            { "key": "Parent Process", "value": "services.exe", "highlight": false },
+            { "key": "Memory Usage", "value": "48 MB", "highlight": false },
+            { "key": "On-Disk Binary", "value": "NONE — no file on disk", "highlight": true },
+            { "key": "Expected Path", "value": "C:\\Windows\\System32\\svchost.exe", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "process_tree_inspector",
+        "type": "process_tree",
+        "title": "Process Tree Inspector",
+        "hint": "Review all running processes and their parent-child relationships. Flag any process thread that lacks a corresponding on-disk binary path.",
+        "instruction": "Examine each process entry below. Select the PID and thread that has no associated on-disk binary file. Identify which parent process it is hiding inside.",
+        "processes": [
+          {
+            "pid": 1024,
+            "name": "svchost.exe",
+            "parent": "services.exe",
+            "memoryMB": 48,
+            "onDiskBinary": "C:\\Windows\\System32\\svchost.exe",
+            "thread": null,
+            "isSuspicious": false
+          },
+          {
+            "pid": 1024,
+            "name": "svchost.exe (thread 7)",
+            "parent": "services.exe",
+            "memoryMB": 48,
+            "onDiskBinary": "NONE",
+            "thread": 7,
+            "isSuspicious": true
+          },
+          {
+            "pid": 3812,
+            "name": "explorer.exe",
+            "parent": "userinit.exe",
+            "memoryMB": 112,
+            "onDiskBinary": "C:\\Windows\\explorer.exe",
+            "thread": null,
+            "isSuspicious": false
+          },
+          {
+            "pid": 4491,
+            "name": "nova_txn.exe",
+            "parent": "services.exe",
+            "memoryMB": 220,
+            "onDiskBinary": "C:\\NovaPay\\nova_txn.exe",
+            "thread": null,
+            "isSuspicious": false
+          }
+        ],
+        "correctSelection": { "pid": 1024, "thread": 7 },
+        "maxHints": 3,
+        "hints": [
+          "Look at the 'On-Disk Binary' column for each entry. A legitimate Windows system process always has a corresponding file path. Which entry says NONE?",
+          "The suspicious thread is inside svchost.exe — PID 1024. There are two entries for this PID. Compare them: one has a binary path, one does not.",
+          "The injected thread is thread 7 inside PID 1024 — it has no on-disk binary. Select PID 1024, thread 7 to confirm process injection."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "memory_dump",
+          "message": "INJECTION CONFIRMED — PID 1024 thread 7 has no on-disk binary. Malicious shellcode is hiding inside svchost.exe. Memory Dump panel now unlocked."
+        }
+      }
+    },
+    {
+      "id": "memory_dump",
+      "label": "Memory Dump",
+      "icon": "memory_outlined",
+      "evidenceType": "memory",
+      "unlockedBy": "process_tree_inspector",
+      "items": [
+        {
+          "id": "mem_rwx_region",
+          "label": "RWX Private Memory Region — 0x04A00000 — Shellcode Confirmed",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Analysis of the Virtual Address Descriptor (VAD) map for PID 1024 reveals a private memory region at 0x04A00000–0x04A60000 flagged with RWX (Read-Write-Execute) protection. This is highly abnormal. Legitimate processes almost never need a single memory region to be simultaneously writable and executable. RWX is the signature of injected shellcode: the attacker wrote malicious code into this private region (Write), then redirected the process's execution flow to run it (Execute). The region is Private with no mapped file — meaning it exists only in memory and has no corresponding disk location. This is exactly where a fileless payload lives.",
+          "pointsToSuspect": "aryan_mehta",
+          "rows": [
+            { "key": "Start Address", "value": "0x04A00000", "highlight": true },
+            { "key": "End Address", "value": "0x04A60000", "highlight": false },
+            { "key": "Protection Flags", "value": "RWX — Read, Write, Execute", "highlight": true },
+            { "key": "Type", "value": "Private — no mapped file", "highlight": true },
+            { "key": "Mapped File", "value": "NONE", "highlight": true },
+            { "key": "Classification", "value": "Shellcode staging area", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "memory_region_analyser",
+        "type": "vad_scan",
+        "title": "Memory Region Analyser",
+        "hint": "Scan the VAD map entries for PID 1024. Flag any private memory region with RWX protection flags — that combination is the shellcode fingerprint.",
+        "instruction": "Review the VAD (Virtual Address Descriptor) map below. Identify and flag the memory region with abnormal protection flags that indicates injected shellcode.",
+        "vadEntries": [
+          {
+            "startAddress": "0x00400000",
+            "endAddress": "0x00800000",
+            "protectionFlags": "R-X",
+            "type": "Image",
+            "mappedFile": "svchost.exe",
+            "isSuspicious": false
+          },
+          {
+            "startAddress": "0x7FFD0000",
+            "endAddress": "0x7FFE0000",
+            "protectionFlags": "R--",
+            "type": "Mapped",
+            "mappedFile": "ntdll.dll",
+            "isSuspicious": false
+          },
+          {
+            "startAddress": "0x04A00000",
+            "endAddress": "0x04A60000",
+            "protectionFlags": "RWX",
+            "type": "Private",
+            "mappedFile": "NONE",
+            "isSuspicious": true
+          },
+          {
+            "startAddress": "0x04A60000",
+            "endAddress": "0x04AA0000",
+            "protectionFlags": "RW-",
+            "type": "Private",
+            "mappedFile": "NONE",
+            "isSuspicious": false
+          }
+        ],
+        "correctSelection": "0x04A00000",
+        "maxHints": 3,
+        "hints": [
+          "Look at the 'Protection Flags' column. Normal memory regions are R-X (code) or RW- (data). Which entry has all three: Read, Write, AND Execute?",
+          "The suspicious entry has protection flags 'RWX'. This means the region can be written to AND executed — the exact combination needed to inject and run shellcode.",
+          "The RWX region is at 0x04A00000. It is Private with no mapped file. Select this address to confirm the shellcode staging area."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "network_connections",
+          "message": "SHELLCODE STAGING AREA IDENTIFIED — RWX private region at 0x04A00000 confirmed. Note this address — it will appear again in the API hook table. Network Connections panel now unlocked."
+        }
+      }
+    },
+    {
+      "id": "network_connections",
+      "label": "Network Connections",
+      "icon": "wifi_outlined",
+      "evidenceType": "network",
+      "unlockedBy": "memory_region_analyser",
+      "items": [
+        {
+          "id": "net_c2_channel",
+          "label": "C2 Channel — PID 1024 — Outbound HTTPS — No On-Disk Binary",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Live network socket capture during the 03:00 AM activity window shows PID 1024 (svchost.exe) maintaining an outbound HTTPS connection to external IP 185.220.101.77:443. Critically, the owning process has no associated on-disk binary — confirming this connection originates from the injected thread, not from a legitimate svchost service. This is the command-and-control (C2) channel: the injected shellcode receives instructions from the external operator and exfiltrates micro-transaction proceeds through this encrypted tunnel. The destination IP resolves to a VPS in Eastern Europe registered using a prepaid card.",
+          "pointsToSuspect": "aryan_mehta",
+          "rows": [
+            { "key": "Protocol", "value": "TCP / HTTPS", "highlight": false },
+            { "key": "Local Address", "value": "10.0.1.44:443", "highlight": false },
+            { "key": "Remote Address", "value": "185.220.101.77:443", "highlight": true },
+            { "key": "Owning PID", "value": "1024 — svchost.exe (injected thread)", "highlight": true },
+            { "key": "On-Disk Binary", "value": "NONE", "highlight": true },
+            { "key": "Classification", "value": "C2 — Command and Control channel", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "network_socket_tracer",
+        "type": "socket_map",
+        "title": "Network Socket Tracer",
+        "hint": "Map each active network connection to its owning process and binary. Identify connections where the PID has no on-disk file — that is the C2 channel.",
+        "instruction": "Review the active network connections below. Match each connection to its owning process. Flag the connection whose owning PID has no associated on-disk binary and is connecting to an external IP.",
+        "connections": [
+          {
+            "protocol": "TCP",
+            "localAddress": "10.0.1.44:443",
+            "remoteAddress": "185.220.101.77:443",
+            "pid": 1024,
+            "processName": "svchost.exe (thread 7)",
+            "onDiskBinary": "NONE",
+            "classification": "EXTERNAL — No binary",
+            "isSuspicious": true
+          },
+          {
+            "protocol": "TCP",
+            "localAddress": "10.0.1.44:5432",
+            "remoteAddress": "10.0.1.10:5432",
+            "pid": 4491,
+            "processName": "nova_txn.exe",
+            "onDiskBinary": "C:\\NovaPay\\nova_txn.exe",
+            "classification": "Internal DB connection — normal",
+            "isSuspicious": false
+          },
+          {
+            "protocol": "TCP",
+            "localAddress": "10.0.1.44:80",
+            "remoteAddress": "172.217.0.1:80",
+            "pid": 3812,
+            "processName": "explorer.exe",
+            "onDiskBinary": "C:\\Windows\\explorer.exe",
+            "classification": "Update check — normal",
+            "isSuspicious": false
+          }
+        ],
+        "correctSelection": "185.220.101.77",
+        "maxHints": 3,
+        "hints": [
+          "Look at the 'On-Disk Binary' column for each connection. Which owning process has no binary on disk?",
+          "The suspicious connection belongs to PID 1024, thread 7 — the same injected thread you found in Phase 1. It has no on-disk binary and is connecting to an external IP.",
+          "The C2 channel is the outbound connection to 185.220.101.77:443. Select this connection to confirm the command-and-control channel."
+        ],
+        "onSuccess": {
+          "unlocksPanel": "api_hook_table",
+          "message": "C2 CHANNEL CONFIRMED — Injected thread inside PID 1024 is communicating with 185.220.101.77. Live exfiltration in progress. API Hook Table now unlocked."
+        }
+      }
+    },
+    {
+      "id": "api_hook_table",
+      "label": "API Hook Table",
+      "icon": "code_outlined",
+      "evidenceType": "hooks",
+      "unlockedBy": "network_socket_tracer",
+      "items": [
+        {
+          "id": "hook_commit_transaction",
+          "label": "NtCommitTransaction — HOOKED — Resolves to 0x04A00440",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Import Address Table (IAT) analysis of nova_txn.exe — the core transaction processing binary — reveals that NtCommitTransaction resolves to address 0x04A00440. The expected legitimate address is 0x7FFD4B20 (inside ntdll.dll). The actual resolved address 0x04A00440 falls inside the RWX private memory region identified at 0x04A00000 in Phase 2. This hook intercepts every transaction commit call: before the transaction is written to the database, the shellcode reads the amount, skims a micro-amount (₹1–9), routes it to a dormant staging account, and then passes the modified transaction forward. The database sees only the post-skim values — the manipulation is invisible at the DB layer.",
+          "pointsToSuspect": "aryan_mehta",
+          "rows": [
+            { "key": "API Function", "value": "NtCommitTransaction", "highlight": true },
+            { "key": "Expected Address", "value": "0x7FFD4B20 (ntdll.dll)", "highlight": false },
+            { "key": "Resolved Address", "value": "0x04A00440 — INSIDE RWX REGION", "highlight": true },
+            { "key": "Status", "value": "HOOKED", "highlight": true }
+          ]
+        },
+        {
+          "id": "hook_query_information",
+          "label": "NtQueryInformation — HOOKED — Resolves to 0x04A00520",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "NtQueryInformation is also hooked — resolved address 0x04A00520, also inside the RWX region at 0x04A00000. This hook intercepts any process that queries the transaction totals, returning falsified values that hide the missing micro-amounts. When the operations team ran reconciliation reports, this hook ensured the numbers appeared balanced — concealing the ongoing theft from internal monitoring tools.",
+          "pointsToSuspect": "aryan_mehta",
+          "rows": [
+            { "key": "API Function", "value": "NtQueryInformation", "highlight": true },
+            { "key": "Expected Address", "value": "0x7FFD6D40 (ntdll.dll)", "highlight": false },
+            { "key": "Resolved Address", "value": "0x04A00520 — INSIDE RWX REGION", "highlight": true },
+            { "key": "Status", "value": "HOOKED", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "suspect_profiles",
+      "label": "Suspect Profiles",
+      "icon": "person_outlined",
+      "evidenceType": "profiles",
+      "unlockedBy": null,
+      "items": [],
+      "minigame": null
+    }
+  ],
+  "timeline": [
+    {
+      "time": "4 Days Before Incident",
+      "title": "Malicious Server Patch Deployed",
+      "description": "Aryan Mehta deploys a server patch including an undocumented service account permission change. Patch reviewed and approved by a second engineer.",
+      "severity": "critical"
+    },
+    {
+      "time": "Day 0 — 03:00 AM",
+      "title": "First Anomalous Micro-Transfers",
+      "description": "Operations team notices micro-amounts (₹1–9) routing through dormant accounts to an external wallet. Pattern repeats nightly.",
+      "severity": "high"
+    },
+    {
+      "time": "Week 1",
+      "title": "Antivirus Scan — Clean",
+      "description": "Full AV scan across transaction processing cluster. No malicious files found. Transfers continue.",
+      "severity": "medium"
+    },
+    {
+      "time": "Week 2",
+      "title": "Memory Forensics Investigation Begins",
+      "description": "Experienced investigator suspects fileless attack. Memory image captured from SRV-TXN-01.",
+      "severity": "medium"
+    },
+    {
+      "time": "Week 3 — Phase 1",
+      "title": "Orphan Thread Identified",
+      "description": "Process list reveals svchost.exe PID 1024 thread 7 with no on-disk binary. Injection confirmed.",
+      "severity": "critical"
+    },
+    {
+      "time": "Week 3 — Phase 2",
+      "title": "RWX Region Located",
+      "description": "VAD map shows private RWX region at 0x04A00000. Shellcode staging area confirmed.",
+      "severity": "critical"
+    },
+    {
+      "time": "Week 3 — Phase 3",
+      "title": "C2 Channel Active — 03:00 AM",
+      "description": "Network socket trace confirms injected thread maintaining HTTPS connection to 185.220.101.77 during transfer window.",
+      "severity": "critical"
+    },
+    {
+      "time": "Week 3 — Phase 4",
+      "title": "API Hooks Exposed",
+      "description": "NtCommitTransaction and NtQueryInformation both hooked — resolving into the RWX shellcode region. Theft mechanism fully documented.",
+      "severity": "critical"
+    }
+  ],
+  "suspicionSystem": {
+    "initialScore": 30,
+    "levels": [
+      { "range": "0–20", "label": "Very Low" },
+      { "range": "21–40", "label": "Low" },
+      { "range": "41–60", "label": "Moderate" },
+      { "range": "61–80", "label": "High" },
+      { "range": "81–100", "label": "Critical" }
+    ],
+    "updates": [
+      {
+        "trigger": "process_tree_inspector_complete",
+        "changes": {
+          "aryan_mehta": "+20",
+          "priya_nair": "+10",
+          "sanjay_kulkarni": "+5",
+          "unknown_insider": "+15"
+        },
+        "note": "Orphan thread with no disk binary — server-level access required narrows the field toward DevOps."
+      },
+      {
+        "trigger": "memory_region_analyser_complete",
+        "changes": {
+          "aryan_mehta": "+25",
+          "priya_nair": "+15",
+          "sanjay_kulkarni": "+5",
+          "unknown_insider": "+20"
+        },
+        "note": "RWX private region confirms active shellcode. Technical sophistication points toward someone with deployment access."
+      },
+      {
+        "trigger": "network_socket_tracer_complete",
+        "changes": {
+          "aryan_mehta": "+30",
+          "priya_nair": "+10",
+          "sanjay_kulkarni": "-10",
+          "unknown_insider": "+10"
+        },
+        "note": "C2 channel confirmed. Sanjay drops — no server-level access. Aryan rises to Critical: server patch + permission change + C2 registration trail."
+      },
+      {
+        "trigger": "hook_evidence_found",
+        "changes": {
+          "aryan_mehta": "+10",
+          "priya_nair": "+5",
+          "sanjay_kulkarni": "0",
+          "unknown_insider": "+5"
+        },
+        "note": "API hooks confirm deep knowledge of the transaction processing module. Aryan's patch enabled the persistence mechanism."
+      }
+    ]
+  },
+  "winCondition": {
+    "guiltySuspectId": "aryan_mehta",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "proc_orphan_thread",
+    "mem_rwx_region",
+    "net_c2_channel",
+    "hook_commit_transaction",
+    "hook_query_information"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Fileless malware exposed. Aryan Mehta's server patch enabled the injection. The reviewer's role remains an open thread.",
+      "label": "CASE CLOSED",
+      "xp": 15,
+      "metrics": [
+        "Memory Forensics Accuracy",
+        "Process Injection Detection Score",
+        "C2 Identification",
+        "Investigation Completeness"
+      ]
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "Correct suspect but the memory forensics chain is incomplete.",
+      "label": "PARTIAL",
+      "xp": 5
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "Standard antivirus found nothing because the malware had no file on disk. Aryan Mehta's patch introduced the injection vector.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "The phantom process keeps running. ₹9 at a time, every night.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "finalTwist": {
+    "title": "The Patch Was the Weapon",
+    "description": "Investigators trace the C2 IP registration through a cryptocurrency transaction chain. The final wallet address resolves to a hardware wallet purchased near NovaPay's office — CCTV matching Aryan Mehta's description. However, the patch that created the injection vector was reviewed and approved by a second engineer before deployment. Either that reviewer failed to spot the malicious permission change — or they were complicit. The investigation closes on Aryan with strong evidence, but the reviewer's role remains an open thread.",
+    "conclusion": "✔ Fileless malware confirmed — shellcode lived entirely in memory, never touched disk\n✔ Process injection into svchost.exe via RWX private region at 0x04A00000\n✔ NtCommitTransaction hooked to intercept and redirect micro-transactions\n✔ NtQueryInformation hooked to conceal theft from reconciliation reports\n✔ C2 channel through injected thread — invisible to antivirus\n✔ Server patch deployed by Aryan Mehta introduced the persistence mechanism\n⚠ Patch reviewer's involvement not fully resolved"
+  },
+  "aria": {
+    "welcomeToHub": "No files. No executables. Clean antivirus scan.\nBut the money keeps disappearing.\nSomething is running that was never installed.",
+    "exploreFeeds": "Process list. Memory map. Network sockets. API hooks.\nThe malware has no home on disk — find where it lives in memory.",
+    "viewEvidence": "A thread with no binary. A memory region that can write and run code.\nAn encrypted channel at 3 AM.\nThis is not a file — it's a ghost.",
+    "markEvidence": "Good. Build the chain from process to memory to network.",
+    "decryptionHint": "The VAD map holds the key. Find the region flagged RWX with no mapped file.\nThat is where the shellcode sleeps between transactions.",
+    "flagSuspect": "The patch changed the permissions. The permissions enabled the thread.\nThe thread opened the wallet.\nWho pushed that patch?"
+  }
+}
