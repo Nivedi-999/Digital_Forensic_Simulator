@@ -26,7 +26,9 @@
         "locationTrace": "IT Operations Center",
         "vpnCheck": "Internal only"
       },
-      "profileNotes": "Has high access but lacks advanced signal design skills. Could deploy files across labs but cannot explain the synchronized timing or the dead-drop routing architecture. Suspicion moderate, weakens after IP analysis."
+      "profileNotes": "Has high access but lacks advanced signal design skills. Could deploy files across labs but cannot explain the synchronized timing or the dead-drop routing architecture. Suspicion moderate, weakens after IP analysis.",
+      "image": "assets/avatars/internal_admin.png",
+      "description": "Internal Administrator is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "security_researcher",
@@ -41,7 +43,9 @@
         "locationTrace": "Security Research Wing",
         "vpnCheck": "Internal research VPN"
       },
-      "profileNotes": "Understands dead-drop systems. Careful and methodical. Has partial access and high technical skill. However, no evidence links them directly to infrastructure control. Could be running an independent experiment."
+      "profileNotes": "Understands dead-drop systems. Careful and methodical. Has partial access and high technical skill. However, no evidence links them directly to infrastructure control. Could be running an independent experiment.",
+      "image": "assets/avatars/security_researcher.png",
+      "description": "Security Researcher is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "external_attacker",
@@ -56,7 +60,9 @@
         "locationTrace": "Unverifiable",
         "vpnCheck": "N/A \u2014 no external routing found"
       },
-      "profileNotes": "Initial assumption by security team. Eliminated through IP analysis \u2014 all traffic stays internal. Classic false lead to test the player's assumption habits."
+      "profileNotes": "Initial assumption by security team. Eliminated through IP analysis \u2014 all traffic stays internal. Classic false lead to test the player's assumption habits.",
+      "image": "assets/avatars/external_attacker.png",
+      "description": "External Attacker is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "hidden_operator",
@@ -71,7 +77,9 @@
         "locationTrace": "Server room, Research Campus",
         "vpnCheck": "No external VPN \u2014 fully internal"
       },
-      "profileNotes": "Designed the relay logic and controls internal routing. Preparing a command delivery system without triggering security alerts. The dead-drop approach means no payload has been deployed yet \u2014 but the infrastructure is ready. Matches all evidence."
+      "profileNotes": "Designed the relay logic and controls internal routing. Preparing a command delivery system without triggering security alerts. The dead-drop approach means no payload has been deployed yet \u2014 but the infrastructure is ready. Matches all evidence.",
+      "image": "assets/avatars/hidden_operator.png",
+      "description": "Hidden Operator is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -573,13 +581,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...Signal detected.\nFiles that appear and vanish. Execution without a user. Deletion on a timer.\nThis is not an accident. Someone is rehearsing.",
-    "exploreFeeds": "Three panels. Three layers of the same pattern.\nStart with the files \u2014 they're the surface.\nThe truth is in what they have in common.",
-    "viewEvidence": "You're looking at the right thing.\nSame second. Different labs. That's not coincidence.\nMark everything that synchronizes.",
-    "markEvidence": "Good. You're building the chain.\nThe files are containers \u2014 not tools.\nFind out what they're carrying.",
-    "decryptionHint": "The metadata holds the cycle.\nCompare the timestamps across all three machines.\nIf creation, execution, and deletion are identical \u2014 someone planned this.",
-    "flagSuspect": "You have the routing map.\nThe dead-drop node is the key.\nWho has the infrastructure to build this inside the campus?"
   }
 }

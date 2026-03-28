@@ -5,7 +5,7 @@
   "difficulty": "medium",
   "theme": "Cloud Resource Hijacking",
   "estimatedDuration": "30\u201340 min",
-  "caseNumber": "2005",
+  "caseNumber": "2004",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -26,7 +26,9 @@
         "locationTrace": "Bengaluru \u2014 home network",
         "vpnCheck": "VPN used \u2014 exit node traced"
       },
-      "profileNotes": "Pushed AWS root credentials to a public GitHub repo 3 months ago inside a .env file. Instead of immediately rotating the credentials, he quietly removed the commit. A bot scraped the credentials within 8 minutes of the push. Ketan then used the still-valid credentials himself to mine crypto from home."
+      "profileNotes": "Pushed AWS root credentials to a public GitHub repo 3 months ago inside a .env file. Instead of immediately rotating the credentials, he quietly removed the commit. A bot scraped the credentials within 8 minutes of the push. Ketan then used the still-valid credentials himself to mine crypto from home.",
+      "image": "assets/avatars/ketan_s.png",
+      "description": "Ketan S is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "bot_scraper",
@@ -41,7 +43,9 @@
         "locationTrace": "Unknown \u2014 global",
         "vpnCheck": "Tor detected"
       },
-      "profileNotes": "Scraped the credentials within 8 minutes of the GitHub push. However the mining activity began 11 days later \u2014 suggesting the human actor (Ketan S) used the credentials himself rather than the bot operator."
+      "profileNotes": "Scraped the credentials within 8 minutes of the GitHub push. However the mining activity began 11 days later \u2014 suggesting the human actor (Ketan S) used the credentials himself rather than the bot operator.",
+      "image": "assets/avatars/bot_scraper.png",
+      "description": "Automated Credential Bot is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "devops_lead",
@@ -56,7 +60,9 @@
         "locationTrace": "Startup Office, Bengaluru",
         "vpnCheck": "Corporate VPN"
       },
-      "profileNotes": "Had legitimate AWS access but only to staging environments. No GPU instance provisioning rights. No activity outside business hours."
+      "profileNotes": "Had legitimate AWS access but only to staging environments. No GPU instance provisioning rights. No activity outside business hours.",
+      "image": "assets/avatars/devops_lead.png",
+      "description": "Prerna A is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "ex_intern",
@@ -71,7 +77,9 @@
         "locationTrace": "Hyderabad",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Internship ended 5 months ago. AWS access revoked on last day. No activity under his credentials since then."
+      "profileNotes": "Internship ended 5 months ago. AWS access revoked on last day. No activity under his credentials since then.",
+      "image": "assets/avatars/ex_intern.png",
+      "description": "Aman V is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -380,13 +388,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...\u20b914 lakh. In one month. For 47 machines nobody authorised.\nThe keys were out there. Someone knew \u2014 and used them.\nFind who knew.",
-    "exploreFeeds": "CloudTrail logs. GitHub history. Blockchain traces.\nCloud crimes leave receipts. Read them.",
-    "viewEvidence": "The keys were never rotated. 11 days passed before launch.\nThis wasn't a random bot. This was deliberate.",
-    "markEvidence": "Good. The chain is forming.",
-    "decryptionHint": "The VPN account has a name behind it.\nDecode the subscriber username.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

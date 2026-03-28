@@ -1,0 +1,426 @@
+{
+  "id": "case_borrowed_badge",
+  "title": "The Borrowed Badge",
+  "shortDescription": "An employee's RFID access badge was used to enter a restricted server room after hours — but she was not in the building.",
+  "difficulty": "hard",
+  "theme": "Physical + Digital Intrusion",
+  "estimatedDuration": "35–45 min",
+  "caseNumber": "3007",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "At 11:22 PM on a Wednesday, the RFID access badge belonging to network engineer Shruti Varma was used to enter the restricted server room at Helion Technologies' Pune office. The access event triggered no alarm — Shruti has legitimate clearance for that room.\n\nThe problem: at 11:22 PM, Shruti Varma was confirmed to be 340 kilometres away at a family function in Nagpur. Her badge should not have been anywhere near Pune.\n\nBy morning, two high-value hardware components and a backup drive had been removed from the rack. The intruder knew exactly what to take.",
+    "missionText": "Your Mission:\n\n› Analyse badge access logs and CCTV gap data\n\n› Trace how the badge was cloned or obtained\n\n› Identify who had the technical means and prior access\n\n› Collect at least 4 correct evidence items\n\n› Flag the correct suspect"
+  },
+  "suspects": [
+    {
+      "id": "arvind_kale",
+      "name": "Arvind Kale",
+      "role": "Senior Network Technician — Helion Technologies",
+      "department": "Network Infrastructure",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "10.1.2.33 — office terminal / 103.21.xx.xx home broadband",
+        "deviceUsage": "Office terminal + RFID programmer (recovered)",
+        "locationTrace": "Office — confirmed daytime / Pune city — night of incident",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Had physical proximity to Shruti's badge three days prior during a joint infrastructure audit. Purchased an RFID read/write programmer online 10 days before the incident — delivery confirmed to his home address. His access card logs show he exited the building at 10:55 PM — 27 minutes before the server room entry event. CCTV in the car park captured him leaving. He returned using a side entrance not covered by camera at 11:19 PM.",
+      "image": "assets/avatars/arvind_kale.png",
+      "description": "Arvind Kale is a senior network technician with deep knowledge of the server room layout and hardware inventory."
+    },
+    {
+      "id": "shruti_varma",
+      "name": "Shruti Varma",
+      "role": "Network Engineer — Helion Technologies",
+      "department": "Network Infrastructure",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "49.205.xx.xx — Nagpur hotel Wi-Fi",
+        "deviceUsage": "Personal laptop — hotel network",
+        "locationTrace": "Nagpur — confirmed by hotel check-in and family photos",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Badge owner and victim. Was 340 km away in Nagpur at the time of the incident. Hotel check-in at 6:40 PM, hotel Wi-Fi logs confirm laptop activity in Nagpur until midnight. Her physical badge was in her handbag — she produces it the next morning. The badge that entered the server room was a cloned copy of her RFID credentials.",
+      "image": "assets/avatars/shruti_varma.png",
+      "description": "Shruti Varma is the network engineer whose RFID badge credentials were cloned and used to enter the server room."
+    },
+    {
+      "id": "facilities_guard",
+      "name": "Night Security Guard",
+      "role": "Security Staff — Helion Technologies",
+      "department": "Facilities & Security",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Guard desk terminal — 10.1.5.01",
+        "deviceUsage": "Guard station terminal — no after-hours anomaly",
+        "locationTrace": "Guard desk — confirmed by CCTV",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "CCTV footage from the main lobby shows the night guard at his desk continuously from 10:30 PM to 12:15 AM. He logged nothing unusual during his patrol at 11:00 PM because the server room corridor was not on his patrol route that night — it was reassigned due to ongoing cable work. He had no involvement in the entry event.",
+      "image": "assets/avatars/facilities_guard.png",
+      "description": "The night security guard on duty at the time of the incident."
+    },
+    {
+      "id": "ex_employee",
+      "name": "Former IT Staff Member",
+      "role": "Ex-Employee — Resigned 6 Weeks Prior",
+      "department": "Former IT Department",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Unknown — no current building access",
+        "deviceUsage": "Unknown personal device",
+        "locationTrace": "Unconfirmed — no building entry log",
+        "vpnCheck": "Unknown"
+      },
+      "profileNotes": "Had access to the server room before resignation. Access credentials were revoked upon departure — confirmed by the HR offboarding log and badge deactivation record. Building entry logs show no entry by any deactivated badge on the night of the incident. The entry was made using an active, cloned badge — not a residual legacy credential.",
+      "image": "assets/avatars/ex_employee.png",
+      "description": "A former IT staff member whose access was revoked upon resignation six weeks before the incident."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Access Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_badge_entry",
+          "label": "RFID Log — Shruti's Badge — Server Room — 11:22 PM",
+          "sender": "Access Control System",
+          "isSuspect": true,
+          "isKeyEvidence": true,
+          "detail": "The building access control system recorded badge ID SV-0041 (registered to Shruti Varma) entering the restricted server room at 11:22:07 PM. The system accepted the credential as valid — there was no tamper flag because the cloned badge transmitted an exact copy of the original RFID data. Exit from the server room was recorded at 11:39 PM — a 17-minute window. No other badge entries occurred in that corridor during this period.",
+          "pointsToSuspect": "arvind_kale",
+          "irrelevantReason": "The log confirms the badge was used but doesn't by itself prove who cloned it."
+        },
+        {
+          "id": "chat_arvind_exit",
+          "label": "RFID Log — Arvind Kale — Building Exit — 10:55 PM",
+          "sender": "Access Control System",
+          "isSuspect": true,
+          "isKeyEvidence": true,
+          "detail": "Arvind Kale's badge (AK-0017) recorded a building exit at the main lobby at 10:55 PM — 27 minutes before the server room entry event. The car park CCTV confirms he walked to the parking area and sat in his vehicle. However, his vehicle was not seen exiting the car park. A side service entrance with no RFID reader (used for equipment deliveries) provides re-entry access if the door is left on manual hold — a setting Arvind as a senior technician has permission to toggle.",
+          "pointsToSuspect": "arvind_kale",
+          "irrelevantReason": null
+        },
+        {
+          "id": "chat_shruti_hotel",
+          "label": "Hotel Wi-Fi Log — Shruti Online in Nagpur — 11:00 PM to 12:00 AM",
+          "sender": "Hotel Network Log",
+          "isSuspect": false,
+          "isKeyEvidence": false,
+          "detail": "The Nagpur hotel's Wi-Fi access log confirms Shruti Varma's laptop (MAC address confirmed against her registered device) was continuously active on the hotel network from 10:55 PM to 12:10 AM. Combined with her hotel check-in record at 6:40 PM, this conclusively places her in Nagpur during the entire incident window.",
+          "pointsToSuspect": null,
+          "irrelevantReason": "This clears Shruti but doesn't identify the intruder."
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Physical Records",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_rfid_purchase",
+          "label": "E-Commerce Order — RFID Read/Write Programmer — Arvind Kale",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "An online order history obtained via legal intercept shows Arvind Kale purchased a 'Proxmark3 RFID Reader/Writer' device 10 days before the incident. The device is a professional-grade RFID cloning tool capable of reading and duplicating the 125 kHz RFID credentials used in Helion Technologies' access badges. Delivery was made to his home address. The order was placed using his personal Amazon account linked to his registered mobile number.",
+          "pointsToSuspect": "arvind_kale",
+          "metadata": {
+            "size": "0.1 MB",
+            "modifier": "E-Commerce Records — Legal Intercept",
+            "modifiedAt": "10 days before incident"
+          }
+        },
+        {
+          "id": "file_audit_proximity",
+          "label": "Infrastructure Audit Log — Shruti and Arvind Together — 3 Days Prior",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "A joint infrastructure audit was conducted three days before the incident. Shruti Varma and Arvind Kale worked together in the server room for 2 hours and 20 minutes. During this period, Arvind was observed carrying equipment in a bag — standard for audit work. A Proxmark3 device can read an RFID card from up to 10 centimetres away without the cardholder's knowledge. The audit created the perfect opportunity for a contactless clone of Shruti's badge.",
+          "pointsToSuspect": "arvind_kale",
+          "metadata": {
+            "size": "0.2 MB",
+            "modifier": "Facilities Audit Log",
+            "modifiedAt": "3 days before incident"
+          }
+        },
+        {
+          "id": "file_ex_employee_offboarding",
+          "label": "HR Offboarding Log — Former Staff Badge Deactivated",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The HR offboarding record confirms the former IT staff member's physical badge was returned and digitally deactivated on their last working day — six weeks prior. The building management system's badge whitelist was updated the same day. No entry events using their badge ID have occurred since deactivation. This eliminates them from involvement in the access event.",
+          "pointsToSuspect": null,
+          "metadata": {
+            "size": "0.1 MB",
+            "modifier": "HR System — Offboarding Record",
+            "modifiedAt": "6 weeks prior"
+          }
+        },
+        {
+          "id": "file_inventory_missing",
+          "label": "Server Room Inventory — 2 NICs and 1 Backup Drive Missing",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The morning after the incident, the IT team identified three missing items: two high-value network interface cards (NICs) valued at ₹38,000 each, and one backup drive containing the previous week's configuration snapshots. The intruder targeted specific rack units — suggesting prior knowledge of the inventory layout. Only staff with regular server room access would know the exact rack positions of these components.",
+          "pointsToSuspect": "arvind_kale",
+          "metadata": {
+            "size": "0.2 MB",
+            "modifier": "IT Asset Inventory",
+            "modifiedAt": "Morning after incident"
+          }
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_cctv_gap",
+          "label": "CCTV Analysis — Side Entrance Blind Spot — 11:18 PM",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Frame-by-frame analysis of all CCTV feeds for the 11:00 PM to 11:45 PM window reveals a gap: the side service entrance has no camera coverage. A figure in dark clothing is partially visible at the edge of Camera 4's frame at 11:18 PM — entering the building via the side entrance. The figure's height and build are consistent with Arvind Kale's recorded measurements. The server room entry event occurred four minutes later at 11:22 PM.",
+          "pointsToSuspect": "arvind_kale",
+          "rows": [
+            { "key": "Camera", "value": "Camera 4 — Partial Coverage", "highlight": false },
+            { "key": "Timestamp", "value": "11:18 PM", "highlight": true },
+            { "key": "Entry Point", "value": "Side service entrance — no RFID reader", "highlight": true },
+            { "key": "Build Match", "value": "Consistent with Arvind Kale", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_manual_hold",
+          "label": "Door Control Log — Side Entrance Set to Manual Hold at 10:52 PM",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "The building management system log shows the side service entrance was switched from its default auto-lock mode to manual hold at 10:52 PM — three minutes before Arvind Kale's badge recorded an exit at 10:55 PM. The permission to toggle this setting requires a technician-level badge. Only five staff members have this permission, one of whom is Arvind Kale. The door was returned to auto-lock at 11:41 PM — two minutes after the server room exit event.",
+          "pointsToSuspect": "arvind_kale",
+          "rows": [
+            { "key": "Manual Hold Set", "value": "10:52 PM", "highlight": true },
+            { "key": "Auto-Lock Restored", "value": "11:41 PM", "highlight": true },
+            { "key": "Permission Required", "value": "Technician-level badge", "highlight": false },
+            { "key": "Eligible Staff", "value": "5 members — including Arvind Kale", "highlight": true }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "rfid_frequency_decode",
+        "type": "code_crack",
+        "title": "Crack the RFID Frequency Code",
+        "hint": "The cloned badge's raw RFID dump contains a 3-character hex identifier that matches the Proxmark3 clone signature. Scroll the reels to match the target code.",
+        "solution": "3E7",
+        "maxHints": 3,
+        "hints": [
+          "The Proxmark3 leaves a specific hex watermark in cloned credentials. The target is a 3-character hexadecimal code.",
+          "The first character is 3. The second character is E. Find the third.",
+          "The full code is 3E7 — the Proxmark3 clone signature found in the server room access event's raw RFID dump."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "meta_proxmark_signature",
+          "message": "Clone signature confirmed. Proxmark3 hex watermark 3E7 extracted from the raw RFID access dump. Device purchase record now linked."
+        }
+      },
+      "hiddenItem": {
+        "id": "meta_proxmark_signature",
+        "label": "RFID Dump — Proxmark3 Clone Signature Confirmed",
+        "isKeyEvidence": true,
+        "isSuspect": true,
+        "isHidden": true,
+        "unlockedByMinigame": "rfid_frequency_decode",
+        "detail": "Forensic analysis of the raw RFID access dump from the 11:22 PM server room entry reveals a hex watermark (3E7) consistent with credentials cloned using a Proxmark3 device. This signature is not present in any legitimate badge in Helion's access system — it only appears when a card has been duplicated using this specific hardware. Combined with Arvind Kale's confirmed purchase of a Proxmark3 ten days prior, this is direct physical evidence linking his tool to the cloned badge.",
+        "pointsToSuspect": "arvind_kale",
+        "rows": [
+          { "key": "Watermark Found", "value": "3E7 — Proxmark3 Clone Signature", "highlight": true },
+          { "key": "Present in Legitimate Badges", "value": "No", "highlight": true },
+          { "key": "Device Purchased By", "value": "Arvind Kale — 10 days prior", "highlight": true },
+          { "key": "Badge Cloned", "value": "SV-0041 — Shruti Varma", "highlight": false }
+        ]
+      }
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_arvind_home_inactive",
+          "label": "Arvind's Home IP — No Activity After 11:00 PM",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "ISP records for Arvind Kale's home broadband show no outbound activity after 11:00 PM on the night of the incident — consistent with him not being at home. His router's automatic activity log (which pings the ISP every 15 minutes) shows a gap from 10:58 PM to 12:02 AM. This is consistent with the router being in standby with no devices active — meaning no one was home during the intrusion window.",
+          "pointsToSuspect": "arvind_kale",
+          "rows": [
+            { "key": "Home IP", "value": "103.21.xx.xx", "highlight": false },
+            { "key": "Last Activity", "value": "10:58 PM", "highlight": true },
+            { "key": "Activity Resumed", "value": "12:02 AM", "highlight": true },
+            { "key": "Gap Duration", "value": "64 minutes — matches incident window", "highlight": true }
+          ]
+        },
+        {
+          "id": "ip_shruti_nagpur",
+          "label": "Shruti's IP — Hotel Network — Nagpur — Confirmed",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "Network logs from the Nagpur hotel confirm Shruti Varma's registered laptop IP was continuously active on the hotel Wi-Fi from 10:55 PM to 12:10 AM. No VPN or proxy was detected. The physical distance from Nagpur to Pune (340 km) makes it impossible for her to be the physical intruder.",
+          "pointsToSuspect": null,
+          "rows": [
+            { "key": "Hotel IP", "value": "49.205.xx.xx — Nagpur", "highlight": false },
+            { "key": "Active Window", "value": "10:55 PM – 12:10 AM", "highlight": false },
+            { "key": "Distance from Pune", "value": "340 km", "highlight": false }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+  "timeline": [
+    {
+      "time": "10 days prior",
+      "title": "Proxmark3 Purchased",
+      "description": "Arvind Kale orders a professional RFID read/write device online. Delivered to his home address.",
+      "severity": "high"
+    },
+    {
+      "time": "3 days prior",
+      "title": "Infrastructure Audit — Badge Clone Opportunity",
+      "description": "Shruti and Arvind conduct a 2-hour joint server room audit. Arvind carries a bag — Proxmark3 can clone at 10cm range without contact.",
+      "severity": "critical"
+    },
+    {
+      "time": "6:40 PM — Day of Incident",
+      "title": "Shruti Checks In to Nagpur Hotel",
+      "description": "Shruti is confirmed in Nagpur. Her badge is in her possession.",
+      "severity": "low"
+    },
+    {
+      "time": "10:52 PM",
+      "title": "Side Entrance Set to Manual Hold",
+      "description": "Building management system records the side service entrance toggled to manual hold — requires technician-level access. Arvind Kale is eligible.",
+      "severity": "critical"
+    },
+    {
+      "time": "10:55 PM",
+      "title": "Arvind's Badge Records Exit",
+      "description": "Arvind exits via the main lobby. Car park CCTV confirms he walks to his vehicle — but the vehicle does not leave.",
+      "severity": "high"
+    },
+    {
+      "time": "11:18 PM",
+      "title": "Figure Enters via Side Entrance",
+      "description": "A figure in dark clothing partially visible on Camera 4 enters the building via the side service entrance — now on manual hold.",
+      "severity": "critical"
+    },
+    {
+      "time": "11:22 PM – 11:39 PM",
+      "title": "Server Room Entry — Cloned Badge Used",
+      "description": "Badge SV-0041 (Shruti's cloned credentials) used to enter the server room. 17-minute window. Two NICs and one backup drive removed.",
+      "severity": "critical"
+    }
+  ],
+  "suspicionSystem": {
+    "initialScore": 30,
+    "levels": [
+      { "range": "0–20", "label": "Very Low" },
+      { "range": "21–40", "label": "Low" },
+      { "range": "41–60", "label": "Moderate" },
+      { "range": "61–80", "label": "High" },
+      { "range": "81–100", "label": "Critical" }
+    ],
+    "updates": [
+      {
+        "trigger": "file_rfid_purchase_found",
+        "changes": { "arvind_kale": "+25", "ex_employee": "-15" },
+        "note": "RFID cloning device purchased by Arvind. Ex-employee angle eliminated."
+      },
+      {
+        "trigger": "file_audit_proximity_found",
+        "changes": { "arvind_kale": "+22", "shruti_varma": "-10" },
+        "note": "Audit created clone opportunity. Shruti further cleared."
+      },
+      {
+        "trigger": "meta_manual_hold_found",
+        "changes": { "arvind_kale": "+20", "facilities_guard": "-15" },
+        "note": "Manual hold toggle requires technician badge. Guard cleared."
+      },
+      {
+        "trigger": "meta_cctv_gap_found",
+        "changes": { "arvind_kale": "+18" },
+        "note": "Figure at side entrance matches Arvind's build and timing."
+      },
+      {
+        "trigger": "ip_arvind_home_inactive_found",
+        "changes": { "arvind_kale": "+15", "ex_employee": "-10" },
+        "note": "Arvind's home was empty during the incident window."
+      }
+    ]
+  },
+  "winCondition": {
+    "guiltySuspectId": "arvind_kale",
+    "minCorrectEvidence": 4
+  },
+  "correctEvidenceIds": [
+    "chat_badge_entry",
+    "chat_arvind_exit",
+    "file_rfid_purchase",
+    "file_audit_proximity",
+    "meta_cctv_gap",
+    "meta_manual_hold",
+    "meta_proxmark_signature",
+    "ip_arvind_home_inactive"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_4",
+      "title": "Case Solved!",
+      "subtitle": "Arvind Kale cloned Shruti's RFID badge using a Proxmark3 during a joint audit, then used the cloned badge to steal hardware from the server room while she was out of the city.",
+      "label": "CASE CLOSED",
+      "xp": 20
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_4",
+      "title": "Insufficient Evidence",
+      "subtitle": "You identified Arvind but didn't collect enough evidence for a complete case.",
+      "label": "PARTIAL",
+      "xp": 7
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "Arvind Kale used a Proxmark3 device to clone Shruti's badge during a routine audit and used it to enter the server room while she was 340km away.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The hardware theft was never solved.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "finalTwist": {
+    "title": "The Perfect Alibi — Almost",
+    "description": "Arvind Kale engineered a near-perfect crime: he cloned his colleague's badge contactlessly during a routine work session, waited until she was confirmed out of the city, disabled the camera-covered exit, and re-entered through a blind spot he'd already unlocked. The Proxmark3 clone signature in the raw RFID dump was the one detail he couldn't erase.",
+    "conclusion": "✔ Proxmark3 purchased 10 days prior — delivered to his home\n✔ Badge cloned during joint audit 3 days before incident\n✔ Side entrance manually held open before his logged exit\n✔ RFID dump carried Proxmark3 clone watermark 3E7"
+  }
+}

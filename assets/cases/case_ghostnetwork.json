@@ -26,7 +26,9 @@
         "locationTrace": "Secure Facility \u2014 Zone B",
         "vpnCheck": "Internal network \u2014 no anomaly on surface"
       },
-      "profileNotes": "Recruited by a foreign intelligence handler 16 months ago via a compromised academic contact. Used legitimate access to build a mental map of the network over 2 months before any exfiltration began. Exfiltrated via steganographic files embedded in routine maintenance reports. Triggered the canary file while searching for a specific missile guidance specification."
+      "profileNotes": "Recruited by a foreign intelligence handler 16 months ago via a compromised academic contact. Used legitimate access to build a mental map of the network over 2 months before any exfiltration began. Exfiltrated via steganographic files embedded in routine maintenance reports. Triggered the canary file while searching for a specific missile guidance specification.",
+      "image": "assets/avatars/nalini_v.png",
+      "description": "Nalini V is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "new_hire",
@@ -41,7 +43,9 @@
         "locationTrace": "Secure Facility \u2014 Zone A",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Joined 10 months ago. Has broad network access due to role. However network activity is entirely within expected patterns. No after-hours anomalies. Used as a red herring \u2014 his broad access makes him suspicious at first glance."
+      "profileNotes": "Joined 10 months ago. Has broad network access due to role. However network activity is entirely within expected patterns. No after-hours anomalies. Used as a red herring \u2014 his broad access makes him suspicious at first glance.",
+      "image": "assets/avatars/new_hire.png",
+      "description": "Kabir J is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "external_auditor",
@@ -56,7 +60,9 @@
         "locationTrace": "Visitor access \u2014 lobby terminal",
         "vpnCheck": "Guest VPN only"
       },
-      "profileNotes": "Conducts biannual audits. Only has access during audit periods \u2014 the exfiltration spanned 14 months with activity between audit windows, ruling her out."
+      "profileNotes": "Conducts biannual audits. Only has access during audit periods \u2014 the exfiltration spanned 14 months with activity between audit windows, ruling her out.",
+      "image": "assets/avatars/external_auditor.png",
+      "description": "Meghna T is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "hr_manager",
@@ -71,7 +77,9 @@
         "locationTrace": "HR Department",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "No access to technical systems. Unaware of the network topology. Handles personnel records \u2014 not a viable APT operator."
+      "profileNotes": "No access to technical systems. Unaware of the network topology. Handles personnel records \u2014 not a viable APT operator.",
+      "image": "assets/avatars/hr_manager.png",
+      "description": "Sunil D is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -380,13 +388,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...14 months. 44 systems. 2.3 gigabytes. Not one alarm.\nThen one wrong file. One canary. One mistake in 424 days.\nThat's who you're looking for.",
-    "exploreFeeds": "Steganographic reports. Lateral movement maps. Financial traces.\nThis ghost left almost nothing. Almost.",
-    "viewEvidence": "Every access under 3 minutes. Always during business hours. Always just below the threshold.\nPatience like this is trained \u2014 not natural.",
-    "markEvidence": "Good. Every thread matters in a case this long.",
-    "decryptionHint": "The handler's contact is linked to a device. Decode the device owner.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

@@ -1,11 +1,11 @@
 {
-  "id": "case_missinglogs",
+  "id": "case_missing_logs",
   "title": "The Missing Logs",
   "shortDescription": "System Log Deletion & Event Reconstruction",
   "difficulty": "medium",
   "theme": "Forensic Process",
   "estimatedDuration": "35–45 min",
-  "caseNumber": "2004",
+  "caseNumber": "2005",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -26,7 +26,9 @@
         "locationTrace": "Server Room — Building B",
         "vpnCheck": "No VPN detected — internal network access"
       },
-      "profileNotes": "Admin account logged in at 21:11 — 1 minute after suspicious activity began. A manual log cleanup command was executed at 21:12 under this session. Vikram claims the cleanup was automatic and pre-scheduled, but no matching scheduled task entry exists in the cron log. Had full system access and the technical knowledge to cover tracks."
+      "profileNotes": "Admin account logged in at 21:11 — 1 minute after suspicious activity began. A manual log cleanup command was executed at 21:12 under this session. Vikram claims the cleanup was automatic and pre-scheduled, but no matching scheduled task entry exists in the cron log. Had full system access and the technical knowledge to cover tracks.",
+      "image": "assets/avatars/sys_admin.png",
+      "description": "Vikram S is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "it_support",
@@ -41,7 +43,9 @@
         "locationTrace": "IT Support Desk — Building A",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has limited server access — cannot execute admin-level commands or clear system logs. No activity on her account after 6 PM. No motive established. Confined to business hours only."
+      "profileNotes": "Has limited server access — cannot execute admin-level commands or clear system logs. No activity on her account after 6 PM. No motive established. Confined to business hours only.",
+      "image": "assets/avatars/it_support.png",
+      "description": "Preeti R is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "external_hacker",
@@ -56,7 +60,9 @@
         "locationTrace": "External — not on internal network",
         "vpnCheck": "Possible VPN — flagged by firewall"
       },
-      "profileNotes": "External IP triggered multiple failed login attempts before the gap window. Could have been probing for access. However, no successful external login was recorded, and the log deletion command originated from an internal admin account — not from any external IP. The intrusion attempts may have been a diversion."
+      "profileNotes": "External IP triggered multiple failed login attempts before the gap window. Could have been probing for access. However, no successful external login was recorded, and the log deletion command originated from an internal admin account — not from any external IP. The intrusion attempts may have been a diversion.",
+      "image": "assets/avatars/external_hacker.png",
+      "description": "External Threat Actor is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "insider_employee",
@@ -71,7 +77,9 @@
         "locationTrace": "Engineering Floor — Building A",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Had internal network access. Theoretically could have used shared or stolen credentials. However, no login from his account or device is recorded near the breach window. No technical capability to execute server-level log deletion."
+      "profileNotes": "Had internal network access. Theoretically could have used shared or stolen credentials. However, no login from his account or device is recorded near the breach window. No technical capability to execute server-level log deletion.",
+      "image": "assets/avatars/insider_employee.png",
+      "description": "Deepak M is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -90,11 +98,31 @@
           "detail": "Server event logs for SRV-CORE-01 show a clean record up to 21:09:58, then a complete gap until 21:20:34. All entries between 21:10 and 21:20 are absent. The monitoring system had flagged alerts during this exact window — multiple failed login attempts, a configuration change attempt, and elevated privilege commands — yet none of these events appear in the main log. Logs do not fail silently during normal operations; their sudden absence during an active alert window strongly indicates deliberate deletion.",
           "pointsToSuspect": "sys_admin",
           "rows": [
-            { "key": "Log Start", "value": "21:05 — entries normal", "highlight": false },
-            { "key": "Last Entry Before Gap", "value": "21:09:58 — system config change", "highlight": false },
-            { "key": "Gap Window", "value": "21:10 – 21:20 — NO ENTRIES", "highlight": true },
-            { "key": "First Entry After Gap", "value": "21:20:34 — server online", "highlight": false },
-            { "key": "Monitoring Alerts During Gap", "value": "3 alerts fired — no corresponding log entries", "highlight": true }
+            {
+              "key": "Log Start",
+              "value": "21:05 — entries normal",
+              "highlight": false
+            },
+            {
+              "key": "Last Entry Before Gap",
+              "value": "21:09:58 — system config change",
+              "highlight": false
+            },
+            {
+              "key": "Gap Window",
+              "value": "21:10 – 21:20 — NO ENTRIES",
+              "highlight": true
+            },
+            {
+              "key": "First Entry After Gap",
+              "value": "21:20:34 — server online",
+              "highlight": false
+            },
+            {
+              "key": "Monitoring Alerts During Gap",
+              "value": "3 alerts fired — no corresponding log entries",
+              "highlight": true
+            }
           ]
         },
         {
@@ -105,10 +133,26 @@
           "detail": "The company's external monitoring platform (separate from the server itself) recorded 3 alerts during the gap window. These are generated independently and cannot be deleted by the system administrator: Alert 1 at 21:10 — multiple failed SSH login attempts from external IP 185.234.xx.xx; Alert 2 at 21:11 — admin-level privilege escalation on SRV-CORE-01; Alert 3 at 21:12 — execution of a batch file access sequence. These alerts confirm activity occurred during the log gap — the absence of matching server logs is therefore intentional, not a system error.",
           "pointsToSuspect": "sys_admin",
           "rows": [
-            { "key": "Alert 1 — 21:10", "value": "Multiple failed SSH logins — external IP", "highlight": false },
-            { "key": "Alert 2 — 21:11", "value": "Admin privilege escalation on SRV-CORE-01", "highlight": true },
-            { "key": "Alert 3 — 21:12", "value": "Batch file access — admin session", "highlight": true },
-            { "key": "Source", "value": "External monitoring platform — tamper-proof", "highlight": false }
+            {
+              "key": "Alert 1 — 21:10",
+              "value": "Multiple failed SSH logins — external IP",
+              "highlight": false
+            },
+            {
+              "key": "Alert 2 — 21:11",
+              "value": "Admin privilege escalation on SRV-CORE-01",
+              "highlight": true
+            },
+            {
+              "key": "Alert 3 — 21:12",
+              "value": "Batch file access — admin session",
+              "highlight": true
+            },
+            {
+              "key": "Source",
+              "value": "External monitoring platform — tamper-proof",
+              "highlight": false
+            }
           ]
         }
       ],
@@ -119,14 +163,55 @@
         "hint": "The server logs are missing for 10 minutes. Use the backup monitoring alerts to rebuild what happened inside the gap.",
         "instruction": "Drag and place each backup alert into the correct time slot on the timeline to reconstruct the missing log window (21:10–21:20).",
         "events": [
-          { "id": "evt_ssh_fail", "label": "Multiple failed SSH login attempts (external IP)", "correctSlot": "21:10", "isDecoy": false },
-          { "id": "evt_admin_login", "label": "Admin privilege escalation — SRV-CORE-01", "correctSlot": "21:11", "isDecoy": false },
-          { "id": "evt_batch_access", "label": "Batch file access sequence — admin session active", "correctSlot": "21:12", "isDecoy": false },
-          { "id": "evt_log_delete", "label": "Log cleanup command executed", "correctSlot": "21:12", "isDecoy": false },
-          { "id": "evt_scheduled_backup", "label": "Scheduled backup task runs", "correctSlot": "21:15", "isDecoy": true },
-          { "id": "evt_logout", "label": "Admin session terminated", "correctSlot": "21:19", "isDecoy": false }
+          {
+            "id": "evt_ssh_fail",
+            "label": "Multiple failed SSH login attempts (external IP)",
+            "correctSlot": "21:10",
+            "isDecoy": false
+          },
+          {
+            "id": "evt_admin_login",
+            "label": "Admin privilege escalation — SRV-CORE-01",
+            "correctSlot": "21:11",
+            "isDecoy": false
+          },
+          {
+            "id": "evt_batch_access",
+            "label": "Batch file access sequence — admin session active",
+            "correctSlot": "21:12",
+            "isDecoy": false
+          },
+          {
+            "id": "evt_log_delete",
+            "label": "Log cleanup command executed",
+            "correctSlot": "21:12",
+            "isDecoy": false
+          },
+          {
+            "id": "evt_scheduled_backup",
+            "label": "Scheduled backup task runs",
+            "correctSlot": "21:15",
+            "isDecoy": true
+          },
+          {
+            "id": "evt_logout",
+            "label": "Admin session terminated",
+            "correctSlot": "21:19",
+            "isDecoy": false
+          }
         ],
-        "timeSlots": ["21:10", "21:11", "21:12", "21:13", "21:14", "21:15", "21:16", "21:17", "21:18", "21:19"],
+        "timeSlots": [
+          "21:10",
+          "21:11",
+          "21:12",
+          "21:13",
+          "21:14",
+          "21:15",
+          "21:16",
+          "21:17",
+          "21:18",
+          "21:19"
+        ],
         "maxHints": 3,
         "hints": [
           "Start with the external SSH attack — it triggers at the very start of the gap window at 21:10.",
@@ -154,10 +239,26 @@
           "detail": "Authentication logs from the directory service (separate from the deleted server logs) confirm that the administrator account 'sysadmin_vsb' authenticated successfully against SRV-CORE-01 at 21:11:07. This is 67 seconds after the first monitoring alert fired at 21:10:00. The login originated from internal IP 10.0.0.12 — the fixed IP assigned to the admin terminal in the server room. The speed of login (67 seconds after the first alert) suggests the administrator was either already present at the terminal, or was expecting the event.",
           "pointsToSuspect": "sys_admin",
           "rows": [
-            { "key": "Account", "value": "sysadmin_vsb", "highlight": true },
-            { "key": "Login Time", "value": "21:11:07", "highlight": true },
-            { "key": "Source IP", "value": "10.0.0.12 — Admin Terminal, Server Room", "highlight": true },
-            { "key": "Time Since First Alert", "value": "67 seconds", "highlight": false }
+            {
+              "key": "Account",
+              "value": "sysadmin_vsb",
+              "highlight": true
+            },
+            {
+              "key": "Login Time",
+              "value": "21:11:07",
+              "highlight": true
+            },
+            {
+              "key": "Source IP",
+              "value": "10.0.0.12 — Admin Terminal, Server Room",
+              "highlight": true
+            },
+            {
+              "key": "Time Since First Alert",
+              "value": "67 seconds",
+              "highlight": false
+            }
           ]
         },
         {
@@ -168,10 +269,26 @@
           "detail": "The system's cron job scheduler maintains its own log (separate from the deleted server logs) that records all scheduled task executions. Cross-referencing the cron log against the 21:12 cleanup event reveals: no scheduled log cleanup task exists for that time. The closest scheduled log rotation runs at 03:00 AM — not 21:12. The command executed at 21:12 was `rm -rf /var/log/syslog.1 && truncate -s 0 /var/log/syslog` — a manual deletion string, not the output of any automated rotation script. This was typed by a human with admin access, not triggered by a scheduler.",
           "pointsToSuspect": "sys_admin",
           "rows": [
-            { "key": "Command Executed", "value": "rm -rf /var/log/syslog.1 && truncate -s 0 /var/log/syslog", "highlight": true },
-            { "key": "Execution Time", "value": "21:12:33", "highlight": true },
-            { "key": "Scheduled Task Match", "value": "NONE — nearest cron job is 03:00 AM", "highlight": true },
-            { "key": "Conclusion", "value": "Manually executed by authenticated admin session", "highlight": true }
+            {
+              "key": "Command Executed",
+              "value": "rm -rf /var/log/syslog.1 && truncate -s 0 /var/log/syslog",
+              "highlight": true
+            },
+            {
+              "key": "Execution Time",
+              "value": "21:12:33",
+              "highlight": true
+            },
+            {
+              "key": "Scheduled Task Match",
+              "value": "NONE — nearest cron job is 03:00 AM",
+              "highlight": true
+            },
+            {
+              "key": "Conclusion",
+              "value": "Manually executed by authenticated admin session",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -183,9 +300,21 @@
         "instruction": "Compare the deletion command against the cron scheduler entries. Identify which fields prove this was a manual execution and not an automatic task.",
         "comparisonData": {
           "cronEntries": [
-            { "time": "03:00 AM", "command": "logrotate /etc/logrotate.conf", "type": "Scheduled" },
-            { "time": "00:00 AM", "command": "gzip /var/log/auth.log", "type": "Scheduled" },
-            { "time": "06:00 AM", "command": "find /var/log -mtime +30 -delete", "type": "Scheduled" }
+            {
+              "time": "03:00 AM",
+              "command": "logrotate /etc/logrotate.conf",
+              "type": "Scheduled"
+            },
+            {
+              "time": "00:00 AM",
+              "command": "gzip /var/log/auth.log",
+              "type": "Scheduled"
+            },
+            {
+              "time": "06:00 AM",
+              "command": "find /var/log -mtime +30 -delete",
+              "type": "Scheduled"
+            }
           ],
           "detectedCommand": {
             "time": "21:12:33",
@@ -195,11 +324,31 @@
           }
         },
         "correctFlags": [
-          { "id": "no_cron_match", "label": "No matching cron entry at 21:12", "isCorrect": true },
-          { "id": "manual_command_syntax", "label": "rm -rf syntax is manual — not logrotate", "isCorrect": true },
-          { "id": "session_user_match", "label": "Executed under active admin session sysadmin_vsb", "isCorrect": true },
-          { "id": "gzip_match", "label": "Could match the 00:00 gzip task", "isCorrect": false },
-          { "id": "time_close_to_03am", "label": "21:12 is close enough to the 03:00 AM schedule", "isCorrect": false }
+          {
+            "id": "no_cron_match",
+            "label": "No matching cron entry at 21:12",
+            "isCorrect": true
+          },
+          {
+            "id": "manual_command_syntax",
+            "label": "rm -rf syntax is manual — not logrotate",
+            "isCorrect": true
+          },
+          {
+            "id": "session_user_match",
+            "label": "Executed under active admin session sysadmin_vsb",
+            "isCorrect": true
+          },
+          {
+            "id": "gzip_match",
+            "label": "Could match the 00:00 gzip task",
+            "isCorrect": false
+          },
+          {
+            "id": "time_close_to_03am",
+            "label": "21:12 is close enough to the 03:00 AM schedule",
+            "isCorrect": false
+          }
         ],
         "requiredCorrectFlags": 3,
         "maxHints": 3,
@@ -229,11 +378,31 @@
           "detail": "Directory service authentication logs (tamper-proof, hosted on a separate system) show the complete session record for account sysadmin_vsb on the night of the incident: Login at 21:11:07 from IP 10.0.0.12. Command burst at 21:12:33 — log deletion executed. File access to /etc/auth.conf at 21:14:05. Attempted export of /var/backup/user_credentials.bak at 21:16:40 — this action was blocked by the DLP system and flagged. Logout at 21:19:22. The attempted credential file export was not part of any sanctioned IT task and indicates the session was used to attempt data exfiltration beyond just log deletion.",
           "pointsToSuspect": "sys_admin",
           "rows": [
-            { "key": "Login", "value": "21:11:07 — IP 10.0.0.12", "highlight": false },
-            { "key": "Log Deletion", "value": "21:12:33 — confirmed manual", "highlight": true },
-            { "key": "File Access", "value": "21:14:05 — /etc/auth.conf", "highlight": false },
-            { "key": "Blocked Export", "value": "21:16:40 — /var/backup/user_credentials.bak — DLP BLOCKED", "highlight": true },
-            { "key": "Logout", "value": "21:19:22", "highlight": false }
+            {
+              "key": "Login",
+              "value": "21:11:07 — IP 10.0.0.12",
+              "highlight": false
+            },
+            {
+              "key": "Log Deletion",
+              "value": "21:12:33 — confirmed manual",
+              "highlight": true
+            },
+            {
+              "key": "File Access",
+              "value": "21:14:05 — /etc/auth.conf",
+              "highlight": false
+            },
+            {
+              "key": "Blocked Export",
+              "value": "21:16:40 — /var/backup/user_credentials.bak — DLP BLOCKED",
+              "highlight": true
+            },
+            {
+              "key": "Logout",
+              "value": "21:19:22",
+              "highlight": false
+            }
           ]
         }
       ],
@@ -296,11 +465,26 @@
   "suspicionSystem": {
     "initialScore": 30,
     "levels": [
-      { "range": "0–20", "label": "Very Low" },
-      { "range": "21–40", "label": "Low" },
-      { "range": "41–60", "label": "Moderate" },
-      { "range": "61–80", "label": "High" },
-      { "range": "81–100", "label": "Critical" }
+      {
+        "range": "0–20",
+        "label": "Very Low"
+      },
+      {
+        "range": "21–40",
+        "label": "Low"
+      },
+      {
+        "range": "41–60",
+        "label": "Moderate"
+      },
+      {
+        "range": "61–80",
+        "label": "High"
+      },
+      {
+        "range": "81–100",
+        "label": "Critical"
+      }
     ],
     "updates": [
       {
@@ -396,13 +580,5 @@
     "title": "The Cover-Up Unravels",
     "description": "The logs were deleted by the administrator himself — not to protect the company from an external breach, but to hide his own unauthorized access. The external SSH attack at 21:10 appears to have been used as cover: the external noise drew attention outward while Vikram logged in internally 67 seconds later. His attempt to export a credential backup file at 21:16 — blocked by the DLP system — reveals the true objective was data theft, not protection.",
     "conclusion": "✔ Logs were deliberately erased — not automatic cleanup\n✔ Admin account (sysadmin_vsb) directly linked to deletion\n✔ Credential export attempt confirms data theft motive\n✔ External hacker was a distraction — no successful external login occurred"
-  },
-  "aria": {
-    "welcomeToHub": "Ten minutes. Gone.\nThe logs don't disappear on their own — especially not during an active breach.\nSomeone erased them. Find out who.",
-    "exploreFeeds": "Backup alerts. Cron logs. Directory auth records.\nThe server logs were deleted — but the monitoring system wasn't.",
-    "viewEvidence": "An admin login 67 seconds after the first alert.\nA manual deletion command with no matching scheduled task.\nThis wasn't maintenance.",
-    "markEvidence": "Good. The chain is forming.",
-    "decryptionHint": "Compare the cleanup command against the cron scheduler.\nIf no scheduled task matches — someone typed it themselves.",
-    "flagSuspect": "The admin session tells you everything.\nLogin, delete, access, attempt to export.\nFollow the session — not the external noise."
   }
 }

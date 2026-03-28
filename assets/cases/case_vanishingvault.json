@@ -26,7 +26,9 @@
         "locationTrace": "PharmaCore R&D Building \u2014 Server Room Access",
         "vpnCheck": "Internal network \u2014 no VPN"
       },
-      "profileNotes": "Conducted the last security audit of the vault system. Had full knowledge of the backup architecture. Was secretly employed by a rival pharma company \u2014 salary deposits traced to a shell account. The 'ransom' was theater; the goal was erasure."
+      "profileNotes": "Conducted the last security audit of the vault system. Had full knowledge of the backup architecture. Was secretly employed by a rival pharma company \u2014 salary deposits traced to a shell account. The 'ransom' was theater; the goal was erasure.",
+      "image": "assets/avatars/ishaan_m.png",
+      "description": "Ishaan M is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "ransom_actor",
@@ -41,7 +43,9 @@
         "locationTrace": "Untraced",
         "vpnCheck": "Tor detected"
       },
-      "profileNotes": "IRON LOCK claimed responsibility. However their known ransomware signature includes a working decryption portal \u2014 none was provided here. The wiper code does not match any known IRON LOCK sample in threat intel databases."
+      "profileNotes": "IRON LOCK claimed responsibility. However their known ransomware signature includes a working decryption portal \u2014 none was provided here. The wiper code does not match any known IRON LOCK sample in threat intel databases.",
+      "image": "assets/avatars/ransom_actor.png",
+      "description": "Unknown Ransomware Group \u2014 IRON LOCK is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "cfo_pharma",
@@ -56,7 +60,9 @@
         "locationTrace": "PharmaCore HQ \u2014 Executive Floor",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Authorized partial ransom payment of $200K \u2014 a decision later scrutinized. No technical access to R&D vault. No nighttime activity."
+      "profileNotes": "Authorized partial ransom payment of $200K \u2014 a decision later scrutinized. No technical access to R&D vault. No nighttime activity.",
+      "image": "assets/avatars/cfo_pharma.png",
+      "description": "Sneha P is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "sysadmin_vault",
@@ -71,7 +77,9 @@
         "locationTrace": "IT Department",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Manages vault infrastructure but access logs show no after-hours activity. Ishaan M used a vulnerability in the audit account \u2014 not Parth's credentials."
+      "profileNotes": "Manages vault infrastructure but access logs show no after-hours activity. Ishaan M used a vulnerability in the audit account \u2014 not Parth's credentials.",
+      "image": "assets/avatars/sysadmin_vault.png",
+      "description": "Parth V is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -399,13 +407,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...11 years of research. Gone in 2 hours.\nThe ransom note was a lie \u2014 there was never a key.\nThis was erasure. Find who was paid to erase it.",
-    "exploreFeeds": "Malware analysis. Deployment logs. Financial traces.\nThe attacker was on the inside and on someone else's payroll.",
-    "viewEvidence": "No C2 traffic. No key exchange. No decryption portal.\nThis was never ransomware. It was always a wiper.",
-    "markEvidence": "Good. The deception is unraveling layer by layer.",
-    "decryptionHint": "The backdoor has a signature encoded inside it.\nDecode the author.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

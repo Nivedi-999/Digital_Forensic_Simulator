@@ -5,7 +5,7 @@
   "difficulty": "medium",
   "theme": "System Tampering",
   "estimatedDuration": "30\u201340 min",
-  "caseNumber": "2002",
+  "caseNumber": "2001",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -26,7 +26,9 @@
         "locationTrace": "College Hostel WiFi \u2014 Block C",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "CS student with SQL knowledge. Accessed the attendance database directly using stolen faculty credentials. Charged 500 rupees per student for the service."
+      "profileNotes": "CS student with SQL knowledge. Accessed the attendance database directly using stolen faculty credentials. Charged 500 rupees per student for the service.",
+      "image": "assets/avatars/tanmay_d.png",
+      "description": "Tanmay D is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "prof_mehta",
@@ -41,7 +43,9 @@
         "locationTrace": "Faculty Room, CS Block",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Credentials were stolen from Prof. Mehta's unattended workstation. Professor had no knowledge of the breach."
+      "profileNotes": "Credentials were stolen from Prof. Mehta's unattended workstation. Professor had no knowledge of the breach.",
+      "image": "assets/avatars/prof_mehta.png",
+      "description": "Prof. Mehta is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "admin_staff",
@@ -56,7 +60,9 @@
         "locationTrace": "Admin Office",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has portal access but no motive. Activity confined to business hours. No nighttime logins from her credentials."
+      "profileNotes": "Has portal access but no motive. Activity confined to business hours. No nighttime logins from her credentials.",
+      "image": "assets/avatars/admin_staff.png",
+      "description": "Rekha P is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "rohan_s",
@@ -71,7 +77,9 @@
         "locationTrace": "College Hostel \u2014 Block A",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Was one of the 12 beneficiaries \u2014 paid Tanmay for the service. Did not perform the hack himself."
+      "profileNotes": "Was one of the 12 beneficiaries \u2014 paid Tanmay for the service. Did not perform the hack himself.",
+      "image": "assets/avatars/rohan_s.png",
+      "description": "Rohan S is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -340,13 +348,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...Twelve students. Perfect attendance. All lies.\nSomebody sold shortcuts into the system.\nFind who opened that door.",
-    "exploreFeeds": "Database logs. SQL queries. Hostel network traces.\nThe breach happened at night. So did the money.",
-    "viewEvidence": "Stolen credentials. Beginner SQL. Hostel IP.\nThis was an inside job by someone who knew just enough.",
-    "markEvidence": "Good. Keep building the chain.",
-    "decryptionHint": "The hostel network log has the device name encoded.\nDecode it.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

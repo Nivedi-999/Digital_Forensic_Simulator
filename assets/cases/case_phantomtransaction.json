@@ -26,7 +26,9 @@
         "locationTrace": "SimConnect Office, Night Shift",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Accessed victim's SIM provisioning record at 3:05 AM \u2014 9 minutes before the fraudulent transfer. Issued a duplicate SIM request without a physical store visit."
+      "profileNotes": "Accessed victim's SIM provisioning record at 3:05 AM \u2014 9 minutes before the fraudulent transfer. Issued a duplicate SIM request without a physical store visit.",
+      "image": "assets/avatars/vikram_b.png",
+      "description": "Vikram B is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "unknown_caller",
@@ -41,7 +43,9 @@
         "locationTrace": "Untraced",
         "vpnCheck": "VPN detected"
       },
-      "profileNotes": "Called victim the previous day posing as a bank employee. Collected account number but NOT OTP \u2014 the OTP was intercepted separately via SIM clone."
+      "profileNotes": "Called victim the previous day posing as a bank employee. Collected account number but NOT OTP \u2014 the OTP was intercepted separately via SIM clone.",
+      "image": "assets/avatars/unknown_caller.png",
+      "description": "Unknown Caller is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "rahul_v",
@@ -56,7 +60,9 @@
         "locationTrace": "Victim's residence",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Visited the evening before. No technical knowledge of SIM provisioning. Alibi confirmed for 3 AM window."
+      "profileNotes": "Visited the evening before. No technical knowledge of SIM provisioning. Alibi confirmed for 3 AM window.",
+      "image": "assets/avatars/rahul_v.png",
+      "description": "Rahul V is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "store_manager",
@@ -71,7 +77,9 @@
         "locationTrace": "SimConnect Retail, Dadar",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Store was closed at 3 AM. Her credentials were not used in the SIM duplication \u2014 the backend system was accessed directly."
+      "profileNotes": "Store was closed at 3 AM. Her credentials were not used in the SIM duplication \u2014 the backend system was accessed directly.",
+      "image": "assets/avatars/store_manager.png",
+      "description": "Deepa S is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -395,13 +403,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...\u20b985,000. Gone. At 3 in the morning.\nThe victim was asleep. Their phone never moved.\nSomeone intercepted the signal itself.",
-    "exploreFeeds": "SIM logs. Bank records. OTP device traces.\nThe fraud was surgical. Find the surgeon.",
-    "viewEvidence": "Off-hours access. Unauthorized SIM duplication.\nThis wasn't random.",
-    "markEvidence": "Good. The chain is forming.",
-    "decryptionHint": "The mule account has a name behind it.\nDecode the reference.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

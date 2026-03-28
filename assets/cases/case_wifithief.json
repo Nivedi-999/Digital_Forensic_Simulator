@@ -26,7 +26,9 @@
         "locationTrace": "Within WiFi range \u2014 Flat 4B",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Device MAC address registered to a laptop purchased under Neil V's name. Downloads averaged 4GB per night \u2014 mostly pirated movies."
+      "profileNotes": "Device MAC address registered to a laptop purchased under Neil V's name. Downloads averaged 4GB per night \u2014 mostly pirated movies.",
+      "image": "assets/avatars/neil_v.png",
+      "description": "Neil V is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "delivery_guy",
@@ -41,7 +43,9 @@
         "locationTrace": "Building Lobby",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Connected briefly while making a delivery. Only 2MB data used. No suspicious activity."
+      "profileNotes": "Connected briefly while making a delivery. Only 2MB data used. No suspicious activity.",
+      "image": "assets/avatars/delivery_guy.png",
+      "description": "Rohan D is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "guest_user",
@@ -56,7 +60,9 @@
         "locationTrace": "Living Room",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has the WiFi password legitimately. Only visits on weekends. No nighttime activity."
+      "profileNotes": "Has the WiFi password legitimately. Only visits on weekends. No nighttime activity.",
+      "image": "assets/avatars/guest_user.png",
+      "description": "Preethi A is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -323,13 +329,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...Someone was stealing bandwidth. Every night. For 18 days.\nThey thought no one was watching.\nProve them wrong.",
-    "exploreFeeds": "Router logs don't lie.\nMAC addresses, signal strength, hostnames.\nThe device left a full trail.",
-    "viewEvidence": "Every device has a fingerprint.\nThis one leads somewhere very close.",
-    "markEvidence": "Good find. Keep building the chain.",
-    "decryptionHint": "The hostname is encoded.\nDecode it \u2014 it might have a name in it.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

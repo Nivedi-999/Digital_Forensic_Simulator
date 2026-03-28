@@ -12,9 +12,6 @@ import '../models/case.dart';
 import '../models/evidence.dart';
 import '../logic/game_engine.dart';
 import '../state/case_engine_provider.dart';
-import '../services/tutorial_service.dart';
-import '../widgets/aria_guide.dart';
-import '../widgets/aria_controller.dart';
 import 'evidence_analysis_screen.dart';
 import 'suspect_profile_screen.dart';
 import '../widgets/crime_board.dart';
@@ -27,7 +24,7 @@ class InvestigationHubScreen extends StatefulWidget {
 }
 
 class _InvestigationHubScreenState extends State<InvestigationHubScreen>
-    with AriaMixin, TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   String _activeFeed = 'chat';
   late AnimationController _entryCtrl;
   late Animation<double> _fadeIn;
@@ -35,8 +32,6 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
   @override
   void initState() {
     super.initState();
-    TutorialService().onHubOpened();
-    triggerAria(TutorialStep.welcomeToHub);
 
     _entryCtrl = AnimationController(
       vsync: this,
@@ -51,40 +46,14 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
     super.dispose();
   }
 
-  void _onAriaWelcomeDismissed() {
-    final service = TutorialService();
-    service.advance(TutorialStep.exploreFeeds);
-    Future.delayed(const Duration(milliseconds: 700), () {
-      if (mounted) triggerAria(TutorialStep.exploreFeeds, delayMs: 0);
-    });
-  }
-
   void _openAnalysis(BuildContext context, String panelId, String itemId) {
-    TutorialService().onFeedTapped();
     Navigator.push(
       context,
       _slideRoute(EvidenceAnalysisScreen(
         panelId: panelId,
         itemId: itemId,
       )),
-    ).then((_) {
-      final engine = CaseEngineProvider.read(context);
-      final service = TutorialService();
-      final count = engine.collectedEvidence.length;
-      service.onReadyForDecryption();
-      service.onReadyToFlag(count);
-      setState(() {});
-      if (service.currentStep == TutorialStep.markEvidence &&
-          !service.messageShown) {
-        triggerAria(TutorialStep.markEvidence, delayMs: 300);
-      } else if (service.currentStep == TutorialStep.decryptionHint &&
-          !service.messageShown) {
-        triggerAria(TutorialStep.decryptionHint, delayMs: 300);
-      } else if (service.currentStep == TutorialStep.flagSuspect &&
-          !service.messageShown) {
-        triggerAria(TutorialStep.flagSuspect, delayMs: 300);
-      }
-    });
+    );
   }
 
   PageRouteBuilder _slideRoute(Widget screen) {
@@ -141,7 +110,6 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                     activeFeed: _activeFeed,
                     onTabChanged: (key) {
                       setState(() => _activeFeed = key);
-                      if (key != 'suspects') TutorialService().onFeedTapped();
                     },
                     showSuspects: true,
                   ),
@@ -197,15 +165,6 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                 ],
               ),
             ),
-          ),
-
-          // ── ARIA Guide ──
-          buildAriaLayer(
-            onDismiss: () {
-              if (ariaStep == TutorialStep.welcomeToHub) {
-                _onAriaWelcomeDismissed();
-              }
-            },
           ),
         ],
       ),

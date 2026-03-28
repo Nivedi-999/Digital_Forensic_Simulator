@@ -26,7 +26,9 @@
         "locationTrace": "Research lab \u2014 after hours",
         "vpnCheck": "Custom VPN \u2014 non-commercial"
       },
-      "profileNotes": "One of only 3 researchers with SCADA codebase access. Discreetly sold the exploit to a foreign intelligence intermediary for $280,000 \u2014 but panicked and triggered the shutdown early, preventing full infrastructure damage. Financial trail leads to a Mauritius account."
+      "profileNotes": "One of only 3 researchers with SCADA codebase access. Discreetly sold the exploit to a foreign intelligence intermediary for $280,000 \u2014 but panicked and triggered the shutdown early, preventing full infrastructure damage. Financial trail leads to a Mauritius account.",
+      "image": "assets/avatars/ronak_s.png",
+      "description": "Ronak S is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "state_actor",
@@ -41,7 +43,9 @@
         "locationTrace": "Origin untraced",
         "vpnCheck": "Advanced obfuscation"
       },
-      "profileNotes": "Purchased the exploit \u2014 was the buyer. However the technical authorship of the zero-day and the decision to trigger it belong to Ronak S. The buyer only provided direction \u2014 Ronak executed."
+      "profileNotes": "Purchased the exploit \u2014 was the buyer. However the technical authorship of the zero-day and the decision to trigger it belong to Ronak S. The buyer only provided direction \u2014 Ronak executed.",
+      "image": "assets/avatars/state_actor.png",
+      "description": "Unknown Foreign Actor is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "vendor_engineer",
@@ -56,7 +60,9 @@
         "locationTrace": "GridCore HQ, Pune",
         "vpnCheck": "Vendor VPN \u2014 authorized"
       },
-      "profileNotes": "Had remote access for scheduled maintenance but was on leave during the attack window. Access token was active but not used \u2014 confirms she did not execute the exploit."
+      "profileNotes": "Had remote access for scheduled maintenance but was on leave during the attack window. Access token was active but not used \u2014 confirms she did not execute the exploit.",
+      "image": "assets/avatars/vendor_engineer.png",
+      "description": "Supriya K is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "whistleblower",
@@ -71,7 +77,9 @@
         "locationTrace": "Retired \u2014 Chennai",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Had warned about this vulnerability 2 years ago in an internal memo that was ignored. No current system access. His old memo makes him a witness, not a suspect."
+      "profileNotes": "Had warned about this vulnerability 2 years ago in an internal memo that was ignored. No current system access. His old memo makes him a witness, not a suspect.",
+      "image": "assets/avatars/whistleblower.png",
+      "description": "Devraj M is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -390,13 +398,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...A blackout. 6 hours. A warning shot \u2014 not a killing blow.\nWhoever did this could have gone further. They chose not to.\nThat tells you something. Find out who flinched.",
-    "exploreFeeds": "Exploit code. Financial transfers. Dark web traces.\nThis was a researcher who crossed a line \u2014 and then tried to step back.",
-    "viewEvidence": "The code style. The codebase access. The controlled shutdown.\nThis was personal knowledge, not just technical skill.",
-    "markEvidence": "Good. The evidence is forming a portrait.",
-    "decryptionHint": "The forum identity is encoded. Decode it \u2014 the PGP key will confirm everything.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

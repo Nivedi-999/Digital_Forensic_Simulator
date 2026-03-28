@@ -26,7 +26,9 @@
         "locationTrace": "Infrastructure Wing",
         "vpnCheck": "Internal VPN"
       },
-      "profileNotes": "High access and infrastructure skills. However, has no knowledge of behavioral modeling systems. Suspicion drops sharply after the metadata phase confirms the behavior requires prediction algorithms, not infrastructure control alone."
+      "profileNotes": "High access and infrastructure skills. However, has no knowledge of behavioral modeling systems. Suspicion drops sharply after the metadata phase confirms the behavior requires prediction algorithms, not infrastructure control alone.",
+      "image": "assets/avatars/dhruv_a.png",
+      "description": "Dhruv A is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "aniket_b",
@@ -41,7 +43,9 @@
         "locationTrace": "Analytics Floor",
         "vpnCheck": "Internal only"
       },
-      "profileNotes": "Skilled in pattern analysis. Partial false lead \u2014 can read the behavioral data but has no execution authority to deploy or activate the simulation system. Suspicion partial and unconfirmed."
+      "profileNotes": "Skilled in pattern analysis. Partial false lead \u2014 can read the behavioral data but has no execution authority to deploy or activate the simulation system. Suspicion partial and unconfirmed.",
+      "image": "assets/avatars/aniket_b.png",
+      "description": "Aniket B is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "manav_r",
@@ -56,7 +60,9 @@
         "locationTrace": "Research Division, consultant bay",
         "vpnCheck": "Research VPN \u2014 elevated"
       },
-      "profileNotes": "Reads chat summaries and advises on response optimization. Specializes in human decision modeling. Suspicion only rises when chat logs AND metadata are cross-linked \u2014 the system anticipation pattern matches his behavioral modeling research exactly. He built the simulation to study how investigators respond to anomalies. You are the dataset."
+      "profileNotes": "Reads chat summaries and advises on response optimization. Specializes in human decision modeling. Suspicion only rises when chat logs AND metadata are cross-linked \u2014 the system anticipation pattern matches his behavioral modeling research exactly. He built the simulation to study how investigators respond to anomalies. You are the dataset.",
+      "image": "assets/avatars/manav_r.png",
+      "description": "Manav R is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "ayon_r",
@@ -71,7 +77,9 @@
         "locationTrace": "Vendor access terminal",
         "vpnCheck": "Vendor VPN \u2014 restricted"
       },
-      "profileNotes": "Has systems access but no behavioral modeling layer knowledge. Could deploy tools but cannot explain the anticipation pattern in the chat timing data. Suspicion weakens after IP analysis confirms purely internal routing."
+      "profileNotes": "Has systems access but no behavioral modeling layer knowledge. Could deploy tools but cannot explain the anticipation pattern in the chat timing data. Suspicion weakens after IP analysis confirms purely internal routing.",
+      "image": "assets/avatars/ayon_r.png",
+      "description": "Ayon R is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -381,13 +389,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...Systems nominal. Everything approved. Everything signed.\nAnd yet \u2014 the system knew what you were going to do before you did it.\nInvestigate carefully. It may be watching.",
-    "exploreFeeds": "Four panels. The answer lives in the gap between them.\nStart with the chat logs \u2014 the timing is the first tell.\nIf replies arrive before decisions are made, something is predicting you.",
-    "viewEvidence": "You found an early reply.\nThat is not efficiency. That is anticipation.\nMark everything that arrived before it was asked for.",
-    "markEvidence": "Good instinct.\nNow find the files. Were they moved before they were requested?\nTwo data points make a coincidence. Three make a pattern.",
-    "decryptionHint": "The IP traces look external. They are not.\nAll hops are internal. The latency is artificial.\nSomeone designed the network to mislead you.",
-    "flagSuspect": "You have the pattern.\nChat timing. File positioning. Simulated routing.\nAll of it points to someone who studies how people think \u2014 and acts before they do."
   }
 }

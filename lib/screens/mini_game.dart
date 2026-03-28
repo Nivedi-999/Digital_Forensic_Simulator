@@ -12,8 +12,6 @@ import '../widgets/cyber_widgets.dart';
 import '../models/evidence.dart';
 import '../logic/game_engine.dart';
 import '../state/case_engine_provider.dart';
-import '../services/tutorial_service.dart';
-import '../widgets/aria_controller.dart';
 
 // ── Entry point ──────────────────────────────────────────────
 
@@ -24,12 +22,12 @@ class DecryptionMiniGameScreen extends StatefulWidget {
   State<DecryptionMiniGameScreen> createState() => _DecryptionMiniGameScreenState();
 }
 
-class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen> with AriaMixin {
+class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen> {
   MinigameConfig? _minigame;
+
   @override
   void initState() {
     super.initState();
-    triggerAria(TutorialStep.decryptionHint);
   }
   @override
   Widget build(BuildContext context) {
@@ -37,10 +35,8 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen> wit
     final panel = engine.caseFile.panelById(widget.panelId);
     _minigame ??= panel?.minigame;
     final mg = _minigame;
-    if (mg == null) {
-      return AppShell(title: 'Mini-Game', showBack: true, showBottomNav: false,
-          child: const Center(child: Text('No mini-game found.')));
-    }
+    if (mg == null) return const Center(child: Text('No mini-game found.'));
+
     switch (mg.type) {
       case 'ip_trace': return _IpTraceGame(panelId: widget.panelId, minigame: mg);
       case 'code_crack': return _CodeCrackGame(panelId: widget.panelId, minigame: mg);

@@ -1,11 +1,11 @@
 {
-  "id": "case_alteredimage",
+  "id": "case_altered_image",
   "title": "The Altered Image",
   "shortDescription": "Digital Image Authenticity Investigation",
   "difficulty": "easy",
   "theme": "Evidence Authenticity",
   "estimatedDuration": "20–30 min",
-  "caseNumber": "2003",
+  "caseNumber": "1008",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -26,7 +26,9 @@
         "locationTrace": "Unconfirmed",
         "vpnCheck": "Possible VPN use — IP masked"
       },
-      "profileNotes": "Evidence strongly points to a skilled editor who obtained the original photograph, composited Arjun Mehta's image into the scene, and re-exported the file. The use of professional editing software is confirmed by EXIF metadata. True identity unestablished."
+      "profileNotes": "Evidence strongly points to a skilled editor who obtained the original photograph, composited Arjun Mehta's image into the scene, and re-exported the file. The use of professional editing software is confirmed by EXIF metadata. True identity unestablished.",
+      "image": "assets/avatars/unknown_editor.png",
+      "description": "Unknown Editor is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "witness_photographer",
@@ -41,7 +43,9 @@
         "locationTrace": "Residential area — 400m from facility",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Camera records do not match the evidence photo's timestamp. May have unknowingly shared an original image that was later manipulated by a third party. No confirmed motive to fabricate evidence. Camera sequence log is missing the 22:11 entry."
+      "profileNotes": "Camera records do not match the evidence photo's timestamp. May have unknowingly shared an original image that was later manipulated by a third party. No confirmed motive to fabricate evidence. Camera sequence log is missing the 22:11 entry.",
+      "image": "assets/avatars/witness_photographer.png",
+      "description": "Witness Photographer is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "arjun_mehta",
@@ -56,7 +60,9 @@
         "locationTrace": "Home address — alibi unverified",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "The suspect in the photograph. Denied being at the facility. No editing software found on his devices. No image access history. Evidence supports his claim that the photo is fabricated — but his motive for the burglary (wrongful dismissal dispute) remains noted."
+      "profileNotes": "The suspect in the photograph. Denied being at the facility. No editing software found on his devices. No image access history. Evidence supports his claim that the photo is fabricated — but his motive for the burglary (wrongful dismissal dispute) remains noted.",
+      "image": "assets/avatars/arjun_mehta.png",
+      "description": "Arjun Mehta is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "internal_staff",
@@ -71,7 +77,9 @@
         "locationTrace": "Admin Office — on-site",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Had access to internal file systems. Could theoretically have distributed the image internally. However, no editing software access was found, and no motive has been established. Remains a peripheral suspect."
+      "profileNotes": "Had access to internal file systems. Could theoretically have distributed the image internally. However, no editing software access was found, and no motive has been established. Remains a peripheral suspect.",
+      "image": "assets/avatars/internal_staff.png",
+      "description": "Internal Staff Member is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -107,10 +115,26 @@
         "instruction": "Drag the contrast slider up and zoom into the subject's outline. Flag the region where blur artifacts indicate image compositing.",
         "solution": "shoulder_hairline_boundary",
         "targetRegions": [
-          { "id": "shoulder_hairline_boundary", "label": "Shoulder & Hairline Edge", "isCorrect": true },
-          { "id": "background_wall", "label": "Background Wall", "isCorrect": false },
-          { "id": "door_frame", "label": "Door Frame", "isCorrect": false },
-          { "id": "ground_shadow", "label": "Ground Shadow", "isCorrect": false }
+          {
+            "id": "shoulder_hairline_boundary",
+            "label": "Shoulder & Hairline Edge",
+            "isCorrect": true
+          },
+          {
+            "id": "background_wall",
+            "label": "Background Wall",
+            "isCorrect": false
+          },
+          {
+            "id": "door_frame",
+            "label": "Door Frame",
+            "isCorrect": false
+          },
+          {
+            "id": "ground_shadow",
+            "label": "Ground Shadow",
+            "isCorrect": false
+          }
         ],
         "maxHints": 3,
         "hints": [
@@ -139,10 +163,26 @@
           "detail": "Camera model listed as Canon R5. Consistent with the witness photographer's registered device. File format is JPEG. Resolution matches Canon R5 native output (5472 × 3648). At surface level, the metadata appears genuine.",
           "pointsToSuspect": null,
           "rows": [
-            { "key": "Camera Model", "value": "Canon EOS R5", "highlight": false },
-            { "key": "Timestamp", "value": "22:11:04", "highlight": false },
-            { "key": "File Format", "value": "JPEG", "highlight": false },
-            { "key": "Resolution", "value": "5472 × 3648", "highlight": false }
+            {
+              "key": "Camera Model",
+              "value": "Canon EOS R5",
+              "highlight": false
+            },
+            {
+              "key": "Timestamp",
+              "value": "22:11:04",
+              "highlight": false
+            },
+            {
+              "key": "File Format",
+              "value": "JPEG",
+              "highlight": false
+            },
+            {
+              "key": "Resolution",
+              "value": "5472 × 3648",
+              "highlight": false
+            }
           ]
         },
         {
@@ -153,9 +193,21 @@
           "detail": "Hidden within the EXIF data is a Software tag that reads 'Adobe Photoshop 2024 (Windows)'. This tag is automatically written by Photoshop whenever a file is saved or exported. It confirms that this JPEG was opened, edited, and re-exported using professional image editing software after it was originally captured. A photograph exported directly from a Canon R5 would carry the camera's own software tag — not Photoshop's.",
           "pointsToSuspect": "unknown_editor",
           "rows": [
-            { "key": "Software Tag", "value": "Adobe Photoshop 2024 (Windows)", "highlight": true },
-            { "key": "Expected Tag", "value": "Canon Digital Photo Professional", "highlight": true },
-            { "key": "Implication", "value": "File was re-exported after editing", "highlight": true }
+            {
+              "key": "Software Tag",
+              "value": "Adobe Photoshop 2024 (Windows)",
+              "highlight": true
+            },
+            {
+              "key": "Expected Tag",
+              "value": "Canon Digital Photo Professional",
+              "highlight": true
+            },
+            {
+              "key": "Implication",
+              "value": "File was re-exported after editing",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -229,11 +281,26 @@
   "suspicionSystem": {
     "initialScore": 30,
     "levels": [
-      { "range": "0–20", "label": "Very Low" },
-      { "range": "21–40", "label": "Low" },
-      { "range": "41–60", "label": "Moderate" },
-      { "range": "61–80", "label": "High" },
-      { "range": "81–100", "label": "Critical" }
+      {
+        "range": "0–20",
+        "label": "Very Low"
+      },
+      {
+        "range": "21–40",
+        "label": "Low"
+      },
+      {
+        "range": "41–60",
+        "label": "Moderate"
+      },
+      {
+        "range": "61–80",
+        "label": "High"
+      },
+      {
+        "range": "81–100",
+        "label": "Critical"
+      }
     ],
     "updates": [
       {
@@ -317,13 +384,5 @@
     "title": "The Frame-Up Revealed",
     "description": "The photograph was originally taken by the witness — but was later obtained by an unknown third party, edited using professional software to composite Arjun Mehta into the scene, and re-submitted as authentic evidence. The scene itself may be real. The suspect placement is not.",
     "conclusion": "✔ Image confirmed as manipulated\n✔ Evidence authenticity compromised\n✔ Arjun Mehta was framed\n✔ True editor's identity remains unestablished"
-  },
-  "aria": {
-    "welcomeToHub": "A photograph. A suspect. A convenient story.\nBut cameras don't lie — editors do.\nFind out what this image is really hiding.",
-    "exploreFeeds": "EXIF data. Edge artifacts. Camera logs.\nSomeone opened this file in Photoshop — and it wasn't the camera.",
-    "viewEvidence": "Editing traces in the metadata. A timestamp the camera never recorded.\nThis photo has been through more than one pair of hands.",
-    "markEvidence": "Good. Keep building the chain.",
-    "decryptionHint": "The camera's own sequence log has no record of this photo.\nFind out why.",
-    "flagSuspect": "The image was altered by someone who knew exactly what they were doing.\nFollow the software trail — it leads somewhere."
   }
 }

@@ -12,10 +12,7 @@ import '../theme/app_shell.dart';
 import '../theme/cyber_theme.dart';
 import '../widgets/cyber_widgets.dart';
 import '../models/evidence.dart';
-import '../logic/game_engine.dart';
 import '../state/case_engine_provider.dart';
-import '../services/tutorial_service.dart';
-import '../widgets/aria_controller.dart';
 import 'mini_game.dart';
 
 class EvidenceAnalysisScreen extends StatefulWidget {
@@ -34,17 +31,15 @@ class EvidenceAnalysisScreen extends StatefulWidget {
 }
 
 class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
-    with AriaMixin {
+    {
   @override
   void initState() {
     super.initState();
-    triggerAria(TutorialStep.viewEvidence);
   }
 
   void _handleAddEvidence(BuildContext context) {
     final engine = CaseEngineProvider.read(context);
     engine.collectEvidence(widget.panelId, widget.itemId);
-    TutorialService().onEvidenceMarked();
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(children: [
@@ -60,11 +55,6 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
       shape: RoundedRectangleBorder(borderRadius: CyberRadius.medium),
       duration: const Duration(seconds: 2),
     ));
-
-    final service = TutorialService();
-    if (service.currentStep == TutorialStep.markEvidence && !service.messageShown) {
-      triggerAria(TutorialStep.markEvidence, delayMs: 400);
-    }
   }
 
   IconData _iconForType(String type) {
@@ -177,8 +167,6 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen>
             const SizedBox(height: 32),
           ]),
         ),
-
-        buildAriaLayer(),
       ]),
     );
   }

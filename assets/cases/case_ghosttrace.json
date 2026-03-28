@@ -25,7 +25,9 @@
         "locationTrace": "Mumbai Office WiFi",
         "vpnCheck": "No foreign VPN detected"
       },
-      "profileNotes": "Had direct access to the finance workstation FIN-WS-114. Login session overlaps exactly with the time of credential export. Modified finance_report_q3.pdf at 09:31 AM."
+      "profileNotes": "Had direct access to the finance workstation FIN-WS-114. Login session overlaps exactly with the time of credential export. Modified finance_report_q3.pdf at 09:31 AM.",
+      "image": "assets/avatars/ankita_e.png",
+      "description": "Ankita E is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "dhruv_a",
@@ -40,7 +42,9 @@
         "locationTrace": "IT Floor, Mumbai HQ",
         "vpnCheck": "Admin VPN active"
       },
-      "profileNotes": "Signed and deployed system_patch.exe. High system access but no evidence of finance data interaction. Patch contained an unusual outbound connection module \u2014 warrants scrutiny but not conclusive."
+      "profileNotes": "Signed and deployed system_patch.exe. High system access but no evidence of finance data interaction. Patch contained an unusual outbound connection module \u2014 warrants scrutiny but not conclusive.",
+      "image": "assets/avatars/dhruv_a.png",
+      "description": "Dhruv A is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "manav_r",
@@ -55,7 +59,9 @@
         "locationTrace": "Operations Floor, Mumbai HQ",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Present in office during the breach window. No direct access to finance systems. Alibi partially corroborated by meeting logs."
+      "profileNotes": "Present in office during the breach window. No direct access to finance systems. Alibi partially corroborated by meeting logs.",
+      "image": "assets/avatars/manav_r.png",
+      "description": "Manav R is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "ayon_k",
@@ -70,7 +76,9 @@
         "locationTrace": "Engineering Floor, Mumbai HQ",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "No access to finance systems. Committed code during breach window \u2014 alibi strong. Low threat level."
+      "profileNotes": "No access to finance systems. Committed code during breach window \u2014 alibi strong. Low threat level.",
+      "image": "assets/avatars/ayon_k.png",
+      "description": "Ayon K is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -441,14 +449,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "tutorialEnabled": true,
-  "aria": {
-    "welcomeToHub": "...Signal acquired.\nI am ARIA. I will be your eyes in the dark.\nThe truth is buried here \u2014 start digging.",
-    "exploreFeeds": "The feed panels above hold fragments of the breach.\nChat logs. Files. Metadata. IP traces.\nEach hides something. Tap one.",
-    "viewEvidence": "You've found a thread.\nRead carefully \u2014 not everything is what it seems.\nWhen something is suspicious... mark it.",
-    "markEvidence": "Evidence collected.\nGood instinct.\nKeep building your chain \u2014 you'll need at least 3 solid links to close this case.",
-    "decryptionHint": "There's an encrypted string hiding in plain sight.\nCaesar knew how to hide things... but so do I.\nFind the 'Unlock Hidden Clue' button.",
-    "flagSuspect": "You have enough.\nThe suspect list awaits.\nChoose carefully \u2014 a wrong accusation leaves the real ghost in the shadows."
   }
 }

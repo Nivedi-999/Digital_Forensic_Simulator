@@ -32,6 +32,8 @@ class Suspect {
   final bool isGuilty;
   final DigitalFootprint? digitalFootprint;
   final String? profileNotes;
+  final String? imagePath;
+  final String? description;
 
   const Suspect({
     required this.id,
@@ -42,6 +44,8 @@ class Suspect {
     required this.isGuilty,
     this.digitalFootprint,
     this.profileNotes,
+    this.description,
+    this.imagePath,
   });
 
   // Convenience getter for UI compatibility with old riskLevel string
@@ -69,6 +73,8 @@ class Suspect {
           ? DigitalFootprint.fromJson(footprintJson)
           : null,
       profileNotes: json['profileNotes'] as String?,
+      imagePath: json['imagePath'] as String?,
+      description: json['description'] as String?,
     );
   }
 }

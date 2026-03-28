@@ -87,7 +87,7 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
     final fp        = suspect.digitalFootprint;
 
     return AppShell(
-      title: 'Suspect Dossier',
+      title: 'Suspect Profile',
       showBack: true,
       showBottomNav: false,
       child: FadeTransition(

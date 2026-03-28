@@ -5,7 +5,7 @@
   "difficulty": "medium",
   "theme": "Identity Fraud & Social Engineering",
   "estimatedDuration": "30\u201340 min",
-  "caseNumber": "2003",
+  "caseNumber": "2002",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -26,7 +26,9 @@
         "locationTrace": "Registered Address \u2014 Pune Industrial Area",
         "vpnCheck": "VPN detected \u2014 exited"
       },
-      "profileNotes": "Had insider knowledge of the CFO's name, travel schedule, and vendor payment process \u2014 obtained during his time as a vendor. Sent the spoofed email and made the cloned voice call."
+      "profileNotes": "Had insider knowledge of the CFO's name, travel schedule, and vendor payment process \u2014 obtained during his time as a vendor. Sent the spoofed email and made the cloned voice call.",
+      "image": "assets/avatars/arpit_c.png",
+      "description": "Arpit C is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "neha_f",
@@ -41,7 +43,9 @@
         "locationTrace": "Finance Department Office",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Victim \u2014 received the spoofed instruction and transferred the funds in good faith. Not complicit in the fraud."
+      "profileNotes": "Victim \u2014 received the spoofed instruction and transferred the funds in good faith. Not complicit in the fraud.",
+      "image": "assets/avatars/neha_f.png",
+      "description": "Neha F is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "it_head",
@@ -56,7 +60,9 @@
         "locationTrace": "IT Department",
         "vpnCheck": "Admin access active"
       },
-      "profileNotes": "No motive. Company's email security was his responsibility \u2014 he failed to implement DMARC properly, enabling the spoof. Negligent but not culpable."
+      "profileNotes": "No motive. Company's email security was his responsibility \u2014 he failed to implement DMARC properly, enabling the spoof. Negligent but not culpable.",
+      "image": "assets/avatars/it_head.png",
+      "description": "Sameer L is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -366,13 +372,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...The CFO never sent that email. She was at 35,000 feet.\nSomeone wore her face and spoke with her voice.\nFind the impersonator.",
-    "exploreFeeds": "Email headers. Voice analysis. Domain registration.\nEvery fake leaves a real trace.",
-    "viewEvidence": "One extra letter in a domain name. That's all it took.\nLook closely.",
-    "markEvidence": "Good. The deception is unraveling.",
-    "decryptionHint": "The ex-vendor's name is encoded in the record.\nDecode it.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

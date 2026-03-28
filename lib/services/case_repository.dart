@@ -15,9 +15,9 @@ class CaseRepository {
     'assets/cases/case_fakereview.json',
     'assets/cases/case_ghosttrace.json',
     'assets/cases/case_jobscam.json',
-    'assets/cases/case_vanishing_report.json',   // ← new
-    'assets/cases/case_lost_usb.json',           // ← new
-    'assets/cases/case_altered_image.json',      // ← new
+    'assets/cases/case_vanishing_report.json',
+    'assets/cases/case_leaked_roster.json',       // replaces case_lost_usb
+    'assets/cases/case_altered_image.json',
 
     // ── MEDIUM ────────────────────────────────────────────
     'assets/cases/case_phantomtransaction.json',
@@ -25,9 +25,9 @@ class CaseRepository {
     'assets/cases/case_socialengineer.json',
     'assets/cases/case_lastlogin.json',
     'assets/cases/case_clouddrain.json',
-    'assets/cases/case_missing_logs.json',       // ← new
-    'assets/cases/case_deleted_documents.json',  // ← new
-    'assets/cases/case_midnight_timeline.json',  // ← new
+    'assets/cases/case_missing_logs.json',
+    'assets/cases/case_cloned_credential.json',   // replaces case_deleted_documents
+    'assets/cases/case_midnight_timeline.json',
 
     // ── HARD ──────────────────────────────────────────────
     'assets/cases/case_deaddrop.json',
@@ -35,8 +35,8 @@ class CaseRepository {
     'assets/cases/case_echowithoutavoice.json',
     'assets/cases/case_darkproxyattack.json',
     'assets/cases/case_poisonedpatch.json',
-    'assets/cases/case_unknownusb.json',        // ← new
-    'assets/cases/case_disguisedfile.json',     // ← new
+    'assets/cases/case_unknown_usb.json',
+    'assets/cases/case_borrowed_badge.json',      // replaces case_disguised_file
 
     // ── ADVANCED ──────────────────────────────────────────
     'assets/cases/case_vanishingvault.json',
@@ -62,8 +62,6 @@ class CaseRepository {
         final raw = await rootBundle.loadString(path);
         final jsonMap = jsonDecode(raw) as Map<String, dynamic>;
         final caseFile = CaseFile.fromJson(jsonMap);
-        // Store by filename stem — not by caseFile.id — so the `all`
-        // getter can always find it regardless of what id is in the JSON.
         _cache[_keyFromPath(path)] = caseFile;
       } catch (e) {
         assert(() {

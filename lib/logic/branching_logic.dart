@@ -96,10 +96,12 @@ class BranchingLogic {
     'hash_verification_v':     {'it_admin': 0.25},
     'service_account_log':    {'it_admin': 0.22},
 
-    // ── CASE 02: THE LOST USB (Easy) ──
-    'usb_file_list':           {'dept_manager': 0.15, 'security_guard': 0.10},
-    'chain_of_custody_usb':    {'dept_manager': 0.20, 'it_technician': -0.05},
-    'workstation_logs_usb':    {'dept_manager': 0.25},
+    // ── The Leaked Roster (Easy) ─────────────────────────────
+    'chat_early_hint':          {'priya_menon': 0.18, 'rahul_tiwari': -0.05},
+    'file_access_log':          {'priya_menon': 0.22, 'rahul_tiwari': -0.10, 'sunita_das': -0.05},
+    'meta_device_id':           {'priya_menon': 0.25, 'unknown_student': -0.15},
+    'ip_whatsapp_upload':       {'priya_menon': 0.22, 'rahul_tiwari': -0.15},
+    'meta_wifi_registration':   {'priya_menon': 0.20},
 
     // ── CASE 03: THE ALTERED IMAGE (Easy) ──
     'image_analysis':          {'unknown_editor': 0.20, 'arjun_mehta': -0.10},
@@ -164,10 +166,15 @@ class BranchingLogic {
     'timeline_reconstruction': {'sys_admin': 0.25, 'it_support': -0.10},
     'log_clear_source':        {'sys_admin': 0.22},
 
-    // ── CASE 05: THE DELETED DOCUMENTS (Medium) ──
-    'file_carve_pdf':          {'rohan_verma': 0.25},
-    'hex_signature_pdf':       {'rohan_verma': 0.20},
-    'deletion_timestamp':      {'rohan_verma': 0.18},
+    // ── The Cloned Credential (Medium) ───────────────────────
+    'chat_phish_email':         {'deepak_soni': 0.15, 'kavya_nair': -0.10},
+    'chat_domain_registration': {'deepak_soni': 0.25, 'it_helpdesk': -0.10},
+    'file_vendor_creation':     {'deepak_soni': 0.22, 'external_vendor': -0.10},
+    'file_invoice_approval':    {'deepak_soni': 0.20, 'kavya_nair': -0.15},
+    'meta_session_fingerprint': {'deepak_soni': 0.20, 'kavya_nair': -0.12},
+    'meta_upi_trace':           {'deepak_soni': 0.22},
+    'ip_approval_session':      {'deepak_soni': 0.25, 'kavya_nair': -0.20},
+    'meta_harvested_credentials': {'deepak_soni': 0.18},
 
     // ── CASE 06: THE MIDNIGHT TIMELINE (Medium) ──
     'midnight_login_trace':    {'employee': 0.22, 'remote_attacker': 0.12},
@@ -193,10 +200,15 @@ class BranchingLogic {
     'serial_number_match':     {'workstation_owner': 0.25},
     'correlation_window':      {'workstation_owner': 0.18},
 
-    // ── CASE 08: THE DISGUISED FILE (Hard) ──
-    'double_extension_trace':  {'external_attacker': 0.20, 'employee_victim': 0.10},
-    'mz_header_proof':         {'external_attacker': 0.25},
-    'spoofed_email_header':    {'external_attacker': 0.22, 'it_staff': -0.10},
+    // ── The Borrowed Badge (Hard) ─────────────────────────────
+    'chat_badge_entry':         {'arvind_kale': 0.15, 'shruti_varma': 0.10},
+    'chat_arvind_exit':         {'arvind_kale': 0.18},
+    'file_rfid_purchase':       {'arvind_kale': 0.25, 'ex_employee': -0.15},
+    'file_audit_proximity':     {'arvind_kale': 0.22, 'shruti_varma': -0.12},
+    'meta_cctv_gap':            {'arvind_kale': 0.18},
+    'meta_manual_hold':         {'arvind_kale': 0.20, 'facilities_guard': -0.15},
+    'meta_proxmark_signature':  {'arvind_kale': 0.22, 'shruti_varma': -0.18},
+    'ip_arvind_home_inactive':  {'arvind_kale': 0.15, 'ex_employee': -0.10},
 
     // ── Echoes of Tomorrow (Hard) ────────────────────────────
     'file_preemptive_archive': {'manav_r': 0.22, 'auto_scheduler': -0.15},
@@ -368,6 +380,9 @@ class BranchingLogic {
     'extension_detect':        {'external_attacker': 0.12},
     'memory_analysis':         {'aryan_mehta': 0.15},
     'token_trace':             {'silverkey_broker': 0.15},
+    'device_match':             {'priya_menon': 0.12, 'rahul_tiwari': -0.10, 'unknown_student': -0.10},
+    'credential_decode':        {'deepak_soni': 0.12, 'kavya_nair': -0.12},
+    'rfid_frequency_decode':    {'arvind_kale': 0.15, 'shruti_varma': -0.15, 'ex_employee': -0.10},
   };
 
   void applyMinigameEffects(String minigameId, Map<String, double> suspicion) {

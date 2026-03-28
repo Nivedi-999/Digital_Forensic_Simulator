@@ -26,7 +26,9 @@
         "locationTrace": "VPS hosted in Netherlands \u2014 registered to Dhruv N",
         "vpnCheck": "14-hop proxy chain used"
       },
-      "profileNotes": "Dismissed 3 months ago after a performance dispute. Had full architecture access during employment \u2014 knew exact rate limit thresholds. Rented a VPS 2 weeks before the attack and built the proxy chain from it."
+      "profileNotes": "Dismissed 3 months ago after a performance dispute. Had full architecture access during employment \u2014 knew exact rate limit thresholds. Rented a VPS 2 weeks before the attack and built the proxy chain from it.",
+      "image": "assets/avatars/dhruv_n.png",
+      "description": "Dhruv N is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "competitor_cto",
@@ -41,7 +43,9 @@
         "locationTrace": "RapidPay HQ, Bengaluru",
         "vpnCheck": "Corporate VPN only"
       },
-      "profileNotes": "Benefited from the outage \u2014 gained market share. However no technical link to the attack infrastructure. Alibi confirmed by corporate access logs."
+      "profileNotes": "Benefited from the outage \u2014 gained market share. However no technical link to the attack infrastructure. Alibi confirmed by corporate access logs.",
+      "image": "assets/avatars/competitor_cto.png",
+      "description": "Siddharth R is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "insider_devops",
@@ -56,7 +60,9 @@
         "locationTrace": "PaySwift Office, Mumbai",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has current architecture access but no motive. Was actively working to mitigate the attack during the outage window \u2014 confirmed by incident response logs."
+      "profileNotes": "Has current architecture access but no motive. Was actively working to mitigate the attack during the outage window \u2014 confirmed by incident response logs.",
+      "image": "assets/avatars/insider_devops.png",
+      "description": "Kavya T is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "hacktivist",
@@ -71,7 +77,9 @@
         "locationTrace": "Untraced",
         "vpnCheck": "Tor detected"
       },
-      "profileNotes": "NullFront claimed responsibility on social media \u2014 but their signature attack patterns (slow-loris, HTTP flood) don't match the volumetric burst attack seen here. False flag claim."
+      "profileNotes": "NullFront claimed responsibility on social media \u2014 but their signature attack patterns (slow-loris, HTTP flood) don't match the volumetric burst attack seen here. False flag claim.",
+      "image": "assets/avatars/hacktivist.png",
+      "description": "Unknown Group \u2014 NullFront is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -403,13 +411,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...9 hours. 14 proxy hops. 6 countries.\nSomeone wanted this to look like everyone and no one.\nBut they knew too much. Find out who.",
-    "exploreFeeds": "Traffic analysis. Proxy traces. Code forensics.\nThe attack was sophisticated. The motive was personal.",
-    "viewEvidence": "8,200 requests per second. Exactly 200 above the internal threshold.\nOnly a former insider knew that number.",
-    "markEvidence": "Good. The chain is forming.",
-    "decryptionHint": "The attack script has a name encoded in it.\nDecode the author tag.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

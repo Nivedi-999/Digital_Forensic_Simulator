@@ -1,0 +1,388 @@
+{
+  "id": "case_leaked_roster",
+  "title": "The Leaked Roster",
+  "shortDescription": "A confidential student exam seating plan was leaked online before the exam.",
+  "difficulty": "easy",
+  "theme": "Data Leak & Insider Threat",
+  "estimatedDuration": "20–25 min",
+  "caseNumber": "1007",
+  "status": "Locked",
+  "tutorialEnabled": false,
+  "briefing": {
+    "incidentSummary": "Two hours before the Class 12 final board exam, a photograph of the confidential seating arrangement was posted in a student WhatsApp group. The document was only accessible to three staff members: the exam coordinator, the IT assistant, and the principal's office clerk.\n\nThe school administration has launched an internal investigation. Your job is to trace who leaked it — and how.",
+    "missionText": "Your Mission:\n\n› Examine the leaked image's metadata for device and time clues\n\n› Review staff access logs for the exam document folder\n\n› Analyse chat records for early knowledge of seating details\n\n› Collect at least 3 correct evidence items\n\n› Flag the correct suspect"
+  },
+  "suspects": [
+    {
+      "id": "priya_menon",
+      "name": "Priya Menon",
+      "role": "Exam Coordinator — Staff",
+      "department": "Academic Affairs",
+      "riskLevel": "high",
+      "isGuilty": true,
+      "digitalFootprint": {
+        "ipActivity": "192.168.10.14 — school intranet",
+        "deviceUsage": "Samsung Galaxy A53 — personal device",
+        "locationTrace": "Staff room — confirmed on campus",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Last accessed the seating document at 07:42 AM — 18 minutes before the leak appeared online. Her phone's device ID matches the EXIF metadata embedded in the leaked photograph. She also responded to a student's question about seat numbers in the chat before the document was officially circulated.",
+      "image": "assets/avatars/priya_menon.png",
+      "description": "Priya Menon is the exam coordinator responsible for preparing and distributing the seating arrangement."
+    },
+    {
+      "id": "rahul_tiwari",
+      "name": "Rahul Tiwari",
+      "role": "IT Assistant — School Network",
+      "department": "IT Department",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.10.22 — IT lab terminal",
+        "deviceUsage": "School desktop — no personal device logged",
+        "locationTrace": "IT lab — camera confirms presence",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Has admin-level access to the document server. However, access logs show his account last opened the exam folder at 06:15 AM — over 90 minutes before the leak. CCTV confirms he was in the IT lab continuously until 10:00 AM. No personal device activity detected.",
+      "image": "assets/avatars/rahul_tiwari.png",
+      "description": "Rahul Tiwari manages the school's internal file servers and network infrastructure."
+    },
+    {
+      "id": "sunita_das",
+      "name": "Sunita Das",
+      "role": "Office Clerk — Principal's Office",
+      "department": "Administration",
+      "riskLevel": "low",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "192.168.10.31 — admin terminal",
+        "deviceUsage": "Office desktop — read-only access",
+        "locationTrace": "Principal's office — sign-in confirms",
+        "vpnCheck": "No VPN detected"
+      },
+      "profileNotes": "Had read-only access to the document. No print or download action is recorded from her account. Her desktop does not have the school's document management software installed — she could view but not export the file. No phone activity in the relevant window.",
+      "image": "assets/avatars/sunita_das.png",
+      "description": "Sunita Das handles administrative paperwork and scheduling in the principal's office."
+    },
+    {
+      "id": "unknown_student",
+      "name": "Unknown Student",
+      "role": "Student — Class 12",
+      "department": "Unknown",
+      "riskLevel": "medium",
+      "isGuilty": false,
+      "digitalFootprint": {
+        "ipActivity": "Unknown — external network",
+        "deviceUsage": "Unknown personal device",
+        "locationTrace": "Unconfirmed",
+        "vpnCheck": "Unknown"
+      },
+      "profileNotes": "It is theoretically possible a student obtained the document through social engineering or by photographing a physical printout. However, no physical copies were printed before the leak, and the document server logs show only staff-account access during the relevant window.",
+      "image": "assets/avatars/unknown_student.png",
+      "description": "A theoretical suspect representing the possibility of a student obtaining the document through unofficial means."
+    }
+  ],
+  "evidencePanels": [
+    {
+      "id": "chat",
+      "label": "Chat Logs",
+      "icon": "chat_bubble_outline",
+      "evidenceType": "chat",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "chat_early_hint",
+          "label": "Priya → Student Group: 'Don't worry about seats'",
+          "sender": "Priya Menon",
+          "isSuspect": true,
+          "isKeyEvidence": true,
+          "detail": "At 07:48 AM, Priya Menon sent a message to the class WhatsApp group saying 'Don't worry about your seats, you'll be comfortable.' This was sent six minutes before the leaked image appeared in the group — and three minutes after she last accessed the seating document. No other staff member had been informed that students were anxious about seating. She knew the contents before it was officially released.",
+          "pointsToSuspect": "priya_menon",
+          "irrelevantReason": "This chat message alone doesn't prove she leaked the document — it could be interpreted as general reassurance."
+        },
+        {
+          "id": "chat_student_reaction",
+          "label": "Student Group: 'Who sent this??' — 07:54 AM",
+          "sender": "Unknown Student",
+          "isSuspect": false,
+          "isKeyEvidence": false,
+          "detail": "At 07:54 AM, multiple students in the group reacted with confusion and excitement when the seating image appeared. The reactions indicate the students were surprised — none of them appear to have known about it in advance. This rules out the possibility that the leak originated from within the student group itself.",
+          "pointsToSuspect": null,
+          "irrelevantReason": "Student reactions simply confirm the leak happened — they don't identify the source."
+        },
+        {
+          "id": "chat_it_alibi",
+          "label": "IT Chat Log — Rahul in support ticket at 08:00 AM",
+          "sender": "Rahul Tiwari",
+          "isSuspect": false,
+          "isKeyEvidence": false,
+          "detail": "Internal IT support chat shows Rahul was actively responding to a printer connectivity ticket at 08:00 AM — the same time the leak occurred. The ticket trail includes message timestamps and a remote session log to the library printer. He was occupied and his account shows no document access during this window.",
+          "pointsToSuspect": null,
+          "irrelevantReason": "This is alibi evidence for Rahul — it clears him rather than implicating anyone."
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "files",
+      "label": "Access Logs",
+      "icon": "folder_outlined",
+      "evidenceType": "files",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "file_access_log",
+          "label": "exam_seating_final.pdf — Access Log",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "The document server access log shows three entries for exam_seating_final.pdf on the morning of the exam. Rahul's account: 06:15 AM (read). Sunita's account: 06:50 AM (read). Priya's account: 07:42 AM (read + screenshot capture flag). The system automatically flags when a file is viewed in full-screen mode on a mobile-synced session — a behaviour consistent with photographing the screen. Only Priya's session triggered this flag.",
+          "pointsToSuspect": "priya_menon",
+          "metadata": {
+            "size": "0.3 MB",
+            "modifier": "Document Server — Auto Log",
+            "modifiedAt": "07:42 AM — day of exam"
+          },
+          "irrelevantReason": "Access logs show who opened the file, but opening a file is not by itself proof of leaking it."
+        },
+        {
+          "id": "file_print_log",
+          "label": "Print Queue Log — No Physical Copies",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The school's print server log confirms that no physical copies of exam_seating_final.pdf were printed before 09:30 AM. This eliminates the possibility that the leaked photograph was taken from a printed sheet. The leak must have originated from a digital screen — either a monitor or a mobile device displaying the document.",
+          "pointsToSuspect": null,
+          "metadata": {
+            "size": "0.1 MB",
+            "modifier": "Print Server — Auto Log",
+            "modifiedAt": "09:30 AM"
+          },
+          "irrelevantReason": "This confirms the leak was digital but doesn't identify the individual responsible."
+        }
+      ],
+      "minigame": null
+    },
+    {
+      "id": "meta",
+      "label": "Image Metadata",
+      "icon": "data_object",
+      "evidenceType": "meta",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "meta_device_id",
+          "label": "Leaked Image EXIF — Device: Samsung SM-A536B",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "EXIF metadata extracted from the leaked photograph reveals it was captured on a Samsung Galaxy A53 (model SM-A536B) at 07:44 AM. Cross-referencing the school's device registry and staff records shows that Priya Menon is the only staff member who registered a Samsung Galaxy A53 on the school Wi-Fi network. The 07:44 AM timestamp is two minutes after her document access session — consistent with opening the file and immediately photographing it.",
+          "pointsToSuspect": "priya_menon",
+          "rows": [
+            { "key": "Device Model", "value": "Samsung SM-A536B (Galaxy A53)", "highlight": true },
+            { "key": "Capture Time", "value": "07:44 AM", "highlight": true },
+            { "key": "GPS Data", "value": "Stripped — location removed", "highlight": false },
+            { "key": "Registered Owner", "value": "Priya Menon — Staff Wi-Fi Log", "highlight": true }
+          ]
+        },
+        {
+          "id": "meta_compression",
+          "label": "Image Compression — WhatsApp Re-encode Detected",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "The leaked image shows compression artifacts consistent with WhatsApp's automatic image re-encoding. This confirms the photograph was sent directly through WhatsApp rather than uploaded from a computer or shared via a link. The original file was taken on a phone and immediately forwarded — no editing or intermediate steps were detected.",
+          "pointsToSuspect": null,
+          "rows": [
+            { "key": "Compression", "value": "WhatsApp re-encode detected", "highlight": false },
+            { "key": "Original Format", "value": "JPEG — phone camera", "highlight": false },
+            { "key": "Editing Software", "value": "None detected", "highlight": false }
+          ]
+        }
+      ],
+      "minigame": {
+        "id": "device_match",
+        "type": "caesar_cipher",
+        "title": "Decode the Device Registration Code",
+        "hint": "The device registration system stores model codes in a Caesar cipher shifted by 3. Decode the model string to confirm the device owner.",
+        "cipherText": "VDPVXQJ VP-D536E",
+        "solution": "samsung sm-a536b",
+        "maxHints": 3,
+        "hints": [
+          "A Caesar cipher shifts each letter by a fixed number. Try shifting each letter backwards by 3.",
+          "V becomes S, D becomes A, P becomes M. Keep going for the full model string.",
+          "The decoded text is the phone model registered to one of the three staff suspects. Check the staff device registry."
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "meta_wifi_registration",
+          "message": "Device model confirmed: Samsung Galaxy A53. Wi-Fi registration record now unlocked — cross-reference with staff records."
+        }
+      },
+      "hiddenItem": {
+        "id": "meta_wifi_registration",
+        "label": "Staff Wi-Fi Registry — Samsung A53 Registered to Priya Menon",
+        "isKeyEvidence": true,
+        "isSuspect": true,
+        "isHidden": true,
+        "unlockedByMinigame": "device_match",
+        "detail": "The school's Wi-Fi device registration log confirms that the Samsung Galaxy A53 (SM-A536B) was registered under the name 'Priya Menon' on the school network three months ago. It is the only device of this model registered to any staff member. Combined with the EXIF timestamp, this directly links her phone to the leaked photograph.",
+        "pointsToSuspect": "priya_menon",
+        "rows": [
+          { "key": "Registered Name", "value": "Priya Menon", "highlight": true },
+          { "key": "Device", "value": "Samsung Galaxy A53", "highlight": true },
+          { "key": "MAC Address", "value": "E4:5F:01:2A:9C:3B", "highlight": false },
+          { "key": "Registration Date", "value": "3 months prior", "highlight": false }
+        ]
+      }
+    },
+    {
+      "id": "ip",
+      "label": "IP Traces",
+      "icon": "wifi",
+      "evidenceType": "ip",
+      "unlockedBy": null,
+      "items": [
+        {
+          "id": "ip_whatsapp_upload",
+          "label": "WhatsApp Upload — Originating IP: 192.168.10.14",
+          "isKeyEvidence": true,
+          "isSuspect": true,
+          "detail": "Network traffic logs captured a WhatsApp media upload originating from IP address 192.168.10.14 at 07:54 AM — the exact minute the leaked image appeared in the student group. IP 192.168.10.14 is statically assigned to Priya Menon's mobile device on the school Wi-Fi. No other device on the network generated WhatsApp upload traffic during this window.",
+          "pointsToSuspect": "priya_menon",
+          "rows": [
+            { "key": "Source IP", "value": "192.168.10.14", "highlight": true },
+            { "key": "Assigned To", "value": "Priya Menon — Mobile", "highlight": true },
+            { "key": "Upload Time", "value": "07:54 AM", "highlight": true },
+            { "key": "Protocol", "value": "WhatsApp Media Upload (HTTPS)", "highlight": false }
+          ]
+        },
+        {
+          "id": "ip_rahul_traffic",
+          "label": "Rahul's IP — No WhatsApp Traffic Detected",
+          "isKeyEvidence": false,
+          "isSuspect": false,
+          "detail": "IP 192.168.10.22, assigned to Rahul Tiwari's IT lab terminal, generated no WhatsApp traffic between 07:00 AM and 09:00 AM. The terminal is a desktop workstation and does not have WhatsApp installed. No personal device associated with Rahul's account appeared on the network during the leak window.",
+          "pointsToSuspect": null,
+          "rows": [
+            { "key": "Source IP", "value": "192.168.10.22", "highlight": false },
+            { "key": "Assigned To", "value": "Rahul Tiwari — IT Lab Desktop", "highlight": false },
+            { "key": "WhatsApp Traffic", "value": "None detected", "highlight": false }
+          ]
+        }
+      ],
+      "minigame": null
+    }
+  ],
+  "timeline": [
+    {
+      "time": "06:15 AM",
+      "title": "Rahul Opens Seating Document",
+      "description": "IT Assistant Rahul Tiwari opens exam_seating_final.pdf for a routine server integrity check. No further access from his account.",
+      "severity": "low"
+    },
+    {
+      "time": "06:50 AM",
+      "title": "Sunita Views Document",
+      "description": "Office clerk Sunita Das opens the file in read-only mode to confirm it was uploaded correctly. No download or screenshot flag triggered.",
+      "severity": "low"
+    },
+    {
+      "time": "07:42 AM",
+      "title": "Priya Accesses Document — Screenshot Flag Triggered",
+      "description": "Exam coordinator Priya Menon opens the file on a mobile-synced session. System flags a full-screen view event consistent with screen photography.",
+      "severity": "critical"
+    },
+    {
+      "time": "07:44 AM",
+      "title": "Photograph Taken — Samsung A53",
+      "description": "EXIF metadata confirms a photograph of the seating plan was captured at 07:44 AM on a Samsung Galaxy A53 registered to Priya Menon.",
+      "severity": "critical"
+    },
+    {
+      "time": "07:48 AM",
+      "title": "Priya Sends 'Don't Worry' Message",
+      "description": "Priya messages the student group reassuring them about seating — before the document has been officially released.",
+      "severity": "high"
+    },
+    {
+      "time": "07:54 AM",
+      "title": "Leaked Image Appears in Student Group",
+      "description": "The photograph of the seating plan is uploaded to the Class 12 WhatsApp group from IP 192.168.10.14 — Priya's registered mobile IP.",
+      "severity": "critical"
+    }
+  ],
+  "suspicionSystem": {
+    "initialScore": 30,
+    "levels": [
+      { "range": "0–20", "label": "Very Low" },
+      { "range": "21–40", "label": "Low" },
+      { "range": "41–60", "label": "Moderate" },
+      { "range": "61–80", "label": "High" },
+      { "range": "81–100", "label": "Critical" }
+    ],
+    "updates": [
+      {
+        "trigger": "chat_early_hint_found",
+        "changes": { "priya_menon": "+20", "rahul_tiwari": "+5", "sunita_das": "+5" },
+        "note": "Early knowledge of seating details raises suspicion on Priya."
+      },
+      {
+        "trigger": "file_access_log_found",
+        "changes": { "priya_menon": "+25", "rahul_tiwari": "-10", "sunita_das": "-5" },
+        "note": "Screenshot flag on Priya's session is the clearest access-level evidence."
+      },
+      {
+        "trigger": "meta_device_id_found",
+        "changes": { "priya_menon": "+25", "unknown_student": "-15" },
+        "note": "EXIF device match to Priya's registered phone. Student angle eliminated."
+      },
+      {
+        "trigger": "ip_whatsapp_upload_found",
+        "changes": { "priya_menon": "+20", "rahul_tiwari": "-15" },
+        "note": "Upload IP directly assigned to Priya's mobile on school Wi-Fi."
+      }
+    ]
+  },
+  "winCondition": {
+    "guiltySuspectId": "priya_menon",
+    "minCorrectEvidence": 3
+  },
+  "correctEvidenceIds": [
+    "file_access_log",
+    "meta_device_id",
+    "ip_whatsapp_upload",
+    "chat_early_hint",
+    "meta_wifi_registration"
+  ],
+  "outcomes": {
+    "perfect": {
+      "condition": "correct_suspect_and_evidence_gte_3",
+      "title": "Case Solved!",
+      "subtitle": "Priya Menon's device, IP address and access log all confirm she photographed and leaked the exam seating plan.",
+      "label": "CASE CLOSED",
+      "xp": 10
+    },
+    "partial": {
+      "condition": "correct_suspect_and_evidence_lt_3",
+      "title": "Insufficient Evidence",
+      "subtitle": "You identified the right suspect but didn't build a complete evidence chain.",
+      "label": "PARTIAL",
+      "xp": 3
+    },
+    "wrongAccusation": {
+      "condition": "wrong_suspect",
+      "title": "Wrong Suspect",
+      "subtitle": "Priya Menon leaked the document. The EXIF data and upload IP both point to her phone.",
+      "label": "CASE FAILED",
+      "xp": 0
+    },
+    "coldCase": {
+      "condition": "correct_suspect_and_evidence_eq_0",
+      "title": "Case Gone Cold",
+      "subtitle": "No evidence collected. The leak source was never identified.",
+      "label": "COLD CASE",
+      "xp": 0
+    }
+  },
+  "finalTwist": {
+    "title": "The Coordinator's Mistake",
+    "description": "Priya Menon photographed the seating plan on her phone intending to share it with a colleague — but accidentally forwarded it to the class group instead. The digital trail she left behind was comprehensive: device EXIF, Wi-Fi IP, access log screenshot flag, and an incriminating chat message sent minutes before the leak.",
+    "conclusion": "✔ Device EXIF matched Priya's registered Samsung A53\n✔ Wi-Fi upload IP assigned to her mobile\n✔ Access log screenshot flag at 07:42 AM\n✔ Chat message sent before official release"
+  }
+}

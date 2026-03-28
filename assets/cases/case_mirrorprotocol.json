@@ -26,7 +26,9 @@
         "locationTrace": "Bengaluru \u2014 co-working space",
         "vpnCheck": "VPN used during backdoor commit"
       },
-      "profileNotes": "Sole maintainer of NeuralLog \u2014 a logging library used by the victim startup. Was secretly contracted by the competitor for \u20b918 Lakh. Injected a 4-line backdoor into version 2.1.4 of the library that silently exfiltrated model tensors during training runs."
+      "profileNotes": "Sole maintainer of NeuralLog \u2014 a logging library used by the victim startup. Was secretly contracted by the competitor for \u20b918 Lakh. Injected a 4-line backdoor into version 2.1.4 of the library that silently exfiltrated model tensors during training runs.",
+      "image": "assets/avatars/zoya_r.png",
+      "description": "Zoya R is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "competitor_cto2",
@@ -41,7 +43,9 @@
         "locationTrace": "MindForge HQ, Hyderabad",
         "vpnCheck": "Corporate VPN only"
       },
-      "profileNotes": "Orchestrated the theft from the demand side \u2014 hired Zoya R through an intermediary. However the technical act of injection was Zoya's. Arun P is a secondary actor \u2014 the direct suspect is the code injector."
+      "profileNotes": "Orchestrated the theft from the demand side \u2014 hired Zoya R through an intermediary. However the technical act of injection was Zoya's. Arun P is a secondary actor \u2014 the direct suspect is the code injector.",
+      "image": "assets/avatars/competitor_cto2.png",
+      "description": "Arun P is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "mlops_engineer",
@@ -56,7 +60,9 @@
         "locationTrace": "Victim Startup Office",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Updated the NeuralLog library to version 2.1.4 as part of routine dependency maintenance \u2014 unknowingly introduced the backdoor. Not complicit."
+      "profileNotes": "Updated the NeuralLog library to version 2.1.4 as part of routine dependency maintenance \u2014 unknowingly introduced the backdoor. Not complicit.",
+      "image": "assets/avatars/mlops_engineer.png",
+      "description": "Farhan K is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "disgruntled_researcher",
@@ -71,7 +77,9 @@
         "locationTrace": "Pune \u2014 home address",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Resigned 2 months before the theft after a compensation dispute. No longer had access to model infrastructure. Red herring \u2014 her departure predates the attack by too long."
+      "profileNotes": "Resigned 2 months before the theft after a compensation dispute. No longer had access to model infrastructure. Red herring \u2014 her departure predates the attack by too long.",
+      "image": "assets/avatars/disgruntled_researcher.png",
+      "description": "Priya N is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -392,13 +400,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...\u20b940 crore of research. Stolen through 4 lines of code.\nThe library was trusted. The maintainer was not.\nFind who poisoned the well.",
-    "exploreFeeds": "Code diffs. Network traffic. Domain registrations.\nThe attack was elegant. The trail is there \u2014 if you read code.",
-    "viewEvidence": "47GB over 11 days. Timed to stay just below the alert threshold.\nSomeone knew exactly how much they could take before anyone noticed.",
-    "markEvidence": "Good. The supply chain is unraveling.",
-    "decryptionHint": "The git commit has an author signature encoded inside.\nDecode it.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

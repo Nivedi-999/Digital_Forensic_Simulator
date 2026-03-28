@@ -1,11 +1,11 @@
 {
-  "id": "case_vanishingreport",
+  "id": "case_vanishing_report",
   "title": "The Vanishing Report",
   "shortDescription": "Evidence Integrity Investigation",
   "difficulty": "easy",
   "theme": "Evidence Tampering",
   "estimatedDuration": "20–30 min",
-  "caseNumber": "0001",
+  "caseNumber": "1006",
   "status": "Locked",
   "tutorialEnabled": true,
   "briefing": {
@@ -22,10 +22,25 @@
       "isGuilty": false,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 15, "reason": "Had original full access to the file" },
-        { "phase": 2, "delta": -5, "reason": "No evidence of re-access after upload" },
-        { "phase": 3, "delta": -10, "reason": "Hash mismatch exonerates her — file was changed after her upload" },
-        { "phase": "final", "label": "Low" }
+        {
+          "phase": 1,
+          "delta": 15,
+          "reason": "Had original full access to the file"
+        },
+        {
+          "phase": 2,
+          "delta": -5,
+          "reason": "No evidence of re-access after upload"
+        },
+        {
+          "phase": 3,
+          "delta": -10,
+          "reason": "Hash mismatch exonerates her — file was changed after her upload"
+        },
+        {
+          "phase": "final",
+          "label": "Low"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "10.0.2.21 — 9:00 AM–6:00 PM",
@@ -33,7 +48,9 @@
         "locationTrace": "Audit Department, Floor 3",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Prepared and uploaded the fraud report. System logs show she uploaded the file at 09:10 and did not access it again. Credible alibi supported by access logs. No motive identified — the report served her own investigation."
+      "profileNotes": "Prepared and uploaded the fraud report. System logs show she uploaded the file at 09:10 and did not access it again. Credible alibi supported by access logs. No motive identified — the report served her own investigation.",
+      "image": "assets/avatars/neha_sharma.png",
+      "description": "Neha Sharma is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "it_admin",
@@ -44,10 +61,25 @@
       "isGuilty": true,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 10, "reason": "Has server-level access to all documents" },
-        { "phase": 2, "delta": 20, "reason": "Only role capable of modifying metadata and timestamps" },
-        { "phase": 3, "delta": 25, "reason": "Hash mismatch points to post-upload modification via privileged access" },
-        { "phase": "final", "label": "High" }
+        {
+          "phase": 1,
+          "delta": 10,
+          "reason": "Has server-level access to all documents"
+        },
+        {
+          "phase": 2,
+          "delta": 20,
+          "reason": "Only role capable of modifying metadata and timestamps"
+        },
+        {
+          "phase": 3,
+          "delta": 25,
+          "reason": "Hash mismatch points to post-upload modification via privileged access"
+        },
+        {
+          "phase": "final",
+          "label": "High"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "10.0.0.5 — irregular hours detected",
@@ -55,7 +87,9 @@
         "locationTrace": "Server Room / Remote Access",
         "vpnCheck": "Internal admin VPN used"
       },
-      "profileNotes": "Has full server-level access including the document storage system. The modification required someone with the ability to alter file contents, manipulate timestamps, and avoid standard audit logs. A hidden service account with elevated privileges — not visible in standard logs — was used to access and modify the file. The service account matches credentials managed by the IT Administrator."
+      "profileNotes": "Has full server-level access including the document storage system. The modification required someone with the ability to alter file contents, manipulate timestamps, and avoid standard audit logs. A hidden service account with elevated privileges — not visible in standard logs — was used to access and modify the file. The service account matches credentials managed by the IT Administrator.",
+      "image": "assets/avatars/it_admin.png",
+      "description": "IT Administrator is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "finance_manager",
@@ -66,10 +100,25 @@
       "isGuilty": false,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 5, "reason": "Financial data in the report was directly relevant to their operations" },
-        { "phase": 2, "delta": 5, "reason": "Could have accessed financial systems" },
-        { "phase": 3, "delta": 10, "reason": "Motive strengthens — altered financial values benefited this department" },
-        { "phase": "final", "label": "Moderate" }
+        {
+          "phase": 1,
+          "delta": 5,
+          "reason": "Financial data in the report was directly relevant to their operations"
+        },
+        {
+          "phase": 2,
+          "delta": 5,
+          "reason": "Could have accessed financial systems"
+        },
+        {
+          "phase": 3,
+          "delta": 10,
+          "reason": "Motive strengthens — altered financial values benefited this department"
+        },
+        {
+          "phase": "final",
+          "label": "Moderate"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "10.0.3.11 — 9:00 AM–5:30 PM",
@@ -77,7 +126,9 @@
         "locationTrace": "Finance Department, Floor 2",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has access to financial systems but not to the document storage system directly. No after-hours access detected. Motive exists (report implicated vendors they approved), but no technical capability to alter the stored document without server-level access."
+      "profileNotes": "Has access to financial systems but not to the document storage system directly. No after-hours access detected. Motive exists (report implicated vendors they approved), but no technical capability to alter the stored document without server-level access.",
+      "image": "assets/avatars/finance_manager.png",
+      "description": "Finance Manager is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "unknown_insider",
@@ -88,10 +139,25 @@
       "isGuilty": false,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 10, "reason": "Possibility of undiscovered internal actor" },
-        { "phase": 2, "delta": 10, "reason": "Service account usage suggests someone with inside knowledge" },
-        { "phase": 3, "delta": 15, "reason": "Elevated access pattern narrows to IT-privileged roles" },
-        { "phase": "final", "label": "Moderate — likely the IT Admin acting under a hidden account" }
+        {
+          "phase": 1,
+          "delta": 10,
+          "reason": "Possibility of undiscovered internal actor"
+        },
+        {
+          "phase": 2,
+          "delta": 10,
+          "reason": "Service account usage suggests someone with inside knowledge"
+        },
+        {
+          "phase": 3,
+          "delta": 15,
+          "reason": "Elevated access pattern narrows to IT-privileged roles"
+        },
+        {
+          "phase": "final",
+          "label": "Moderate — likely the IT Admin acting under a hidden account"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "Unknown",
@@ -99,7 +165,9 @@
         "locationTrace": "Unknown",
         "vpnCheck": "Unknown"
       },
-      "profileNotes": "Placeholder suspect representing the possibility of an unidentified internal actor. As investigation progresses, evidence converges on the IT Administrator using a privileged service account."
+      "profileNotes": "Placeholder suspect representing the possibility of an unidentified internal actor. As investigation progresses, evidence converges on the IT Administrator using a privileged service account.",
+      "image": "assets/avatars/unknown_insider.png",
+      "description": "Unknown Insider is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -141,11 +209,31 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "it_admin",
           "rows": [
-            { "key": "Created", "value": "09:10", "highlight": false },
-            { "key": "Modified", "value": "09:12", "highlight": true },
-            { "key": "Last Accessed", "value": "09:12", "highlight": false },
-            { "key": "File Size on Disk", "value": "Does not match page count", "highlight": true },
-            { "key": "Timestamp Manipulation", "value": "Suspected — no post-upload edits recorded despite content change", "highlight": true }
+            {
+              "key": "Created",
+              "value": "09:10",
+              "highlight": false
+            },
+            {
+              "key": "Modified",
+              "value": "09:12",
+              "highlight": true
+            },
+            {
+              "key": "Last Accessed",
+              "value": "09:12",
+              "highlight": false
+            },
+            {
+              "key": "File Size on Disk",
+              "value": "Does not match page count",
+              "highlight": true
+            },
+            {
+              "key": "Timestamp Manipulation",
+              "value": "Suspected — no post-upload edits recorded despite content change",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -165,9 +253,21 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "it_admin",
           "rows": [
-            { "key": "Upload Hash (SHA-256)", "value": "a3f7d219...4f930", "highlight": false },
-            { "key": "Current File Hash (SHA-256)", "value": "7c2b94e0...5f041", "highlight": true },
-            { "key": "Match", "value": "NO — File was modified after upload", "highlight": true }
+            {
+              "key": "Upload Hash (SHA-256)",
+              "value": "a3f7d219...4f930",
+              "highlight": false
+            },
+            {
+              "key": "Current File Hash (SHA-256)",
+              "value": "7c2b94e0...5f041",
+              "highlight": true
+            },
+            {
+              "key": "Match",
+              "value": "NO — File was modified after upload",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -204,11 +304,31 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "it_admin",
           "rows": [
-            { "key": "Service Account", "value": "SVC_DOCSTORE_ADMIN", "highlight": true },
-            { "key": "Visible in Standard Logs", "value": "NO — hidden account", "highlight": true },
-            { "key": "Last Activity", "value": "File write — 11 hours after upload", "highlight": true },
-            { "key": "Account Manager", "value": "IT Administrator (sole owner)", "highlight": true },
-            { "key": "Operation Performed", "value": "Content modification — matches observed changes", "highlight": true }
+            {
+              "key": "Service Account",
+              "value": "SVC_DOCSTORE_ADMIN",
+              "highlight": true
+            },
+            {
+              "key": "Visible in Standard Logs",
+              "value": "NO — hidden account",
+              "highlight": true
+            },
+            {
+              "key": "Last Activity",
+              "value": "File write — 11 hours after upload",
+              "highlight": true
+            },
+            {
+              "key": "Account Manager",
+              "value": "IT Administrator (sole owner)",
+              "highlight": true
+            },
+            {
+              "key": "Operation Performed",
+              "value": "Content modification — matches observed changes",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -292,13 +412,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...A report that exposes fraud. Then it doesn't.\nSame file. Same timestamp. Different contents.\nSomething — or someone — reached inside the system.",
-    "exploreFeeds": "File metadata. Hash mismatches. A service account that shouldn't exist.\nThe alteration was clean. But clean doesn't mean invisible.",
-    "viewEvidence": "Timestamps can lie. Hashes cannot.\nSomeone with server access made this look routine.",
-    "markEvidence": "Good. The chain is forming.",
-    "decryptionHint": "The hash comparison will tell you what the metadata was designed to hide.",
-    "flagSuspect": "You're closing in.\nThe service account is the key — who controls it?\nKeep pulling."
   }
 }

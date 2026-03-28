@@ -1,11 +1,11 @@
 {
-  "id": "case_doubleidentity",
+  "id": "case_double_identity",
   "title": "The Double Identity",
   "shortDescription": "Account Takeover & Session Hijacking",
   "difficulty": "advanced",
   "theme": "Account Takeover & Session Hijacking",
   "estimatedDuration": "55–70 min",
-  "caseNumber": "2010",
+  "caseNumber": "4007",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -26,7 +26,9 @@
         "locationTrace": "Eastern Europe — VPS infrastructure",
         "vpnCheck": "Multiple VPN hops — deliberately obscured"
       },
-      "profileNotes": "The Frankfurt IP 45.77.190.22 is listed on dark web credential marketplaces — used by threat actor SilverKey for 14 prior session token sales. The phishing domain sso-cloudmatrix.net was registered 7 weeks ago and has hosted phishing pages for 6 other SaaS companies. SilverKey specialises in OAuth token theft at scale: steal the refresh token at the SSO redirect step, sell persistent account access on the dark web. The access to Riya's account was listed for $800. Three bids were received."
+      "profileNotes": "The Frankfurt IP 45.77.190.22 is listed on dark web credential marketplaces — used by threat actor SilverKey for 14 prior session token sales. The phishing domain sso-cloudmatrix.net was registered 7 weeks ago and has hosted phishing pages for 6 other SaaS companies. SilverKey specialises in OAuth token theft at scale: steal the refresh token at the SSO redirect step, sell persistent account access on the dark web. The access to Riya's account was listed for $800. Three bids were received.",
+      "image": "assets/avatars/silverkey_broker.png",
+      "description": "SilverKey is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "riya_desai",
@@ -41,7 +43,9 @@
         "locationTrace": "Mumbai office / home",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Account owner and victim. Was in a client meeting during the download event — confirmed by 6 witnesses. Simultaneous session data proves her account was accessed by a separate individual at the same time. Fell victim to a convincing SSO phishing page 6 weeks ago. Cleared of involvement."
+      "profileNotes": "Account owner and victim. Was in a client meeting during the download event — confirmed by 6 witnesses. Simultaneous session data proves her account was accessed by a separate individual at the same time. Fell victim to a convincing SSO phishing page 6 weeks ago. Cleared of involvement.",
+      "image": "assets/avatars/riya_desai.png",
+      "description": "Riya Desai is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "nikhil_sharma",
@@ -56,7 +60,9 @@
         "locationTrace": "IT Department — CloudMatrix HQ",
         "vpnCheck": "Internal VPN — authorized"
       },
-      "profileNotes": "Responsible for the SSO configuration that left OAuth refresh tokens non-expiring. This misconfiguration is what allowed SilverKey to maintain persistent access for 6 weeks without triggering a re-authentication prompt. Likely negligent rather than complicit — but the configuration failure directly enabled the attack. Browser fingerprint evidence rules out his device being the attacker session."
+      "profileNotes": "Responsible for the SSO configuration that left OAuth refresh tokens non-expiring. This misconfiguration is what allowed SilverKey to maintain persistent access for 6 weeks without triggering a re-authentication prompt. Likely negligent rather than complicit — but the configuration failure directly enabled the attack. Browser fingerprint evidence rules out his device being the attacker session.",
+      "image": "assets/avatars/nikhil_sharma.png",
+      "description": "Nikhil Sharma is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "unknown_buyer",
@@ -71,7 +77,9 @@
         "locationTrace": "Unknown — accessing via broker's VPS",
         "vpnCheck": "Routed through SilverKey infrastructure"
       },
-      "profileNotes": "Paid $800 for access to Riya's account on a dark web marketplace. Blockchain records show the winning bid came from a wallet previously linked to an industrial espionage group targeting Series B and C tech startups. Has been conducting silent reconnaissance for 6 weeks — downloading roadmaps, monitoring project pipelines. Identity not fully established."
+      "profileNotes": "Paid $800 for access to Riya's account on a dark web marketplace. Blockchain records show the winning bid came from a wallet previously linked to an industrial espionage group targeting Series B and C tech startups. Has been conducting silent reconnaissance for 6 weeks — downloading roadmaps, monitoring project pipelines. Identity not fully established.",
+      "image": "assets/avatars/unknown_buyer.png",
+      "description": "Unknown Buyer (Competitor) is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -90,11 +98,31 @@
           "detail": "SSO authentication logs for Riya Desai's account over the past 8 weeks reveal a sustained pattern of dual-location activity. During the download event: Riya's legitimate session shows active use from IP 103.21.44.88 (Mumbai, India) at 14:32:05. At 14:30:17 — just 108 seconds earlier — IP 45.77.190.22 (Frankfurt, Germany) initiated the bulk download of confidential project roadmaps. Both sessions were active and authenticated simultaneously for a 4-minute window. Mumbai to Frankfurt is a minimum 8-hour journey. This overlap is physically impossible for a single person. Session hijacking is confirmed.",
           "pointsToSuspect": "silverkey_broker",
           "rows": [
-            { "key": "Riya Session — Active", "value": "103.21.44.88 — Mumbai — 14:32:05", "highlight": false },
-            { "key": "Attacker Session — Download", "value": "45.77.190.22 — Frankfurt — 14:30:17", "highlight": true },
-            { "key": "Overlap Window", "value": "4 minutes 12 seconds", "highlight": true },
-            { "key": "Distance Mumbai→Frankfurt", "value": "7,200 km — minimum 8-hour travel", "highlight": true },
-            { "key": "Conclusion", "value": "Physically impossible — separate actor confirmed", "highlight": true }
+            {
+              "key": "Riya Session — Active",
+              "value": "103.21.44.88 — Mumbai — 14:32:05",
+              "highlight": false
+            },
+            {
+              "key": "Attacker Session — Download",
+              "value": "45.77.190.22 — Frankfurt — 14:30:17",
+              "highlight": true
+            },
+            {
+              "key": "Overlap Window",
+              "value": "4 minutes 12 seconds",
+              "highlight": true
+            },
+            {
+              "key": "Distance Mumbai→Frankfurt",
+              "value": "7,200 km — minimum 8-hour travel",
+              "highlight": true
+            },
+            {
+              "key": "Conclusion",
+              "value": "Physically impossible — separate actor confirmed",
+              "highlight": true
+            }
           ]
         },
         {
@@ -105,11 +133,31 @@
           "detail": "IP 45.77.190.22 (Frankfurt) has been silently calling the OAuth token refresh endpoint twice per day, every day, for 6 weeks — starting the same day as the phishing redirect. The attacker never needed to log in again after the initial token theft. Each refresh extends the session for another 12 hours. CloudMatrix's SSO configuration has refresh token rotation disabled, meaning the same token can be reused indefinitely without generating a new authentication event. The sustained 6-week access pattern is only possible because the token was never revoked.",
           "pointsToSuspect": "silverkey_broker",
           "rows": [
-            { "key": "First Refresh", "value": "6 weeks ago — same day as phishing attack", "highlight": true },
-            { "key": "Refresh Frequency", "value": "Twice daily — every 12 hours", "highlight": false },
-            { "key": "Duration", "value": "6 consecutive weeks — 84 refresh events", "highlight": true },
-            { "key": "SSO Config Issue", "value": "Refresh token rotation DISABLED", "highlight": true },
-            { "key": "Effect", "value": "Persistent silent access — no re-auth triggered", "highlight": true }
+            {
+              "key": "First Refresh",
+              "value": "6 weeks ago — same day as phishing attack",
+              "highlight": true
+            },
+            {
+              "key": "Refresh Frequency",
+              "value": "Twice daily — every 12 hours",
+              "highlight": false
+            },
+            {
+              "key": "Duration",
+              "value": "6 consecutive weeks — 84 refresh events",
+              "highlight": true
+            },
+            {
+              "key": "SSO Config Issue",
+              "value": "Refresh token rotation DISABLED",
+              "highlight": true
+            },
+            {
+              "key": "Effect",
+              "value": "Persistent silent access — no re-auth triggered",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -141,10 +189,18 @@
             "label": "Frankfurt — Attacker Session"
           }
         ],
-        "overlapWindow": { "start": "14:30:17", "end": "14:34:29", "durationMinutes": 4 },
+        "overlapWindow": {
+          "start": "14:30:17",
+          "end": "14:34:29",
+          "durationMinutes": 4
+        },
         "distanceKm": 7200,
         "minimumTravelHours": 8,
-        "correctFlags": ["attacker_frankfurt", "overlap_identified", "geographic_impossibility"],
+        "correctFlags": [
+          "attacker_frankfurt",
+          "overlap_identified",
+          "geographic_impossibility"
+        ],
         "maxHints": 3,
         "hints": [
           "Look for two sessions that are both active at the same time. Find the time window where both IP addresses show authenticated activity.",
@@ -172,12 +228,36 @@
           "detail": "The JWT (JSON Web Token) session token associated with the Frankfurt IP sessions has been decoded. The sub field confirms the token was legitimately issued to riya.desai@cloudmatrix.io. The iat (issued-at) timestamp is 1706745600 — converting to human-readable format gives the exact date of the phishing attack 6 weeks ago. The exp field reads 'Never' — CloudMatrix's SSO configuration does not expire refresh tokens. The jti (token ID) f8a3c2d1-9b7e-44f0 matches the token logged in the SSO redirect event at the Frankfurt IP on the phishing day. The token was stolen at the redirect step — when Riya's browser was sent to the fake SSO page — and has been reused 84 times since without triggering any alert.",
           "pointsToSuspect": "silverkey_broker",
           "rows": [
-            { "key": "sub (subject)", "value": "riya.desai@cloudmatrix.io — legitimate user", "highlight": false },
-            { "key": "iat (issued-at)", "value": "1706745600 — 6 weeks ago — phishing day", "highlight": true },
-            { "key": "exp (expiry)", "value": "Never — refresh token rotation disabled", "highlight": true },
-            { "key": "jti (token ID)", "value": "f8a3c2d1-9b7e-44f0", "highlight": true },
-            { "key": "Token ID Match", "value": "Matches Frankfurt phishing redirect event log", "highlight": true },
-            { "key": "Times Reused", "value": "84 refresh calls over 6 weeks", "highlight": false }
+            {
+              "key": "sub (subject)",
+              "value": "riya.desai@cloudmatrix.io — legitimate user",
+              "highlight": false
+            },
+            {
+              "key": "iat (issued-at)",
+              "value": "1706745600 — 6 weeks ago — phishing day",
+              "highlight": true
+            },
+            {
+              "key": "exp (expiry)",
+              "value": "Never — refresh token rotation disabled",
+              "highlight": true
+            },
+            {
+              "key": "jti (token ID)",
+              "value": "f8a3c2d1-9b7e-44f0",
+              "highlight": true
+            },
+            {
+              "key": "Token ID Match",
+              "value": "Matches Frankfurt phishing redirect event log",
+              "highlight": true
+            },
+            {
+              "key": "Times Reused",
+              "value": "84 refresh calls over 6 weeks",
+              "highlight": false
+            }
           ]
         }
       ],
@@ -202,7 +282,11 @@
           "jti": "f8a3c2d1-9b7e-44f0",
           "match": true
         },
-        "correctFlags": ["iat_matches_phishing_date", "jti_matches_redirect_log", "token_never_expires"],
+        "correctFlags": [
+          "iat_matches_phishing_date",
+          "jti_matches_redirect_log",
+          "token_never_expires"
+        ],
         "maxHints": 3,
         "hints": [
           "A JWT has three sections separated by dots. The middle section (payload) is Base64-encoded. Decode it to see the token's claims — sub, iat, exp, and jti.",
@@ -230,13 +314,41 @@
           "detail": "Side-by-side comparison of browser fingerprint data between Riya's legitimate Mumbai sessions and the Frankfurt attacker sessions shows 11 out of 14 fields are different. Critically, the differences extend beyond software settings (which a VPN could explain) into hardware-level characteristics: canvas hash, GPU renderer (NVIDIA GTX 1650 vs Intel HD 620), CPU cores (8 vs 4), device memory (16 GB vs 4 GB), and screen resolution (1920×1080 vs 1366×768) all differ. A VPN changes IP address and timezone — it cannot change hardware. These 11 mismatches confirm the attacker session comes from a completely different physical machine, not from Riya using a VPN or different browser profile.",
           "pointsToSuspect": "silverkey_broker",
           "rows": [
-            { "key": "Fields Compared", "value": "14 total", "highlight": false },
-            { "key": "Fields Matching", "value": "3 (Touch Support, Cookie Support, JS Enabled)", "highlight": false },
-            { "key": "Fields Differing", "value": "11 — including hardware-level indicators", "highlight": true },
-            { "key": "GPU Renderer", "value": "Riya: NVIDIA GTX 1650 | Attacker: Intel HD 620", "highlight": true },
-            { "key": "CPU Cores", "value": "Riya: 8 | Attacker: 4", "highlight": true },
-            { "key": "Device Memory", "value": "Riya: 16 GB | Attacker: 4 GB", "highlight": true },
-            { "key": "Conclusion", "value": "Different physical device — VPN explanation ruled out", "highlight": true }
+            {
+              "key": "Fields Compared",
+              "value": "14 total",
+              "highlight": false
+            },
+            {
+              "key": "Fields Matching",
+              "value": "3 (Touch Support, Cookie Support, JS Enabled)",
+              "highlight": false
+            },
+            {
+              "key": "Fields Differing",
+              "value": "11 — including hardware-level indicators",
+              "highlight": true
+            },
+            {
+              "key": "GPU Renderer",
+              "value": "Riya: NVIDIA GTX 1650 | Attacker: Intel HD 620",
+              "highlight": true
+            },
+            {
+              "key": "CPU Cores",
+              "value": "Riya: 8 | Attacker: 4",
+              "highlight": true
+            },
+            {
+              "key": "Device Memory",
+              "value": "Riya: 16 GB | Attacker: 4 GB",
+              "highlight": true
+            },
+            {
+              "key": "Conclusion",
+              "value": "Different physical device — VPN explanation ruled out",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -284,10 +396,36 @@
             "deviceMemoryGB": 4
           }
         },
-        "matchingFields": ["touchSupport", "cookieSupport", "jsEnabled"],
-        "mismatchFields": ["canvasHash", "timezone", "screenResolution", "browserLanguage", "webglRenderer", "installedFonts", "userAgent", "installedPlugins", "doNotTrack", "hardwareConcurrency", "deviceMemoryGB"],
-        "vpnExplainableFields": ["timezone", "browserLanguage", "doNotTrack"],
-        "hardwareFields": ["canvasHash", "webglRenderer", "hardwareConcurrency", "deviceMemoryGB", "screenResolution"],
+        "matchingFields": [
+          "touchSupport",
+          "cookieSupport",
+          "jsEnabled"
+        ],
+        "mismatchFields": [
+          "canvasHash",
+          "timezone",
+          "screenResolution",
+          "browserLanguage",
+          "webglRenderer",
+          "installedFonts",
+          "userAgent",
+          "installedPlugins",
+          "doNotTrack",
+          "hardwareConcurrency",
+          "deviceMemoryGB"
+        ],
+        "vpnExplainableFields": [
+          "timezone",
+          "browserLanguage",
+          "doNotTrack"
+        ],
+        "hardwareFields": [
+          "canvasHash",
+          "webglRenderer",
+          "hardwareConcurrency",
+          "deviceMemoryGB",
+          "screenResolution"
+        ],
         "requiredMismatchCount": 11,
         "maxHints": 3,
         "hints": [
@@ -316,11 +454,31 @@
           "detail": "Threat intelligence platform lookup on IP 45.77.190.22 returns a direct hit: the address is listed on a dark web credential marketplace as infrastructure used by broker 'SilverKey' for 14 prior session token sales. SilverKey is a known initial access broker specialising in OAuth token theft and resale, active since 2022. The Frankfurt IP is not a random VPS — it is dedicated infrastructure for a professional token resale operation.",
           "pointsToSuspect": "silverkey_broker",
           "rows": [
-            { "key": "IP", "value": "45.77.190.22", "highlight": true },
-            { "key": "Threat Intel Result", "value": "Listed on dark web credential marketplace", "highlight": true },
-            { "key": "Associated Actor", "value": "SilverKey — Initial Access Broker", "highlight": true },
-            { "key": "Prior Operations", "value": "14 prior session token sales", "highlight": false },
-            { "key": "Active Since", "value": "2022", "highlight": false }
+            {
+              "key": "IP",
+              "value": "45.77.190.22",
+              "highlight": true
+            },
+            {
+              "key": "Threat Intel Result",
+              "value": "Listed on dark web credential marketplace",
+              "highlight": true
+            },
+            {
+              "key": "Associated Actor",
+              "value": "SilverKey — Initial Access Broker",
+              "highlight": true
+            },
+            {
+              "key": "Prior Operations",
+              "value": "14 prior session token sales",
+              "highlight": false
+            },
+            {
+              "key": "Active Since",
+              "value": "2022",
+              "highlight": false
+            }
           ]
         },
         {
@@ -331,11 +489,31 @@
           "detail": "The phishing domain sso-cloudmatrix.net was registered 7 weeks ago — one week before the attack on Riya. Hosting history analysis shows the same server has hosted phishing pages for 6 other SaaS companies. This is a mass-harvest operation, not a targeted attack against CloudMatrix specifically. Riya was one of many victims across multiple platforms. The listing on the dark web marketplace read: 'Senior product manager at a SaaS company, full session access — $800.' It received 3 bids.",
           "pointsToSuspect": "silverkey_broker",
           "rows": [
-            { "key": "Domain", "value": "sso-cloudmatrix.net", "highlight": true },
-            { "key": "Registered", "value": "7 weeks ago — 1 week before attack", "highlight": false },
-            { "key": "Other Phishing Pages", "value": "6 other SaaS companies on same server", "highlight": true },
-            { "key": "Dark Web Listing", "value": "Senior PM — full session access — $800", "highlight": true },
-            { "key": "Bids Received", "value": "3 — winning bid from industrial espionage wallet", "highlight": true }
+            {
+              "key": "Domain",
+              "value": "sso-cloudmatrix.net",
+              "highlight": true
+            },
+            {
+              "key": "Registered",
+              "value": "7 weeks ago — 1 week before attack",
+              "highlight": false
+            },
+            {
+              "key": "Other Phishing Pages",
+              "value": "6 other SaaS companies on same server",
+              "highlight": true
+            },
+            {
+              "key": "Dark Web Listing",
+              "value": "Senior PM — full session access — $800",
+              "highlight": true
+            },
+            {
+              "key": "Bids Received",
+              "value": "3 — winning bid from industrial espionage wallet",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -404,11 +582,26 @@
   "suspicionSystem": {
     "initialScore": 30,
     "levels": [
-      { "range": "0–20", "label": "Very Low" },
-      { "range": "21–40", "label": "Low" },
-      { "range": "41–60", "label": "Moderate" },
-      { "range": "61–80", "label": "High" },
-      { "range": "81–100", "label": "Critical" }
+      {
+        "range": "0–20",
+        "label": "Very Low"
+      },
+      {
+        "range": "21–40",
+        "label": "Low"
+      },
+      {
+        "range": "41–60",
+        "label": "Moderate"
+      },
+      {
+        "range": "61–80",
+        "label": "High"
+      },
+      {
+        "range": "81–100",
+        "label": "Critical"
+      }
     ],
     "updates": [
       {
@@ -505,13 +698,5 @@
     "title": "This Was Never About Riya",
     "description": "Threat intelligence confirms SilverKey operates at scale — harvesting OAuth tokens across dozens of SaaS platforms simultaneously. Riya was not targeted personally. She was simply in the wrong place at the right time for a broker running a mass-phishing operation. The winning bid of $800 came from a wallet linked to an industrial espionage group targeting Series B and C tech startups. The downloaded roadmaps were sent to a competitor. The buyer's full identity requires a deeper dark web investigation. Nikhil's SSO misconfiguration — leaving refresh tokens non-expiring — is what turned a 1-hour token theft into a 6-week compromise.",
     "conclusion": "✔ Session hijacking confirmed — no password needed\n✔ Phishing page captured OAuth refresh token at SSO redirect step 6 weeks ago\n✔ Token never revoked — SSO misconfiguration (Nikhil) enabled indefinite reuse\n✔ Simultaneous sessions from Mumbai and Frankfurt — physically impossible\n✔ Browser fingerprint confirmed different physical hardware — not a VPN\n✔ Frankfurt IP linked to dark web broker SilverKey — 14 prior token sales\n✔ Access sold for $800 — buyer linked to industrial espionage group\n⚠ Buyer's full identity requires further dark web investigation"
-  },
-  "aria": {
-    "welcomeToHub": "Same account. Two countries. Four minutes apart.\nSomeone has been wearing her identity for six weeks.\nFind out how they got in — and who let them stay.",
-    "exploreFeeds": "Auth logs. JWT tokens. Browser fingerprints. Dark web intel.\nThe password was never stolen. The session was.",
-    "viewEvidence": "A token issued on a phishing page 6 weeks ago.\nNever revoked. Never expired. Refreshed 84 times.\nThe door has been open since the day she clicked.",
-    "markEvidence": "Good. Build the chain: phishing → token → access → buyer.",
-    "decryptionHint": "Decode the JWT payload. Find the iat timestamp.\nConvert it. You already know what date that was.",
-    "flagSuspect": "The IP has a history. The domain has other victims.\nThis wasn't targeted — it was commercial.\nFind the broker who sold the key."
   }
 }

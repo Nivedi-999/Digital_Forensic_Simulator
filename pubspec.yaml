@@ -1,5 +1,5 @@
 name: cyber_investigator
-description: "A new Flutter project."
+description: "Cyber Investigator — A cybersecurity investigation game."
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -13,6 +13,7 @@ dependencies:
   google_fonts: ^6.2.1
   cupertino_icons: ^1.0.8
   video_player: ^2.8.1
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
@@ -27,43 +28,43 @@ flutter:
     # ── Avatars ───────────────────────────────────────────
     - assets/avatars/
 
-    # ── Easy (5) ──────────────────────────────────────────
-    - assets/cases/case_passwordheist.json
-    - assets/cases/case_wifithief.json
-    - assets/cases/case_fakereview.json
-    - assets/cases/case_ghosttrace.json
-    - assets/cases/case_jobscam.json
-    - assets/cases/case_vanishing_report.json
-    - assets/cases/case_lost_usb.json
-    - assets/cases/case_altered_image.json
+    # ── EASY (8 cases) ────────────────────────────────────
+    - assets/cases/case_passwordheist.json       # #1001 Password Heist
+    - assets/cases/case_wifithief.json           # #1002 The WiFi Thief
+    - assets/cases/case_fakereview.json          # #1003 Five Star Fraud
+    - assets/cases/case_ghosttrace.json          # #1004 Operation GhostTrace (tutorial)
+    - assets/cases/case_jobscam.json             # #1005 Dream Job Scam
+    - assets/cases/case_vanishing_report.json    # #1006 The Vanishing Report
+    - assets/cases/case_leaked_roster.json            # #1007 The Lost USB
+    - assets/cases/case_altered_image.json       # #1008 The Altered Image
 
-    # ── Medium (5) ────────────────────────────────────────
-    - assets/cases/case_phantomtransaction.json
-    - assets/cases/case_attendancehack.json
-    - assets/cases/case_socialengineer.json
-    - assets/cases/case_lastlogin.json
-    - assets/cases/case_clouddrain.json
-    - assets/cases/case_missing_logs.json
-    - assets/cases/case_deleted_documents.json
-    - assets/cases/case_midnight_timeline.json
+    # ── MEDIUM (8 cases) ──────────────────────────────────
+    - assets/cases/case_phantomtransaction.json  # #2006 Phantom Transaction
+    - assets/cases/case_attendancehack.json      # #2002 Silent Attendance Hack
+    - assets/cases/case_socialengineer.json      # #2003 The Impersonator
+    - assets/cases/case_lastlogin.json           # #2004 The Last Login
+    - assets/cases/case_clouddrain.json          # #2005 Cloud Drain
+    - assets/cases/case_missing_logs.json        # #2007 The Missing Logs
+    - assets/cases/case_cloned_credential.json   # #2008 The Deleted Documents
+    - assets/cases/case_midnight_timeline.json   # #2009 The Midnight Timeline
 
-    # ── Hard (5) ──────────────────────────────────────────
-    - assets/cases/case_deaddrop.json
-    - assets/cases/case_echoesoftomorrow.json
-    - assets/cases/case_echowithoutavoice.json
-    - assets/cases/case_darkproxyattack.json
-    - assets/cases/case_poisonedpatch.json
-    - assets/cases/case_unknown_usb.json
-    - assets/cases/case_disguised_file.json
+    # ── HARD (7 cases) ────────────────────────────────────
+    - assets/cases/case_deaddrop.json            # #3001 Dead Drop Signal
+    - assets/cases/case_echoesoftomorrow.json    # #3002 Echoes of Tomorrow
+    - assets/cases/case_echowithoutavoice.json   # #3003 Echo Without a Voice
+    - assets/cases/case_darkproxyattack.json     # #3004 Dark Proxy Attack
+    - assets/cases/case_poisonedpatch.json       # #3005 Poisoned Patch
+    - assets/cases/case_unknown_usb.json         # #3006 The Unknown USB
+    - assets/cases/case_borrowed_badge.json      # #3007 The Disguised File
 
-    # ── Advanced (5) ──────────────────────────────────────
-    - assets/cases/case_vanishingvault.json
-    - assets/cases/case_mirrorprotocol.json
-    - assets/cases/case_zeropointentry.json
-    - assets/cases/case_ghostnetwork.json
-    - assets/cases/case_doubleagent.json
-    - assets/cases/case_phantom_process.json
-    - assets/cases/case_double_identity.json
+    # ── ADVANCED (7 cases) ────────────────────────────────
+    - assets/cases/case_vanishingvault.json      # #4001 The Vanishing Vault
+    - assets/cases/case_mirrorprotocol.json      # #4002 Mirror Protocol
+    - assets/cases/case_zeropointentry.json      # #4003 Zero Point Entry
+    - assets/cases/case_ghostnetwork.json        # #4004 Ghost Network
+    - assets/cases/case_doubleagent.json         # #4005 Double Agent
+    - assets/cases/case_phantom_process.json     # #4006 The Phantom Process
+    - assets/cases/case_double_identity.json     # #4007 The Double Identity
 
   fonts:
     - family: DotMatrix

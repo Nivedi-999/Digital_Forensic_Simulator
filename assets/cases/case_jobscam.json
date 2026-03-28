@@ -26,7 +26,9 @@
         "locationTrace": "Pune \u2014 Kothrud Area",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Registered the fake careers website using his personal email. The UPI collection account is linked to his Aadhaar. Has a prior fraud case from 2022 involving a similar job scam."
+      "profileNotes": "Registered the fake careers website using his personal email. The UPI collection account is linked to his Aadhaar. Has a prior fraud case from 2022 involving a similar job scam.",
+      "image": "assets/avatars/ramesh_p.png",
+      "description": "Ramesh P is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "agency_hr",
@@ -41,7 +43,9 @@
         "locationTrace": "DataPro Office, Bengaluru",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Victim of brand impersonation \u2014 her company's name was cloned. Filed a complaint immediately. Not involved in the fraud."
+      "profileNotes": "Victim of brand impersonation \u2014 her company's name was cloned. Filed a complaint immediately. Not involved in the fraud.",
+      "image": "assets/avatars/agency_hr.png",
+      "description": "Sunita M is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "job_portal_admin",
@@ -56,7 +60,9 @@
         "locationTrace": "QuickHire Office, Mumbai",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Approved the job listing without verifying the company. Negligent but not complicit. The fake site bypassed the portal's domain check."
+      "profileNotes": "Approved the job listing without verifying the company. Negligent but not complicit. The fake site bypassed the portal's domain check.",
+      "image": "assets/avatars/job_portal_admin.png",
+      "description": "Vikash T is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -358,13 +364,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...A dream job that never existed.\n14 people paid. None got hired.\nFind who built the lie.",
-    "exploreFeeds": "Domain records. UPI traces. Cloned websites.\nThis scam was lazy \u2014 they left their real email in the WHOIS.",
-    "viewEvidence": "Same script. Same UPI. Same 48-hour delay.\nOne person ran all of this.",
-    "markEvidence": "Good. Keep building the chain.",
-    "decryptionHint": "The registration email has a name in it.\nDecode the first 6 characters.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

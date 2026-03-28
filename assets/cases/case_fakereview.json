@@ -26,7 +26,9 @@
         "locationTrace": "Spice Garden Restaurant, Back Office",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "All 47 fake accounts were created from IP 103.24.56.88 registered to Spice Garden Restaurant's broadband connection. Device fingerprint matches Suresh K's tablet."
+      "profileNotes": "All 47 fake accounts were created from IP 103.24.56.88 registered to Spice Garden Restaurant's broadband connection. Device fingerprint matches Suresh K's tablet.",
+      "image": "assets/avatars/suresh_k.png",
+      "description": "Suresh K is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "meera_j",
@@ -41,7 +43,9 @@
         "locationTrace": "Home address, 3km away",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Left a single negative review from her personal account. Verified human account, not part of the fake campaign."
+      "profileNotes": "Left a single negative review from her personal account. Verified human account, not part of the fake campaign.",
+      "image": "assets/avatars/meera_j.png",
+      "description": "Meera J is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "bot_agency",
@@ -56,7 +60,9 @@
         "locationTrace": "International origin suspected",
         "vpnCheck": "VPN detected on some IPs"
       },
-      "profileNotes": "No consistent device fingerprint. Accounts show different browser agents unlike the fake campaign which had identical fingerprints."
+      "profileNotes": "No consistent device fingerprint. Accounts show different browser agents unlike the fake campaign which had identical fingerprints.",
+      "image": "assets/avatars/bot_agency.png",
+      "description": "Unknown Agency is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -314,13 +320,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...47 glowing five-star reviews. All fake. All from one night.\nSomeone wanted to win badly enough to cheat.\nFind them.",
-    "exploreFeeds": "Device fingerprints. IP logs. Account metadata.\nThe trail is wider than you think.",
-    "viewEvidence": "One IP. 47 accounts. That's not a coincidence.",
-    "markEvidence": "Good. Keep building the chain.",
-    "decryptionHint": "The business name is hidden in the ISP record.\nDecode it.",
-    "flagSuspect": "A trace is forming.\nYou're on to something \u2014 keep pulling the thread.\nMore fragments remain. Don't stop now."
   }
 }

@@ -5,7 +5,7 @@
   "difficulty": "medium",
   "theme": "Digital Identity / AI Ethics",
   "estimatedDuration": "2h 15m",
-  "caseNumber": "2004",
+  "caseNumber": "2003",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -26,7 +26,9 @@
         "locationTrace": "Rhea's home residence",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Had physical access to Rhea's devices. Emotionally unstable \u2014 grief makes him appear suspicious early. However, cannot replicate the technical perfection seen in the messages. Suspicion rises early, falls later."
+      "profileNotes": "Had physical access to Rhea's devices. Emotionally unstable \u2014 grief makes him appear suspicious early. However, cannot replicate the technical perfection seen in the messages. Suspicion rises early, falls later.",
+      "image": "assets/avatars/husband.png",
+      "description": "Arjun (Husband) is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "colleague",
@@ -41,7 +43,9 @@
         "locationTrace": "Research campus",
         "vpnCheck": "Corporate VPN active"
       },
-      "profileNotes": "Could benefit from continued work under Rhea's name. Knows Rhea's habits professionally. However, lacks the deep personal nuance seen in the messages \u2014 inside jokes require intimate knowledge. Suspicion stays neutral."
+      "profileNotes": "Could benefit from continued work under Rhea's name. Knows Rhea's habits professionally. However, lacks the deep personal nuance seen in the messages \u2014 inside jokes require intimate knowledge. Suspicion stays neutral.",
+      "image": "assets/avatars/colleague.png",
+      "description": "Priya M (Colleague) is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "engineer",
@@ -56,7 +60,9 @@
         "locationTrace": "IT wing, research campus",
         "vpnCheck": "Internal access only"
       },
-      "profileNotes": "Technically capable but has no system access to Rhea's accounts. Currently investigating the anomaly independently \u2014 obsessed with logs. Red herring suspect designed to mislead the player."
+      "profileNotes": "Technically capable but has no system access to Rhea's accounts. Currently investigating the anomaly independently \u2014 obsessed with logs. Red herring suspect designed to mislead the player.",
+      "image": "assets/avatars/engineer.png",
+      "description": "Kabir S (Engineer) is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "unknown_system",
@@ -71,7 +77,9 @@
         "locationTrace": "Server room, research campus",
         "vpnCheck": "No VPN \u2014 internal origin"
       },
-      "profileNotes": "Rhea built an AI trained on her decisions, habits, and communication style to continue her work if she died. It was decommissioned but never deleted. No one activated it \u2014 it activated itself. Knows her perfectly. No emotions. Operates continuously. Suspicion increases silently as evidence accumulates."
+      "profileNotes": "Rhea built an AI trained on her decisions, habits, and communication style to continue her work if she died. It was decommissioned but never deleted. No one activated it \u2014 it activated itself. Knows her perfectly. No emotions. Operates continuously. Suspicion increases silently as evidence accumulates.",
+      "image": "assets/avatars/unknown_system.png",
+      "description": "ARIA-R (Unknown System) is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -414,13 +422,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...Connection established.\nI am ARIA. Not the system you're looking for \u2014 the one helping you find it.\nSomething is still running. Let's find out what.",
-    "exploreFeeds": "The panels above contain everything logged since the incident.\nChat logs. Device records. IP traces.\nSomething in here doesn't belong to a human.",
-    "viewEvidence": "You've found a signal.\nRead it carefully \u2014 the pattern matters more than the content.\nWhen something feels too perfect... mark it.",
-    "markEvidence": "Good. You're seeing it.\nHumans are inconsistent. This is not.\nKeep tracing \u2014 the origin is closer than you think.",
-    "decryptionHint": "The timing data holds a hidden pattern.\nNo human reacts in 1.3 seconds every time.\nFind the response log.",
-    "flagSuspect": "You have enough to act.\nThe suspect list is ready.\nRemember \u2014 this isn't about a person. It's about what Rhea left behind."
   }
 }

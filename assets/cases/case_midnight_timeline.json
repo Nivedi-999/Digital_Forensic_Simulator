@@ -1,11 +1,11 @@
 {
-  "id": "case_midnighttimeline",
+  "id": "case_midnight_timeline",
   "title": "The Midnight Timeline",
   "shortDescription": "File System Timeline Reconstruction",
   "difficulty": "medium",
   "theme": "File Activity Analysis",
   "estimatedDuration": "35–45 min",
-  "caseNumber": "0006",
+  "caseNumber": "2007",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
@@ -22,10 +22,25 @@
       "isGuilty": true,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 20, "reason": "Primary user of the laptop — credentials used for the 01:55 login" },
-        { "phase": 2, "delta": 25, "reason": "File access and modification sequence matches a manual working session" },
-        { "phase": 3, "delta": 30, "reason": "No remote access confirmed — physical presence or credential sharing required" },
-        { "phase": "final", "label": "High" }
+        {
+          "phase": 1,
+          "delta": 20,
+          "reason": "Primary user of the laptop — credentials used for the 01:55 login"
+        },
+        {
+          "phase": 2,
+          "delta": 25,
+          "reason": "File access and modification sequence matches a manual working session"
+        },
+        {
+          "phase": 3,
+          "delta": 30,
+          "reason": "No remote access confirmed — physical presence or credential sharing required"
+        },
+        {
+          "phase": "final",
+          "label": "High"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "192.168.1.104 — local network only, no VPN",
@@ -33,7 +48,9 @@
         "locationTrace": "Home network SSID — residential ISP IP",
         "vpnCheck": "No VPN or RDP session detected at 01:55"
       },
-      "profileNotes": "Sole assigned user of STRAT-LAP-09. The 01:55 login used their domain credentials from a residential IP matching their registered home address. Files accessed and modified belong exclusively to their project portfolio. No VPN or remote desktop session was active — the machine was operated locally. The employee claims they were asleep and did not access the laptop. However, no other individual is confirmed to have had physical access to the device."
+      "profileNotes": "Sole assigned user of STRAT-LAP-09. The 01:55 login used their domain credentials from a residential IP matching their registered home address. Files accessed and modified belong exclusively to their project portfolio. No VPN or remote desktop session was active — the machine was operated locally. The employee claims they were asleep and did not access the laptop. However, no other individual is confirmed to have had physical access to the device.",
+      "image": "assets/avatars/employee.png",
+      "description": "Employee (Laptop Owner) is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "it_admin",
@@ -44,10 +61,25 @@
       "isGuilty": false,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 10, "reason": "Has system-level access and could theoretically initiate a remote session" },
-        { "phase": 2, "delta": 5, "reason": "No RDP or admin remote session logged to STRAT-LAP-09 at the relevant time" },
-        { "phase": 3, "delta": -15, "reason": "Remote access test confirms no admin session was active at 01:55" },
-        { "phase": "final", "label": "Low" }
+        {
+          "phase": 1,
+          "delta": 10,
+          "reason": "Has system-level access and could theoretically initiate a remote session"
+        },
+        {
+          "phase": 2,
+          "delta": 5,
+          "reason": "No RDP or admin remote session logged to STRAT-LAP-09 at the relevant time"
+        },
+        {
+          "phase": 3,
+          "delta": -15,
+          "reason": "Remote access test confirms no admin session was active at 01:55"
+        },
+        {
+          "phase": "final",
+          "label": "Low"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "10.0.0.5 — corporate network, business hours",
@@ -55,7 +87,9 @@
         "locationTrace": "IT Department — no after-hours badge entry",
         "vpnCheck": "No admin VPN session to target machine"
       },
-      "profileNotes": "Has administrative remote access capability but no session to STRAT-LAP-09 is logged during the 2 AM window. Building access logs confirm the IT Administrator did not enter the office that night. Cannot have operated the laptop physically."
+      "profileNotes": "Has administrative remote access capability but no session to STRAT-LAP-09 is logged during the 2 AM window. Building access logs confirm the IT Administrator did not enter the office that night. Cannot have operated the laptop physically.",
+      "image": "assets/avatars/it_admin.png",
+      "description": "IT Administrator is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "remote_attacker",
@@ -66,10 +100,25 @@
       "isGuilty": false,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 15, "reason": "Unusual after-hours access always warrants consideration of external intrusion" },
-        { "phase": 2, "delta": 10, "reason": "File modification pattern is consistent with a human-operated session, not automated exfiltration" },
-        { "phase": 3, "delta": -20, "reason": "No VPN, RDP, or inbound network session detected — remote access conclusively eliminated" },
-        { "phase": "final", "label": "Very Low — eliminated by network analysis" }
+        {
+          "phase": 1,
+          "delta": 15,
+          "reason": "Unusual after-hours access always warrants consideration of external intrusion"
+        },
+        {
+          "phase": 2,
+          "delta": 10,
+          "reason": "File modification pattern is consistent with a human-operated session, not automated exfiltration"
+        },
+        {
+          "phase": 3,
+          "delta": -20,
+          "reason": "No VPN, RDP, or inbound network session detected — remote access conclusively eliminated"
+        },
+        {
+          "phase": "final",
+          "label": "Very Low — eliminated by network analysis"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "No external IPs detected on STRAT-LAP-09 at 01:55",
@@ -77,7 +126,9 @@
         "locationTrace": "Unknown — no network presence confirmed",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Network logs and the remote access test both confirm no inbound connection was active during the 2 AM window. A remote attacker would require a VPN tunnel, RDP session, or other network channel — none of which are present. The session was conducted locally on the physical device."
+      "profileNotes": "Network logs and the remote access test both confirm no inbound connection was active during the 2 AM window. A remote attacker would require a VPN tunnel, RDP session, or other network channel — none of which are present. The session was conducted locally on the physical device.",
+      "image": "assets/avatars/remote_attacker.png",
+      "description": "Remote Attacker is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "insider_credential",
@@ -88,10 +139,25 @@
       "isGuilty": false,
       "suspicionBaseline": 30,
       "suspicionTrack": [
-        { "phase": 1, "delta": 15, "reason": "Employee denies access — raises possibility of shared or borrowed credentials" },
-        { "phase": 2, "delta": 10, "reason": "Physical access to the laptop would be required given no remote session" },
-        { "phase": 3, "delta": 5, "reason": "No evidence of a third party present at the residential address — remains unconfirmed" },
-        { "phase": "final", "label": "Moderate — cannot be fully ruled out without further investigation" }
+        {
+          "phase": 1,
+          "delta": 15,
+          "reason": "Employee denies access — raises possibility of shared or borrowed credentials"
+        },
+        {
+          "phase": 2,
+          "delta": 10,
+          "reason": "Physical access to the laptop would be required given no remote session"
+        },
+        {
+          "phase": 3,
+          "delta": 5,
+          "reason": "No evidence of a third party present at the residential address — remains unconfirmed"
+        },
+        {
+          "phase": "final",
+          "label": "Moderate — cannot be fully ruled out without further investigation"
+        }
       ],
       "digitalFootprint": {
         "ipActivity": "Same residential IP as employee — local device",
@@ -99,7 +165,9 @@
         "locationTrace": "Employee's registered home address",
         "vpnCheck": "No VPN"
       },
-      "profileNotes": "If the employee genuinely was not operating the laptop, a third party with physical access to the device and knowledge of the login credentials would be required. No evidence currently confirms or eliminates a household member or guest. Remains a secondary hypothesis pending further investigation."
+      "profileNotes": "If the employee genuinely was not operating the laptop, a third party with physical access to the device and knowledge of the login credentials would be required. No evidence currently confirms or eliminates a household member or guest. Remains a secondary hypothesis pending further investigation.",
+      "image": "assets/avatars/insider_credential.png",
+      "description": "Credential Sharing — Unknown Party is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
   "evidencePanels": [
@@ -117,12 +185,36 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "employee",
           "rows": [
-            { "key": "report_draft.docx — Created", "value": "21:10", "highlight": false },
-            { "key": "report_draft.docx — Modified", "value": "01:58", "highlight": true },
-            { "key": "report_draft.docx — Accessed", "value": "02:01", "highlight": true },
-            { "key": "budget_plan.xlsx — Created", "value": "20:45", "highlight": false },
-            { "key": "budget_plan.xlsx — Modified", "value": "02:03", "highlight": true },
-            { "key": "budget_plan.xlsx — Accessed", "value": "02:04", "highlight": true }
+            {
+              "key": "report_draft.docx — Created",
+              "value": "21:10",
+              "highlight": false
+            },
+            {
+              "key": "report_draft.docx — Modified",
+              "value": "01:58",
+              "highlight": true
+            },
+            {
+              "key": "report_draft.docx — Accessed",
+              "value": "02:01",
+              "highlight": true
+            },
+            {
+              "key": "budget_plan.xlsx — Created",
+              "value": "20:45",
+              "highlight": false
+            },
+            {
+              "key": "budget_plan.xlsx — Modified",
+              "value": "02:03",
+              "highlight": true
+            },
+            {
+              "key": "budget_plan.xlsx — Accessed",
+              "value": "02:04",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -135,17 +227,41 @@
           {
             "name": "report_draft.docx",
             "timestamps": [
-              { "field": "Created", "value": "21:10", "isSuspicious": false },
-              { "field": "Modified", "value": "01:58", "isSuspicious": true },
-              { "field": "Accessed", "value": "02:01", "isSuspicious": true }
+              {
+                "field": "Created",
+                "value": "21:10",
+                "isSuspicious": false
+              },
+              {
+                "field": "Modified",
+                "value": "01:58",
+                "isSuspicious": true
+              },
+              {
+                "field": "Accessed",
+                "value": "02:01",
+                "isSuspicious": true
+              }
             ]
           },
           {
             "name": "budget_plan.xlsx",
             "timestamps": [
-              { "field": "Created", "value": "20:45", "isSuspicious": false },
-              { "field": "Modified", "value": "02:03", "isSuspicious": true },
-              { "field": "Accessed", "value": "02:04", "isSuspicious": true }
+              {
+                "field": "Created",
+                "value": "20:45",
+                "isSuspicious": false
+              },
+              {
+                "field": "Modified",
+                "value": "02:03",
+                "isSuspicious": true
+              },
+              {
+                "field": "Accessed",
+                "value": "02:04",
+                "isSuspicious": true
+              }
             ]
           }
         ],
@@ -175,10 +291,26 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "employee",
           "rows": [
-            { "key": "report_draft.docx", "value": "Internal strategy review — Senior Management Only", "highlight": true },
-            { "key": "budget_plan.xlsx", "value": "Budget allocations — Finance and C-suite restricted", "highlight": true },
-            { "key": "Employee Access Rights", "value": "Authorised by role", "highlight": false },
-            { "key": "After-Hours Policy", "value": "Accessing restricted files outside hours requires notification — none filed", "highlight": true }
+            {
+              "key": "report_draft.docx",
+              "value": "Internal strategy review — Senior Management Only",
+              "highlight": true
+            },
+            {
+              "key": "budget_plan.xlsx",
+              "value": "Budget allocations — Finance and C-suite restricted",
+              "highlight": true
+            },
+            {
+              "key": "Employee Access Rights",
+              "value": "Authorised by role",
+              "highlight": false
+            },
+            {
+              "key": "After-Hours Policy",
+              "value": "Accessing restricted files outside hours requires notification — none filed",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -198,11 +330,31 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "employee",
           "rows": [
-            { "key": "01:55", "value": "Domain login — CORP\\sanalyst", "highlight": true },
-            { "key": "02:01", "value": "report_draft.docx opened", "highlight": false },
-            { "key": "02:03", "value": "budget_plan.xlsx opened / report_draft.docx saved", "highlight": false },
-            { "key": "02:04", "value": "budget_plan.xlsx saved", "highlight": false },
-            { "key": "02:06", "value": "All applications closed", "highlight": false }
+            {
+              "key": "01:55",
+              "value": "Domain login — CORP\\sanalyst",
+              "highlight": true
+            },
+            {
+              "key": "02:01",
+              "value": "report_draft.docx opened",
+              "highlight": false
+            },
+            {
+              "key": "02:03",
+              "value": "budget_plan.xlsx opened / report_draft.docx saved",
+              "highlight": false
+            },
+            {
+              "key": "02:04",
+              "value": "budget_plan.xlsx saved",
+              "highlight": false
+            },
+            {
+              "key": "02:06",
+              "value": "All applications closed",
+              "highlight": false
+            }
           ]
         }
       ],
@@ -212,14 +364,45 @@
         "title": "Event Sequence Sorter",
         "description": "Arrange the system login, file open, file modification, and file close events in the correct chronological order to reconstruct the full 2 AM session.",
         "events": [
-          { "id": "ev_login", "label": "Domain login — CORP\\sanalyst", "time": "01:55" },
-          { "id": "ev_open_report", "label": "report_draft.docx opened", "time": "02:01" },
-          { "id": "ev_open_budget", "label": "budget_plan.xlsx opened", "time": "02:03" },
-          { "id": "ev_save_report", "label": "report_draft.docx saved (modified)", "time": "02:03" },
-          { "id": "ev_save_budget", "label": "budget_plan.xlsx saved (modified)", "time": "02:04" },
-          { "id": "ev_close", "label": "All applications closed", "time": "02:06" }
+          {
+            "id": "ev_login",
+            "label": "Domain login — CORP\\sanalyst",
+            "time": "01:55"
+          },
+          {
+            "id": "ev_open_report",
+            "label": "report_draft.docx opened",
+            "time": "02:01"
+          },
+          {
+            "id": "ev_open_budget",
+            "label": "budget_plan.xlsx opened",
+            "time": "02:03"
+          },
+          {
+            "id": "ev_save_report",
+            "label": "report_draft.docx saved (modified)",
+            "time": "02:03"
+          },
+          {
+            "id": "ev_save_budget",
+            "label": "budget_plan.xlsx saved (modified)",
+            "time": "02:04"
+          },
+          {
+            "id": "ev_close",
+            "label": "All applications closed",
+            "time": "02:06"
+          }
         ],
-        "solution_order": ["ev_login", "ev_open_report", "ev_open_budget", "ev_save_report", "ev_save_budget", "ev_close"],
+        "solution_order": [
+          "ev_login",
+          "ev_open_report",
+          "ev_open_budget",
+          "ev_save_report",
+          "ev_save_budget",
+          "ev_close"
+        ],
         "hint": "Use the timestamps to place each event in order. The login always comes first.",
         "maxHints": 2,
         "hints": [
@@ -246,11 +429,31 @@
           "isKeyEvidence": true,
           "pointsToSuspect": "employee",
           "rows": [
-            { "key": "VPN Active", "value": "NO", "highlight": true },
-            { "key": "RDP Session", "value": "NO", "highlight": true },
-            { "key": "Remote Management Tool", "value": "NO", "highlight": true },
-            { "key": "Network", "value": "Residential WiFi — HOME-NET-07", "highlight": false },
-            { "key": "Session Type", "value": "LOCAL — physical device operation confirmed", "highlight": true }
+            {
+              "key": "VPN Active",
+              "value": "NO",
+              "highlight": true
+            },
+            {
+              "key": "RDP Session",
+              "value": "NO",
+              "highlight": true
+            },
+            {
+              "key": "Remote Management Tool",
+              "value": "NO",
+              "highlight": true
+            },
+            {
+              "key": "Network",
+              "value": "Residential WiFi — HOME-NET-07",
+              "highlight": false
+            },
+            {
+              "key": "Session Type",
+              "value": "LOCAL — physical device operation confirmed",
+              "highlight": true
+            }
           ]
         }
       ],
@@ -328,13 +531,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "aria": {
-    "welcomeToHub": "...2 AM. Office closed. Files opened.\nNo forced entry. No remote session. Someone was there.\nAnd the timestamps remember exactly what they did.",
-    "exploreFeeds": "Created times. Modified times. Accessed times.\nOne cluster of activity stands apart from all the rest.",
-    "viewEvidence": "Login at 01:55. Files modified by 02:04. Done by 02:06.\nThat's 11 minutes of deliberate work. Who does that at 2 AM?",
-    "markEvidence": "Good. The sequence is taking shape.",
-    "decryptionHint": "Flag every timestamp inside the 01:50–02:10 window. That's where the session lives.",
-    "flagSuspect": "Remote access is gone from the picture.\nLocal session. Physical device. Residential address.\nWho was home?"
   }
 }
