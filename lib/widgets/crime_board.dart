@@ -442,7 +442,7 @@ class _Pin extends StatelessWidget {
         width: 12, height: 12,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: color,
+          color: Colors.transparent,
           boxShadow: [
             BoxShadow(color: color.withOpacity(0.7), blurRadius: 6),
           ],

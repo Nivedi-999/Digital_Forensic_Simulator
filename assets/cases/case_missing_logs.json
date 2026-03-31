@@ -407,15 +407,6 @@
         }
       ],
       "minigame": null
-    },
-    {
-      "id": "suspect_profiles",
-      "label": "Suspect Profiles",
-      "icon": "person_outlined",
-      "evidenceType": "profiles",
-      "unlockedBy": null,
-      "items": [],
-      "minigame": null
     }
   ],
   "timeline": [

@@ -76,7 +76,7 @@
         {
           "id": "file_routerlog",
           "label": "router_access_log.txt",
-          "detail": "Router access log from the victim's home TP-Link Archer C6. Entries show device with MAC address 44:D9:E7:2A:BC:01 first connected on 14th of last month at 00:12 AM. The device has connected every night since, consistently between midnight and 3 AM, totalling 38 sessions. The device authenticates using WPA2 with the correct pre-shared key \u2014 not a brute force. Connection signal strength averages -61 dBm, consistent with a device in an adjacent unit rather than the same household. The MAC address was not registered by the router owner as a known device. DHCP leases confirm hostname assigned: NEIL-LAPTOP.",
+          "detail": "Router logs show an unknown device (MAC: 44:D9:E7:2A:BC:01) first connected on the 14th at 00:12 AM.\nThe device has connected consistently every night between midnight and 3 AM, totaling 38 sessions.\nIt authenticated using the correct WPA2 key (not brute force), with signal strength indicating a nearby unit rather than inside the home.\nThe device was not recognized by the owner and appeared in DHCP records with the hostname “NEIL-LAPTOP.”",
           "isKeyEvidence": true,
           "pointsToSuspect": "neil_v",
           "metadata": {
@@ -88,7 +88,7 @@
         {
           "id": "file_maclookup",
           "label": "mac_address_lookup.txt",
-          "detail": "MAC OUI (Organisationally Unique Identifier) lookup for 44:D9:E7:2A:BC:01 returns Dell Inc. as the manufacturer. Cross-referenced against Dell's India sales database (obtained via subpoena) \u2014 the specific OUI block was assigned to a batch of Dell Inspiron 15 3520 units shipped to retail stores in this city between March and May of last year. Purchase records from the closest authorised Dell outlet show one unit from this batch sold on 12th April to a buyer named Neil V, address matches Flat 302, the adjacent unit. The MAC is not spoofed \u2014 OUI matches hardware-level assignment.",
+          "detail": "MAC OUI lookup for 44:D9:E7:2A:BC:01 identifies the manufacturer as Dell Inc.\nThe OUI corresponds to a batch of Dell Inspiron 15 3520 units shipped to local retail stores between March and May last year.\nSales records from a nearby authorised Dell outlet show one unit from this batch was purchased on 12th April by Neil V, whose address matches Flat 302 (adjacent unit).\nThe MAC address is confirmed genuine (not spoofed), as the OUI aligns with the hardware-level assignment.",
           "isKeyEvidence": true,
           "pointsToSuspect": "neil_v",
           "metadata": {
@@ -100,7 +100,7 @@
         {
           "id": "file_bandwidth",
           "label": "bandwidth_report.pdf",
-          "detail": "ISP bandwidth consumption report for the victim's broadband account, covering the last 45 days. Average nightly usage between 00:00\u201303:00 AM: 3.8 GB per night. Daytime usage by the account owner averages 400 MB across full business hours. The night-time usage profile shows sustained high-throughput transfers consistent with torrenting or large file downloads \u2014 not casual browsing. On the three nights the external device did not connect (power outage, router restart), the 00\u201303 AM usage dropped to near zero. This correlation directly links the external device to the anomalous consumption.",
+          "detail": "ISP report shows unusually high nightly usage (00:00–03:00 AM) averaging 3.8 GB, compared to only ~400 MB during daytime.\nThe usage pattern indicates sustained high-throughput activity, consistent with torrenting or large downloads rather than normal browsing.\nOn nights when the external device was not connected (e.g., power outage, router restart), usage during this period dropped to near zero.\nThis direct correlation links the unidentified external device to the abnormal bandwidth consumption.",
           "isKeyEvidence": false,
           "pointsToSuspect": null,
           "metadata": {

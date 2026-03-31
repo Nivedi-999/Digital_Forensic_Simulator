@@ -1,13 +1,4 @@
 // lib/logic/branching_logic.dart
-//
-// DYNAMIC SUSPICION SYSTEM
-// ─────────────────────────
-// Per the game design brief: culprit suspicion starts LOW and rises
-// ONLY as the player collects incriminating evidence.
-//
-// All suspects now start at 0.05 (barely visible bar).
-// The riskLevel field is used only for UI colour — NOT for seeding suspicion.
-// Evidence effects are the sole driver of suspicion changes.
 
 import '../models/case.dart';
 
@@ -15,25 +6,7 @@ class BranchingLogic {
   final CaseFile caseFile;
   BranchingLogic(this.caseFile);
 
-  // ── 1. Initial suspicion seeds ───────────────────────────
-  //
-  // CHANGED: All suspects start equal and low (0.05).
-  // riskLevel no longer pre-biases the culprit's bar.
-  // The player must collect evidence to raise any suspect's suspicion.
-
   double initialSuspicion(String riskLevel) => 0.05;
-
-  // ── 2. Evidence effects ──────────────────────────────────
-  //
-  // Culprit evidence: raises culprit bar significantly (+0.15 to +0.25)
-  // Red herring evidence: raises innocent suspect bar briefly (+0.15 to +0.20)
-  // Contradicting evidence: lowers innocent suspect bar (-0.10 to -0.15)
-  //
-  // Design goal:
-  //   Easy/Medium  — culprit's bar climbs clearly above others by midgame
-  //   Hard         — culprit and 1 innocent rise together until late evidence
-  //   Advanced     — multiple suspects rise and fall; culprit only clearly
-  //                  identified near the end
 
   static const Map<String, Map<String, double>> _evidenceEffects = {
 
@@ -90,26 +63,22 @@ class BranchingLogic {
     'ip_registration':    {'ramesh_p': 0.22},
     'meta_portal_admin':  {'job_portal_admin': 0.18},
 
-    // ── CASE 01: THE VANISHING REPORT (Easy) ──
-    'file_report_comparison': {'it_admin': 0.20, 'neha_sharma': -0.10},
-    'file_metadata_vanishing': {'it_admin': 0.15, 'finance_manager': 0.10},
-    'hash_verification_v':     {'it_admin': 0.25},
-    'service_account_log':    {'it_admin': 0.22},
+    // ── The Vanishing Report (Easy) ──────────────────────────
+    'file_comparison':        {'it_admin': 0.18},
+    'hash_mismatch':          {'it_admin': 0.22, 'neha_sharma': -0.15},
+    'meta_service_account':   {'it_admin': 0.25},
 
     // ── The Leaked Roster (Easy) ─────────────────────────────
-    'chat_early_hint':          {'priya_menon': 0.18, 'rahul_tiwari': -0.05},
-    'file_access_log':          {'priya_menon': 0.22, 'rahul_tiwari': -0.10, 'sunita_das': -0.05},
-    'meta_device_id':           {'priya_menon': 0.25, 'unknown_student': -0.15},
-    'ip_whatsapp_upload':       {'priya_menon': 0.22, 'rahul_tiwari': -0.15},
-    'meta_wifi_registration':   {'priya_menon': 0.20},
-
-    // ── CASE 03: THE ALTERED IMAGE (Easy) ──
-    'image_analysis':          {'unknown_editor': 0.20, 'arjun_mehta': -0.10},
-    'exif_metadata_image':     {'unknown_editor': 0.25, 'photographer': -0.15},
-    'camera_records_image':    {'unknown_editor': 0.20},
+    'chat_early_hint':        {'priya_menon': 0.18},
+    'file_access_log':        {'priya_menon': 0.22, 'rahul_tiwari': -0.10},
+    'file_print_log':         {'unknown_student': -0.10},
+    'meta_device_id':         {'priya_menon': 0.25, 'unknown_student': -0.15},
+    'meta_compression':       {'priya_menon': 0.08},
+    'meta_wifi_registration': {'priya_menon': 0.25},
+    'ip_whatsapp_upload':     {'priya_menon': 0.22, 'rahul_tiwari': -0.12},
+    'ip_rahul_traffic':       {'rahul_tiwari': -0.15},
 
     // ── Phantom Transaction (Medium) ─────────────────────────
-    // Medium: culprit rises clearly but red herring keeps one innocent elevated
     'file_simclone':         {'vikram_b': 0.20, 'external_fraudster': -0.15},
     'file_banktransfer':     {'vikram_b': 0.18},
     'file_employeelog':      {'vikram_b': 0.22},
@@ -161,29 +130,33 @@ class BranchingLogic {
     'ip_api_calls':       {'ketan_s': 0.20},
     'chat_ex_intern':     {'ex_intern': 0.18},
 
-    // ── CASE 04: THE MISSING LOGS (Medium) ──
-    'system_logs_gap':         {'sys_admin': 0.20, 'external_hacker': 0.15},
-    'timeline_reconstruction': {'sys_admin': 0.25, 'it_support': -0.10},
-    'log_clear_source':        {'sys_admin': 0.22},
-
     // ── The Cloned Credential (Medium) ───────────────────────
-    'chat_phish_email':         {'deepak_soni': 0.15, 'kavya_nair': -0.10},
-    'chat_domain_registration': {'deepak_soni': 0.25, 'it_helpdesk': -0.10},
-    'file_vendor_creation':     {'deepak_soni': 0.22, 'external_vendor': -0.10},
-    'file_invoice_approval':    {'deepak_soni': 0.20, 'kavya_nair': -0.15},
-    'meta_session_fingerprint': {'deepak_soni': 0.20, 'kavya_nair': -0.12},
-    'meta_upi_trace':           {'deepak_soni': 0.22},
-    'ip_approval_session':      {'deepak_soni': 0.25, 'kavya_nair': -0.20},
-    'meta_harvested_credentials': {'deepak_soni': 0.18},
+    'chat_phish_email':        {'deepak_soni': 0.15, 'kavya_nair': -0.05},
+    'chat_domain_registration':{'deepak_soni': 0.25},
+    'chat_it_nocommunication': {'it_helpdesk': -0.15},
+    'file_vendor_creation':    {'deepak_soni': 0.22},
+    'file_invoice_approval':   {'deepak_soni': 0.22, 'kavya_nair': -0.15},
+    'file_kavya_home_activity':{'kavya_nair': -0.20},
+    'meta_session_fingerprint':{'deepak_soni': 0.20, 'kavya_nair': -0.10},
+    'meta_upi_trace':          {'deepak_soni': 0.22},
+    'ip_approval_session':     {'deepak_soni': 0.25},
+    'ip_vendor_creation_ip':   {'deepak_soni': 0.15},
+    'meta_harvested_credentials':{'deepak_soni': 0.20},
 
-    // ── CASE 06: THE MIDNIGHT TIMELINE (Medium) ──
-    'midnight_login_trace':    {'employee': 0.22, 'remote_attacker': 0.12},
-    'file_access_cluster':     {'employee': 0.25},
-    'local_session_proof':     {'employee': 0.20, 'remote_attacker': -0.15},
+    // ── The Midnight Timeline (Medium) ───────────────────────
+    'meta_timestamps':      {'employee': 0.20},
+    'file_accessed':        {'employee': 0.20},
+    'meta_activity':        {'employee': 0.22, 'remote_attacker': -0.15},
+    'ip_no_remote':         {'remote_attacker': -0.20, 'employee': 0.15},
+
+    // ── The Missing Logs (Medium) ────────────────────────────
+    'log_gap':                 {'sys_admin': 0.18, 'external_hacker': 0.12},
+    'log_backup_alerts':       {'sys_admin': 0.20},
+    'timeline_admin_login':    {'sys_admin': 0.25, 'external_hacker': -0.10},
+    'timeline_cleanup_command':{'sys_admin': 0.25},
+    'admin_session_record':    {'sys_admin': 0.22},
 
     // ── Dead Drop Signal (Hard) ──────────────────────────────
-    // Hard: two suspects rise together — operator and lab manager
-    // Lab manager's bar only drops late when remote-session evidence appears
     'file_sim_cache':     {'hidden_operator': 0.18},
     'file_render_test':   {'hidden_operator': 0.18},
     'file_calc_patch':    {'hidden_operator': 0.18, 'lab_manager': -0.15},
@@ -192,23 +165,7 @@ class BranchingLogic {
     'meta_weekly_cycle':  {'hidden_operator': 0.18},
     'ip_internal_relay':  {'hidden_operator': 0.15},
     'ip_dead_drop':       {'hidden_operator': 0.22},
-    // Red herring — lab manager rises until remote-session evidence clears him
     'meta_lab_manager':   {'lab_manager': 0.18},
-
-    // ── CASE 07: THE UNKNOWN USB (Hard) ──
-    'registry_usb_artifact':   {'workstation_owner': 0.22},
-    'serial_number_match':     {'workstation_owner': 0.25},
-    'correlation_window':      {'workstation_owner': 0.18},
-
-    // ── The Borrowed Badge (Hard) ─────────────────────────────
-    'chat_badge_entry':         {'arvind_kale': 0.15, 'shruti_varma': 0.10},
-    'chat_arvind_exit':         {'arvind_kale': 0.18},
-    'file_rfid_purchase':       {'arvind_kale': 0.25, 'ex_employee': -0.15},
-    'file_audit_proximity':     {'arvind_kale': 0.22, 'shruti_varma': -0.12},
-    'meta_cctv_gap':            {'arvind_kale': 0.18},
-    'meta_manual_hold':         {'arvind_kale': 0.20, 'facilities_guard': -0.15},
-    'meta_proxmark_signature':  {'arvind_kale': 0.22, 'shruti_varma': -0.18},
-    'ip_arvind_home_inactive':  {'arvind_kale': 0.15, 'ex_employee': -0.10},
 
     // ── Echoes of Tomorrow (Hard) ────────────────────────────
     'file_preemptive_archive': {'manav_r': 0.22, 'auto_scheduler': -0.15},
@@ -231,7 +188,6 @@ class BranchingLogic {
     'file_draft_content':     {'maya_kulkarni': 0.20, 'vikram_sen': -0.12},
     'file_prior_dispute':     {'maya_kulkarni': 0.20},
     'file_style_analysis':    {'maya_kulkarni': 0.25},
-    // Vikram rises with VPN evidence then drops with draft content
     'ip_vikram_home':         {'vikram_sen': 0.15},
 
     // ── Dark Proxy Attack (Hard) ─────────────────────────────
@@ -260,24 +216,36 @@ class BranchingLogic {
     'ip_build_machine':   {'cyrus_f': 0.22},
     'meta_qa_flag':       {'vendor_qa': 0.18},
 
+    // ── The Borrowed Badge (Hard) ────────────────────────────
+    'chat_badge_entry':        {'arvind_kale': 0.15, 'shruti_varma': -0.10},
+    'chat_arvind_exit':        {'arvind_kale': 0.20},
+    'file_rfid_purchase':      {'arvind_kale': 0.25, 'ex_employee': -0.15},
+    'file_audit_proximity':    {'arvind_kale': 0.22},
+    'file_inventory_missing':  {'arvind_kale': 0.12},
+    'file_ex_employee_offboarding': {'ex_employee': -0.20},
+    'meta_cctv_gap':           {'arvind_kale': 0.20, 'facilities_guard': -0.15},
+    'meta_manual_hold':        {'arvind_kale': 0.22},
+    'meta_proxmark_signature': {'arvind_kale': 0.25},
+    'ip_arvind_home_inactive': {'arvind_kale': 0.18},
+    'ip_shruti_nagpur':        {'shruti_varma': -0.20},
+
+    // ── The Unknown USB (Hard) ───────────────────────────────
+    'reg_usbstor':         {'employee': 0.22, 'it_admin': -0.10},
+    'meta_fingerprint_usb':{'employee': 0.22},
+    'file_connection_log': {'employee': 0.25, 'external_visitor': -0.15},
+
     // ── The Vanishing Vault (Advanced) ───────────────────────
-    // Advanced: storage vendor AND ishaan both rise — vault clears vendor late
     'file_wiper_code':      {'ishaan_m': 0.15},
     'file_deployment_log':  {'ishaan_m': 0.20, 'storage_vendor': -0.15},
     'file_salary_trace':    {'ishaan_m': 0.20},
     'file_backdoor':        {'ishaan_m': 0.20},
     'ip_wiper_deploy':      {'ishaan_m': 0.18},
     'chat_contractor':      {'storage_vendor': 0.18},
-
-    // ── CASE 09: THE PHANTOM PROCESS (Advanced) ──
-    'process_memory_dump':     {'aryan_mehta': 0.15, 'unknown_insider': 0.15},
-    'vad_map_rwx':             {'aryan_mehta': 0.20},
-    'api_hook_intercept':      {'aryan_mehta': 0.25, 'patch_reviewer': 0.10},
-
-    // ── CASE 10: THE DOUBLE IDENTITY (Advanced) ──
-    'jwt_token_iat':           {'silverkey_broker': 0.20, 'espionage_group': 0.15},
-    'fingerprint_mismatch_log':{'silverkey_broker': 0.25, 'riya_desai': -0.15},
-    'phishing_redirect_trace': {'silverkey_broker': 0.20},
+    'chat_rival_contact':   {'ishaan_m': 0.18},
+    'chat_audit_access':    {'ishaan_m': 0.12},
+    'meta_backup_deletion': {'ishaan_m': 0.20},
+    'meta_c2_silence':      {'ishaan_m': 0.15},
+    'ip_internal_ws':       {'ishaan_m': 0.18},
 
     // ── Mirror Protocol (Advanced) ───────────────────────────
     'file_diff_analysis':    {'zoya_r': 0.15},
@@ -287,6 +255,11 @@ class BranchingLogic {
     'meta_commit_window':    {'zoya_r': 0.18},
     'ip_exfil_dest':         {'zoya_r': 0.18},
     'chat_maintainer':       {'oss_maintainer': 0.18},
+    'chat_contract':         {'zoya_r': 0.18},
+    'chat_payment_confirm':  {'zoya_r': 0.15},
+    'meta_model_similarity': {'zoya_r': 0.18},
+    'meta_exfil_pattern':    {'zoya_r': 0.15},
+    'ip_exfil_server':       {'zoya_r': 0.20},
 
     // ── Zero Point Entry (Advanced) ──────────────────────────
     'file_exploit_code':  {'ronak_s': 0.15},
@@ -297,6 +270,8 @@ class BranchingLogic {
     'meta_code_style':    {'ronak_s': 0.18},
     'ip_jumpserver':      {'ronak_s': 0.18},
     'chat_old_memo':      {'dr_priya_t': 0.18},
+    'meta_controlled_shutdown': {'ronak_s': 0.15},
+    'file_financial_zero':{'ronak_s': 0.18},
 
     // ── Ghost Network (Advanced) ─────────────────────────────
     'file_stego_reports':     {'nalini_v': 0.15},
@@ -311,7 +286,6 @@ class BranchingLogic {
     'chat_recruitment':       {'new_engineer': 0.18},
 
     // ── Double Agent (Advanced) ──────────────────────────────
-    // Advanced: both ananya_v and rahil_d rise — only relay ownership clears rahil
     'file_dual_employment':      {'ananya_v': 0.20},
     'file_exfil_log_payaxis':    {'ananya_v': 0.18},
     'file_exfil_log_clearvault': {'ananya_v': 0.18, 'rahil_d': -0.15},
@@ -323,6 +297,21 @@ class BranchingLogic {
     'meta_timeline_overlap':     {'ananya_v': 0.12},
     'ip_relay':                  {'ananya_v': 0.18},
     'chat_colleague_flag':       {'rahil_d': 0.18},
+
+    // ── The Phantom Process (Advanced) ───────────────────────
+    'proc_orphan_thread':      {'aryan_mehta': 0.18, 'sanjay_kulkarni': -0.10},
+    'mem_rwx_region':          {'aryan_mehta': 0.20},
+    'net_c2_channel':          {'aryan_mehta': 0.22, 'sanjay_kulkarni': -0.12},
+    'hook_commit_transaction': {'aryan_mehta': 0.22, 'priya_nair': -0.10},
+    'hook_query_information':  {'aryan_mehta': 0.18},
+
+    // ── The Double Identity (Advanced) ───────────────────────
+    'auth_simultaneous_sessions': {'silverkey_broker': 0.22, 'riya_desai': -0.15},
+    'auth_refresh_pattern':       {'silverkey_broker': 0.20},
+    'jwt_token_analysis':         {'silverkey_broker': 0.22, 'nikhil_sharma': 0.10},
+    'fingerprint_comparison':     {'silverkey_broker': 0.20, 'nikhil_sharma': -0.12},
+    'intel_silverkey_ip':         {'silverkey_broker': 0.22},
+    'intel_phishing_domain':      {'silverkey_broker': 0.18},
   };
 
   void applyEvidenceEffects(String evidenceId, Map<String, double> suspicion) {
@@ -334,9 +323,8 @@ class BranchingLogic {
     }
   }
 
-  // ── 3. Mini-game effects ─────────────────────────────────
-
   static const Map<String, Map<String, double>> _minigameEffects = {
+    // ── Original cases ───────────────────────────────────────
     'decryption':         {'ankita_e': 0.12, 'dhruv_a': -0.15, 'manav_r': -0.05, 'ayon_k': -0.05},
     'name_decode':        {'riya_s': 0.12, 'classmate_b': -0.10},
     'hostname_decode':    {'neil_v': 0.12},
@@ -370,19 +358,49 @@ class BranchingLogic {
     'binary_pattern':     {'hidden_operator': 0.12},
     'intent_patterning':  {'manav_r': 0.12},
     'linguistic_patterning': {'maya_kulkarni': 0.15},
-    // NEW FORENSIC MINIGAMES
-    'hash_validate':           {'it_admin': 0.12},
-    'handler_sorter':          {'dept_manager': 0.10},
-    'exif_audit':              {'unknown_editor': 0.15},
-    'log_rebuild':             {'sys_admin': 0.12},
-    'file_carving':            {'rohan_verma': 0.12},
-    'artifact_inspector':      {'employee': 0.12},
-    'extension_detect':        {'external_attacker': 0.12},
-    'memory_analysis':         {'aryan_mehta': 0.15},
-    'token_trace':             {'silverkey_broker': 0.15},
-    'device_match':             {'priya_menon': 0.12, 'rahul_tiwari': -0.10, 'unknown_student': -0.10},
-    'credential_decode':        {'deepak_soni': 0.12, 'kavya_nair': -0.12},
-    'rfid_frequency_decode':    {'arvind_kale': 0.15, 'shruti_varma': -0.15, 'ex_employee': -0.10},
+
+    // ── New / previously missing cases ───────────────────────
+    // The Vanishing Report
+    'hash_validate':             {'it_admin': 0.18, 'neha_sharma': -0.12},
+
+    // The Leaked Roster
+    'device_match':              {'priya_menon': 0.15, 'unknown_student': -0.10},
+
+    // The Borrowed Badge
+    'rfid_frequency_decode':     {'arvind_kale': 0.15, 'ex_employee': -0.12},
+
+    // The Cloned Credential
+    'credential_decode':         {'deepak_soni': 0.15, 'kavya_nair': -0.10},
+
+    // The Missing Logs
+    'log_gap_reconstructor':     {'sys_admin': 0.18, 'external_hacker': -0.10},
+    'cleanup_command_analyser':  {'sys_admin': 0.20},
+
+    // The Midnight Timeline
+    'timestamp_detector':        {'employee': 0.15, 'remote_attacker': -0.10},
+    'event_sequence_sorter':     {'employee': 0.18},
+    'connection_correlator':     {'employee': 0.18, 'external_visitor': -0.12},
+
+    // The Unknown USB
+    'registry_explorer':         {'employee': 0.15},
+    'device_fingerprint_decoder':{'employee': 0.15},
+
+    // The Phantom Process
+    'process_tree_inspector':    {'aryan_mehta': 0.15, 'sanjay_kulkarni': -0.10},
+    'memory_region_analyser':    {'aryan_mehta': 0.18},
+    'network_socket_tracer':     {'aryan_mehta': 0.20, 'sanjay_kulkarni': -0.12},
+
+    // The Double Identity
+    'concurrent_session_detector':   {'silverkey_broker': 0.20, 'riya_desai': -0.15},
+    'jwt_token_decoder':             {'silverkey_broker': 0.18, 'nikhil_sharma': 0.08},
+    'browser_fingerprint_comparator':{'silverkey_broker': 0.15, 'nikhil_sharma': -0.12},
+
+    // Mirror Protocol
+    'ip_trace_patch':            {'cyrus_f': 0.12},
+    'meta_correlate_patch':      {'cyrus_f': 0.15, 'vendor_qa': -0.10},
+
+    // Zero Point Entry
+    'alibi_verify_phantom':      {'vikram_b': 0.15, 'external_fraudster': -0.10},
   };
 
   void applyMinigameEffects(String minigameId, Map<String, double> suspicion) {
@@ -393,8 +411,6 @@ class BranchingLogic {
       suspicion[entry.key] = (current + entry.value).clamp(0.0, 1.0);
     }
   }
-
-  // ── 4. Outcome resolution ────────────────────────────────
 
   OutcomeType resolveOutcome({
     required String accusedSuspectId,
@@ -411,8 +427,6 @@ class BranchingLogic {
     if (correctEvidenceCount < winCondition.minCorrectEvidence) {
       return OutcomeType.partial;
     }
-    // Only penalise if player collected MORE than correct evidence (red herrings too)
-    // Threshold raised to 0.95 so collecting all correct items doesn't force partial
     final spamming = totalAvailableEvidence > 0 &&
         totalEvidenceCount / totalAvailableEvidence >= 0.95 &&
         irrelevantEvidenceCount > 0;
