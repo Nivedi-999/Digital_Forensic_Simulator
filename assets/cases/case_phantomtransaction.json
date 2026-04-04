@@ -4,29 +4,29 @@
   "shortDescription": "Unauthorized Bank Transfer",
   "difficulty": "medium",
   "theme": "Financial Fraud",
-  "estimatedDuration": "30\u201340 min",
+  "estimatedDuration": "30–40 min",
   "caseNumber": "2006",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
-    "incidentSummary": "\u20b985,000 was transferred from a senior citizen's bank account to an unknown account at 3:14 AM.\n\nThe victim never initiated the transfer. Their phone was found at home.\n\nSomeone used a cloned SIM card to intercept the OTP.",
-    "missionText": "Your Mission:\n\n\u203a Trace the SIM cloning operation\n\n\u203a Identify who intercepted the OTP\n\n\u203a Collect at least 3 correct evidences\n\n\u203a Flag the right suspect"
+    "incidentSummary": "₹85,000 was transferred from a senior citizen's bank account to an unknown account at 3:14 AM.\n\nThe victim never initiated the transfer. Their phone was found at home.\n\nSomeone used a cloned SIM card to intercept the OTP.",
+    "missionText": "Your Mission:\n\n› Trace the SIM cloning operation\n\n› Identify who intercepted the OTP\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
   },
   "suspects": [
     {
       "id": "vikram_b",
       "name": "Vikram B",
       "role": "Telecom Insider",
-      "department": "SimConnect Telecom \u2014 Backend Support",
+      "department": "SimConnect Telecom — Backend Support",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "27.56.88.201 \u2014 3:10 AM",
-        "deviceUsage": "VIKRAM-PC \u2014 3:05\u20133:25 AM",
+        "ipActivity": "27.56.88.201 — 3:10 AM",
+        "deviceUsage": "VIKRAM-PC — 3:05–3:25 AM",
         "locationTrace": "SimConnect Office, Night Shift",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Accessed victim's SIM provisioning record at 3:05 AM \u2014 9 minutes before the fraudulent transfer. Issued a duplicate SIM request without a physical store visit.",
+      "profileNotes": "Accessed victim's SIM provisioning record at 3:05 AM — 9 minutes before the fraudulent transfer. Issued a duplicate SIM request without a physical store visit.",
       "image": "assets/avatars/vikram_b.png",
       "description": "Vikram B is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -34,16 +34,16 @@
       "id": "unknown_caller",
       "name": "Unknown Caller",
       "role": "Social Engineer",
-      "department": "External \u2014 Unidentified",
+      "department": "External — Unidentified",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "VoIP \u2014 masked number",
-        "deviceUsage": "Unknown \u2014 VoIP device",
+        "ipActivity": "VoIP — masked number",
+        "deviceUsage": "Unknown — VoIP device",
         "locationTrace": "Untraced",
         "vpnCheck": "VPN detected"
       },
-      "profileNotes": "Called victim the previous day posing as a bank employee. Collected account number but NOT OTP \u2014 the OTP was intercepted separately via SIM clone.",
+      "profileNotes": "Called victim the previous day posing as a bank employee. Collected account number but NOT OTP — the OTP was intercepted separately via SIM clone.",
       "image": "assets/avatars/unknown_caller.png",
       "description": "Unknown Caller is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -55,8 +55,8 @@
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "49.40.12.55 \u2014 9:00 PM",
-        "deviceUsage": "Personal Phone \u2014 evening only",
+        "ipActivity": "49.40.12.55 — 9:00 PM",
+        "deviceUsage": "Personal Phone — evening only",
         "locationTrace": "Victim's residence",
         "vpnCheck": "No VPN detected"
       },
@@ -68,16 +68,16 @@
       "id": "store_manager",
       "name": "Deepa S",
       "role": "Telecom Store Manager",
-      "department": "SimConnect \u2014 Retail Store",
+      "department": "SimConnect — Retail Store",
       "riskLevel": "low",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "192.168.4.10 \u2014 10:00 AM",
-        "deviceUsage": "Store Terminal \u2014 business hours only",
+        "ipActivity": "192.168.4.10 — 10:00 AM",
+        "deviceUsage": "Store Terminal — business hours only",
         "locationTrace": "SimConnect Retail, Dadar",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Store was closed at 3 AM. Her credentials were not used in the SIM duplication \u2014 the backend system was accessed directly.",
+      "profileNotes": "Store was closed at 3 AM. Her credentials were not used in the SIM duplication — the backend system was accessed directly.",
       "image": "assets/avatars/store_manager.png",
       "description": "Deepa S is a person of interest in this case. Their motives and involvement remain under investigation."
     }
@@ -96,7 +96,7 @@
           "sender": "Vikram B",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Internal message from Vikram B to an unknown number at 3:13 AM \u2014 one minute before the transfer. He received and forwarded the OTP directly.",
+          "detail": "Internal message from Vikram B to an unknown number at 3:13 AM — one minute before the transfer. He received and forwarded the OTP directly.",
           "pointsToSuspect": "vikram_b"
         },
         {
@@ -105,7 +105,7 @@
           "sender": "Vikram B",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Sent at 3:16 AM \u2014 2 minutes after the fraudulent transfer completed. Confirms Vikram knew about and participated in the fraud.",
+          "detail": "Sent at 3:16 AM — 2 minutes after the fraudulent transfer completed. Confirms Vikram knew about and participated in the fraud.",
           "pointsToSuspect": "vikram_b"
         },
         {
@@ -114,7 +114,7 @@
           "sender": "Unknown Caller",
           "isKeyEvidence": false,
           "isSuspect": false,
-          "detail": "Phishing call transcript from the day before. Collected account number but not the critical OTP \u2014 the OTP interception happened separately via SIM clone.",
+          "detail": "Phishing call transcript from the day before. Collected account number but not the critical OTP — the OTP interception happened separately via SIM clone.",
           "pointsToSuspect": null
         },
         {
@@ -123,9 +123,9 @@
           "sender": "Victim's friend (WhatsApp)",
           "isKeyEvidence": false,
           "isSuspect": false,
-          "detail": "The victim's friend suggested the attack might be a social engineering call from an external fraudster pretending to be a bank employee. This is a common fraud pattern (vishing). However, the OTP was sent to the victim's original SIM which was simultaneously deactivated \u2014 ruling out vishing. The attacker had physical control of the cloned SIM, which requires insider telecom access.",
+          "detail": "The victim's friend suggested the attack might be a social engineering call from an external fraudster pretending to be a bank employee. This is a common fraud pattern (vishing). However, the OTP was sent to the victim's original SIM which was simultaneously deactivated — ruling out vishing. The attacker had physical control of the cloned SIM, which requires insider telecom access.",
           "pointsToSuspect": "external_fraudster",
-          "irrelevantReason": "A vishing attack cannot explain SIM deactivation. The simultaneous SIM swap requires insider access to the telecom operator's provisioning system \u2014 pointing to Vikram B."
+          "irrelevantReason": "A vishing attack cannot explain SIM deactivation. The simultaneous SIM swap requires insider access to the telecom operator's provisioning system — pointing to Vikram B."
         }
       ],
       "minigame": null
@@ -140,7 +140,7 @@
         {
           "id": "file_simclone",
           "label": "sim_provisioning_log.txt",
-          "detail": "Backend provisioning log from the telecom operator's SIM management system. At 03:07 AM, a new SIM card was issued for the victim's mobile number +91-98XXXXXXXX. The request came from an internal operator terminal identified as workstation TL-TERM-14, assigned to the Vikram B. The request type was 'Emergency SIM Replacement' \u2014 a privileged operation that bypasses the standard 24-hour cooling period. The old SIM was deactivated at 03:07:44 AM. The new SIM was activated at 03:08:02 AM \u2014 an 18-second window. The victim's phone showed 'No Service' from 03:07 AM. This is a classic SIM swap attack executed from inside the operator's own provisioning system.",
+          "detail": "Backend provisioning log from the telecom operator's SIM management system. At 03:07 AM, a new SIM card was issued for the victim's mobile number +91-98XXXXXXXX. The request came from an internal operator terminal identified as workstation TL-TERM-14, assigned to the Vikram B. The request type was 'Emergency SIM Replacement' — a privileged operation that bypasses the standard 24-hour cooling period. The old SIM was deactivated at 03:07:44 AM. The new SIM was activated at 03:08:02 AM — an 18-second window. The victim's phone showed 'No Service' from 03:07 AM. This is a classic SIM swap attack executed from inside the operator's own provisioning system.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "metadata": {
@@ -152,7 +152,7 @@
         {
           "id": "file_banktransfer",
           "label": "bank_transfer_record.pdf",
-          "detail": "Bank transaction record for the victim's savings account. At 03:13:52 AM, an OTP was sent to the victim's number \u2014 which by this time was ringing on the cloned SIM held by Vikram B. At 03:13:58 AM, the OTP was entered into the bank's mobile app \u2014 a 6-second turnaround, impossibly fast for a sleeping victim but consistent with a prepared attacker waiting. At 03:14:11 AM, \u20b985,000 was transferred to account ACC-9921-X. The transfer was marked as 'high-value first-time beneficiary' by the bank's fraud engine but was not blocked because the OTP was valid. The bank's session log shows the transfer was initiated from a device with IMEI 35XXXXXXXXX \u2014 not matching any device registered to the account holder.",
+          "detail": "Bank transaction record for the victim's savings account. At 03:13:52 AM, an OTP was sent to the victim's number — which by this time was ringing on the cloned SIM held by Vikram B. At 03:13:58 AM, the OTP was entered into the bank's mobile app — a 6-second turnaround, impossibly fast for a sleeping victim but consistent with a prepared attacker waiting. At 03:14:11 AM, ₹85,000 was transferred to account ACC-9921-X. The transfer was marked as 'high-value first-time beneficiary' by the bank's fraud engine but was not blocked because the OTP was valid. The bank's session log shows the transfer was initiated from a device with IMEI 35XXXXXXXXX — not matching any device registered to the account holder.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "metadata": {
@@ -164,7 +164,7 @@
         {
           "id": "file_employeelog",
           "label": "employee_access_log.txt",
-          "detail": "Employee access log from the telecom operator's HR and shift management system. Vikram B's assigned shift is 09:00 AM \u2013 06:00 PM, Monday to Saturday. The SIM provisioning terminal TL-TERM-14 was accessed at 03:05 AM \u2014 9 hours outside his authorised shift window. The building access card log shows Vikram B badged into the operations floor at 02:58 AM using his employee card. He badged out at 03:19 AM \u2014 a 21-minute visit. No maintenance window, no overtime authorisation, and no incident ticket was open that would justify an off-hours visit. The access card and terminal login together place him at the scene at the exact time of the SIM swap.",
+          "detail": "Employee access log from the telecom operator's HR and shift management system. Vikram B's assigned shift is 09:00 AM – 06:00 PM, Monday to Saturday. The SIM provisioning terminal TL-TERM-14 was accessed at 03:05 AM — 9 hours outside his authorised shift window. The building access card log shows Vikram B badged into the operations floor at 02:58 AM using his employee card. He badged out at 03:19 AM — a 21-minute visit. No maintenance window, no overtime authorisation, and no incident ticket was open that would justify an off-hours visit. The access card and terminal login together place him at the scene at the exact time of the SIM swap.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "metadata": {
@@ -177,7 +177,7 @@
       "hiddenItem": {
         "id": "file_bankaccount",
         "label": "destination_account_trace.txt",
-        "detail": "Bank KYC documents for account ACC-9921-X, the recipient of the \u20b985,000 transfer. The account was opened 3 weeks before the fraud at a cooperative bank branch. KYC documents submitted: Aadhaar card and PAN card both bearing the name 'Vikram Bhardwaj' \u2014 consistent with Vikram B's legal name. The account was opened with a minimum deposit of \u20b91,000. No other deposits were made until the fraud transfer. The account was not linked to any payroll, utility, or recurring payment \u2014 its sole purpose appears to be receiving and withdrawing fraud proceeds. ATM withdrawal of \u20b985,000 was made at 04:32 AM at a cash machine 2.1 km from the operator's office.",
+        "detail": "Bank KYC documents for account ACC-9921-X, the recipient of the ₹85,000 transfer. The account was opened 3 weeks before the fraud at a cooperative bank branch. KYC documents submitted: Aadhaar card and PAN card both bearing the name 'Vikram Bhardwaj' — consistent with Vikram B's legal name. The account was opened with a minimum deposit of ₹1,000. No other deposits were made until the fraud transfer. The account was not linked to any payroll, utility, or recurring payment — its sole purpose appears to be receiving and withdrawing fraud proceeds. ATM withdrawal of ₹85,000 was made at 04:32 AM at a cash machine 2.1 km from the operator's office.",
         "isKeyEvidence": true,
         "pointsToSuspect": "vikram_b",
         "unlockedByMinigame": "account_decode",
@@ -202,13 +202,13 @@
         ],
         "maxHints": 3,
         "hints": [
-          "The SIM swap terminal is on the telecom operator's internal network \u2014 look for a 10.44.x.x range.",
-          "Terminal 14 is in subnet .12.x \u2014 you need 10.44.12.x",
+          "The SIM swap terminal is on the telecom operator's internal network — look for a 10.44.x.x range.",
+          "Terminal 14 is in subnet .12.x — you need 10.44.12.x",
           "The terminal's exact IP is 10.44.12.87"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_bankaccount",
-          "message": "BREAKTHROUGH \u2014 destination_account_trace.txt confirmed. The fraud account is KYC-linked to Vikram B's Aadhaar. The money trail leads directly to him."
+          "message": "BREAKTHROUGH — destination_account_trace.txt confirmed. The fraud account is KYC-linked to Vikram B's Aadhaar. The money trail leads directly to him."
         }
       }
     },
@@ -222,7 +222,7 @@
         {
           "id": "meta_otpdevice",
           "label": "OTP Authentication Device",
-          "detail": "OTP was authenticated from device IMEI 867530041234567 \u2014 not the victim's registered phone (IMEI 356789012345678). Confirms a different device received the OTP.",
+          "detail": "OTP was authenticated from device IMEI 867530041234567 — not the victim's registered phone (IMEI 356789012345678). Confirms a different device received the OTP.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "rows": [
@@ -237,7 +237,7 @@
             },
             {
               "key": "Match?",
-              "value": "No \u2014 OTP intercepted",
+              "value": "No — OTP intercepted",
               "highlight": true
             }
           ]
@@ -259,32 +259,35 @@
             "suspectName": "Vikram B",
             "alibi": "I was at home sleeping. I don't work night shifts. You can check my building's security footage.",
             "isContradicted": true,
-            "contradiction": "Building access card log shows Vikram B badged INTO the operations floor at 02:58 AM and OUT at 03:19 AM \u2014 physically placing him at the terminal during the SIM swap."
+            "contradiction": "Building access card log shows Vikram B badged INTO the operations floor at 02:58 AM and OUT at 03:19 AM — physically placing him at the terminal during the SIM swap.",
+            "suspectId": "vikram_b"
           },
           {
             "id": "alibi_rahul",
             "suspectName": "Rahul V (Victim's Nephew)",
             "alibi": "I was with my family all evening. We had dinner together and I left by 10 PM.",
             "isContradicted": false,
-            "contradiction": ""
+            "contradiction": "",
+            "suspectId": "rahul_v"
           },
           {
             "id": "alibi_deepa",
             "suspectName": "Deepa S (Store Manager)",
             "alibi": "The retail store closes at 9 PM. I locked up and went home. I have no access to the backend systems.",
             "isContradicted": false,
-            "contradiction": "Retail staff confirmed \u2014 Deepa has no backend provisioning access."
+            "contradiction": "Retail staff confirmed — Deepa has no backend provisioning access.",
+            "suspectId": "store_manager"
           }
         ],
         "maxHints": 3,
         "hints": [
           "Building access card systems log every badge-in and badge-out event.",
-          "The terminal used was TL-TERM-14 on the operations floor \u2014 not a retail terminal.",
+          "The terminal used was TL-TERM-14 on the operations floor — not a retail terminal.",
           "Check who physically entered the operations floor between 2:30 AM and 3:30 AM."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_bankaccount",
-          "message": "BREAKTHROUGH \u2014 Alibi contradicted. Vikram B's badge records place him at the terminal at exactly 03:07 AM. His alibi is false."
+          "message": "BREAKTHROUGH — Alibi contradicted. Vikram B's badge records place him at the terminal at exactly 03:07 AM. His alibi is false."
         }
       }
     },
@@ -298,7 +301,7 @@
         {
           "id": "ip_backend",
           "label": "Backend Access IP",
-          "detail": "IP 27.56.88.201 accessed the SIM provisioning backend at 3:05 AM. This IP is assigned to a workstation at SimConnect's night shift office \u2014 traced to Vikram B's desk.",
+          "detail": "IP 27.56.88.201 accessed the SIM provisioning backend at 3:05 AM. This IP is assigned to a workstation at SimConnect's night shift office — traced to Vikram B's desk.",
           "isKeyEvidence": true,
           "pointsToSuspect": "vikram_b",
           "rows": [
@@ -309,7 +312,7 @@
             },
             {
               "key": "Location",
-              "value": "SimConnect Office \u2014 Night Shift Floor"
+              "value": "SimConnect Office — Night Shift Floor"
             },
             {
               "key": "Workstation",
@@ -324,7 +327,7 @@
   ],
   "timeline": [
     {
-      "time": "Previous Day \u2014 2:00 PM",
+      "time": "Previous Day — 2:00 PM",
       "title": "Phishing Call",
       "description": "Victim receives fake bank call, account number collected",
       "severity": "medium"
@@ -350,7 +353,7 @@
     {
       "time": "3:14 AM",
       "title": "Transfer Executed",
-      "description": "\u20b985,000 transferred to mule account ACC-9921-X",
+      "description": "₹85,000 transferred to mule account ACC-9921-X",
       "severity": "critical"
     },
     {
