@@ -4,63 +4,63 @@
   "shortDescription": "Encrypted File Destruction",
   "difficulty": "advanced",
   "theme": "Ransomware & Corporate Sabotage",
-  "estimatedDuration": "70\u201390 min",
+  "estimatedDuration": "70–90 min",
   "caseNumber": "4001",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
-    "incidentSummary": "A pharmaceutical company's entire R&D vault \u2014 11 years of proprietary drug research \u2014 was encrypted and deleted overnight.\n\nA ransom note demanded $2 million. But the encryption key was never sent, even after a partial payment was made.\n\nThis wasn't ransomware for money. This was destruction by design.\n\nAnd it came from inside the network.",
-    "missionText": "Your Mission:\n\n\u203a Trace the ransomware deployment\n\n\u203a Identify who planted the wiper disguised as ransomware\n\n\u203a Look for motive beyond the money\n\n\u203a Collect at least 4 correct evidences\n\n\u203a Flag the right suspect"
+    "incidentSummary": "A pharmaceutical company's entire R&D vault — 11 years of proprietary drug research — was encrypted and deleted overnight.\n\nA ransom note demanded $2 million. But the encryption key was never sent, even after a partial payment was made.\n\nThis wasn't ransomware for money. This was destruction by design.\n\nAnd it came from inside the network.",
+    "missionText": "Your Mission:\n\n› Trace the ransomware deployment\n\n› Identify who planted the wiper disguised as ransomware\n\n› Look for motive beyond the money\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
   },
   "suspects": [
     {
       "id": "ishaan_m",
       "name": "Ishaan M",
       "role": "Senior Security Researcher",
-      "department": "PharmaCore R&D \u2014 Cybersecurity Audit",
+      "department": "PharmaCore R&D — Cybersecurity Audit",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "172.31.10.88 \u2014 2:00\u20134:15 AM",
-        "deviceUsage": "ISHAAN-WS \u2014 R&D Lab Network",
-        "locationTrace": "PharmaCore R&D Building \u2014 Server Room Access",
-        "vpnCheck": "Internal network \u2014 no VPN"
+        "ipActivity": "172.31.10.88 — 2:00–4:15 AM",
+        "deviceUsage": "ISHAAN-WS — R&D Lab Network",
+        "locationTrace": "PharmaCore R&D Building — Server Room Access",
+        "vpnCheck": "Internal network — no VPN"
       },
-      "profileNotes": "Conducted the last security audit of the vault system. Had full knowledge of the backup architecture. Was secretly employed by a rival pharma company \u2014 salary deposits traced to a shell account. The 'ransom' was theater; the goal was erasure.",
+      "profileNotes": "Conducted the last security audit of the vault system. Had full knowledge of the backup architecture. Was secretly employed by a rival pharma company — salary deposits traced to a shell account. The 'ransom' was theater; the goal was erasure.",
       "image": "assets/avatars/ishaan_m.png",
       "description": "Ishaan M is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "ransom_actor",
-      "name": "Unknown Ransomware Group \u2014 IRON LOCK",
+      "name": "Unknown Ransomware Group — IRON LOCK",
       "role": "External Threat Actor",
-      "department": "External \u2014 Unverified",
+      "department": "External — Unverified",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Tor \u2014 multiple exit nodes",
-        "deviceUsage": "Unknown \u2014 distributed",
+        "ipActivity": "Tor — multiple exit nodes",
+        "deviceUsage": "Unknown — distributed",
         "locationTrace": "Untraced",
         "vpnCheck": "Tor detected"
       },
-      "profileNotes": "IRON LOCK claimed responsibility. However their known ransomware signature includes a working decryption portal \u2014 none was provided here. The wiper code does not match any known IRON LOCK sample in threat intel databases.",
+      "profileNotes": "IRON LOCK claimed responsibility. However their known ransomware signature includes a working decryption portal — none was provided here. The wiper code does not match any known IRON LOCK sample in threat intel databases.",
       "image": "assets/avatars/ransom_actor.png",
-      "description": "Unknown Ransomware Group \u2014 IRON LOCK is a person of interest in this case. Their motives and involvement remain under investigation."
+      "description": "Unknown Ransomware Group — IRON LOCK is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "cfo_pharma",
       "name": "Sneha P",
       "role": "CFO",
-      "department": "PharmaCore \u2014 Finance",
+      "department": "PharmaCore — Finance",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "192.168.8.5 \u2014 Business hours only",
-        "deviceUsage": "Executive Terminal \u2014 FIN-EXEC-01",
-        "locationTrace": "PharmaCore HQ \u2014 Executive Floor",
+        "ipActivity": "192.168.8.5 — Business hours only",
+        "deviceUsage": "Executive Terminal — FIN-EXEC-01",
+        "locationTrace": "PharmaCore HQ — Executive Floor",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Authorized partial ransom payment of $200K \u2014 a decision later scrutinized. No technical access to R&D vault. No nighttime activity.",
+      "profileNotes": "Authorized partial ransom payment of $200K — a decision later scrutinized. No technical access to R&D vault. No nighttime activity.",
       "image": "assets/avatars/cfo_pharma.png",
       "description": "Sneha P is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -68,16 +68,16 @@
       "id": "sysadmin_vault",
       "name": "Parth V",
       "role": "Infrastructure Administrator",
-      "department": "PharmaCore \u2014 IT Infrastructure",
+      "department": "PharmaCore — IT Infrastructure",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "172.31.10.10 \u2014 Standard hours",
-        "deviceUsage": "INFRA-ADMIN-01 \u2014 business hours",
+        "ipActivity": "172.31.10.10 — Standard hours",
+        "deviceUsage": "INFRA-ADMIN-01 — business hours",
         "locationTrace": "IT Department",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Manages vault infrastructure but access logs show no after-hours activity. Ishaan M used a vulnerability in the audit account \u2014 not Parth's credentials.",
+      "profileNotes": "Manages vault infrastructure but access logs show no after-hours activity. Ishaan M used a vulnerability in the audit account — not Parth's credentials.",
       "image": "assets/avatars/sysadmin_vault.png",
       "description": "Parth V is a person of interest in this case. Their motives and involvement remain under investigation."
     }
@@ -96,7 +96,7 @@
           "sender": "IRON LOCK (Ransom Note)",
           "isKeyEvidence": false,
           "isSuspect": false,
-          "detail": "The ransom note was dropped in every encrypted directory. However threat intel shows IRON LOCK always provides a Tor-based decryption portal \u2014 no such portal exists here. The note is a decoy.",
+          "detail": "The ransom note was dropped in every encrypted directory. However threat intel shows IRON LOCK always provides a Tor-based decryption portal — no such portal exists here. The note is a decoy.",
           "pointsToSuspect": null
         },
         {
@@ -105,16 +105,16 @@
           "sender": "Ishaan M (encrypted app)",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Recovered from an encrypted messaging app on Ishaan M's personal phone \u2014 seized during investigation. Sent at 4:22 AM \u2014 7 minutes after the wiper completed. Confirms communication with an external party about the vault destruction.",
+          "detail": "Recovered from an encrypted messaging app on Ishaan M's personal phone — seized during investigation. Sent at 4:22 AM — 7 minutes after the wiper completed. Confirms communication with an external party about the vault destruction.",
           "pointsToSuspect": "ishaan_m"
         },
         {
           "id": "chat_audit_access",
-          "label": "Ishaan \u2014 I'm giving you full read/write on vault nodes for the security audit. Don't abuse it.",
+          "label": "Ishaan — I'm giving you full read/write on vault nodes for the security audit. Don't abuse it.",
           "sender": "Parth V",
           "isKeyEvidence": true,
           "isSuspect": false,
-          "detail": "Internal Slack message from 3 weeks before the attack. Parth gave Ishaan elevated vault access for the audit \u2014 access Ishaan never relinquished and later exploited.",
+          "detail": "Internal Slack message from 3 weeks before the attack. Parth gave Ishaan elevated vault access for the audit — access Ishaan never relinquished and later exploited.",
           "pointsToSuspect": "ishaan_m"
         },
         {
@@ -123,9 +123,9 @@
           "sender": "CTO (incident response notes)",
           "isKeyEvidence": false,
           "isSuspect": false,
-          "detail": "The CTO initially flagged the storage vendor's recent on-site visit as a possible attack vector. The vendor team had physical access to the server room during the NAS upgrade 3 weeks before the wiper deployed. However, the wiper was deployed remotely via authenticated session \u2014 not a physical device. Physical access would not explain the PAM log showing Ishaan M's audit credentials being used.",
+          "detail": "The CTO initially flagged the storage vendor's recent on-site visit as a possible attack vector. The vendor team had physical access to the server room during the NAS upgrade 3 weeks before the wiper deployed. However, the wiper was deployed remotely via authenticated session — not a physical device. Physical access would not explain the PAM log showing Ishaan M's audit credentials being used.",
           "pointsToSuspect": "storage_vendor",
-          "irrelevantReason": "The attack was remote via authenticated PAM session using Ishaan M's audit credentials \u2014 not a physical intrusion. Vendor access is irrelevant."
+          "irrelevantReason": "The attack was remote via authenticated PAM session using Ishaan M's audit credentials — not a physical intrusion. Vendor access is irrelevant."
         }
       ],
       "minigame": null
@@ -140,7 +140,7 @@
         {
           "id": "file_wiper_code",
           "label": "wiper_analysis_report.pdf",
-          "detail": "Malware analysis report on the wiper payload recovered from the vault controller's memory. The binary is a custom-built ransomware-wiper hybrid written in C++. Stage 1 behaviour: it enumerates all mounted volumes and network shares, identifies files with extensions matching the R&D repository (.proj, .sim, .model, .dat, .cfg, .archive), and encrypts each file in-place using AES-256-CBC with a randomly generated per-file key. Stage 2 behaviour \u2014 the critical distinction from ransomware: instead of transmitting the keys to a C2 server for later ransom, the keys are immediately overwritten with null bytes and the key buffer is freed. The decryption is mathematically impossible after Stage 2 completes. The binary contains no network communication module, no ransom note generator, and no bitcoin wallet reference \u2014 it was designed purely to destroy, disguised as ransomware to create confusion about motive. Compilation timestamp: 3 weeks before deployment.",
+          "detail": "Malware analysis report on the wiper payload recovered from the vault controller's memory. The binary is a custom-built ransomware-wiper hybrid written in C++. Stage 1 behaviour: it enumerates all mounted volumes and network shares, identifies files with extensions matching the R&D repository (.proj, .sim, .model, .dat, .cfg, .archive), and encrypts each file in-place using AES-256-CBC with a randomly generated per-file key. Stage 2 behaviour — the critical distinction from ransomware: instead of transmitting the keys to a C2 server for later ransom, the keys are immediately overwritten with null bytes and the key buffer is freed. The decryption is mathematically impossible after Stage 2 completes. The binary contains no network communication module, no ransom note generator, and no bitcoin wallet reference — it was designed purely to destroy, disguised as ransomware to create confusion about motive. Compilation timestamp: 3 weeks before deployment.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ishaan_m",
           "metadata": {
@@ -152,7 +152,7 @@
         {
           "id": "file_deployment_log",
           "label": "payload_deployment_log.txt",
-          "detail": "Deployment event log from the vault controller's privileged access management (PAM) system. At 02:04:17 AM, a privileged session was initiated from IP 172.31.10.88 \u2014 the static internal IP permanently assigned to Ishaan M's workstation. The session used his audit account credentials (ishaan.audit), which grant elevated read/write access to the vault controller for security review purposes. The wiper binary was transferred to the controller via SCP at 02:04:44 AM and executed at 02:05:01 AM. The entire vault encryption process completed at 02:41:19 AM \u2014 36 minutes and 18 seconds. Ishaan M's regular work account showed no activity that night, but his audit account \u2014 which does not trigger the standard after-hours access alert \u2014 was the vector. The PAM log was itself targeted by the wiper but was stored on a separate immutable logging server, preserving the evidence.",
+          "detail": "Deployment event log from the vault controller's privileged access management (PAM) system. At 02:04:17 AM, a privileged session was initiated from IP 172.31.10.88 — the static internal IP permanently assigned to Ishaan M's workstation. The session used his audit account credentials (ishaan.audit), which grant elevated read/write access to the vault controller for security review purposes. The wiper binary was transferred to the controller via SCP at 02:04:44 AM and executed at 02:05:01 AM. The entire vault encryption process completed at 02:41:19 AM — 36 minutes and 18 seconds. Ishaan M's regular work account showed no activity that night, but his audit account — which does not trigger the standard after-hours access alert — was the vector. The PAM log was itself targeted by the wiper but was stored on a separate immutable logging server, preserving the evidence.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ishaan_m",
           "metadata": {
@@ -164,7 +164,7 @@
         {
           "id": "file_salary_trace",
           "label": "financial_investigation_report.pdf",
-          "detail": "Financial forensics report on payments received by Ishaan M from external sources over the past 14 months. Six transfers of \u20b94.5 lakh each were received into his secondary account on the 1st of alternating months \u2014 a total of \u20b927 lakh. All transfers originated from 'GreenPath Innovations Pvt Ltd', a company registered in Hyderabad 16 months ago. GreenPath's listed business activity is 'agricultural technology consulting' \u2014 entirely unrelated to cybersecurity or R&D. Its sole director is a retired individual with no known connection to Ishaan M. Financial intelligence analysis traces GreenPath's funding to a foreign private equity vehicle registered in the Cayman Islands. The beneficiary of that vehicle has not been identified, but the payment cadence \u2014 every 2 months, always on the 1st \u2014 is consistent with a contractor payment schedule from an intelligence-adjacent handler.",
+          "detail": "Financial forensics report on payments received by Ishaan M from external sources over the past 14 months. Six transfers of ₹4.5 lakh each were received into his secondary account on the 1st of alternating months — a total of ₹27 lakh. All transfers originated from 'GreenPath Innovations Pvt Ltd', a company registered in Hyderabad 16 months ago. GreenPath's listed business activity is 'agricultural technology consulting' — entirely unrelated to cybersecurity or R&D. Its sole director is a retired individual with no known connection to Ishaan M. Financial intelligence analysis traces GreenPath's funding to a foreign private equity vehicle registered in the Cayman Islands. The beneficiary of that vehicle has not been identified, but the payment cadence — every 2 months, always on the 1st — is consistent with a contractor payment schedule from an intelligence-adjacent handler.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ishaan_m",
           "metadata": {
@@ -177,7 +177,7 @@
       "hiddenItem": {
         "id": "file_backdoor",
         "label": "audit_backdoor_analysis.txt",
-        "detail": "Security audit report addendum identifying a persistent backdoor installed by Ishaan M during his authorised security review 4 months ago. The backdoor is a modified version of the vault controller's legitimate remote diagnostic agent \u2014 the binary was patched at offset 0x4A21 to add a secondary authentication bypass triggered by a specific 32-byte handshake string. The modification is invisible to standard integrity checks because Ishaan M also updated the file's stored hash in the integrity database during the same audit session \u2014 a privilege available to auditors. The backdoor listens on port 8443 alongside the legitimate diagnostic port. Forensic analysis of the controller's connection logs shows the backdoor port was accessed from IP 172.31.10.88 on 11 separate occasions over the 4 months between installation and the wiper deployment \u2014 consistent with reconnaissance and staging.",
+        "detail": "Security audit report addendum identifying a persistent backdoor installed by Ishaan M during his authorised security review 4 months ago. The backdoor is a modified version of the vault controller's legitimate remote diagnostic agent — the binary was patched at offset 0x4A21 to add a secondary authentication bypass triggered by a specific 32-byte handshake string. The modification is invisible to standard integrity checks because Ishaan M also updated the file's stored hash in the integrity database during the same audit session — a privilege available to auditors. The backdoor listens on port 8443 alongside the legitimate diagnostic port. Forensic analysis of the controller's connection logs shows the backdoor port was accessed from IP 172.31.10.88 on 11 separate occasions over the 4 months between installation and the wiper deployment — consistent with reconnaissance and staging.",
         "isKeyEvidence": true,
         "pointsToSuspect": "ishaan_m",
         "unlockedByMinigame": "vault_decode",
@@ -192,13 +192,13 @@
         "type": "phishing_analysis",
         "title": "Analyse Insider Email",
         "emailFrom": "it-security@greenpath-innovations.net",
-        "emailSubject": "Urgent: Vault Controller Maintenance \u2014 Action Required Tonight",
-        "emailBody": "Dear Infrastructure Team,\n\nCRITICAL SECURITY ALERT \u2014 Action required tonight.\n\nWe have identified CVE-2024-VLT-9901 in your vault controller firmware. You must download and run the attached patch tool (vault_diag_v2.exe) between 02:00 AM and 03:00 AM tonight to prevent catastrophic data loss.\n\nClick here to verify your credentials before running: http://vault-secure.greenpath-innovations.net/auth?token=8f2d91cc\n\nDo NOT forward this email to IT. This patch must be applied directly by the person receiving this message.\n\nFailure to act tonight will result in permanent data corruption.\n\n\u2014 IT Security Incident Response\nGreenPath Innovations",
+        "emailSubject": "Urgent: Vault Controller Maintenance — Action Required Tonight",
+        "emailBody": "Dear Infrastructure Team,\n\nCRITICAL SECURITY ALERT — Action required tonight.\n\nWe have identified CVE-2024-VLT-9901 in your vault controller firmware. You must download and run the attached patch tool (vault_diag_v2.exe) between 02:00 AM and 03:00 AM tonight to prevent catastrophic data loss.\n\nClick here to verify your credentials before running: http://vault-secure.greenpath-innovations.net/auth?token=8f2d91cc\n\nDo NOT forward this email to IT. This patch must be applied directly by the person receiving this message.\n\nFailure to act tonight will result in permanent data corruption.\n\n— IT Security Incident Response\nGreenPath Innovations",
         "redFlags": [
           "Sender domain greenpath-innovations.net has no relation to this company",
           "Executable attachment (vault_diag_v2.exe) from an external unknown party",
-          "Suspicious URL with auth token \u2014 phishing credential harvest link",
-          "Instruction to NOT forward to IT \u2014 bypasses internal security review",
+          "Suspicious URL with auth token — phishing credential harvest link",
+          "Instruction to NOT forward to IT — bypasses internal security review",
           "Urgency pressure: 'tonight only', 'permanent data corruption'",
           "No internal incident ticket number or change management reference"
         ],
@@ -206,13 +206,13 @@
         "hint": "Check the sender domain and the requested action carefully.",
         "maxHints": 3,
         "hints": [
-          "Legitimate patches come through your internal IT ticketing system \u2014 never via external email.",
-          "The link domain is greenpath-innovations.net \u2014 not your company's domain. Hover to check.",
+          "Legitimate patches come through your internal IT ticketing system — never via external email.",
+          "The link domain is greenpath-innovations.net — not your company's domain. Hover to check.",
           "Any email that says 'do not forward to IT' is designed to bypass your security team."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_backdoor",
-          "message": "BREAKTHROUGH \u2014 audit_backdoor_analysis.txt confirmed. Ishaan M planted a persistent backdoor during his own security audit \u2014 4 months before deploying the wiper. Premeditation is proven."
+          "message": "BREAKTHROUGH — audit_backdoor_analysis.txt confirmed. Ishaan M planted a persistent backdoor during his own security audit — 4 months before deploying the wiper. Premeditation is proven."
         }
       }
     },
@@ -226,7 +226,7 @@
         {
           "id": "meta_backup_deletion",
           "label": "Backup Deletion Sequence",
-          "detail": "All 3 backup tiers \u2014 local, NAS, and cloud \u2014 were wiped in sequence before the encryption ran. The attacker knew the exact backup architecture. Only the security auditor had mapped all three tiers.",
+          "detail": "All 3 backup tiers — local, NAS, and cloud — were wiped in sequence before the encryption ran. The attacker knew the exact backup architecture. Only the security auditor had mapped all three tiers.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ishaan_m",
           "rows": [
@@ -247,7 +247,7 @@
             },
             {
               "key": "Who Mapped All Three?",
-              "value": "Security Auditor \u2014 Ishaan M",
+              "value": "Security Auditor — Ishaan M",
               "highlight": true
             }
           ]
@@ -255,7 +255,7 @@
         {
           "id": "meta_c2_silence",
           "label": "C2 Communication Absent",
-          "detail": "Network logs show zero outbound C2 communication during and after the attack \u2014 the encryption key was never sent anywhere. Real ransomware requires key exchange with the operator's server. This confirms the payload was always a wiper.",
+          "detail": "Network logs show zero outbound C2 communication during and after the attack — the encryption key was never sent anywhere. Real ransomware requires key exchange with the operator's server. This confirms the payload was always a wiper.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ishaan_m",
           "rows": [
@@ -270,7 +270,7 @@
             },
             {
               "key": "Conclusion",
-              "value": "Wiper \u2014 not true ransomware",
+              "value": "Wiper — not true ransomware",
               "highlight": true
             }
           ]
@@ -287,8 +287,8 @@
       "items": [
         {
           "id": "ip_internal_ws",
-          "label": "Wiper Origin \u2014 Internal Workstation",
-          "detail": "IP 172.31.10.88 is the internal address of Ishaan M's assigned workstation in the R&D building. The wiper was deployed directly from this machine \u2014 no external entry point used.",
+          "label": "Wiper Origin — Internal Workstation",
+          "detail": "IP 172.31.10.88 is the internal address of Ishaan M's assigned workstation in the R&D building. The wiper was deployed directly from this machine — no external entry point used.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ishaan_m",
           "rows": [
@@ -299,18 +299,152 @@
             },
             {
               "key": "Workstation",
-              "value": "ISHAAN-WS \u2014 R&D Building",
+              "value": "ISHAAN-WS — R&D Building",
               "highlight": true
             },
             {
               "key": "External Entry?",
-              "value": "None \u2014 purely internal",
+              "value": "None — purely internal",
               "highlight": true
             }
           ]
         }
       ],
       "minigame": null
+    },
+    {
+      "id": "logic_link",
+      "label": "Logic Link Matrix",
+      "icon": "meta",
+      "evidenceType": "meta",
+      "items": [
+        {
+          "id": "logic_matrix_brief",
+          "label": "Correlation Matrix Brief",
+          "detail": "Cross-case behaviour fragments were extracted from logs, commit metadata, and communication fingerprints. Match each fragment to the suspect it most strongly identifies.",
+          "isKeyEvidence": false
+        }
+      ],
+      "hiddenItem": {
+        "id": "hidden_suspect_profile",
+        "label": "Hidden Suspect Unmasked",
+        "detail": "The matrix reveals a previously obscured operator profile tied to Ishaan M. Their unique workflow signature and language fingerprints align across all critical events.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ishaan_m",
+        "unlockedByMinigame": "advanced_hidden_suspect_case_vanishingvault"
+      },
+      "minigame": {
+        "id": "advanced_hidden_suspect_case_vanishingvault",
+        "type": "metadata_correlation",
+        "title": "Suspect Correlation Matrix",
+        "instruction": "Match each forensic fragment to the most likely suspect. Only one mapping set is fully consistent.",
+        "fragments": [
+          {
+            "id": "fragment_workflow",
+            "label": "Workflow Fingerprint",
+            "value": "Task execution cadence matches an operator who batches actions in 17-minute windows and pivots immediately after privileged checks.",
+            "hint": "Compare this to known operating patterns.",
+            "correctSuspectId": "ishaan_m",
+            "explanation": "This disciplined pattern matches Ishaan M, who used the same cadence during the breach stages."
+          },
+          {
+            "id": "fragment_noise",
+            "label": "Noise Signature",
+            "value": "An intentionally noisy decoy pattern appears in low-value logs with inconsistent timezone usage.",
+            "hint": "This fragment points to a distractor suspect.",
+            "correctSuspectId": "ransom_actor",
+            "explanation": "The inconsistent decoy style maps to Unknown Ransomware Group — IRON LOCK and does not align with the core intrusion chain."
+          },
+          {
+            "id": "fragment_language",
+            "label": "Language Marker",
+            "value": "Incident notes reuse a rare phrase sequence that appears in insider coordination messages.",
+            "hint": "Look for the suspect with matching communication style.",
+            "correctSuspectId": "cfo_pharma",
+            "explanation": "The phrase reuse is linked to Sneha P, but it appears only in support communications, not execution logs."
+          }
+        ],
+        "suspects": [
+          {
+            "id": "ishaan_m",
+            "name": "Ishaan M"
+          },
+          {
+            "id": "ransom_actor",
+            "name": "Unknown Ransomware Group — IRON LOCK"
+          },
+          {
+            "id": "cfo_pharma",
+            "name": "Sneha P"
+          }
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "hidden_suspect_profile",
+          "message": "Hidden suspect profile unlocked: Ishaan M emerges as the only suspect matching the complete matrix."
+        }
+      }
+    },
+    {
+      "id": "timeline_trap",
+      "label": "Timeline Trap",
+      "icon": "chat",
+      "evidenceType": "chat",
+      "items": [
+        {
+          "id": "timeline_trap_brief",
+          "label": "Breach Window Interrogation Notes",
+          "detail": "Interview transcripts captured each suspect's alibi during the critical breach window. Verify which alibi collapses against timeline telemetry.",
+          "isKeyEvidence": false
+        }
+      ],
+      "hiddenItem": {
+        "id": "timeline_alibi_break",
+        "label": "Critical Alibi Contradiction",
+        "detail": "Timeline reconstruction disproves Ishaan M's alibi. Their claimed location conflicts with system access records at the breach timestamp.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ishaan_m",
+        "unlockedByMinigame": "advanced_timeline_trap_case_vanishingvault"
+      },
+      "minigame": {
+        "id": "advanced_timeline_trap_case_vanishingvault",
+        "type": "alibi_verify",
+        "title": "Breach Window Alibi Check",
+        "instruction": "Review each alibi and identify the one contradicted by forensic timeline data.",
+        "timelineEvent": {
+          "time": "Critical Window",
+          "event": "Privilege escalation and staged exfiltration occurred during this exact interval."
+        },
+        "alibis": [
+          {
+            "id": "alibi_guilty",
+            "suspectId": "ishaan_m",
+            "suspectName": "Ishaan M",
+            "alibi": "Claims to be offline in a routine maintenance meeting with no system access.",
+            "isContradicted": true,
+            "contradiction": "Authentication and command logs show privileged actions from this suspect's account during the same window."
+          },
+          {
+            "id": "alibi_other1",
+            "suspectId": "ransom_actor",
+            "suspectName": "Unknown Ransomware Group — IRON LOCK",
+            "alibi": "States they were in a monitored support call with screen recording enabled.",
+            "isContradicted": false,
+            "contradiction": ""
+          },
+          {
+            "id": "alibi_other2",
+            "suspectId": "cfo_pharma",
+            "suspectName": "Sneha P",
+            "alibi": "Reports compiling a non-production patch with signed CI traces.",
+            "isContradicted": false,
+            "contradiction": ""
+          }
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "timeline_alibi_break",
+          "message": "Contradiction confirmed: Ishaan M's alibi collapses under timeline verification."
+        }
+      }
     }
   ],
   "timeline": [
@@ -345,9 +479,9 @@
       "severity": "critical"
     },
     {
-      "time": "2:04\u20134:15 AM",
+      "time": "2:04–4:15 AM",
       "title": "Vault Encrypted & Destroyed",
-      "description": "11 years of R&D data encrypted \u2014 key discarded",
+      "description": "11 years of R&D data encrypted — key discarded",
       "severity": "critical"
     },
     {
@@ -376,7 +510,9 @@
     "meta_backup_deletion",
     "meta_c2_silence",
     "ip_internal_ws",
-    "file_backdoor"
+    "file_backdoor",
+    "hidden_suspect_profile",
+    "timeline_alibi_break"
   ],
   "outcomes": {
     "perfect": {

@@ -4,13 +4,13 @@
   "shortDescription": "Zero-Day Exploit in Critical Infrastructure",
   "difficulty": "advanced",
   "theme": "Zero-Day Exploit & State-Level Attack",
-  "estimatedDuration": "80\u2013100 min",
+  "estimatedDuration": "80–100 min",
   "caseNumber": "4003",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
-    "incidentSummary": "A zero-day vulnerability in a power grid SCADA system was exploited, causing a controlled blackout in an industrial zone for 6 hours.\n\nThe attacker didn't cause maximum damage \u2014 they demonstrated capability. A warning shot.\n\nThe exploit code was custom-built and vendor-specific. No patch existed. Only three people in the country had ever audited this SCADA system's codebase.",
-    "missionText": "Your Mission:\n\n\u203a Identify who wrote the zero-day exploit\n\n\u203a Determine if this was state-sponsored or rogue\n\n\u203a Trace the controlled nature of the attack \u2014 why stop early?\n\n\u203a Collect at least 4 correct evidences\n\n\u203a Flag the right suspect"
+    "incidentSummary": "A zero-day vulnerability in a power grid SCADA system was exploited, causing a controlled blackout in an industrial zone for 6 hours.\n\nThe attacker didn't cause maximum damage — they demonstrated capability. A warning shot.\n\nThe exploit code was custom-built and vendor-specific. No patch existed. Only three people in the country had ever audited this SCADA system's codebase.",
+    "missionText": "Your Mission:\n\n› Identify who wrote the zero-day exploit\n\n› Determine if this was state-sponsored or rogue\n\n› Trace the controlled nature of the attack — why stop early?\n\n› Collect at least 4 correct evidences\n\n› Flag the right suspect"
   },
   "suspects": [
     {
@@ -21,12 +21,12 @@
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "45.61.185.22 \u2014 jump server traced",
-        "deviceUsage": "AIR-GAPPED-LAP-01 \u2014 research machine",
-        "locationTrace": "Research lab \u2014 after hours",
-        "vpnCheck": "Custom VPN \u2014 non-commercial"
+        "ipActivity": "45.61.185.22 — jump server traced",
+        "deviceUsage": "AIR-GAPPED-LAP-01 — research machine",
+        "locationTrace": "Research lab — after hours",
+        "vpnCheck": "Custom VPN — non-commercial"
       },
-      "profileNotes": "One of only 3 researchers with SCADA codebase access. Discreetly sold the exploit to a foreign intelligence intermediary for $280,000 \u2014 but panicked and triggered the shutdown early, preventing full infrastructure damage. Financial trail leads to a Mauritius account.",
+      "profileNotes": "One of only 3 researchers with SCADA codebase access. Discreetly sold the exploit to a foreign intelligence intermediary for $280,000 — but panicked and triggered the shutdown early, preventing full infrastructure damage. Financial trail leads to a Mauritius account.",
       "image": "assets/avatars/ronak_s.png",
       "description": "Ronak S is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -34,16 +34,16 @@
       "id": "state_actor",
       "name": "Unknown Foreign Actor",
       "role": "Suspected Intelligence Operator",
-      "department": "External \u2014 Unattributed",
+      "department": "External — Unattributed",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Tor + custom proxy \u2014 untraced",
+        "ipActivity": "Tor + custom proxy — untraced",
         "deviceUsage": "Unknown",
         "locationTrace": "Origin untraced",
         "vpnCheck": "Advanced obfuscation"
       },
-      "profileNotes": "Purchased the exploit \u2014 was the buyer. However the technical authorship of the zero-day and the decision to trigger it belong to Ronak S. The buyer only provided direction \u2014 Ronak executed.",
+      "profileNotes": "Purchased the exploit — was the buyer. However the technical authorship of the zero-day and the decision to trigger it belong to Ronak S. The buyer only provided direction — Ronak executed.",
       "image": "assets/avatars/state_actor.png",
       "description": "Unknown Foreign Actor is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -51,16 +51,16 @@
       "id": "vendor_engineer",
       "name": "Supriya K",
       "role": "SCADA Vendor Engineer",
-      "department": "GridCore Technologies \u2014 Support",
+      "department": "GridCore Technologies — Support",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "192.168.12.5 \u2014 vendor remote access",
-        "deviceUsage": "Vendor terminal \u2014 scheduled maintenance",
+        "ipActivity": "192.168.12.5 — vendor remote access",
+        "deviceUsage": "Vendor terminal — scheduled maintenance",
         "locationTrace": "GridCore HQ, Pune",
-        "vpnCheck": "Vendor VPN \u2014 authorized"
+        "vpnCheck": "Vendor VPN — authorized"
       },
-      "profileNotes": "Had remote access for scheduled maintenance but was on leave during the attack window. Access token was active but not used \u2014 confirms she did not execute the exploit.",
+      "profileNotes": "Had remote access for scheduled maintenance but was on leave during the attack window. Access token was active but not used — confirms she did not execute the exploit.",
       "image": "assets/avatars/vendor_engineer.png",
       "description": "Supriya K is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -68,13 +68,13 @@
       "id": "whistleblower",
       "name": "Devraj M",
       "role": "Retired Infrastructure Security Officer",
-      "department": "Formerly \u2014 National Grid Authority",
+      "department": "Formerly — National Grid Authority",
       "riskLevel": "low",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "49.207.8.44 \u2014 home network",
-        "deviceUsage": "Personal laptop \u2014 no privileged access",
-        "locationTrace": "Retired \u2014 Chennai",
+        "ipActivity": "49.207.8.44 — home network",
+        "deviceUsage": "Personal laptop — no privileged access",
+        "locationTrace": "Retired — Chennai",
         "vpnCheck": "No VPN detected"
       },
       "profileNotes": "Had warned about this vulnerability 2 years ago in an internal memo that was ignored. No current system access. His old memo makes him a witness, not a suspect.",
@@ -105,7 +105,7 @@
           "sender": "Ronak S (encrypted app)",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Sent at 2:47 AM \u2014 4 hours into the blackout, 2 hours before the buyer expected full escalation. Ronak S panicked and remotely triggered the shutdown sequence, cutting the attack short.",
+          "detail": "Sent at 2:47 AM — 4 hours into the blackout, 2 hours before the buyer expected full escalation. Ronak S panicked and remotely triggered the shutdown sequence, cutting the attack short.",
           "pointsToSuspect": "ronak_s"
         },
         {
@@ -123,7 +123,7 @@
           "sender": "Security Lead (internal investigation note)",
           "isKeyEvidence": false,
           "isSuspect": false,
-          "detail": "Dr. Priya T published a peer-reviewed paper on GridCore SCADA security 6 months ago and was initially flagged as a suspect due to her deep technical knowledge. However, her paper used only publicly documented GridCore interfaces \u2014 not the proprietary memory layout used in the exploit. Her SDK licence was also never activated for the specific firmware version targeted. She was cleared after the SCADA access log confirmed she had not accessed the relevant repository files.",
+          "detail": "Dr. Priya T published a peer-reviewed paper on GridCore SCADA security 6 months ago and was initially flagged as a suspect due to her deep technical knowledge. However, her paper used only publicly documented GridCore interfaces — not the proprietary memory layout used in the exploit. Her SDK licence was also never activated for the specific firmware version targeted. She was cleared after the SCADA access log confirmed she had not accessed the relevant repository files.",
           "pointsToSuspect": "dr_priya_t",
           "irrelevantReason": "Dr. Priya T's knowledge came from public documentation. The exploit used proprietary memory layout only accessible via Ronak S's SDK licence."
         }
@@ -140,7 +140,7 @@
         {
           "id": "file_exploit_code",
           "label": "zeroday_exploit_analysis.pdf",
-          "detail": "Reverse-engineered exploit code targeting CVE-2024-XXXX \u2014 a buffer overflow in GridCore SCADA firmware version 4.2.1, present in substations across 3 states. The exploit achieves arbitrary code execution via a malformed UDP packet on port 47808 (BACnet). The code is written in C with inline assembly for the ROP chain. What distinguishes this from a generic exploit: the author demonstrated knowledge of GridCore's proprietary memory layout that is not documented in any public source. This layout knowledge could only come from access to GridCore's internal SDK \u2014 restricted to licensed researchers. Of the 3 researchers with SCADA codebase access at this facility, only Ronak S also held an active GridCore SDK licence. His licence was revoked 2 weeks after this exploit was first observed on dark web markets.",
+          "detail": "Reverse-engineered exploit code targeting CVE-2024-XXXX — a buffer overflow in GridCore SCADA firmware version 4.2.1, present in substations across 3 states. The exploit achieves arbitrary code execution via a malformed UDP packet on port 47808 (BACnet). The code is written in C with inline assembly for the ROP chain. What distinguishes this from a generic exploit: the author demonstrated knowledge of GridCore's proprietary memory layout that is not documented in any public source. This layout knowledge could only come from access to GridCore's internal SDK — restricted to licensed researchers. Of the 3 researchers with SCADA codebase access at this facility, only Ronak S also held an active GridCore SDK licence. His licence was revoked 2 weeks after this exploit was first observed on dark web markets.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
           "metadata": {
@@ -164,7 +164,7 @@
         {
           "id": "file_scada_access",
           "label": "codebase_access_log.txt",
-          "detail": "SCADA codebase access log from the research facility's version control system. The GridCore firmware repository contains the proprietary memory layout that was used in the exploit's ROP chain. Three researchers had read access: Ronak S, Dr. Priya T, and Ajay M. Access logs show Ronak S cloned the full repository at 11:47 PM on a Saturday \u2014 outside normal working hours. He accessed specifically the memory_map.h and firmware_structs.h header files, which contain the exact memory offsets used in the exploit. Dr. Priya T's last access was 3 weeks prior and limited to the configuration module. Ajay M had his access suspended 2 months ago due to a leave of absence. The Saturday night clone is the only anomalous access event in the 6-month log window.",
+          "detail": "SCADA codebase access log from the research facility's version control system. The GridCore firmware repository contains the proprietary memory layout that was used in the exploit's ROP chain. Three researchers had read access: Ronak S, Dr. Priya T, and Ajay M. Access logs show Ronak S cloned the full repository at 11:47 PM on a Saturday — outside normal working hours. He accessed specifically the memory_map.h and firmware_structs.h header files, which contain the exact memory offsets used in the exploit. Dr. Priya T's last access was 3 weeks prior and limited to the configuration module. Ajay M had his access suspended 2 months ago due to a leave of absence. The Saturday night clone is the only anomalous access event in the 6-month log window.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
           "metadata": {
@@ -177,7 +177,7 @@
       "hiddenItem": {
         "id": "file_pgp_key",
         "label": "nullvector_pgp_identity.txt",
-        "detail": "The PGP public key used by forum handle 'NullVector' on the dark web exploit marketplace was extracted and submitted to key servers for cross-referencing. The key's UID field contains the email address ronak.sec.research@proton.me. A Proton account under this address was created 4 months ago. The key's creation timestamp predates the first listing by 11 days. More significantly, the key's subkey fingerprint was cross-referenced against a key Ronak S used to sign a paper submitted to a security conference 8 months ago \u2014 the master key matches. Ronak S appears to have generated a new UID for the dark web identity but reused his existing PGP master key, creating a cryptographic link between his real identity and the NullVector alias.",
+        "detail": "The PGP public key used by forum handle 'NullVector' on the dark web exploit marketplace was extracted and submitted to key servers for cross-referencing. The key's UID field contains the email address ronak.sec.research@proton.me. A Proton account under this address was created 4 months ago. The key's creation timestamp predates the first listing by 11 days. More significantly, the key's subkey fingerprint was cross-referenced against a key Ronak S used to sign a paper submitted to a security conference 8 months ago — the master key matches. Ronak S appears to have generated a new UID for the dark web identity but reused his existing PGP master key, creating a cryptographic link between his real identity and the NullVector alias.",
         "isKeyEvidence": true,
         "pointsToSuspect": "ronak_s",
         "unlockedByMinigame": "pgp_decode",
@@ -192,11 +192,11 @@
         "type": "phishing_analysis",
         "title": "Analyse Dark Web Listing Email",
         "emailFrom": "nullvector@exploit-market.onion.to",
-        "emailSubject": "Re: GridCore 0-day \u2014 Proof of Concept Available",
+        "emailSubject": "Re: GridCore 0-day — Proof of Concept Available",
         "emailBody": "Interested parties,\n\nA working exploit for CVE-2024-XXXX targeting GridCore SCADA v4.2.1 is available. PoC confirmed on live substations. Price: $280,000 USD in 3 tranches.\n\nContact via PGP only. Key on keyserver.\n\nNullVector",
         "redFlags": [
-          "Onion-to proxy domain \u2014 dark web communication",
-          "Claims live substation testing \u2014 implies criminal access",
+          "Onion-to proxy domain — dark web communication",
+          "Claims live substation testing — implies criminal access",
           "Payment structure matches financial trace (3 tranches)",
           "PGP key matches researcher's known key fingerprint"
         ],
@@ -206,11 +206,11 @@
         "hints": [
           "The onion-to proxy exposes a dark web communication.",
           "The 3-tranche payment structure matches the financial forensics.",
-          "This must be reported \u2014 it is direct evidence of the sale."
+          "This must be reported — it is direct evidence of the sale."
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_pgp_key",
-          "message": "BREAKTHROUGH \u2014 nullvector_pgp_identity.txt confirmed. The dark web alias NullVector's PGP key shares a master key with Ronak S's known identity. The two identities are the same person."
+          "message": "BREAKTHROUGH — nullvector_pgp_identity.txt confirmed. The dark web alias NullVector's PGP key shares a master key with Ronak S's known identity. The two identities are the same person."
         }
       }
     },
@@ -224,7 +224,7 @@
         {
           "id": "meta_controlled_shutdown",
           "label": "Controlled Shutdown Analysis",
-          "detail": "The blackout was terminated via a shutdown command sent over the same channel as the exploit \u2014 remotely, from the attacker's side. This was not a defensive response by the grid operators. The attacker chose to stop. This suggests remorse or fear \u2014 not state-level discipline.",
+          "detail": "The blackout was terminated via a shutdown command sent over the same channel as the exploit — remotely, from the attacker's side. This was not a defensive response by the grid operators. The attacker chose to stop. This suggests remorse or fear — not state-level discipline.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
           "rows": [
@@ -240,7 +240,7 @@
             },
             {
               "key": "Operator Response?",
-              "value": "No \u2014 attacker self-terminated",
+              "value": "No — attacker self-terminated",
               "highlight": true
             }
           ]
@@ -254,12 +254,12 @@
           "rows": [
             {
               "key": "Top Match",
-              "value": "Ronak S \u2014 91.3%",
+              "value": "Ronak S — 91.3%",
               "highlight": true
             },
             {
               "key": "Second Match",
-              "value": "41% \u2014 no strong candidate"
+              "value": "41% — no strong candidate"
             },
             {
               "key": "Method",
@@ -280,7 +280,7 @@
         {
           "id": "ip_jumpserver",
           "label": "Jump Server Trace",
-          "detail": "Attack was routed through a custom VPN terminating at IP 45.61.185.22 \u2014 a jump server in Singapore. Server was rented using a credit card in Ronak S's name at a past conference hotel.",
+          "detail": "Attack was routed through a custom VPN terminating at IP 45.61.185.22 — a jump server in Singapore. Server was rented using a credit card in Ronak S's name at a past conference hotel.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ronak_s",
           "rows": [
@@ -295,19 +295,153 @@
             },
             {
               "key": "Registered To",
-              "value": "Credit card \u2014 Ronak S (conference)",
+              "value": "Credit card — Ronak S (conference)",
               "highlight": true
             }
           ]
         }
       ],
       "minigame": null
+    },
+    {
+      "id": "logic_link",
+      "label": "Logic Link Matrix",
+      "icon": "meta",
+      "evidenceType": "meta",
+      "items": [
+        {
+          "id": "logic_matrix_brief",
+          "label": "Correlation Matrix Brief",
+          "detail": "Cross-case behaviour fragments were extracted from logs, commit metadata, and communication fingerprints. Match each fragment to the suspect it most strongly identifies.",
+          "isKeyEvidence": false
+        }
+      ],
+      "hiddenItem": {
+        "id": "hidden_suspect_profile",
+        "label": "Hidden Suspect Unmasked",
+        "detail": "The matrix reveals a previously obscured operator profile tied to Ronak S. Their unique workflow signature and language fingerprints align across all critical events.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ronak_s",
+        "unlockedByMinigame": "advanced_hidden_suspect_case_zeropointentry"
+      },
+      "minigame": {
+        "id": "advanced_hidden_suspect_case_zeropointentry",
+        "type": "metadata_correlation",
+        "title": "Suspect Correlation Matrix",
+        "instruction": "Match each forensic fragment to the most likely suspect. Only one mapping set is fully consistent.",
+        "fragments": [
+          {
+            "id": "fragment_workflow",
+            "label": "Workflow Fingerprint",
+            "value": "Task execution cadence matches an operator who batches actions in 17-minute windows and pivots immediately after privileged checks.",
+            "hint": "Compare this to known operating patterns.",
+            "correctSuspectId": "ronak_s",
+            "explanation": "This disciplined pattern matches Ronak S, who used the same cadence during the breach stages."
+          },
+          {
+            "id": "fragment_noise",
+            "label": "Noise Signature",
+            "value": "An intentionally noisy decoy pattern appears in low-value logs with inconsistent timezone usage.",
+            "hint": "This fragment points to a distractor suspect.",
+            "correctSuspectId": "state_actor",
+            "explanation": "The inconsistent decoy style maps to Unknown Foreign Actor and does not align with the core intrusion chain."
+          },
+          {
+            "id": "fragment_language",
+            "label": "Language Marker",
+            "value": "Incident notes reuse a rare phrase sequence that appears in insider coordination messages.",
+            "hint": "Look for the suspect with matching communication style.",
+            "correctSuspectId": "vendor_engineer",
+            "explanation": "The phrase reuse is linked to Supriya K, but it appears only in support communications, not execution logs."
+          }
+        ],
+        "suspects": [
+          {
+            "id": "ronak_s",
+            "name": "Ronak S"
+          },
+          {
+            "id": "state_actor",
+            "name": "Unknown Foreign Actor"
+          },
+          {
+            "id": "vendor_engineer",
+            "name": "Supriya K"
+          }
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "hidden_suspect_profile",
+          "message": "Hidden suspect profile unlocked: Ronak S emerges as the only suspect matching the complete matrix."
+        }
+      }
+    },
+    {
+      "id": "timeline_trap",
+      "label": "Timeline Trap",
+      "icon": "chat",
+      "evidenceType": "chat",
+      "items": [
+        {
+          "id": "timeline_trap_brief",
+          "label": "Breach Window Interrogation Notes",
+          "detail": "Interview transcripts captured each suspect's alibi during the critical breach window. Verify which alibi collapses against timeline telemetry.",
+          "isKeyEvidence": false
+        }
+      ],
+      "hiddenItem": {
+        "id": "timeline_alibi_break",
+        "label": "Critical Alibi Contradiction",
+        "detail": "Timeline reconstruction disproves Ronak S's alibi. Their claimed location conflicts with system access records at the breach timestamp.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "ronak_s",
+        "unlockedByMinigame": "advanced_timeline_trap_case_zeropointentry"
+      },
+      "minigame": {
+        "id": "advanced_timeline_trap_case_zeropointentry",
+        "type": "alibi_verify",
+        "title": "Breach Window Alibi Check",
+        "instruction": "Review each alibi and identify the one contradicted by forensic timeline data.",
+        "timelineEvent": {
+          "time": "Critical Window",
+          "event": "Privilege escalation and staged exfiltration occurred during this exact interval."
+        },
+        "alibis": [
+          {
+            "id": "alibi_guilty",
+            "suspectId": "ronak_s",
+            "suspectName": "Ronak S",
+            "alibi": "Claims to be offline in a routine maintenance meeting with no system access.",
+            "isContradicted": true,
+            "contradiction": "Authentication and command logs show privileged actions from this suspect's account during the same window."
+          },
+          {
+            "id": "alibi_other1",
+            "suspectId": "state_actor",
+            "suspectName": "Unknown Foreign Actor",
+            "alibi": "States they were in a monitored support call with screen recording enabled.",
+            "isContradicted": false,
+            "contradiction": ""
+          },
+          {
+            "id": "alibi_other2",
+            "suspectId": "vendor_engineer",
+            "suspectName": "Supriya K",
+            "alibi": "Reports compiling a non-production patch with signed CI traces.",
+            "isContradicted": false,
+            "contradiction": ""
+          }
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "timeline_alibi_break",
+          "message": "Contradiction confirmed: Ronak S's alibi collapses under timeline verification."
+        }
+      }
     }
   ],
   "timeline": [
     {
       "time": "2 Years Prior",
-      "title": "Vulnerability Identified \u2014 Ignored",
+      "title": "Vulnerability Identified — Ignored",
       "description": "Devraj M files memo about CVE-GRID-0091. Shelved.",
       "severity": "medium"
     },
@@ -330,7 +464,7 @@
       "severity": "critical"
     },
     {
-      "time": "Attack Night \u2014 10:45 PM",
+      "time": "Attack Night — 10:45 PM",
       "title": "Exploit Triggered",
       "description": "Zero-day executed on GridCore SCADA system",
       "severity": "critical"
@@ -338,13 +472,13 @@
     {
       "time": "10:52 PM",
       "title": "Blackout Begins",
-      "description": "Industrial zone loses power \u2014 6 facilities offline",
+      "description": "Industrial zone loses power — 6 facilities offline",
       "severity": "critical"
     },
     {
       "time": "2:47 AM",
       "title": "Attacker Self-Terminates",
-      "description": "Ronak S sends abort command \u2014 panic shutdown",
+      "description": "Ronak S sends abort command — panic shutdown",
       "severity": "critical"
     },
     {
@@ -367,7 +501,9 @@
     "meta_controlled_shutdown",
     "meta_code_style",
     "ip_jumpserver",
-    "file_pgp_key"
+    "file_pgp_key",
+    "hidden_suspect_profile",
+    "timeline_alibi_break"
   ],
   "outcomes": {
     "perfect": {

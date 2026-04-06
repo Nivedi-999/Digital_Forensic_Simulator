@@ -16,7 +16,7 @@ class CaseRepository {
     'assets/cases/case_ghosttrace.json',
     'assets/cases/case_jobscam.json',
     'assets/cases/case_vanishing_report.json',
-    'assets/cases/case_leaked_roster.json',       // replaces case_lost_usb
+    'assets/cases/case_leaked_roster.json',
     'assets/cases/case_altered_image.json',
 
     // ── MEDIUM ────────────────────────────────────────────
@@ -26,7 +26,7 @@ class CaseRepository {
     'assets/cases/case_lastlogin.json',
     'assets/cases/case_clouddrain.json',
     'assets/cases/case_missing_logs.json',
-    'assets/cases/case_cloned_credential.json',   // replaces case_deleted_documents
+    'assets/cases/case_cloned_credential.json',
     'assets/cases/case_midnight_timeline.json',
 
     // ── HARD ──────────────────────────────────────────────
@@ -36,7 +36,7 @@ class CaseRepository {
     'assets/cases/case_darkproxyattack.json',
     'assets/cases/case_poisonedpatch.json',
     'assets/cases/case_unknown_usb.json',
-    'assets/cases/case_borrowed_badge.json',      // replaces case_disguised_file
+    'assets/cases/case_borrowed_badge.json',
 
     // ── ADVANCED ──────────────────────────────────────────
     'assets/cases/case_vanishingvault.json',
@@ -48,8 +48,12 @@ class CaseRepository {
     'assets/cases/case_double_identity.json',
   ];
 
-  // Key: filename stem (e.g. "case_ghosttrace"), Value: loaded CaseFile
+  // Key: JSON id field (e.g. "case_ghosttrace"), Value: loaded CaseFile
   final Map<String, CaseFile> _cache = {};
+
+  // Preserves the original registration order for cases that loaded successfully
+  final List<String> _loadedIds = [];
+
   bool _loaded = false;
 
   static String _keyFromPath(String path) =>
@@ -57,21 +61,29 @@ class CaseRepository {
 
   Future<void> loadAll() async {
     if (_loaded) return;
+    _cache.clear();
+    _loadedIds.clear();
+
     for (final path in _casePaths) {
+      final key = _keyFromPath(path);
       try {
         final raw = await rootBundle.loadString(path);
         final jsonMap = jsonDecode(raw) as Map<String, dynamic>;
         final caseFile = CaseFile.fromJson(jsonMap);
-        _cache[_keyFromPath(path)] = caseFile;
+        _cache[caseFile.id] = caseFile;
+        _loadedIds.add(caseFile.id);
       } catch (e) {
-        assert(() {
-          // ignore: avoid_print
-          print('[CaseRepository] Failed to load $path: $e');
-          return true;
-        }());
+        // Print a clear error so the developer knows which file is missing
+        // ignore: avoid_print
+        print('[CaseRepository] ⚠️  Failed to load "$path": $e');
       }
     }
+
     _loaded = true;
+
+    // Summary log so it is easy to spot missing cases
+    // ignore: avoid_print
+    print('[CaseRepository] Loaded ${_cache.length}/${_casePaths.length} cases.');
   }
 
   /// All loaded cases in registration order.
@@ -80,11 +92,11 @@ class CaseRepository {
       .whereType<CaseFile>()
       .toList();
 
-  /// Filter by difficulty tier.
+  /// Filter by difficulty tier, in registration order.
   List<CaseFile> byDifficulty(String difficulty) =>
       all.where((c) => c.difficulty.toLowerCase() == difficulty.toLowerCase()).toList();
 
-  /// Look up by filename stem (e.g. 'case_ghosttrace').
+  /// Look up by the JSON id field (e.g. 'case_ghosttrace').
   CaseFile? byId(String id) => _cache[id];
 
   /// First loaded case — used by StorylineScreen when no caseId is passed.

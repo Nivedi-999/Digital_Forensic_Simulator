@@ -107,6 +107,7 @@ class MinigameConfig {
   final List<String> hints;
   final String? hint;
   final String? unlocksHiddenItemId;
+  final String? unlocksHiddenSuspectId;
   final String? successMessage;
 
   // caesar_cipher
@@ -140,6 +141,7 @@ class MinigameConfig {
     this.hints = const [],
     this.hint,
     this.unlocksHiddenItemId,
+    this.unlocksHiddenSuspectId,
     this.successMessage,
     this.cipherText,
     this.solution,
@@ -166,6 +168,7 @@ class MinigameConfig {
       hints: (json['hints'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       hint: json['hint'] as String?,
       unlocksHiddenItemId: onSuccess?['unlocksHiddenItem'] as String?,
+      unlocksHiddenSuspectId: onSuccess?['unlocksHiddenSuspect'] as String?,
       successMessage: onSuccess?['message'] as String?,
       cipherText: json['cipherText'] as String?,
       solution: json['solution'] as String?,

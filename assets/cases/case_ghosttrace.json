@@ -4,83 +4,92 @@
   "shortDescription": "Insider Database Breach",
   "difficulty": "easy",
   "theme": "Insider Data Leak",
-  "estimatedDuration": "45\u201360 min",
+  "estimatedDuration": "45–60 min",
   "caseNumber": "1004",
   "status": "Active",
+
+  "timeLimitSeconds": null,
+
   "briefing": {
-    "incidentSummary": "A classified internal database was accessed illegally.\n\nSuspicions point to an internal breach \u2014 someone with inside access and motive.\n\nAll systems were live. The attacker knew the layout.",
-    "missionText": "Your Mission:\n\n\u203a Identify the culprit\n\n\u203a Use evidence wisely \u2014 some data may be misleading\n\n\u203a Collect at least 3 correct evidences\n\n\u203a Flag the right suspect to close the case"
+    "incidentSummary": "A classified internal database was accessed illegally.\n\nSuspicions point to an internal breach — someone with inside access and motive.\n\nAll systems were live. The attacker knew the layout.",
+    "missionText": "Your Mission:\n\n› Identify the culprit\n\n› Use evidence wisely — some data may be misleading\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect to close the case"
   },
+
   "suspects": [
     {
       "id": "ankita_e",
       "name": "Ankita E",
       "role": "Finance Analyst",
-      "department": "Finance Department \u2022 Mumbai HQ",
+      "department": "Finance Department • Mumbai HQ",
       "riskLevel": "medium",
+      "initialSuspicion": 0.05,
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "202.56.23.101 \u2014 10:45 AM",
-        "deviceUsage": "FIN-WS-114 \u2014 09:15\u201310:50 AM",
+        "ipActivity": "202.56.23.101 — 10:45 AM",
+        "deviceUsage": "FIN-WS-114 — 09:15–10:50 AM",
         "locationTrace": "Mumbai Office WiFi",
         "vpnCheck": "No foreign VPN detected"
       },
       "profileNotes": "Had direct access to the finance workstation FIN-WS-114. Login session overlaps exactly with the time of credential export. Modified finance_report_q3.pdf at 09:31 AM.",
-      "image": "assets/avatars/ankita_e.png",
+      "imagePath": "assets/avatars/ankita_e.png",
       "description": "Ankita E is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "dhruv_a",
       "name": "Dhruv A",
       "role": "System Administrator",
-      "department": "IT Department \u2022 Mumbai HQ",
+      "department": "IT Department • Mumbai HQ",
       "riskLevel": "high",
+      "initialSuspicion": 0.05,
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "172.16.44.21 \u2014 09:45 AM",
-        "deviceUsage": "IT-WS-001 \u2014 08:00\u201311:00 AM",
+        "ipActivity": "172.16.44.21 — 09:45 AM",
+        "deviceUsage": "IT-WS-001 — 08:00–11:00 AM",
         "locationTrace": "IT Floor, Mumbai HQ",
         "vpnCheck": "Admin VPN active"
       },
-      "profileNotes": "Signed and deployed system_patch.exe. High system access but no evidence of finance data interaction. Patch contained an unusual outbound connection module \u2014 warrants scrutiny but not conclusive.",
-      "image": "assets/avatars/dhruv_a.png",
+      "profileNotes": "Signed and deployed system_patch.exe. High system access but no evidence of finance data interaction. Patch contained an unusual outbound connection module — warrants scrutiny but not conclusive.",
+      "imagePath": "assets/avatars/dhruv_a.png",
       "description": "Dhruv A is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "manav_r",
       "name": "Manav R",
       "role": "Operations Manager",
-      "department": "Operations \u2022 Mumbai HQ",
+      "department": "Operations • Mumbai HQ",
       "riskLevel": "medium",
+      "initialSuspicion": 0.05,
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "172.16.12.55 \u2014 10:00 AM",
-        "deviceUsage": "OPS-WS-042 \u2014 09:00\u201311:30 AM",
+        "ipActivity": "172.16.12.55 — 10:00 AM",
+        "deviceUsage": "OPS-WS-042 — 09:00–11:30 AM",
         "locationTrace": "Operations Floor, Mumbai HQ",
         "vpnCheck": "No VPN detected"
       },
       "profileNotes": "Present in office during the breach window. No direct access to finance systems. Alibi partially corroborated by meeting logs.",
-      "image": "assets/avatars/manav_r.png",
+      "imagePath": "assets/avatars/manav_r.png",
       "description": "Manav R is a person of interest in this case. Their motives and involvement remain under investigation."
     },
     {
       "id": "ayon_k",
       "name": "Ayon K",
       "role": "Junior Developer",
-      "department": "Engineering \u2022 Mumbai HQ",
+      "department": "Engineering • Mumbai HQ",
       "riskLevel": "low",
+      "initialSuspicion": 0.05,
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "172.16.88.10 \u2014 09:30 AM",
-        "deviceUsage": "ENG-WS-077 \u2014 08:30\u201312:00 PM",
+        "ipActivity": "172.16.88.10 — 09:30 AM",
+        "deviceUsage": "ENG-WS-077 — 08:30–12:00 PM",
         "locationTrace": "Engineering Floor, Mumbai HQ",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "No access to finance systems. Committed code during breach window \u2014 alibi strong. Low threat level.",
-      "image": "assets/avatars/ayon_k.png",
+      "profileNotes": "No access to finance systems. Committed code during breach window — alibi strong. Low threat level.",
+      "imagePath": "assets/avatars/ayon_k.png",
       "description": "Ayon K is a person of interest in this case. Their motives and involvement remain under investigation."
     }
   ],
+
   "evidencePanels": [
     {
       "id": "chat",
@@ -96,7 +105,9 @@
           "isKeyEvidence": false,
           "isSuspect": false,
           "detail": "Routine system message. Patch deployed by Dhruv A at 09:45 AM.",
-          "pointsToSuspect": null
+          "pointsToSuspect": null,
+          "irrelevantReason": "Standard deployment message with no link to the breach.",
+          "suspicionEffects": {}
         },
         {
           "id": "chat_noticed",
@@ -105,7 +116,9 @@
           "isKeyEvidence": false,
           "isSuspect": true,
           "detail": "Terse acknowledgement. Ghost user was monitoring system activity.",
-          "pointsToSuspect": null
+          "pointsToSuspect": null,
+          "irrelevantReason": "Too vague to assign to any specific suspect.",
+          "suspicionEffects": {}
         },
         {
           "id": "chat_finance",
@@ -113,8 +126,12 @@
           "sender": "Ghost",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Ghost directs attention to the finance workstation \u2014 FIN-WS-114. This is the exact machine used by Ankita E. Knowledge of this internal target suggests insider familiarity.",
-          "pointsToSuspect": "ankita_e"
+          "detail": "Ghost directs attention to the finance workstation — FIN-WS-114. This is the exact machine used by Ankita E. Knowledge of this internal target suggests insider familiarity.",
+          "pointsToSuspect": "ankita_e",
+          "suspicionEffects": {
+            "ankita_e": 0.12,
+            "dhruv_a": -0.05
+          }
         },
         {
           "id": "chat_canary",
@@ -123,7 +140,9 @@
           "isKeyEvidence": false,
           "isSuspect": true,
           "detail": "Metaphorical reference to an exploited vulnerability. Possibly referencing the patch that introduced a backdoor module.",
-          "pointsToSuspect": null
+          "pointsToSuspect": null,
+          "irrelevantReason": "Ambiguous message not conclusively linked to any suspect.",
+          "suspicionEffects": {}
         },
         {
           "id": "chat_offshore",
@@ -132,7 +151,12 @@
           "isKeyEvidence": true,
           "isSuspect": true,
           "detail": "Direct instruction to transfer funds to an offshore account. Cross-references the anomaly found in finance_report_q3.pdf pointing to ACC-4482-X.",
-          "pointsToSuspect": "ankita_e"
+          "pointsToSuspect": "ankita_e",
+          "suspicionEffects": {
+            "ankita_e": 0.12,
+            "manav_r": -0.05,
+            "ayon_k": -0.05
+          }
         }
       ],
       "minigame": null
@@ -147,9 +171,13 @@
         {
           "id": "file_finance",
           "label": "finance_report_q3.pdf",
-          "detail": "Modified by Ankita E at 09:31 AM. Contains three anomalies: \u20b92.3 Crore transferred to offshore ACC-4482-X, unscheduled payment to Northstar Solutions, and 14 duplicate reimbursements on 14 Aug.",
+          "detail": "Modified by Ankita E at 09:31 AM. Contains three anomalies: ₹2.3 Crore transferred to offshore ACC-4482-X, unscheduled payment to Northstar Solutions, and 14 duplicate reimbursements on 14 Aug.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ankita_e",
+          "suspicionEffects": {
+            "ankita_e": 0.20,
+            "dhruv_a": 0.05
+          },
           "metadata": {
             "size": "12 MB",
             "modifier": "Ankita E",
@@ -159,9 +187,13 @@
         {
           "id": "file_patch",
           "label": "system_patch.exe",
-          "detail": "Signed by Dhruv A (Admin). Contains an unusual outbound connection module \u2014 not typical for an internal patch. Warrants investigation but no direct link to financial data.",
+          "detail": "Signed by Dhruv A (Admin). Contains an unusual outbound connection module — not typical for an internal patch. Warrants investigation but no direct link to financial data.",
           "isKeyEvidence": false,
           "pointsToSuspect": "dhruv_a",
+          "irrelevantReason": "Suspicious but no direct link to the credential export or offshore transfer.",
+          "suspicionEffects": {
+            "dhruv_a": 0.15
+          },
           "metadata": {
             "size": "4.2 MB",
             "modifier": "Dhruv A (Admin)",
@@ -174,6 +206,9 @@
           "detail": "Log shows unexpected privilege escalation, hash mismatch in agent.dll, and outbound connection to 185.193.127.44 at 01:14 AM. Key entry: credentials export initiated from FIN-WS-114 at 10:43 AM.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ankita_e",
+          "suspicionEffects": {
+            "ankita_e": 0.18
+          },
           "metadata": {
             "size": "1.1 MB",
             "modifier": "System",
@@ -183,23 +218,31 @@
         {
           "id": "file_cache",
           "label": "cache_dump.bin",
-          "detail": "Contains employee credential database fragments. Dump timestamp 10:44\u201310:46 AM. Exfiltration path: FIN-WS-114 \u2192 172.16.44.21.",
+          "detail": "Contains employee credential database fragments. Dump timestamp 10:44–10:46 AM. Exfiltration path: FIN-WS-114 → 172.16.44.21.",
           "isKeyEvidence": false,
           "pointsToSuspect": null,
+          "irrelevantReason": "Shows what was exfiltrated but not who initiated it — corroborating only.",
+          "suspicionEffects": {
+            "ankita_e": 0.15
+          },
           "metadata": {
             "size": "88 MB",
             "modifier": "System",
-            "modifiedAt": "10:44\u201310:46 AM"
+            "modifiedAt": "10:44–10:46 AM"
           }
         }
       ],
       "hiddenItem": {
         "id": "file_credentials",
-        "label": "credentials_export_log.pdf",
-        "detail": "DECRYPTED \u2014 Internal Credential Export Log. Exported by Ankita E (Employee ID AE-4471) from workstation FIN-WS-114 at 10:43:22 AM. The export contains full DB admin credentials for FINDB-PROD-01 \u2014 the production financial database. The credentials were written to a portable archive and transferred via SMB to 172.16.44.21 before being routed to external IP 202.56.23.101 \u2014 an offshore server with no legitimate business relationship to the company. The export log shows 14,847 employee financial records were accessed. Most critically, the log confirms the credentials were used to execute the three anomalous transactions found in finance_report_q3.pdf \u2014 connecting Ankita E directly to the data exfiltration and the offshore account transfer. This file is the single most important piece of evidence in the case \u2014 it closes the loop between database access, credential theft, and the offshore fund transfer.",
+        "label": "credentials.pdf",
+        "detail": "DECRYPTED — Internal Credential Export Log. Exported by Ankita E (Employee ID AE-4471) from workstation FIN-WS-114 at 10:43:22 AM. The export contains full DB admin credentials for FINDB-PROD-01 — the production financial database. The credentials were written to a portable archive and transferred via SMB to 172.16.44.21 before being routed to external IP 202.56.23.101 — an offshore server with no legitimate business relationship to the company. The export log shows 14,847 employee financial records were accessed. Most critically, the log confirms the credentials were used to execute the three anomalous transactions found in finance_report_q3.pdf — connecting Ankita E directly to the data exfiltration and the offshore account transfer. This file is the single most important piece of evidence in the case — it closes the loop between database access, credential theft, and the offshore fund transfer.",
         "isKeyEvidence": true,
         "pointsToSuspect": "ankita_e",
         "unlockedByMinigame": "decryption",
+        "suspicionEffects": {
+          "ankita_e": 0.25,
+          "dhruv_a": -0.15
+        },
         "metadata": {
           "size": "0.3 MB",
           "modifier": "Ankita E",
@@ -217,11 +260,17 @@
         "hints": [
           "It's a simple shift cipher. Try moving letters backward.",
           "The shift is exactly 3 positions back in the alphabet.",
-          "Dwwdfkphqw \u2192 subtract 3 \u2192 becomes A..."
+          "Dwwdfkphqw → subtract 3 → becomes A..."
         ],
+        "suspicionEffects": {
+          "ankita_e": 0.12,
+          "dhruv_a": -0.15,
+          "manav_r": -0.05,
+          "ayon_k": -0.05
+        },
         "onSuccess": {
           "unlocksHiddenItem": "file_credentials",
-          "message": "BREAKTHROUGH \u2014 credentials_export_log.pdf decrypted. Ankita E's credential export directly links her to the offshore transfer. Case evidence chain is now complete."
+          "message": "BREAKTHROUGH — credentials_export_log.pdf decrypted. Ankita E's credential export directly links her to the offshore transfer. Case evidence chain is now complete."
         }
       }
     },
@@ -238,19 +287,12 @@
           "detail": "Workstation FIN-WS-114. Located in Finance Dept., Mumbai HQ. Access controlled by biometric + PIN.",
           "isKeyEvidence": false,
           "pointsToSuspect": null,
+          "irrelevantReason": "Describes the machine but not who used it during the breach.",
+          "suspicionEffects": {},
           "rows": [
-            {
-              "key": "Workstation ID",
-              "value": "FIN-WS-114"
-            },
-            {
-              "key": "Location",
-              "value": "Finance Dept. Mumbai HQ"
-            },
-            {
-              "key": "Access Control",
-              "value": "Biometric + PIN"
-            }
+            { "key": "Workstation ID", "value": "FIN-WS-114" },
+            { "key": "Location",       "value": "Finance Dept. Mumbai HQ" },
+            { "key": "Access Control", "value": "Biometric + PIN" }
           ]
         },
         {
@@ -259,19 +301,12 @@
           "detail": "Windows 11 Pro, Build 22621. Last updated 2024-01-15. Patch KB5034123 applied.",
           "isKeyEvidence": false,
           "pointsToSuspect": null,
+          "irrelevantReason": "OS details are not linked to any suspect or the breach.",
+          "suspicionEffects": {},
           "rows": [
-            {
-              "key": "OS",
-              "value": "Windows 11 Pro (Build 22621)"
-            },
-            {
-              "key": "Last Update",
-              "value": "2024-01-15 08:40 AM"
-            },
-            {
-              "key": "Patch Level",
-              "value": "KB5034123 applied"
-            }
+            { "key": "OS",          "value": "Windows 11 Pro (Build 22621)" },
+            { "key": "Last Update", "value": "2024-01-15 08:40 AM" },
+            { "key": "Patch Level", "value": "KB5034123 applied" }
           ]
         },
         {
@@ -280,20 +315,15 @@
           "detail": "Last login on FIN-WS-114 was Ankita E, from 09:15 AM to 11:02 AM. This session window covers the exact time of the credential export at 10:43 AM.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ankita_e",
+          "suspicionEffects": {
+            "ankita_e": 0.20,
+            "manav_r": -0.05,
+            "ayon_k": -0.05
+          },
           "rows": [
-            {
-              "key": "Last Login User",
-              "value": "Ankita E",
-              "highlight": true
-            },
-            {
-              "key": "Login Time",
-              "value": "09:15 AM \u2013 11:02 AM"
-            },
-            {
-              "key": "Session Type",
-              "value": "Active"
-            }
+            { "key": "Last Login User", "value": "Ankita E",           "highlight": true },
+            { "key": "Login Time",      "value": "09:15 AM – 11:02 AM" },
+            { "key": "Session Type",    "value": "Active" }
           ]
         }
       ],
@@ -312,23 +342,14 @@
           "detail": "Source IP 172.16.44.21 maps to FIN-WS-114 on the internal LAN. This is the originating machine for the exfiltration path found in cache_dump.bin.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ankita_e",
+          "suspicionEffects": {
+            "ankita_e": 0.18
+          },
           "rows": [
-            {
-              "key": "Source IP",
-              "value": "172.16.44.21"
-            },
-            {
-              "key": "MAC",
-              "value": "00-25-96-FF-12-34"
-            },
-            {
-              "key": "Hostname",
-              "value": "FIN-WS-114.corp.local"
-            },
-            {
-              "key": "Location",
-              "value": "Internal LAN \u2013 Finance Floor"
-            }
+            { "key": "Source IP",  "value": "172.16.44.21" },
+            { "key": "MAC",        "value": "00-25-96-FF-12-34" },
+            { "key": "Hostname",   "value": "FIN-WS-114.corp.local" },
+            { "key": "Location",   "value": "Internal LAN – Finance Floor" }
           ]
         },
         {
@@ -337,27 +358,21 @@
           "detail": "Traffic hopped to 202.56.23.101, geolocated to a public cafe WiFi near the office. This external IP also appears in credentials.pdf as the destination of the exfiltrated data.",
           "isKeyEvidence": true,
           "pointsToSuspect": "ankita_e",
+          "suspicionEffects": {
+            "ankita_e": 0.18,
+            "dhruv_a": -0.10
+          },
           "rows": [
-            {
-              "key": "Next Hop IP",
-              "value": "202.56.23.101",
-              "highlight": true
-            },
-            {
-              "key": "GeoIP",
-              "value": "Mumbai, Maharashtra, India"
-            },
-            {
-              "key": "ISP",
-              "value": "Public WiFi \u2014 Cafe near office",
-              "highlight": true
-            }
+            { "key": "Next Hop IP", "value": "202.56.23.101",                  "highlight": true },
+            { "key": "GeoIP",       "value": "Mumbai, Maharashtra, India" },
+            { "key": "ISP",         "value": "Public WiFi — Cafe near office", "highlight": true }
           ]
         }
       ],
       "minigame": null
     }
   ],
+
   "timeline": [
     {
       "time": "08:15 AM",
@@ -374,7 +389,7 @@
     {
       "time": "09:31 AM",
       "title": "Finance Report Modified",
-      "description": "finance_report_q3.pdf edited \u2014 anomalous entries inserted",
+      "description": "finance_report_q3.pdf edited — anomalous entries inserted",
       "severity": "high"
     },
     {
@@ -408,42 +423,43 @@
       "severity": "high"
     }
   ],
+
   "winCondition": {
     "guiltySuspectId": "ankita_e",
     "minCorrectEvidence": 3
   },
+
   "correctEvidenceIds": [
     "file_finance",
+    "chat_finance",
+    "chat_offshore",
     "file_debug",
     "meta_lastuser",
     "ip_internal",
     "ip_external",
     "file_credentials"
   ],
+
   "outcomes": {
     "perfect": {
-      "condition": "correct_suspect_and_evidence_gte_3",
       "title": "Case Solved!",
       "subtitle": "Correct suspect identified with sufficient evidence chain.",
       "label": "CASE CLOSED",
       "xp": 10
     },
     "partial": {
-      "condition": "correct_suspect_and_evidence_lt_3",
       "title": "Insufficient Evidence",
       "subtitle": "Correct suspect, but not enough evidence to close the case.",
       "label": "PARTIAL",
       "xp": 3
     },
     "wrongAccusation": {
-      "condition": "wrong_suspect",
       "title": "Wrong Suspect",
       "subtitle": "You flagged the wrong person. The real culprit was Ankita E.",
       "label": "CASE FAILED",
       "xp": 0
     },
     "coldCase": {
-      "condition": "correct_suspect_and_evidence_eq_0",
       "title": "Case Gone Cold",
       "subtitle": "No relevant evidence was collected to support the accusation.",
       "label": "COLD CASE",

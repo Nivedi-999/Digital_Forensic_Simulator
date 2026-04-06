@@ -175,7 +175,50 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
 
   Widget _buildSuspectFeed(BuildContext context, CaseEngine engine) {
     return Column(
-      children: engine.suspectsByThreat.map((suspect) {
+      children: engine.caseFile.suspects.map((suspect) {
+        final isUnlocked = engine.isSuspectUnlocked(suspect.id);
+
+        // Hidden suspects show as a locked card until minigame is solved
+        if (!isUnlocked) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: CyberColors.bgCard,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                    color: CyberColors.borderSubtle.withOpacity(0.4), width: 1),
+              ),
+              child: Row(children: [
+                Container(width: 44, height: 44,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: CyberColors.textMuted.withOpacity(0.06),
+                      border: Border.all(color: CyberColors.textMuted.withOpacity(0.25)),
+                    ),
+                    child: const Icon(Icons.lock_outline,
+                        color: CyberColors.textMuted, size: 20)),
+                const SizedBox(width: 14),
+                Expanded(child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('SUSPECT IDENTITY LOCKED',
+                      style: GoogleFonts.orbitron(fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          color: CyberColors.textMuted, letterSpacing: 1)),
+                  const SizedBox(height: 4),
+                  Text('Complete a mini-game to reveal this suspect.',
+                      style: GoogleFonts.shareTechMono(
+                          fontSize: 9, color: CyberColors.textMuted,
+                          letterSpacing: 0.5)),
+                ])),
+                const Icon(Icons.chevron_right,
+                    color: CyberColors.textMuted, size: 18),
+              ]),
+            ),
+          );
+        }
+
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: SuspectCard(

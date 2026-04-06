@@ -29,7 +29,9 @@ class Suspect {
   final String role;
   final String department;
   final String riskLevel; // 'high' | 'medium' | 'low'
+  final double? initialSuspicion; // from JSON; null = use branching default
   final bool isGuilty;
+  final bool isHidden; // true = locked until a minigame unlocks them
   final DigitalFootprint? digitalFootprint;
   final String? profileNotes;
   final String? imagePath;
@@ -41,7 +43,9 @@ class Suspect {
     required this.role,
     required this.department,
     required this.riskLevel,
+    this.initialSuspicion,
     required this.isGuilty,
+    this.isHidden = false,
     this.digitalFootprint,
     this.profileNotes,
     this.description,
@@ -68,12 +72,14 @@ class Suspect {
       role: json['role'] as String,
       department: json['department'] as String? ?? '',
       riskLevel: json['riskLevel'] as String,
+      initialSuspicion: (json['initialSuspicion'] as num?)?.toDouble(),
       isGuilty: json['isGuilty'] as bool,
+      isHidden: json['isHidden'] as bool? ?? false,
       digitalFootprint: footprintJson != null
           ? DigitalFootprint.fromJson(footprintJson)
           : null,
       profileNotes: json['profileNotes'] as String?,
-      imagePath: json['imagePath'] as String?,
+      imagePath: (json['imagePath'] ?? json['image']) as String?,
       description: json['description'] as String?,
     );
   }

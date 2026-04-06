@@ -48,6 +48,7 @@ class CaseEngine extends ChangeNotifier {
   final List<CollectedEvidence> _collected = [];
   final Set<String> _solvedMinigames = {};
   final Set<String> _unlockedHiddenItems = {};
+  final Set<String> _unlockedSuspects = {};
   final Map<String, double> _suspicion = {};
 
   bool _caseClosed = false;
@@ -123,6 +124,9 @@ class CaseEngine extends ChangeNotifier {
   Set<String> get unlockedHiddenItems =>
       Set.unmodifiable(_unlockedHiddenItems);
 
+  Set<String> get unlockedSuspects =>
+      Set.unmodifiable(_unlockedSuspects);
+
   bool get caseClosed => _caseClosed;
   String? get accusedSuspectId => _accusedSuspectId;
   OutcomeType? get outcomeType => _outcomeType;
@@ -134,6 +138,15 @@ class CaseEngine extends ChangeNotifier {
 
   bool isHiddenItemUnlocked(String itemId) =>
       _unlockedHiddenItems.contains(itemId);
+
+  /// Returns true if this suspect is visible to the player.
+  /// Non-hidden suspects are always visible. Hidden suspects
+  /// become visible once the relevant minigame is solved.
+  bool isSuspectUnlocked(String suspectId) {
+    final suspect = caseFile.suspectById(suspectId);
+    if (suspect == null || !suspect.isHidden) return true;
+    return _unlockedSuspects.contains(suspectId);
+  }
 
   bool isEvidenceCollected(String itemId) =>
       _collected.any((e) => e.itemId == itemId);
@@ -292,9 +305,21 @@ class CaseEngine extends ChangeNotifier {
     for (final panel in caseFile.evidencePanels) {
       final mg = panel.minigame;
       if (mg != null && mg.id == minigameId) {
+        // Unlock hidden evidence item
         final hiddenId = mg.unlocksHiddenItemId;
         if (hiddenId != null) {
           _unlockedHiddenItems.add(hiddenId);
+        }
+        // Unlock hidden suspect
+        final hiddenSuspectId = mg.unlocksHiddenSuspectId;
+        if (hiddenSuspectId != null) {
+          _unlockedSuspects.add(hiddenSuspectId);
+          // Initialise suspicion for the newly visible suspect
+          final suspect = caseFile.suspectById(hiddenSuspectId);
+          if (suspect != null && !_suspicion.containsKey(hiddenSuspectId)) {
+            _suspicion[hiddenSuspectId] = suspect.initialSuspicion
+                ?? _branching.initialSuspicion(suspect.riskLevel);
+          }
         }
         break;
       }
@@ -335,7 +360,10 @@ class CaseEngine extends ChangeNotifier {
   void _initSuspicionLevels() {
     _suspicion.clear();
     for (final suspect in caseFile.suspects) {
-      _suspicion[suspect.id] = _branching.initialSuspicion(suspect.riskLevel);
+      // Use per-suspect initialSuspicion from JSON if present,
+      // otherwise fall back to branching logic default.
+      _suspicion[suspect.id] = suspect.initialSuspicion
+          ?? _branching.initialSuspicion(suspect.riskLevel);
     }
   }
 
