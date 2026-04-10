@@ -465,57 +465,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "chat_finance": {
-        "ankita_e": 0.12
-      },
-      "chat_offshore": {
-        "ankita_e": 0.12
-      },
-      "file_finance": {
-        "ankita_e": 0.2,
-        "dhruv_a": 0.05
-      },
-      "file_patch": {
-        "dhruv_a": 0.15
-      },
-      "file_debug": {
-        "ankita_e": 0.18
-      },
-      "file_cache": {
-        "ankita_e": 0.15
-      },
-      "file_credentials": {
-        "ankita_e": 0.25,
-        "dhruv_a": -0.15
-      },
-      "meta_lastuser": {
-        "ankita_e": 0.2,
-        "manav_r": -0.05,
-        "ayon_k": -0.05
-      },
-      "ip_internal": {
-        "ankita_e": 0.18
-      },
-      "ip_external": {
-        "ankita_e": 0.18,
-        "dhruv_a": -0.1
-      }
-    },
-    "minigameEffects": {
-      "decryption": {
-        "ankita_e": 0.12,
-        "dhruv_a": -0.15,
-        "manav_r": -0.05,
-        "ayon_k": -0.05
-      }
-    }
   }
 }

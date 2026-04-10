@@ -422,56 +422,5 @@
     "title": "The Perfect Alibi — Almost",
     "description": "Arvind Kale engineered a near-perfect crime: he cloned his colleague's badge contactlessly during a routine work session, waited until she was confirmed out of the city, disabled the camera-covered exit, and re-entered through a blind spot he'd already unlocked. The Proxmark3 clone signature in the raw RFID dump was the one detail he couldn't erase.",
     "conclusion": "✔ Proxmark3 purchased 10 days prior — delivered to his home\n✔ Badge cloned during joint audit 3 days before incident\n✔ Side entrance manually held open before his logged exit\n✔ RFID dump carried Proxmark3 clone watermark 3E7"
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "chat_badge_entry": {
-        "arvind_kale": 0.15,
-        "shruti_varma": -0.1
-      },
-      "chat_arvind_exit": {
-        "arvind_kale": 0.2
-      },
-      "file_rfid_purchase": {
-        "arvind_kale": 0.25,
-        "ex_employee": -0.15
-      },
-      "file_audit_proximity": {
-        "arvind_kale": 0.22
-      },
-      "file_ex_employee_offboarding": {
-        "ex_employee": -0.2
-      },
-      "file_inventory_missing": {
-        "arvind_kale": 0.12
-      },
-      "meta_cctv_gap": {
-        "arvind_kale": 0.2,
-        "facilities_guard": -0.15
-      },
-      "meta_manual_hold": {
-        "arvind_kale": 0.22
-      },
-      "meta_proxmark_signature": {
-        "arvind_kale": 0.25
-      },
-      "ip_arvind_home_inactive": {
-        "arvind_kale": 0.18
-      },
-      "ip_shruti_nagpur": {
-        "shruti_varma": -0.2
-      }
-    },
-    "minigameEffects": {
-      "rfid_frequency_decode": {
-        "arvind_kale": 0.15,
-        "ex_employee": -0.12
-      }
-    }
   }
 }

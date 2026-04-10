@@ -571,40 +571,5 @@
     "title": "The Cover-Up Unravels",
     "description": "The logs were deleted by the administrator himself — not to protect the company from an external breach, but to hide his own unauthorized access. The external SSH attack at 21:10 appears to have been used as cover: the external noise drew attention outward while Vikram logged in internally 67 seconds later. His attempt to export a credential backup file at 21:16 — blocked by the DLP system — reveals the true objective was data theft, not protection.",
     "conclusion": "✔ Logs were deliberately erased — not automatic cleanup\n✔ Admin account (sysadmin_vsb) directly linked to deletion\n✔ Credential export attempt confirms data theft motive\n✔ External hacker was a distraction — no successful external login occurred"
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "log_gap": {
-        "sys_admin": 0.18,
-        "external_hacker": 0.12
-      },
-      "log_backup_alerts": {
-        "sys_admin": 0.2
-      },
-      "timeline_admin_login": {
-        "sys_admin": 0.25,
-        "external_hacker": -0.1
-      },
-      "timeline_cleanup_command": {
-        "sys_admin": 0.25
-      },
-      "admin_session_record": {
-        "sys_admin": 0.22
-      }
-    },
-    "minigameEffects": {
-      "log_gap_reconstructor": {
-        "sys_admin": 0.18,
-        "external_hacker": -0.1
-      },
-      "cleanup_command_analyser": {
-        "sys_admin": 0.2
-      }
-    }
   }
 }

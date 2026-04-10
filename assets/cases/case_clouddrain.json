@@ -388,51 +388,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "chat_git_commit": {
-        "ketan_s": 0.18
-      },
-      "chat_mining_config": {
-        "ketan_s": 0.18
-      },
-      "chat_ex_intern": {
-        "ex_intern": 0.18
-      },
-      "file_cloudtrail": {
-        "ketan_s": 0.2
-      },
-      "file_gitleak": {
-        "ketan_s": 0.22
-      },
-      "file_wallet_trace": {
-        "ketan_s": 0.22
-      },
-      "file_vpn_trace": {
-        "ketan_s": 0.22,
-        "ex_intern": -0.15
-      },
-      "meta_timing": {
-        "ketan_s": 0.18
-      },
-      "meta_instance_count": {
-        "ketan_s": 0.15
-      },
-      "ip_api_calls": {
-        "ketan_s": 0.2
-      }
-    },
-    "minigameEffects": {
-      "vpn_decode": {
-        "ketan_s": 0.12,
-        "ex_intern": -0.1
-      }
-    }
   }
 }

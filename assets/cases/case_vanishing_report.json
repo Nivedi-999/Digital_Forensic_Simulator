@@ -412,33 +412,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "file_comparison": {
-        "it_admin": 0.18
-      },
-      "meta_timestamps": {
-        "it_admin": 0.18
-      },
-      "hash_mismatch": {
-        "it_admin": 0.22,
-        "neha_sharma": -0.15
-      },
-      "meta_service_account": {
-        "it_admin": 0.25
-      }
-    },
-    "minigameEffects": {
-      "hash_validate": {
-        "it_admin": 0.18,
-        "neha_sharma": -0.12
-      }
-    }
   }
 }

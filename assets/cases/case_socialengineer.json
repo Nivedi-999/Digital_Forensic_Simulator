@@ -4,29 +4,29 @@
   "shortDescription": "Corporate Social Engineering Attack",
   "difficulty": "medium",
   "theme": "Identity Fraud & Social Engineering",
-  "estimatedDuration": "30–40 min",
+  "estimatedDuration": "30\u201340 min",
   "caseNumber": "2002",
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
-    "incidentSummary": "An employee at a logistics company was tricked into transferring ₹3.2 Lakh to a fraudulent vendor account.\n\nThe attacker impersonated the company's CFO through a spoofed email and a cloned voice call.\n\nThe real CFO was on a flight. She never sent any instruction.",
-    "missionText": "Your Mission:\n\n› Identify who spoofed the CFO's identity\n\n› Trace the email and call origin\n\n› Collect at least 3 correct evidences\n\n› Flag the right suspect"
+    "incidentSummary": "An employee at a logistics company was tricked into transferring \u20b93.2 Lakh to a fraudulent vendor account.\n\nThe attacker impersonated the company's CFO through a spoofed email and a cloned voice call.\n\nThe real CFO was on a flight. She never sent any instruction.",
+    "missionText": "Your Mission:\n\n\u203a Identify who spoofed the CFO's identity\n\n\u203a Trace the email and call origin\n\n\u203a Collect at least 3 correct evidences\n\n\u203a Flag the right suspect"
   },
   "suspects": [
     {
       "id": "arpit_c",
       "name": "Arpit C",
       "role": "Ex-Vendor Contact",
-      "department": "External — Former Supplier",
+      "department": "External \u2014 Former Supplier",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "45.33.99.12 — 11:00 AM",
-        "deviceUsage": "ARPIT-WS — 10:45 AM–12:30 PM",
-        "locationTrace": "Registered Address — Pune Industrial Area",
-        "vpnCheck": "VPN detected — exited"
+        "ipActivity": "45.33.99.12 \u2014 11:00 AM",
+        "deviceUsage": "ARPIT-WS \u2014 10:45 AM\u201312:30 PM",
+        "locationTrace": "Registered Address \u2014 Pune Industrial Area",
+        "vpnCheck": "VPN detected \u2014 exited"
       },
-      "profileNotes": "Had insider knowledge of the CFO's name, travel schedule, and vendor payment process — obtained during his time as a vendor. Sent the spoofed email and made the cloned voice call.",
+      "profileNotes": "Had insider knowledge of the CFO's name, travel schedule, and vendor payment process \u2014 obtained during his time as a vendor. Sent the spoofed email and made the cloned voice call.",
       "image": "assets/avatars/arpit_c.png",
       "description": "Arpit C is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -34,16 +34,16 @@
       "id": "neha_f",
       "name": "Neha F",
       "role": "Finance Executive",
-      "department": "Logistics Company — Finance Dept",
+      "department": "Logistics Company \u2014 Finance Dept",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "192.168.5.22 — 11:15 AM",
-        "deviceUsage": "Office Terminal — FIN-WS-003",
+        "ipActivity": "192.168.5.22 \u2014 11:15 AM",
+        "deviceUsage": "Office Terminal \u2014 FIN-WS-003",
         "locationTrace": "Finance Department Office",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Victim — received the spoofed instruction and transferred the funds in good faith. Not complicit in the fraud.",
+      "profileNotes": "Victim \u2014 received the spoofed instruction and transferred the funds in good faith. Not complicit in the fraud.",
       "image": "assets/avatars/neha_f.png",
       "description": "Neha F is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -51,16 +51,16 @@
       "id": "it_head",
       "name": "Sameer L",
       "role": "IT Head",
-      "department": "Logistics Company — IT Dept",
+      "department": "Logistics Company \u2014 IT Dept",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "192.168.5.10 — 10:00 AM–6:00 PM",
-        "deviceUsage": "IT Admin Terminal — business hours",
+        "ipActivity": "192.168.5.10 \u2014 10:00 AM\u20136:00 PM",
+        "deviceUsage": "IT Admin Terminal \u2014 business hours",
         "locationTrace": "IT Department",
         "vpnCheck": "Admin access active"
       },
-      "profileNotes": "No motive. Company's email security was his responsibility — he failed to implement DMARC properly, enabling the spoof. Negligent but not culpable.",
+      "profileNotes": "No motive. Company's email security was his responsibility \u2014 he failed to implement DMARC properly, enabling the spoof. Negligent but not culpable.",
       "image": "assets/avatars/it_head.png",
       "description": "Sameer L is a person of interest in this case. Their motives and involvement remain under investigation."
     }
@@ -75,11 +75,11 @@
       "items": [
         {
           "id": "chat_spoofed_email",
-          "label": "Transfer ₹3.2L to vendor ACC-7731 immediately. I am boarding. — CFO Priya",
+          "label": "Transfer \u20b93.2L to vendor ACC-7731 immediately. I am boarding. \u2014 CFO Priya",
           "sender": "Spoofed CFO Email",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "Email header analysis shows sender domain was cfo@logistlcs-corp.com — note the extra 'l' in logistics. Classic homoglyph spoof. Sent from IP 45.33.99.12.",
+          "detail": "Email header analysis shows sender domain was cfo@logistlcs-corp.com \u2014 note the extra 'l' in logistics. Classic homoglyph spoof. Sent from IP 45.33.99.12.",
           "pointsToSuspect": "arpit_c"
         },
         {
@@ -88,7 +88,7 @@
           "sender": "Cloned Voice Call",
           "isKeyEvidence": true,
           "isSuspect": true,
-          "detail": "AI voice clone used CFO's voice samples from public conference recordings. Spectral analysis confirms it is synthetic — not the real CFO.",
+          "detail": "AI voice clone used CFO's voice samples from public conference recordings. Spectral analysis confirms it is synthetic \u2014 not the real CFO.",
           "pointsToSuspect": "arpit_c"
         },
         {
@@ -106,7 +106,7 @@
           "sender": "Security Consultant (investigation note)",
           "isKeyEvidence": false,
           "isSuspect": true,
-          "detail": "The security consultant raised the possibility that an internal IT admin with email server access could have spoofed the CFO's email from within. However, the email header trace shows the message originated from an external transactional email service — not the internal mail server. An inside job via the mail server would have a different header signature.",
+          "detail": "The security consultant raised the possibility that an internal IT admin with email server access could have spoofed the CFO's email from within. However, the email header trace shows the message originated from an external transactional email service \u2014 not the internal mail server. An inside job via the mail server would have a different header signature.",
           "pointsToSuspect": "it_admin",
           "irrelevantReason": "The email originated from an external transactional email service, not the internal server. The header trace eliminates any internal mail server manipulation."
         }
@@ -123,7 +123,7 @@
         {
           "id": "file_emailheader",
           "label": "spoofed_email_headers.txt",
-          "detail": "Full SMTP header analysis of the fraudulent CFO email. From display name: 'Rohan Mehta CFO'. From address: cfo@logistlcs-corp.com (note the double-l in 'logistlcs' — a homoglyph substitution invisible at a glance). Sending mail server: a free transactional email service with no SPF or DKIM alignment to the real domain. X-Originating-IP: 103.77.88.201 — traced to a residential broadband account. Message-ID format differs from the company's standard mail server pattern. The email passed the recipient's spam filter because the display name matched the CFO's real name and the sending domain was not blocklisted. The email was sent at 09:03 AM — 7 minutes before the voice call — deliberately establishing written precedent before verbal pressure.",
+          "detail": "Full SMTP header analysis of the fraudulent CFO email. From display name: 'Rohan Mehta CFO'. From address: cfo@logistlcs-corp.com (note the double-l in 'logistlcs' \u2014 a homoglyph substitution invisible at a glance). Sending mail server: a free transactional email service with no SPF or DKIM alignment to the real domain. X-Originating-IP: 103.77.88.201 \u2014 traced to a residential broadband account. Message-ID format differs from the company's standard mail server pattern. The email passed the recipient's spam filter because the display name matched the CFO's real name and the sending domain was not blocklisted. The email was sent at 09:03 AM \u2014 7 minutes before the voice call \u2014 deliberately establishing written precedent before verbal pressure.",
           "isKeyEvidence": true,
           "pointsToSuspect": "arpit_c",
           "metadata": {
@@ -135,7 +135,7 @@
         {
           "id": "file_vendoraccount",
           "label": "vendor_account_trace.pdf",
-          "detail": "Bank account opening documents for ACC-7731 at a cooperative bank, obtained via law enforcement request. Account opened 3 weeks before the attack under the name 'Arpit Chaudhary'. KYC documents: PAN card bearing Arpit C's PAN number, Aadhaar card with his biometric record. The account was opened in person at a branch 11 km from his residence. A nominal deposit of ₹500 was made at opening. The account received ₹3,20,000 on the day of the fraud — transferred from the victim company's accounts payable system. Within 90 minutes, the full amount was withdrawn across two ATM transactions at machines in different areas of the city, suggesting pre-planned withdrawal locations to avoid CCTV overlap.",
+          "detail": "Bank account opening documents for ACC-7731 at a cooperative bank, obtained via law enforcement request. Account opened 3 weeks before the attack under the name 'Arpit Chaudhary'. KYC documents: PAN card bearing Arpit C's PAN number, Aadhaar card with his biometric record. The account was opened in person at a branch 11 km from his residence. A nominal deposit of \u20b9500 was made at opening. The account received \u20b93,20,000 on the day of the fraud \u2014 transferred from the victim company's accounts payable system. Within 90 minutes, the full amount was withdrawn across two ATM transactions at machines in different areas of the city, suggesting pre-planned withdrawal locations to avoid CCTV overlap.",
           "isKeyEvidence": true,
           "pointsToSuspect": "arpit_c",
           "metadata": {
@@ -147,7 +147,7 @@
         {
           "id": "file_voiceanalysis",
           "label": "voice_spectral_analysis.pdf",
-          "detail": "Forensic audio analysis report on the recorded voice call (captured by the recipient on a personal device). Analysis parameters: formant frequency mapping, micro-pause distribution, prosodic rhythm, and breath pattern modelling. Findings: the voice is AI-synthesised, not human. Characteristic micro-pauses between phoneme transitions are 12–18ms — outside the natural human range of 40–120ms. Formant trajectory is artificially smooth, lacking the natural variation caused by soft palate movement. The synthesis model appears to be a commercial voice cloning service trained on a 3–5 minute sample of the real CFO's speech. Source audio for the voice model is likely the CFO's publicly available conference talk uploaded to the company's YouTube channel 4 months ago.",
+          "detail": "Forensic audio analysis report on the recorded voice call (captured by the recipient on a personal device). Analysis parameters: formant frequency mapping, micro-pause distribution, prosodic rhythm, and breath pattern modelling. Findings: the voice is AI-synthesised, not human. Characteristic micro-pauses between phoneme transitions are 12\u201318ms \u2014 outside the natural human range of 40\u2013120ms. Formant trajectory is artificially smooth, lacking the natural variation caused by soft palate movement. The synthesis model appears to be a commercial voice cloning service trained on a 3\u20135 minute sample of the real CFO's speech. Source audio for the voice model is likely the CFO's publicly available conference talk uploaded to the company's YouTube channel 4 months ago.",
           "isKeyEvidence": true,
           "pointsToSuspect": "arpit_c",
           "metadata": {
@@ -160,7 +160,7 @@
       "hiddenItem": {
         "id": "file_vendorhistory",
         "label": "arpit_vendor_history.txt",
-        "detail": "Vendor relationship records from the victim company's procurement system. Arpit C's company 'ARC Logistics Consulting' held a supply contract worth ₹14 lakh per year for 3 years. The contract was terminated 6 months ago following a dispute over invoice inflation — the company's internal audit found 23% of ARC's submitted invoices contained charges for services not rendered. Arpit C sent 4 escalating emails to the CFO Rohan Mehta following termination, the final one stating: 'you will regret this professionally.' That email is timestamped 5 months and 28 days before this attack. Arpit's company has since been blacklisted from the vendor registry. His last known active project was completed 4 months ago — no current income source identified.",
+        "detail": "Vendor relationship records from the victim company's procurement system. Arpit C's company 'ARC Logistics Consulting' held a supply contract worth \u20b914 lakh per year for 3 years. The contract was terminated 6 months ago following a dispute over invoice inflation \u2014 the company's internal audit found 23% of ARC's submitted invoices contained charges for services not rendered. Arpit C sent 4 escalating emails to the CFO Rohan Mehta following termination, the final one stating: 'you will regret this professionally.' That email is timestamped 5 months and 28 days before this attack. Arpit's company has since been blacklisted from the vendor registry. His last known active project was completed 4 months ago \u2014 no current income source identified.",
         "isKeyEvidence": true,
         "pointsToSuspect": "arpit_c",
         "unlockedByMinigame": "vendor_decode",
@@ -191,7 +191,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_vendorhistory",
-          "message": "BREAKTHROUGH — arpit_vendor_history.txt recovered. Arpit C's termination dispute and written threat to the CFO establish clear motive and premeditation."
+          "message": "BREAKTHROUGH \u2014 arpit_vendor_history.txt recovered. Arpit C's termination dispute and written threat to the CFO establish clear motive and premeditation."
         }
       }
     },
@@ -205,7 +205,7 @@
         {
           "id": "meta_domain",
           "label": "Spoofed Domain Registration",
-          "detail": "Domain logistlcs-corp.com was registered 3 weeks ago — same time as the mule account opening. Registered anonymously via a privacy proxy service.",
+          "detail": "Domain logistlcs-corp.com was registered 3 weeks ago \u2014 same time as the mule account opening. Registered anonymously via a privacy proxy service.",
           "isKeyEvidence": true,
           "pointsToSuspect": "arpit_c",
           "rows": [
@@ -228,7 +228,7 @@
         {
           "id": "meta_domain",
           "label": "Homoglyph Domain Registration",
-          "detail": "Domain logistlcs-corp.com (the spoofed sender domain) was registered 3 weeks before the attack. WHOIS shows registrant email: arpit.chand.consulting@gmail.com — consistent with Arpit C's known email pattern. The domain was registered using a privacy proxy but the registrant email was not masked. The registration used a debit card traced to a prepaid card purchased at a shop near Arpit C's last known address.",
+          "detail": "Domain logistlcs-corp.com (the spoofed sender domain) was registered 3 weeks before the attack. WHOIS shows registrant email: arpit.chand.consulting@gmail.com \u2014 consistent with Arpit C's known email pattern. The domain was registered using a privacy proxy but the registrant email was not masked. The registration used a debit card traced to a prepaid card purchased at a shop near Arpit C's last known address.",
           "isKeyEvidence": true,
           "pointsToSuspect": "arpit_c",
           "rows": [
@@ -248,7 +248,7 @@
             },
             {
               "key": "Payment",
-              "value": "Prepaid card — near Arpit C's address",
+              "value": "Prepaid card \u2014 near Arpit C's address",
               "highlight": true
             }
           ]
@@ -266,7 +266,7 @@
         {
           "id": "ip_spoof_origin",
           "label": "Email Origin IP",
-          "detail": "IP 45.33.99.12 geolocates to Pune Industrial Area — matching Arpit C's registered business address. VPN was used briefly then dropped, exposing the real IP.",
+          "detail": "IP 45.33.99.12 geolocates to Pune Industrial Area \u2014 matching Arpit C's registered business address. VPN was used briefly then dropped, exposing the real IP.",
           "isKeyEvidence": true,
           "pointsToSuspect": "arpit_c",
           "rows": [
@@ -282,7 +282,7 @@
             },
             {
               "key": "VPN",
-              "value": "Used briefly — then dropped",
+              "value": "Used briefly \u2014 then dropped",
               "highlight": true
             }
           ]
@@ -299,15 +299,15 @@
       "severity": "high"
     },
     {
-      "time": "CFO's Travel Day — 10:45 AM",
+      "time": "CFO's Travel Day \u2014 10:45 AM",
       "title": "Attack Window Opens",
-      "description": "CFO boards flight — becomes unreachable",
+      "description": "CFO boards flight \u2014 becomes unreachable",
       "severity": "medium"
     },
     {
       "time": "11:03 AM",
       "title": "Spoofed Email Sent",
-      "description": "Fake CFO email instructs ₹3.2L transfer",
+      "description": "Fake CFO email instructs \u20b93.2L transfer",
       "severity": "critical"
     },
     {
@@ -324,7 +324,7 @@
     },
     {
       "time": "3:30 PM",
-      "title": "CFO Lands — Raises Alarm",
+      "title": "CFO Lands \u2014 Raises Alarm",
       "description": "Real CFO contacts company, fraud discovered",
       "severity": "high"
     }
@@ -372,46 +372,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-    "suspicionConfig": {
-      "initialByRiskLevel": {
-        "low": 0.05,
-        "medium": 0.05,
-        "high": 0.05
-      },
-      "evidenceEffects": {
-        "chat_spoofed_email": {
-          "arpit_c": 0.15
-        },
-        "chat_voice_confirm": {
-          "arpit_c": 0.15
-        },
-        "chat_real_cfo": {
-          "arpit_c": 0.08
-        },
-        "file_emailheader": {
-          "arpit_c": 0.2
-        },
-        "file_vendoraccount": {
-          "arpit_c": 0.22
-        },
-        "file_voiceanalysis": {
-          "arpit_c": 0.2
-        },
-        "file_vendorhistory": {
-          "arpit_c": 0.18
-        },
-        "meta_domain": {
-          "arpit_c": 0.22
-        },
-        "ip_spoof_origin": {
-          "arpit_c": 0.2
-        }
-      },
-      "minigameEffects": {
-        "vendor_decode": {
-          "arpit_c": 0.12
-        }
-      }
-    }
   }
+}

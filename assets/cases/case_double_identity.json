@@ -520,15 +520,6 @@
       "minigame": null
     },
     {
-      "id": "suspect_profiles",
-      "label": "Suspect Profiles",
-      "icon": "person_outlined",
-      "evidenceType": "profiles",
-      "unlockedBy": null,
-      "items": [],
-      "minigame": null
-    },
-    {
       "id": "logic_link",
       "label": "Logic Link Matrix",
       "icon": "meta",
@@ -661,6 +652,15 @@
           "message": "Contradiction confirmed: SilverKey's alibi collapses under timeline verification."
         }
       }
+    },
+    {
+      "id": "suspect_profiles",
+      "label": "Suspect Profiles",
+      "icon": "person_outlined",
+      "evidenceType": "profiles",
+      "unlockedBy": null,
+      "items": [],
+      "minigame": null
     }
   ],
   "timeline": [
@@ -834,61 +834,5 @@
     "title": "This Was Never About Riya",
     "description": "Threat intelligence confirms SilverKey operates at scale — harvesting OAuth tokens across dozens of SaaS platforms simultaneously. Riya was not targeted personally. She was simply in the wrong place at the right time for a broker running a mass-phishing operation. The winning bid of $800 came from a wallet linked to an industrial espionage group targeting Series B and C tech startups. The downloaded roadmaps were sent to a competitor. The buyer's full identity requires a deeper dark web investigation. Nikhil's SSO misconfiguration — leaving refresh tokens non-expiring — is what turned a 1-hour token theft into a 6-week compromise.",
     "conclusion": "✔ Session hijacking confirmed — no password needed\n✔ Phishing page captured OAuth refresh token at SSO redirect step 6 weeks ago\n✔ Token never revoked — SSO misconfiguration (Nikhil) enabled indefinite reuse\n✔ Simultaneous sessions from Mumbai and Frankfurt — physically impossible\n✔ Browser fingerprint confirmed different physical hardware — not a VPN\n✔ Frankfurt IP linked to dark web broker SilverKey — 14 prior token sales\n✔ Access sold for $800 — buyer linked to industrial espionage group\n⚠ Buyer's full identity requires further dark web investigation"
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "auth_simultaneous_sessions": {
-        "silverkey_broker": 0.22,
-        "riya_desai": -0.15
-      },
-      "auth_refresh_pattern": {
-        "silverkey_broker": 0.2
-      },
-      "jwt_token_analysis": {
-        "silverkey_broker": 0.22,
-        "nikhil_sharma": 0.1
-      },
-      "fingerprint_comparison": {
-        "silverkey_broker": 0.2,
-        "nikhil_sharma": -0.12
-      },
-      "intel_silverkey_ip": {
-        "silverkey_broker": 0.22
-      },
-      "intel_phishing_domain": {
-        "silverkey_broker": 0.18
-      },
-      "hidden_suspect_profile": {
-        "silverkey_broker": 0.18
-      },
-      "timeline_alibi_break": {
-        "silverkey_broker": 0.18
-      }
-    },
-    "minigameEffects": {
-      "concurrent_session_detector": {
-        "silverkey_broker": 0.2,
-        "riya_desai": -0.15
-      },
-      "jwt_token_decoder": {
-        "silverkey_broker": 0.18,
-        "nikhil_sharma": 0.08
-      },
-      "browser_fingerprint_comparator": {
-        "silverkey_broker": 0.15,
-        "nikhil_sharma": -0.12
-      },
-      "advanced_hidden_suspect_case_double_identity": {
-        "silverkey_broker": 0.12
-      },
-      "advanced_timeline_trap_case_double_identity": {
-        "silverkey_broker": 0.12
-      }
-    }
   }
 }

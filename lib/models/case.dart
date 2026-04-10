@@ -151,9 +151,6 @@ class CaseFile {
 
   final Map<OutcomeType, OutcomeConfig> outcomes;
   final AriaMessages? ariaMessages;
-  final Map<String, double> initialSuspicionByRiskLevel;
-  final Map<String, Map<String, double>> evidenceEffects;
-  final Map<String, Map<String, double>> minigameEffects;
 
   const CaseFile({
     required this.id,
@@ -174,9 +171,6 @@ class CaseFile {
     required this.winCondition,
     required this.outcomes,
     this.ariaMessages,
-    this.initialSuspicionByRiskLevel = const {},
-    this.evidenceEffects = const {},
-    this.minigameEffects = const {},
   });
 
   // ── Convenience lookups ──────────────────────────────────
@@ -210,29 +204,6 @@ class CaseFile {
   // ── fromJson ────────────────────────────────────────────
 
   factory CaseFile.fromJson(Map<String, dynamic> json) {
-    Map<String, double> _toDoubleMap(Map<String, dynamic>? src) {
-      if (src == null) return const {};
-      final out = <String, double>{};
-      src.forEach((k, v) {
-        if (v is num) out[k] = v.toDouble();
-      });
-      return out;
-    }
-
-    Map<String, Map<String, double>> _toNestedDoubleMap(
-        Map<String, dynamic>? src) {
-      if (src == null) return const {};
-      final out = <String, Map<String, double>>{};
-      src.forEach((k, v) {
-        if (v is Map<String, dynamic>) {
-          out[k] = _toDoubleMap(v);
-        } else if (v is Map) {
-          out[k] = _toDoubleMap(Map<String, dynamic>.from(v));
-        }
-      });
-      return out;
-    }
-
     // Parse suspects
     final suspects = (json['suspects'] as List<dynamic>)
         .map((s) => Suspect.fromJson(s as Map<String, dynamic>))
@@ -283,17 +254,6 @@ class CaseFile {
     final ariaMessages =
     ariaJson != null ? AriaMessages.fromJson(ariaJson) : null;
 
-    final suspicionJson = json['suspicionConfig'] as Map<String, dynamic>?;
-    final initialByRisk = _toDoubleMap(
-      (suspicionJson?['initialByRiskLevel'] as Map?)?.cast<String, dynamic>(),
-    );
-    final evidenceEffects = _toNestedDoubleMap(
-      (suspicionJson?['evidenceEffects'] as Map?)?.cast<String, dynamic>(),
-    );
-    final minigameEffects = _toNestedDoubleMap(
-      (suspicionJson?['minigameEffects'] as Map?)?.cast<String, dynamic>(),
-    );
-
     return CaseFile(
       id: json['id'] as String,
       title: json['title'] as String,
@@ -313,9 +273,6 @@ class CaseFile {
       winCondition: winCondition,
       outcomes: outcomes,
       ariaMessages: ariaMessages,
-      initialSuspicionByRiskLevel: initialByRisk,
-      evidenceEffects: evidenceEffects,
-      minigameEffects: minigameEffects,
     );
   }
 }

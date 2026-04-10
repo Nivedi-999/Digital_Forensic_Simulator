@@ -6,11 +6,7 @@ class BranchingLogic {
   final CaseFile caseFile;
   BranchingLogic(this.caseFile);
 
-  double initialSuspicion(String riskLevel) {
-    final configured = caseFile.initialSuspicionByRiskLevel[riskLevel];
-    if (configured != null) return configured.clamp(0.0, 1.0);
-    return 0.05;
-  }
+  double initialSuspicion(String riskLevel) => 0.05;
 
   static const Map<String, Map<String, double>> _evidenceEffects = {
 
@@ -113,7 +109,7 @@ class BranchingLogic {
     'chat_real_cfo':      {'arpit_c': 0.08},
     'chat_it_admin':      {'it_admin': 0.18},
 
-    // ── The Last Login (Medium) ─────────────────────────────
+    // ── The Last Login (Medium) ──────────────────────────────
     'device_login':       {'unknown_system': 0.25},
     'device_timing':      {'unknown_system': 0.25},
     'ip_simultaneous':    {'unknown_system': 0.22},
@@ -319,7 +315,7 @@ class BranchingLogic {
   };
 
   void applyEvidenceEffects(String evidenceId, Map<String, double> suspicion) {
-    final effects = caseFile.evidenceEffects[evidenceId] ?? _evidenceEffects[evidenceId];
+    final effects = _evidenceEffects[evidenceId];
     if (effects == null) return;
     for (final entry in effects.entries) {
       final current = suspicion[entry.key] ?? 0.0;
@@ -408,8 +404,7 @@ class BranchingLogic {
   };
 
   void applyMinigameEffects(String minigameId, Map<String, double> suspicion) {
-    final effects =
-        caseFile.minigameEffects[minigameId] ?? _minigameEffects[minigameId];
+    final effects = _minigameEffects[minigameId];
     if (effects == null) return;
     for (final entry in effects.entries) {
       final current = suspicion[entry.key] ?? 0.0;

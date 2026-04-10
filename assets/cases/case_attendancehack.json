@@ -348,40 +348,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "chat_offer": {
-        "tanmay_d": 0.18
-      },
-      "chat_confirm": {
-        "tanmay_d": 0.18
-      },
-      "file_dblog": {
-        "tanmay_d": 0.2
-      },
-      "file_sqlqueries": {
-        "tanmay_d": 0.22
-      },
-      "file_hostelwifi": {
-        "tanmay_d": 0.25
-      },
-      "meta_credentials": {
-        "tanmay_d": 0.18
-      },
-      "ip_hostel": {
-        "tanmay_d": 0.22
-      }
-    },
-    "minigameEffects": {
-      "hostel_decode": {
-        "tanmay_d": 0.12
-      }
-    }
   }
 }

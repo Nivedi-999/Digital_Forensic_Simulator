@@ -364,44 +364,5 @@
       "label": "COLD CASE",
       "xp": 0
     }
-  },
-  "suspicionConfig": {
-    "initialByRiskLevel": {
-      "low": 0.05,
-      "medium": 0.05,
-      "high": 0.05
-    },
-    "evidenceEffects": {
-      "chat_offer": {
-        "ramesh_p": 0.15
-      },
-      "chat_upi_confirm": {
-        "ramesh_p": 0.15
-      },
-      "file_domain_reg": {
-        "ramesh_p": 0.25,
-        "job_portal_admin": -0.15
-      },
-      "file_upi_trace": {
-        "ramesh_p": 0.25
-      },
-      "file_prior_case": {
-        "ramesh_p": 0.22
-      },
-      "meta_site_clone": {
-        "ramesh_p": 0.18
-      },
-      "meta_portal_admin": {
-        "job_portal_admin": 0.18
-      },
-      "ip_registration": {
-        "ramesh_p": 0.22
-      }
-    },
-    "minigameEffects": {
-      "name_decode": {
-        "ramesh_p": 0.12
-      }
-    }
   }
 }
