@@ -27,7 +27,6 @@ class StorylineScreen extends StatefulWidget {
 class _StorylineScreenState extends State<StorylineScreen>
     with TickerProviderStateMixin {
   final PageController _pageController = PageController();
-  List<Widget> _briefingPages = [];
   int _currentPage = 0;
   bool _loading = false;
   CaseFile? _caseFile;
@@ -41,6 +40,9 @@ class _StorylineScreenState extends State<StorylineScreen>
   // Animation controllers for page-specific animations
   late AnimationController _pageFlipCtrl;
   late Animation<double> _pageFlipAnim;
+
+  // ── FIX: total pages is a constant, not derived from a stale list ──
+  static const int _totalPages = 4;
 
   @override
   void initState() {
@@ -81,325 +83,11 @@ class _StorylineScreenState extends State<StorylineScreen>
         _caseFile = caseFile;
         _caseLoading = false;
       });
-      _createBriefingPages();
       // Start page flip animation after a short delay
       Future.delayed(const Duration(milliseconds: 300), () {
-        _pageFlipCtrl.forward();
+        if (mounted) _pageFlipCtrl.forward();
       });
     }
-  }
-
-  void _createBriefingPages() {
-    if (_caseFile == null) return;
-
-    final briefing = _caseFile!.briefing;
-    final suspects = _caseFile!.suspects;
-    final evidence = _caseFile!.evidencePanels;
-
-    _briefingPages = [
-      // Page 1: Case Header - More Visual
-      _CaseFilePage(
-        title: 'CASE FILE: ${_caseFile!.id.toUpperCase()}',
-        subtitle: 'CLASSIFIED // EYES ONLY',
-        icon: Icons.folder_open,
-        color: CyberColors.neonCyan,
-        showNavigation: true,
-        currentPage: _currentPage,
-        totalPages: 4,
-        onPrevious: () {
-          if (_currentPage > 0) {
-            _pageController.previousPage(
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            );
-          }
-        },
-        onNext: () {
-          _pageController.nextPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            // Visual Header with Icons
-            Row(
-              children: [
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: CyberColors.neonCyan.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: CyberColors.neonCyan.withOpacity(0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Icon(
-                    Icons.security,
-                    color: CyberColors.neonCyan,
-                    size: 32,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'INCIDENT REPORT',
-                        style: CyberText.bodySmall.copyWith(
-                          color: CyberColors.neonCyan,
-                          letterSpacing: 2.0,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        _caseFile!.title,
-                        style: CyberText.displayMedium.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Visual Summary Cards
-            Row(
-              children: [
-                Expanded(
-                  child: _VisualInfoCard(
-                    icon: Icons.calendar_today,
-                    title: 'DATE',
-                    value: _caseFile!.caseNumber,
-                    color: CyberColors.neonCyan,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _VisualInfoCard(
-                    icon: Icons.schedule,
-                    title: 'TIME ESTIMATE',
-                    value: '${_caseFile!.estimatedDuration} min',
-                    color: CyberColors.neonCyan,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _VisualInfoCard(
-                    icon: Icons.bar_chart,
-                    title: 'DIFFICULTY',
-                    value: _caseFile!.difficulty.toUpperCase(),
-                    color: CyberColors.neonCyan,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _VisualInfoCard(
-                    icon: Icons.attach_money,
-                    title: 'REWARD',
-                    value: 'CLASSIFIED',
-                    color: CyberColors.neonCyan,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-
-            // Incident Summary
-            Text(
-              'SUMMARY',
-              style: CyberText.bodySmall.copyWith(
-                color: CyberColors.neonCyan,
-                letterSpacing: 1.5,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              briefing.incidentSummary,
-              style: CyberText.bodyLarge.copyWith(
-                height: 1.6,
-                color: Colors.white.withOpacity(0.9),
-              ),
-            ),
-          ],
-        ),
-      ),
-
-      // Page 2: Timeline
-      _CaseFilePage(
-        title: 'TIMELINE ANALYSIS',
-        subtitle: 'EVENT CHRONOLOGY',
-        icon: Icons.timeline,
-        color: CyberColors.neonPurple,
-        showNavigation: true,
-        currentPage: _currentPage,
-        totalPages: 4,
-        onPrevious: () {
-          _pageController.previousPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        },
-        onNext: () {
-          _pageController.nextPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            _TimelineEvent(
-              time: '${_caseFile!.timeline.first.time} - 22:47',
-              title: 'INITIAL INCIDENT',
-              description: briefing.incidentSummary.split('.')[0] + '.',
-              isFirst: true,
-            ),
-            _TimelineEvent(
-              time: '$_caseFile!.caseNumber,} - 23:15',
-              title: 'SECURITY BREACH DETECTED',
-              description: 'Unauthorized access to secure systems logged.',
-            ),
-            _TimelineEvent(
-              time: '${_caseFile!.caseNumber} - 23:42',
-              title: 'DATA EXFILTRATION',
-              description: 'Sensitive files transferred to external server.',
-            ),
-            _TimelineEvent(
-              time: '${_caseFile!.caseNumber} - 00:05',
-              title: 'INVESTIGATION INITIATED',
-              description: 'Case assigned to your unit.',
-              isLast: true,
-            ),
-          ],
-        ),
-      ),
-
-      // Page 3: Suspects - All suspects on one card
-      _CaseFilePage(
-        title: 'PERSONS OF INTEREST',
-        subtitle: 'SUSPECT DOSSIERS',
-        icon: Icons.people,
-        color: CyberColors.neonRed,
-        showNavigation: true,
-        currentPage: _currentPage,
-        totalPages: 4,
-        onPrevious: () {
-          _pageController.previousPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        },
-        onNext: () {
-          _pageController.nextPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              '${suspects.length} SUSPECTS IDENTIFIED',
-              style: CyberText.caption.copyWith(
-                color: CyberColors.neonRed.withOpacity(0.8),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Grid of all suspects
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.8,
-              ),
-              itemCount: suspects.length,
-              itemBuilder: (context, index) {
-                final suspect = suspects[index];
-                return _SuspectCard(
-                  suspect: suspect,
-                  index: index,
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-
-      // Page 4: Evidence Catalog - Fixed 4 cards
-      _CaseFilePage(
-        title: 'EVIDENCE CATALOG',
-        subtitle: 'DIGITAL ARTIFACTS',
-        icon: Icons.analytics,
-        color: CyberColors.neonAmber,
-        showNavigation: true,
-        currentPage: _currentPage,
-        totalPages: 4,
-        onPrevious: () {
-          _pageController.previousPage(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeInOut,
-          );
-        },
-        onNext: null, // Last page, will show Begin Investigation
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              '4 KEY EVIDENCE TYPES TO ANALYZE',
-              style: CyberText.caption.copyWith(
-                color: CyberColors.neonAmber.withOpacity(0.8),
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Fixed 4 evidence cards
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 1.2,
-              ),
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return _EvidenceCard(index: index);
-              },
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Analyze each evidence type carefully for clues and connections.',
-              style: CyberText.bodyMedium.copyWith(
-                color: Colors.white.withOpacity(0.8),
-                fontStyle: FontStyle.italic,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    ];
   }
 
   void _launchInvestigation() async {
@@ -436,6 +124,308 @@ class _StorylineScreenState extends State<StorylineScreen>
     _entryCtrl.dispose();
     _pageFlipCtrl.dispose();
     super.dispose();
+  }
+
+  // ── FIX: Build each page inline inside itemBuilder so they always
+  //         receive the live _currentPage value, not a stale captured one. ──
+  Widget _buildPage(int index) {
+    final caseFile = _caseFile!;
+    final briefing = caseFile.briefing;
+    final suspects = caseFile.suspects;
+
+    switch (index) {
+    // ── Page 1: Case Header ──────────────────────────────────
+      case 0:
+        return _CaseFilePage(
+          title: 'CASE FILE: ${caseFile.id.toUpperCase()}',
+          subtitle: 'CLASSIFIED // EYES ONLY',
+          icon: Icons.folder_open,
+          color: CyberColors.neonCyan,
+          showNavigation: true,
+          currentPage: _currentPage, // live value
+          totalPages: _totalPages,
+          onPrevious: null, // first page — no previous
+          onNext: () => _pageController.nextPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              // Visual Header with Icons
+              Row(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: CyberColors.neonCyan.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: CyberColors.neonCyan.withOpacity(0.3),
+                        width: 1,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.security,
+                      color: CyberColors.neonCyan,
+                      size: 32,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'INCIDENT REPORT',
+                          style: CyberText.bodySmall.copyWith(
+                            color: CyberColors.neonCyan,
+                            letterSpacing: 2.0,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          caseFile.title,
+                          style: CyberText.displayMedium.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Visual Summary Cards
+              Row(
+                children: [
+                  Expanded(
+                    child: _VisualInfoCard(
+                      icon: Icons.calendar_today,
+                      title: 'DATE',
+                      value: caseFile.caseNumber,
+                      color: CyberColors.neonCyan,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _VisualInfoCard(
+                      icon: Icons.schedule,
+                      title: 'TIME ESTIMATE',
+                      value: '${caseFile.estimatedDuration} min',
+                      color: CyberColors.neonCyan,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: _VisualInfoCard(
+                      icon: Icons.bar_chart,
+                      title: 'DIFFICULTY',
+                      value: caseFile.difficulty.toUpperCase(),
+                      color: CyberColors.neonCyan,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: _VisualInfoCard(
+                      icon: Icons.attach_money,
+                      title: 'REWARD',
+                      value: 'CLASSIFIED',
+                      color: CyberColors.neonCyan,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Incident Summary
+              Text(
+                'SUMMARY',
+                style: CyberText.bodySmall.copyWith(
+                  color: CyberColors.neonCyan,
+                  letterSpacing: 1.5,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                briefing.incidentSummary,
+                style: CyberText.bodyLarge.copyWith(
+                  height: 1.6,
+                  color: Colors.white.withOpacity(0.9),
+                ),
+              ),
+            ],
+          ),
+        );
+
+    // ── Page 2: Timeline ─────────────────────────────────────
+      case 1:
+      // FIX: Use actual timeline entries from the case model.
+      // Fall back gracefully if the timeline has fewer than 4 items.
+        final tl = caseFile.timeline;
+        final timelineEntries = [
+          _TimelineEntryData(
+            time: tl.length > 0 ? tl[0].time : '22:31',
+            title: tl.length > 0 ? tl[0].title : 'INITIAL INCIDENT',
+            description: tl.length > 0
+                ? tl[0].description
+                : briefing.incidentSummary.split('.').first + '.',
+            isFirst: true,
+          ),
+          _TimelineEntryData(
+            time: tl.length > 1 ? tl[1].time : '23:15',
+            title: tl.length > 1 ? tl[1].title : 'SECURITY BREACH DETECTED',
+            description: tl.length > 1
+                ? tl[1].description
+                : 'Unauthorized access to secure systems logged.',
+          ),
+          _TimelineEntryData(
+            time: tl.length > 2 ? tl[2].time : '23:42',
+            title: tl.length > 2 ? tl[2].title : 'DATA EXFILTRATION',
+            description: tl.length > 2
+                ? tl[2].description
+                : 'Sensitive files transferred to external server.',
+          ),
+          _TimelineEntryData(
+            time: tl.length > 3 ? tl[3].time : '00:05',
+            title: tl.length > 3 ? tl[3].title : 'INVESTIGATION INITIATED',
+            description: tl.length > 3
+                ? tl[3].description
+                : 'Case assigned to your unit.',
+            isLast: true,
+          ),
+        ];
+
+        return _CaseFilePage(
+          title: 'TIMELINE ANALYSIS',
+          subtitle: 'EVENT CHRONOLOGY',
+          icon: Icons.timeline,
+          color: CyberColors.neonPurple,
+          showNavigation: true,
+          currentPage: _currentPage,
+          totalPages: _totalPages,
+          onPrevious: () => _pageController.previousPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+          onNext: () => _pageController.nextPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              ...timelineEntries.map((e) => _TimelineEvent(
+                time: e.time,
+                title: e.title,
+                description: e.description,
+                isFirst: e.isFirst,
+                isLast: e.isLast,
+              )),
+            ],
+          ),
+        );
+
+    // ── Page 3: Suspects ─────────────────────────────────────
+      case 2:
+        return _CaseFilePage(
+          title: 'PERSONS OF INTEREST',
+          subtitle: 'SUSPECT DOSSIERS',
+          icon: Icons.people,
+          color: CyberColors.neonRed,
+          showNavigation: true,
+          currentPage: _currentPage,
+          totalPages: _totalPages,
+          onPrevious: () => _pageController.previousPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+          onNext: () => _pageController.nextPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Text(
+                '${suspects.length} SUSPECTS IDENTIFIED',
+                style: CyberText.caption.copyWith(
+                  color: CyberColors.neonRed.withOpacity(0.8),
+                ),
+              ),
+              const SizedBox(height: 16),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.8,
+                ),
+                itemCount: suspects.length,
+                itemBuilder: (context, index) {
+                  return _SuspectCard(suspect: suspects[index], index: index);
+                },
+              ),
+            ],
+          ),
+        );
+
+    // ── Page 4: Evidence Catalog ─────────────────────────────
+      case 3:
+      default:
+        return _CaseFilePage(
+          title: 'EVIDENCE CATALOG',
+          subtitle: 'DIGITAL ARTIFACTS',
+          icon: Icons.analytics,
+          color: CyberColors.neonAmber,
+          showNavigation: true,
+          currentPage: _currentPage,
+          totalPages: _totalPages,
+          onPrevious: () => _pageController.previousPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          ),
+          onNext: null, // Last page — no next, shows Begin Investigation button
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              Text(
+                '4 KEY EVIDENCE TYPES TO ANALYZE',
+                style: CyberText.caption.copyWith(
+                  color: CyberColors.neonAmber.withOpacity(0.8),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // FIX: Use a fixed-height layout instead of GridView with
+              // tight childAspectRatio that caused pixel overflow on last card.
+              // Two rows of two cards with explicit height.
+              _EvidenceGrid(),
+              const SizedBox(height: 24),
+              Text(
+                'Analyze each evidence type carefully for clues and connections.',
+                style: CyberText.bodyMedium.copyWith(
+                  color: Colors.white.withOpacity(0.8),
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        );
+    }
   }
 
   @override
@@ -480,7 +470,7 @@ class _StorylineScreenState extends State<StorylineScreen>
                 // Page indicator
                 _PageIndicator(
                   currentPage: _currentPage,
-                  totalPages: _briefingPages.length,
+                  totalPages: _totalPages,
                 ),
                 const SizedBox(height: 16),
 
@@ -497,10 +487,9 @@ class _StorylineScreenState extends State<StorylineScreen>
                         alignment: Alignment.center,
                         child: PageView.builder(
                           controller: _pageController,
-                          itemCount: _briefingPages.length,
+                          itemCount: _totalPages,
                           onPageChanged: (index) {
                             setState(() => _currentPage = index);
-                            // Animate page flip on change
                             _pageFlipCtrl.reset();
                             _pageFlipCtrl.forward();
                           },
@@ -511,7 +500,9 @@ class _StorylineScreenState extends State<StorylineScreen>
                               child: _AnimatedPage(
                                 index: index,
                                 currentIndex: _currentPage,
-                                child: _briefingPages[index],
+                                // FIX: Build page here so it always reads
+                                // the current _currentPage from setState.
+                                child: _buildPage(index),
                               ),
                             );
                           },
@@ -523,8 +514,8 @@ class _StorylineScreenState extends State<StorylineScreen>
 
                 const SizedBox(height: 16),
 
-                // Bottom navigation - only show on last page
-                if (_currentPage == _briefingPages.length - 1)
+                // Bottom button — only on last page
+                if (_currentPage == _totalPages - 1)
                   CyberButton(
                     label: _loading ? 'Loading...' : 'Begin Investigation',
                     icon: _loading ? null : Icons.play_arrow,
@@ -538,6 +529,22 @@ class _StorylineScreenState extends State<StorylineScreen>
       ),
     );
   }
+}
+
+// ── Small data class for timeline entries ─────────────────────
+class _TimelineEntryData {
+  final String time;
+  final String title;
+  final String description;
+  final bool isFirst;
+  final bool isLast;
+  const _TimelineEntryData({
+    required this.time,
+    required this.title,
+    required this.description,
+    this.isFirst = false,
+    this.isLast = false,
+  });
 }
 
 // ── Page Components ──────────────────────────────────────────
@@ -575,7 +582,7 @@ class _CaseFilePage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header with navigation
+          // Header with page counter
           Row(
             children: [
               Icon(icon, color: color, size: 20),
@@ -603,9 +610,11 @@ class _CaseFilePage extends StatelessWidget {
                 ),
               ),
 
-              // Page counter
+              // FIX: Page counter now always shows the correct page number
+              // because currentPage is passed as a live value from _buildPage.
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
@@ -626,23 +635,22 @@ class _CaseFilePage extends StatelessWidget {
             height: 1,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [
-                  color.withOpacity(0.3),
-                  Colors.transparent,
-                ],
+                colors: [color.withOpacity(0.3), Colors.transparent],
               ),
             ),
           ),
 
-          // Navigation buttons inside card
+          // Navigation buttons
           if (showNavigation) ...[
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (onPrevious != null && currentPage > 0)
+                // FIX: Show Previous on any page > 0 (page 1 has null onPrevious,
+                // so the button never renders there). No stale guard needed.
+                if (onPrevious != null)
                   _NavigationButton(
-                    label: 'Previous',
+                    label: 'PREVIOUS',
                     icon: Icons.arrow_back,
                     color: color,
                     onTap: onPrevious!,
@@ -650,9 +658,9 @@ class _CaseFilePage extends StatelessWidget {
                 else
                   const SizedBox(width: 100),
 
-                if (onNext != null && currentPage < totalPages - 1)
+                if (onNext != null)
                   _NavigationButton(
-                    label: 'Next',
+                    label: 'NEXT',
                     icon: Icons.arrow_forward,
                     color: color,
                     onTap: onNext!,
@@ -664,7 +672,7 @@ class _CaseFilePage extends StatelessWidget {
             const SizedBox(height: 16),
           ],
 
-          // Content
+          // Scrollable content
           Expanded(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
@@ -692,6 +700,8 @@ class _NavigationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isBack = icon == Icons.arrow_back;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -704,9 +714,11 @@ class _NavigationButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (icon == Icons.arrow_back)
+            // FIX: Icon and spacing placed correctly for both directions.
+            if (isBack) ...[
               Icon(icon, color: color, size: 16),
-            const SizedBox(width: 8),
+              const SizedBox(width: 6),
+            ],
             Text(
               label,
               style: CyberText.caption.copyWith(
@@ -714,8 +726,10 @@ class _NavigationButton extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            if (icon == Icons.arrow_forward)
+            if (!isBack) ...[
+              const SizedBox(width: 6),
               Icon(icon, color: color, size: 16),
+            ],
           ],
         ),
       ),
@@ -961,9 +975,9 @@ class _SuspectCard extends StatelessWidget {
                   topRight: Radius.circular(12),
                 ),
                 image: DecorationImage(
-                    image: AssetImage(
-                      suspect.imagePath ?? 'assets/avatars/${suspect.id}.png',
-                    ),
+                  image: AssetImage(
+                    suspect.imagePath ?? 'assets/avatars/${suspect.id}.png',
+                  ),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.3),
@@ -973,7 +987,7 @@ class _SuspectCard extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  // Suspect number
+                  // Suspect number badge
                   Positioned(
                     top: 8,
                     left: 8,
@@ -1042,44 +1056,94 @@ class _SuspectCard extends StatelessWidget {
   }
 }
 
+// FIX: Replace the overflowing GridView with an explicit two-row layout.
+// Each card is a fixed square (icon container is now also square 48×48),
+// preventing the RenderFlex pixel overflow on the last evidence card.
+class _EvidenceGrid extends StatelessWidget {
+  static const _types = [
+    {'icon': Icons.chat, 'title': 'CHATS', 'color': CyberColors.neonCyan},
+    {
+      'icon': Icons.description,
+      'title': 'FILES',
+      'color': CyberColors.neonPurple
+    },
+    {
+      'icon': Icons.location_on,
+      'title': 'IP TRACES',
+      'color': CyberColors.neonRed
+    },
+    {
+      'icon': Icons.info,
+      'title': 'METADATA',
+      'color': CyberColors.neonAmber
+    },
+  ];
+
+  const _EvidenceGrid();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: _EvidenceCard(index: 0)),
+              const SizedBox(width: 16),
+              Expanded(child: _EvidenceCard(index: 1)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: _EvidenceCard(index: 2)),
+              const SizedBox(width: 16),
+              Expanded(child: _EvidenceCard(index: 3)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _EvidenceCard extends StatelessWidget {
   final int index;
 
   const _EvidenceCard({required this.index});
 
+  static const _evidenceTypes = [
+    {'icon': Icons.chat, 'title': 'CHATS', 'color': CyberColors.neonCyan},
+    {
+      'icon': Icons.description,
+      'title': 'FILES',
+      'color': CyberColors.neonPurple
+    },
+    {
+      'icon': Icons.location_on,
+      'title': 'IP TRACES',
+      'color': CyberColors.neonRed
+    },
+    {
+      'icon': Icons.info,
+      'title': 'METADATA',
+      'color': CyberColors.neonAmber
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final evidenceTypes = [
-      {
-        'icon': Icons.chat,
-        'title': 'CHATS',
-        'color': CyberColors.neonCyan,
-      },
-      {
-        'icon': Icons.description,
-        'title': 'FILES',
-        'color': CyberColors.neonPurple,
-      },
-      {
-        'icon': Icons.location_on,
-        'title': 'IP TRACES',
-        'color': CyberColors.neonRed,
-      },
-      {
-        'icon': Icons.info,
-        'title': 'METADATA',
-        'color': CyberColors.neonAmber,
-      },
-    ];
-
-    final type = evidenceTypes[index % evidenceTypes.length];
+    final type = _evidenceTypes[index % _evidenceTypes.length];
+    final color = type['color'] as Color;
 
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: (type['color'] as Color).withOpacity(0.3),
-        ),
+        border: Border.all(color: color.withOpacity(0.3)),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -1092,23 +1156,20 @@ class _EvidenceCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
+          // FIX: Icon container is now square (48×48) to avoid overflow.
           Container(
             width: 48,
-            height: 52,
+            height: 48,
             decoration: BoxDecoration(
-              border: Border.all(
-                color: (type['color'] as Color).withOpacity(0.1),
-              ),
+              border: Border.all(color: color.withOpacity(0.1)),
               borderRadius: BorderRadius.circular(12),
-              color: (type['color'] as Color).withOpacity(0.1),
+              color: color.withOpacity(0.1),
             ),
-            child: Icon(
-              type['icon'] as IconData,
-              color: (type['color'] as Color),
-            ),
+            child: Icon(type['icon'] as IconData, color: color),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 16),
           Text(
             type['title'] as String,
             style: CyberText.bodyMedium.copyWith(
