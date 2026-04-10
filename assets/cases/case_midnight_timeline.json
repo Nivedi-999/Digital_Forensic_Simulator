@@ -531,5 +531,37 @@
       "label": "COLD CASE",
       "xp": 0
     }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "meta_timestamps": {
+        "employee": 0.2
+      },
+      "file_accessed": {
+        "employee": 0.2
+      },
+      "meta_activity": {
+        "employee": 0.22,
+        "remote_attacker": -0.15
+      },
+      "ip_no_remote": {
+        "remote_attacker": -0.2,
+        "employee": 0.15
+      }
+    },
+    "minigameEffects": {
+      "timestamp_detector": {
+        "employee": 0.15,
+        "remote_attacker": -0.1
+      },
+      "event_sequence_sorter": {
+        "employee": 0.18
+      }
+    }
   }
 }

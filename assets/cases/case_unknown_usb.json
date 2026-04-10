@@ -530,5 +530,37 @@
       "label": "COLD CASE",
       "xp": 0
     }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "reg_usbstor": {
+        "employee": 0.22,
+        "it_admin": -0.1
+      },
+      "meta_fingerprint": {
+        "employee": 0.18
+      },
+      "file_connection_log": {
+        "employee": 0.25,
+        "external_visitor": -0.15
+      }
+    },
+    "minigameEffects": {
+      "registry_explorer": {
+        "employee": 0.15
+      },
+      "device_fingerprint_decoder": {
+        "employee": 0.15
+      },
+      "connection_correlator": {
+        "employee": 0.18,
+        "external_visitor": -0.12
+      }
+    }
   }
 }

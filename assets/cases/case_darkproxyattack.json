@@ -411,5 +411,52 @@
       "label": "COLD CASE",
       "xp": 0
     }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_threat": {
+        "dhruv_n": 0.12
+      },
+      "chat_ratelimit": {
+        "dhruv_n": 0.18
+      },
+      "chat_nullfront": {
+        "dhruv_n": 0.08
+      },
+      "file_trafficanalysis": {
+        "dhruv_n": 0.18
+      },
+      "file_proxytrace": {
+        "dhruv_n": 0.18
+      },
+      "file_vpspurchase": {
+        "dhruv_n": 0.22
+      },
+      "file_configmatch": {
+        "dhruv_n": 0.22
+      },
+      "meta_timing": {
+        "dhruv_n": 0.18
+      },
+      "meta_scriptmatch": {
+        "dhruv_n": 0.18
+      },
+      "ip_entrynode": {
+        "dhruv_n": 0.18
+      },
+      "ip_tor_false": {
+        "dhruv_n": 0.15
+      }
+    },
+    "minigameEffects": {
+      "proxy_decode": {
+        "dhruv_n": 0.12
+      }
+    }
   }
 }

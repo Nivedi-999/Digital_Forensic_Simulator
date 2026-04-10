@@ -384,5 +384,47 @@
     "title": "The Coordinator's Mistake",
     "description": "Priya Menon photographed the seating plan on her phone intending to share it with a colleague — but accidentally forwarded it to the class group instead. The digital trail she left behind was comprehensive: device EXIF, Wi-Fi IP, access log screenshot flag, and an incriminating chat message sent minutes before the leak.",
     "conclusion": "✔ Device EXIF matched Priya's registered Samsung A53\n✔ Wi-Fi upload IP assigned to her mobile\n✔ Access log screenshot flag at 07:42 AM\n✔ Chat message sent before official release"
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_early_hint": {
+        "priya_menon": 0.18
+      },
+      "file_access_log": {
+        "priya_menon": 0.22,
+        "rahul_tiwari": -0.1
+      },
+      "file_print_log": {
+        "unknown_student": -0.1
+      },
+      "meta_device_id": {
+        "priya_menon": 0.25,
+        "unknown_student": -0.15
+      },
+      "meta_compression": {
+        "priya_menon": 0.08
+      },
+      "meta_wifi_registration": {
+        "priya_menon": 0.25
+      },
+      "ip_whatsapp_upload": {
+        "priya_menon": 0.22,
+        "rahul_tiwari": -0.12
+      },
+      "ip_rahul_traffic": {
+        "rahul_tiwari": -0.15
+      }
+    },
+    "minigameEffects": {
+      "device_match": {
+        "priya_menon": 0.15,
+        "unknown_student": -0.1
+      }
+    }
   }
 }

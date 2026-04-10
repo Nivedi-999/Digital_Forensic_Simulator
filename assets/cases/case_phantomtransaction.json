@@ -406,5 +406,49 @@
       "label": "COLD CASE",
       "xp": 0
     }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_otp_received": {
+        "vikram_b": 0.12
+      },
+      "chat_transfer_confirm": {
+        "vikram_b": 0.12
+      },
+      "chat_social_eng": {
+        "vikram_b": 0.08
+      },
+      "file_simclone": {
+        "vikram_b": 0.2
+      },
+      "file_banktransfer": {
+        "vikram_b": 0.18
+      },
+      "file_employeelog": {
+        "vikram_b": 0.22
+      },
+      "file_bankaccount": {
+        "vikram_b": 0.22
+      },
+      "meta_otpdevice": {
+        "vikram_b": 0.18
+      },
+      "ip_backend": {
+        "vikram_b": 0.2
+      }
+    },
+    "minigameEffects": {
+      "account_decode": {
+        "vikram_b": 0.12
+      },
+      "alibi_verify_phantom": {
+        "vikram_b": 0.15
+      }
+    }
   }
 }

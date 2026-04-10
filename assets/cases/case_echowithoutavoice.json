@@ -9,8 +9,8 @@
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
-    "incidentSummary": "An investigative journalist reports receiving anonymous threats after publishing a sensitive expos\u00e9.\nThe messages arrive late at night, calm and precise.\nThere is no profanity, no panic, no rage.\nEach message references details not yet published \u2014 draft notes, unreleased edits.\n\nThe sender accounts disappear minutes after each message.\nNo trace remains. No usernames repeat. No clear attacker appears.\n\nThe journalist begins altering her routines.\nThe messages adapt immediately.\nWarnings become predictions.\n\nYou are assigned to determine whether this is random harassment, a personal stalker, or a calculated psychological operation \u2014 before the threats escalate into action.",
-    "missionText": "Your Mission:\n\n\u203a Identify the single author behind the anonymous messages\n\n\u203a Analyze linguistic patterns, account metadata, and IP routing\n\n\u203a Collect at least 3 correct evidence items\n\n\u203a Flag the correct suspect to close the case and protect the journalist"
+    "incidentSummary": "An investigative journalist reports receiving anonymous threats after publishing a sensitive exposé.\nThe messages arrive late at night, calm and precise.\nThere is no profanity, no panic, no rage.\nEach message references details not yet published — draft notes, unreleased edits.\n\nThe sender accounts disappear minutes after each message.\nNo trace remains. No usernames repeat. No clear attacker appears.\n\nThe journalist begins altering her routines.\nThe messages adapt immediately.\nWarnings become predictions.\n\nYou are assigned to determine whether this is random harassment, a personal stalker, or a calculated psychological operation — before the threats escalate into action.",
+    "missionText": "Your Mission:\n\n› Identify the single author behind the anonymous messages\n\n› Analyze linguistic patterns, account metadata, and IP routing\n\n› Collect at least 3 correct evidence items\n\n› Flag the correct suspect to close the case and protect the journalist"
   },
   "suspects": [
     {
@@ -21,12 +21,12 @@
       "riskLevel": "low",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Residential IP \u2014 no VPN rotation",
-        "deviceUsage": "Single device \u2014 inconsistent activity",
-        "locationTrace": "City outskirts \u2014 confirmed address",
+        "ipActivity": "Residential IP — no VPN rotation",
+        "deviceUsage": "Single device — inconsistent activity",
+        "locationTrace": "City outskirts — confirmed address",
         "vpnCheck": "No VPN detected"
       },
-      "profileNotes": "Has a harassment history and uses burner accounts. However, his language is sloppy and emotionally volatile \u2014 the opposite of the controlled, professional tone in the threats. No timing discipline. Suspicion drops after Mini-Game #1 (linguistic analysis) confirms the author is trained and deliberate.",
+      "profileNotes": "Has a harassment history and uses burner accounts. However, his language is sloppy and emotionally volatile — the opposite of the controlled, professional tone in the threats. No timing discipline. Suspicion drops after Mini-Game #1 (linguistic analysis) confirms the author is trained and deliberate.",
       "image": "assets/avatars/vikram_sen.png",
       "description": "Vikram Sen is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -34,14 +34,14 @@
       "id": "maya_kulkarni",
       "name": "Maya Kulkarni",
       "role": "Former Colleague",
-      "department": "Previously \u2014 Editorial Research Team",
+      "department": "Previously — Editorial Research Team",
       "riskLevel": "high",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "VPN rotation \u2014 3 different countries per session",
+        "ipActivity": "VPN rotation — 3 different countries per session",
         "deviceUsage": "Same device fingerprint across all sessions",
-        "locationTrace": "Obfuscated \u2014 VPN exit nodes vary",
-        "vpnCheck": "Systematic VPN rotation \u2014 disciplined"
+        "locationTrace": "Obfuscated — VPN exit nodes vary",
+        "vpnCheck": "Systematic VPN rotation — disciplined"
       },
       "profileNotes": "Former colleague with access to draft notes and unpublished edits during her time on the team. Professional tone, restrained language, matching sentence structures found in archived emails. Suspicion rises consistently across all three evidence phases. The key tell: her archived professional emails share exact cadence patterns with the threat messages.",
       "image": "assets/avatars/maya_kulkarni.png",
@@ -55,10 +55,10 @@
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Heavy VPN rotation \u2014 multiple exit nodes",
+        "ipActivity": "Heavy VPN rotation — multiple exit nodes",
         "deviceUsage": "Obfuscated fingerprint",
         "locationTrace": "Unverifiable",
-        "vpnCheck": "Tor + VPN layered \u2014 over-engineered"
+        "vpnCheck": "Tor + VPN layered — over-engineered"
       },
       "profileNotes": "Initially appears to be the strongest technical suspect due to heavy VPN usage and obfuscated fingerprint. However, the anonymity infrastructure is over-engineered relative to the emotional intelligence in the messages. A person with this level of technical discipline would not reference personal details they have legitimate access to. Emotional mismatch. Suspicion weakens after IP analysis.",
       "image": "assets/avatars/null_voice.png",
@@ -82,8 +82,8 @@
         "maxHints": 3,
         "hints": [
           "Count the words per sentence across all three messages. Is the variation natural?",
-          "Look at the emotional tone \u2014 calm, professional, controlled throughout. No escalation.",
-          "Compare the sentence endings \u2014 do they share a grammatical pattern not common in casual writing?"
+          "Look at the emotional tone — calm, professional, controlled throughout. No escalation.",
+          "Compare the sentence endings — do they share a grammatical pattern not common in casual writing?"
         ],
         "onSuccess": {
           "unlocksPanel": "meta",
@@ -93,29 +93,29 @@
       "items": [
         {
           "id": "chat_threat_1",
-          "label": "Message 1 \u2014 22:41: 'You still think hiding names protects you?'",
+          "label": "Message 1 — 22:41: 'You still think hiding names protects you?'",
           "sender": "anon_7741",
           "isKeyEvidence": true,
           "isSuspectMessage": true,
-          "detail": "Sent at 22:41. No profanity. No rage. The sentence is a precise rhetorical question \u2014 not a taunt. References the journalist's source protection practice, which is known to colleagues but not public. Professional register suggests insider knowledge.",
+          "detail": "Sent at 22:41. No profanity. No rage. The sentence is a precise rhetorical question — not a taunt. References the journalist's source protection practice, which is known to colleagues but not public. Professional register suggests insider knowledge.",
           "pointsToSuspect": "maya_kulkarni"
         },
         {
           "id": "chat_threat_2",
-          "label": "Message 2 \u2014 22:44: 'You missed something in your last article.'",
+          "label": "Message 2 — 22:44: 'You missed something in your last article.'",
           "sender": "anon_8823",
           "isKeyEvidence": true,
           "isSuspectMessage": true,
-          "detail": "References an omission in an article that was only visible in the draft version \u2014 not the published piece. The sender had access to unpublished editing notes. A different account, sent 3 minutes later, but same sentence cadence and professional tone.",
+          "detail": "References an omission in an article that was only visible in the draft version — not the published piece. The sender had access to unpublished editing notes. A different account, sent 3 minutes later, but same sentence cadence and professional tone.",
           "pointsToSuspect": "maya_kulkarni"
         },
         {
           "id": "chat_threat_3",
-          "label": "Message 3 \u2014 22:47: 'You should stop before someone gets hurt.'",
+          "label": "Message 3 — 22:47: 'You should stop before someone gets hurt.'",
           "sender": "anon_9031",
           "isKeyEvidence": true,
           "isSuspectMessage": true,
-          "detail": "Third account, third message. The escalation pattern is controlled \u2014 each message increases pressure while maintaining the same calm register. No slang. Language mirrors professional email tone. Sentence structure identical to message 1.",
+          "detail": "Third account, third message. The escalation pattern is controlled — each message increases pressure while maintaining the same calm register. No slang. Language mirrors professional email tone. Sentence structure identical to message 1.",
           "pointsToSuspect": "maya_kulkarni"
         }
       ]
@@ -130,7 +130,7 @@
         {
           "id": "file_account_creation",
           "label": "account_creation_logs.txt",
-          "detail": "Platform account creation logs for the three troll accounts used in the harassment campaign. Account 1 (@truthexposed_mk): created at 22:39:02, profile photo uploaded at 22:39:14, first message sent at 22:41:00. Account 2 (@realdirt_now): created at 22:39:08, first message at 22:43:00. Account 3 (@factcheck_official): created at 22:39:11, first message at 22:46:00. All three accounts were created within a 9-second window using the same device fingerprint. Each account used a temporary email address from a disposable mail service \u2014 all three email addresses were generated from the same disposable domain in sequential order. The account names were pre-planned: all three were registered before the first message was sent.",
+          "detail": "Platform account creation logs for the three troll accounts used in the harassment campaign. Account 1 (@truthexposed_mk): created at 22:39:02, profile photo uploaded at 22:39:14, first message sent at 22:41:00. Account 2 (@realdirt_now): created at 22:39:08, first message at 22:43:00. Account 3 (@factcheck_official): created at 22:39:11, first message at 22:46:00. All three accounts were created within a 9-second window using the same device fingerprint. Each account used a temporary email address from a disposable mail service — all three email addresses were generated from the same disposable domain in sequential order. The account names were pre-planned: all three were registered before the first message was sent.",
           "isKeyEvidence": true,
           "pointsToSuspect": "maya_kulkarni",
           "metadata": {
@@ -142,7 +142,7 @@
         {
           "id": "file_draft_content",
           "label": "recovered_drafts.pdf",
-          "detail": "Content recovered from the platform's draft message cache \u2014 messages that were typed but not sent, recovered via platform server logs. Three unsent drafts were found associated with the troll accounts, containing personal details about the victim that were not publicly available: her home neighbourhood, the name of her thesis supervisor, and the specific chapter her article drew from. This level of detail indicates the harasser had prior knowledge of the victim \u2014 consistent with a personal or professional acquaintance rather than a random internet user. The drafts were discarded, suggesting the harasser exercised caution about how much insider knowledge to reveal. The tone and vocabulary of the drafts match the written style of Maya Kulkarni's public blog posts.",
+          "detail": "Content recovered from the platform's draft message cache — messages that were typed but not sent, recovered via platform server logs. Three unsent drafts were found associated with the troll accounts, containing personal details about the victim that were not publicly available: her home neighbourhood, the name of her thesis supervisor, and the specific chapter her article drew from. This level of detail indicates the harasser had prior knowledge of the victim — consistent with a personal or professional acquaintance rather than a random internet user. The drafts were discarded, suggesting the harasser exercised caution about how much insider knowledge to reveal. The tone and vocabulary of the drafts match the written style of Maya Kulkarni's public blog posts.",
           "isKeyEvidence": true,
           "pointsToSuspect": "maya_kulkarni",
           "metadata": {
@@ -154,7 +154,7 @@
         {
           "id": "file_prior_dispute",
           "label": "prior_dispute_record.pdf",
-          "detail": "Academic dispute record from the university's ethics committee, filed 8 months before the harassment incident. Maya Kulkarni filed a formal complaint alleging that the victim had used data from a shared research project without co-authorship credit in a published article. The committee investigated and found the claim unsubstantiated \u2014 the victim had used only publicly available methodology. Maya's complaint was dismissed. Following the dismissal, Maya sent two emails to the department head characterising the decision as 'biased' and the victim as 'a person of questionable academic integrity'. These emails are on record. The harassment campaign began 3 days after the victim published a second article in the same research area \u2014 a direct trigger.",
+          "detail": "Academic dispute record from the university's ethics committee, filed 8 months before the harassment incident. Maya Kulkarni filed a formal complaint alleging that the victim had used data from a shared research project without co-authorship credit in a published article. The committee investigated and found the claim unsubstantiated — the victim had used only publicly available methodology. Maya's complaint was dismissed. Following the dismissal, Maya sent two emails to the department head characterising the decision as 'biased' and the victim as 'a person of questionable academic integrity'. These emails are on record. The harassment campaign began 3 days after the victim published a second article in the same research area — a direct trigger.",
           "isKeyEvidence": true,
           "pointsToSuspect": "maya_kulkarni",
           "metadata": {
@@ -167,7 +167,7 @@
       "hiddenItem": {
         "id": "file_style_analysis",
         "label": "linguistic_style_analysis.pdf",
-        "detail": "Forensic linguistic analysis comparing the troll messages against writing samples from 6 potential suspects including Maya Kulkarni. Analysis parameters: sentence length distribution, passive voice frequency, punctuation style, use of rhetorical questions, and characteristic vocabulary. Findings: the troll messages show a statistically significant match (p < 0.003) with Maya Kulkarni's writing samples on 4 of 5 parameters. The most distinctive marker: Maya habitually uses the phrase 'one must ask' as a rhetorical device \u2014 appearing in her academic papers 11 times and in the troll messages twice. No other suspect matched on more than 1 parameter. Report authored by a forensic linguist from the National Forensic Sciences University.",
+        "detail": "Forensic linguistic analysis comparing the troll messages against writing samples from 6 potential suspects including Maya Kulkarni. Analysis parameters: sentence length distribution, passive voice frequency, punctuation style, use of rhetorical questions, and characteristic vocabulary. Findings: the troll messages show a statistically significant match (p < 0.003) with Maya Kulkarni's writing samples on 4 of 5 parameters. The most distinctive marker: Maya habitually uses the phrase 'one must ask' as a rhetorical device — appearing in her academic papers 11 times and in the troll messages twice. No other suspect matched on more than 1 parameter. Report authored by a forensic linguist from the National Forensic Sciences University.",
         "isKeyEvidence": true,
         "pointsToSuspect": "maya_kulkarni",
         "unlockedByMinigame": "alias_decode",
@@ -191,7 +191,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_style_analysis",
-          "message": "BREAKTHROUGH \u2014 linguistic_style_analysis.pdf confirmed. Forensic linguistics match Maya Kulkarni's writing on 4 of 5 parameters. The troll accounts are hers beyond reasonable doubt."
+          "message": "BREAKTHROUGH — linguistic_style_analysis.pdf confirmed. Forensic linguistics match Maya Kulkarni's writing on 4 of 5 parameters. The troll accounts are hers beyond reasonable doubt."
         }
       }
     },
@@ -211,23 +211,23 @@
           {
             "id": "frag_a",
             "label": "Canvas Fingerprint Hash",
-            "value": "7f3a9c21 \u2014 identical across all 3 accounts",
+            "value": "7f3a9c21 — identical across all 3 accounts",
             "correctSuspectId": "maya_kulkarni",
-            "explanation": "Identical canvas hash across 3 accounts proves a single device created all of them \u2014 Maya Kulkarni's."
+            "explanation": "Identical canvas hash across 3 accounts proves a single device created all of them — Maya Kulkarni's."
           },
           {
             "id": "frag_b",
             "label": "Home IP Activity Window",
-            "value": "22:30\u201323:15 on Instagram, not targeted platform",
+            "value": "22:30–23:15 on Instagram, not targeted platform",
             "correctSuspectId": "vikram_sen",
-            "explanation": "Vikram Sen was on Instagram during the attack window \u2014 on a different platform entirely."
+            "explanation": "Vikram Sen was on Instagram during the attack window — on a different platform entirely."
           },
           {
             "id": "frag_c",
             "label": "Account Creation Window",
             "value": "All 3 accounts created within 9 seconds",
             "correctSuspectId": "maya_kulkarni",
-            "explanation": "9-second creation window confirms automated scripted creation \u2014 not a random troll."
+            "explanation": "9-second creation window confirms automated scripted creation — not a random troll."
           }
         ],
         "suspects": [
@@ -252,7 +252,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_style_analysis",
-          "message": "BREAKTHROUGH \u2014 Account metadata correlated. Single-device creation fingerprint confirms Maya Kulkarni operated all three troll accounts."
+          "message": "BREAKTHROUGH — Account metadata correlated. Single-device creation fingerprint confirms Maya Kulkarni operated all three troll accounts."
         }
       },
       "items": [
@@ -261,26 +261,26 @@
           "label": "Account Lifespan Pattern",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "All three accounts follow an identical lifecycle: created 2 minutes before first message, deleted 6 minutes after. Zero personalization. Same obfuscated device fingerprint on all three. This is not three different people \u2014 it is one operator running a deployment routine.",
+          "detail": "All three accounts follow an identical lifecycle: created 2 minutes before first message, deleted 6 minutes after. Zero personalization. Same obfuscated device fingerprint on all three. This is not three different people — it is one operator running a deployment routine.",
           "rows": [
             {
               "key": "anon_7741 Created",
-              "value": "22:39 \u2014 2 min before message",
+              "value": "22:39 — 2 min before message",
               "highlight": true
             },
             {
               "key": "anon_8823 Created",
-              "value": "22:42 \u2014 2 min before message",
+              "value": "22:42 — 2 min before message",
               "highlight": true
             },
             {
               "key": "anon_9031 Created",
-              "value": "22:45 \u2014 2 min before message",
+              "value": "22:45 — 2 min before message",
               "highlight": true
             },
             {
               "key": "All Deleted",
-              "value": "8\u201310 minutes after creation"
+              "value": "8–10 minutes after creation"
             },
             {
               "key": "Device Fingerprint",
@@ -295,15 +295,15 @@
           "label": "Device Fingerprint Match",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Despite using different account names, IP addresses, and browser agents, all three accounts share the same obfuscated hardware fingerprint. The obfuscation was applied manually \u2014 but the underlying signature persisted.",
+          "detail": "Despite using different account names, IP addresses, and browser agents, all three accounts share the same obfuscated hardware fingerprint. The obfuscation was applied manually — but the underlying signature persisted.",
           "rows": [
             {
               "key": "Browser Agent",
-              "value": "Spoofed \u2014 varies per account"
+              "value": "Spoofed — varies per account"
             },
             {
               "key": "Hardware Fingerprint",
-              "value": "Identical \u2014 same device",
+              "value": "Identical — same device",
               "highlight": true
             },
             {
@@ -342,12 +342,12 @@
         "maxHints": 3,
         "hints": [
           "The latency fingerprint points to a Mumbai residential ISP. Look for 122.178.x.x range.",
-          "Third octet is 44 \u2014 consistent with a BSNL Bandra subscriber block.",
+          "Third octet is 44 — consistent with a BSNL Bandra subscriber block.",
           "The home IP is 122.178.44.90"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_style_analysis",
-          "message": "BREAKTHROUGH \u2014 Base IP 122.178.44.90 confirmed. This residential address is registered to Maya Kulkarni."
+          "message": "BREAKTHROUGH — Base IP 122.178.44.90 confirmed. This residential address is registered to Maya Kulkarni."
         }
       },
       "items": [
@@ -356,28 +356,28 @@
           "label": "VPN Rotation Pattern",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Each message uses a different VPN exit node \u2014 different country, different IP. However, the latency signature is identical across all three connections: 34\u201336ms response time. The underlying internet connection is the same. The VPN rotation is cosmetic, not structural.",
+          "detail": "Each message uses a different VPN exit node — different country, different IP. However, the latency signature is identical across all three connections: 34–36ms response time. The underlying internet connection is the same. The VPN rotation is cosmetic, not structural.",
           "rows": [
             {
               "key": "Connection 1 (22:41)",
-              "value": "185.77.x.x \u2014 VPN, Region A"
+              "value": "185.77.x.x — VPN, Region A"
             },
             {
               "key": "Connection 2 (22:44)",
-              "value": "103.42.x.x \u2014 VPN, Region B"
+              "value": "103.42.x.x — VPN, Region B"
             },
             {
               "key": "Connection 3 (22:47)",
-              "value": "91.201.x.x \u2014 VPN, Region C"
+              "value": "91.201.x.x — VPN, Region C"
             },
             {
               "key": "Latency All Three",
-              "value": "34\u201336ms \u2014 identical",
+              "value": "34–36ms — identical",
               "highlight": true
             },
             {
               "key": "Verdict",
-              "value": "Same base connection \u2014 VPN is cosmetic rotation",
+              "value": "Same base connection — VPN is cosmetic rotation",
               "highlight": true
             }
           ],
@@ -388,7 +388,7 @@
           "label": "6-Minute Activity Window",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "All three connections are active within a 6-minute window (22:41\u201322:47). The session ends abruptly at 22:49 \u2014 consistent with a scripted session manager, not a human manually disconnecting. The same 6-minute window appears in session logs from the prior week.",
+          "detail": "All three connections are active within a 6-minute window (22:41–22:47). The session ends abruptly at 22:49 — consistent with a scripted session manager, not a human manually disconnecting. The same 6-minute window appears in session logs from the prior week.",
           "rows": [
             {
               "key": "Session Start",
@@ -396,7 +396,7 @@
             },
             {
               "key": "Session End",
-              "value": "22:49 \u2014 abrupt",
+              "value": "22:49 — abrupt",
               "highlight": true
             },
             {
@@ -405,7 +405,7 @@
             },
             {
               "key": "Prior Week",
-              "value": "Same window detected \u2014 pattern repeats",
+              "value": "Same window detected — pattern repeats",
               "highlight": true
             }
           ],
@@ -413,8 +413,8 @@
         },
         {
           "id": "ip_vikram_home",
-          "label": "Vikram Sen Home IP \u2014 Active That Night",
-          "detail": "Vikram Sen's home broadband IP (122.177.44.90) shows activity on social media platforms between 22:30 and 23:15 \u2014 overlapping the harassment window. This initially appeared suspicious. However, the activity was on a different platform (Instagram, not the journalism platform targeted) and his IP does not appear in any of the three troll account session logs. The VPN rotation pattern used in the attack is also inconsistent with a home connection.",
+          "label": "Vikram Sen Home IP — Active That Night",
+          "detail": "Vikram Sen's home broadband IP (122.177.44.90) shows activity on social media platforms between 22:30 and 23:15 — overlapping the harassment window. This initially appeared suspicious. However, the activity was on a different platform (Instagram, not the journalism platform targeted) and his IP does not appear in any of the three troll account session logs. The VPN rotation pattern used in the attack is also inconsistent with a home connection.",
           "isKeyEvidence": false,
           "pointsToSuspect": "vikram_sen",
           "rows": [
@@ -424,12 +424,12 @@
             },
             {
               "key": "Activity Window",
-              "value": "22:30\u201323:15 (overlap)",
+              "value": "22:30–23:15 (overlap)",
               "highlight": true
             },
             {
               "key": "Platform",
-              "value": "Instagram \u2014 not the targeted platform"
+              "value": "Instagram — not the targeted platform"
             },
             {
               "key": "Troll Session Logs",
@@ -446,13 +446,13 @@
     {
       "time": "22:39",
       "title": "First Account Created",
-      "description": "anon_7741 created \u2014 no activity yet.",
+      "description": "anon_7741 created — no activity yet.",
       "severity": "low"
     },
     {
       "time": "22:41",
       "title": "First Threat Sent",
-      "description": "'You still think hiding names protects you?' \u2014 references source protection.",
+      "description": "'You still think hiding names protects you?' — references source protection.",
       "severity": "high"
     },
     {
@@ -464,19 +464,19 @@
     {
       "time": "22:44",
       "title": "Second Threat Sent",
-      "description": "References omission in unpublished draft \u2014 insider knowledge confirmed.",
+      "description": "References omission in unpublished draft — insider knowledge confirmed.",
       "severity": "high"
     },
     {
       "time": "22:47",
       "title": "Third Threat Sent",
-      "description": "'You should stop before someone gets hurt.' \u2014 controlled escalation.",
+      "description": "'You should stop before someone gets hurt.' — controlled escalation.",
       "severity": "high"
     },
     {
       "time": "22:49",
       "title": "All Accounts Deleted",
-      "description": "Scripted deletion \u2014 all three accounts vanish simultaneously.",
+      "description": "Scripted deletion — all three accounts vanish simultaneously.",
       "severity": "medium"
     }
   ],
@@ -525,6 +525,69 @@
       "subtitle": "No evidence collected. The journalist remains at risk.",
       "label": "COLD CASE",
       "xp": 0
+    }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_threat_1": {
+        "maya_kulkarni": 0.12
+      },
+      "chat_threat_2": {
+        "maya_kulkarni": 0.12
+      },
+      "chat_threat_3": {
+        "maya_kulkarni": 0.12
+      },
+      "file_account_creation": {
+        "maya_kulkarni": 0.18
+      },
+      "file_draft_content": {
+        "maya_kulkarni": 0.2,
+        "vikram_sen": -0.12
+      },
+      "file_prior_dispute": {
+        "maya_kulkarni": 0.2
+      },
+      "file_style_analysis": {
+        "maya_kulkarni": 0.25
+      },
+      "meta_account_lifecycle": {
+        "maya_kulkarni": 0.18
+      },
+      "meta_fingerprint": {
+        "maya_kulkarni": 0.18,
+        "vikram_sen": -0.1
+      },
+      "ip_vpn_rotation": {
+        "maya_kulkarni": 0.12,
+        "vikram_sen": 0.12
+      },
+      "ip_activity_window": {
+        "maya_kulkarni": 0.15
+      },
+      "ip_vikram_home": {
+        "vikram_sen": 0.15
+      }
+    },
+    "minigameEffects": {
+      "linguistic_patterning": {
+        "maya_kulkarni": 0.15
+      },
+      "alias_decode": {
+        "maya_kulkarni": 0.15,
+        "vikram_sen": -0.12
+      },
+      "meta_correlate_echo": {
+        "maya_kulkarni": 0.12
+      },
+      "ip_trace_echo": {
+        "maya_kulkarni": 0.12
+      }
     }
   }
 }

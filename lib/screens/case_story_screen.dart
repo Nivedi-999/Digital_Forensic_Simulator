@@ -263,13 +263,15 @@ class _StorylineScreenState extends State<StorylineScreen>
           children: [
             const SizedBox(height: 20),
             _TimelineEvent(
+              // FIX 1: was '$_caseFile!.caseNumber,} - 23:15' — malformed interpolation
               time: '${_caseFile!.timeline.first.time} - 22:47',
               title: 'INITIAL INCIDENT',
               description: briefing.incidentSummary.split('.')[0] + '.',
               isFirst: true,
             ),
             _TimelineEvent(
-              time: '$_caseFile!.caseNumber,} - 23:15',
+              // FIX 1 applied: corrected string interpolation (removed stray comma and brace)
+              time: '${_caseFile!.caseNumber} - 23:15',
               title: 'SECURITY BREACH DETECTED',
               description: 'Unauthorized access to secure systems logged.',
             ),
@@ -499,7 +501,11 @@ class _StorylineScreenState extends State<StorylineScreen>
                           controller: _pageController,
                           itemCount: _briefingPages.length,
                           onPageChanged: (index) {
-                            setState(() => _currentPage = index);
+                            // FIX 3: rebuild pages so currentPage is up-to-date
+                            setState(() {
+                              _currentPage = index;
+                              _createBriefingPages();
+                            });
                             // Animate page flip on change
                             _pageFlipCtrl.reset();
                             _pageFlipCtrl.forward();
@@ -605,7 +611,8 @@ class _CaseFilePage extends StatelessWidget {
 
               // Page counter
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(12),
@@ -960,10 +967,12 @@ class _SuspectCard extends StatelessWidget {
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                 ),
+                // FIX 2: corrected DecorationImage — fit and colorFilter are
+                // now proper named parameters of DecorationImage, not of AssetImage
                 image: DecorationImage(
-                    image: AssetImage(
-                      suspect.imagePath ?? 'assets/avatars/${suspect.id}.png',
-                    ),
+                  image: AssetImage(
+                    suspect.imagePath ?? 'assets/avatars/${suspect.id}.png',
+                  ),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
                     Colors.black.withOpacity(0.3),

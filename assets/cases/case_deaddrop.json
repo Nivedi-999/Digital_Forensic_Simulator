@@ -581,5 +581,49 @@
       "label": "COLD CASE",
       "xp": 0
     }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "file_sim_cache": {
+        "hidden_operator": 0.18
+      },
+      "file_render_test": {
+        "hidden_operator": 0.18
+      },
+      "file_calc_patch": {
+        "hidden_operator": 0.18
+      },
+      "file_operator_id": {
+        "hidden_operator": 0.18
+      },
+      "meta_sim_cache": {
+        "hidden_operator": 0.15
+      },
+      "meta_render_test": {
+        "hidden_operator": 0.15
+      },
+      "meta_weekly_cycle": {
+        "hidden_operator": 0.18
+      },
+      "ip_internal_relay": {
+        "hidden_operator": 0.15
+      },
+      "ip_dead_drop": {
+        "hidden_operator": 0.22
+      }
+    },
+    "minigameEffects": {
+      "dead_drop_decode": {
+        "hidden_operator": 0.15
+      },
+      "meta_correlate_deaddrop": {
+        "hidden_operator": 0.12
+      }
+    }
   }
 }

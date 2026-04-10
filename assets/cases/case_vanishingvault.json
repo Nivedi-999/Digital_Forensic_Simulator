@@ -543,5 +543,58 @@
       "label": "COLD CASE",
       "xp": 0
     }
+    ],
+    "suspicionConfig": {
+      "initialByRiskLevel": {
+        "low": 0.05,
+        "medium": 0.05,
+        "high": 0.05
+      },
+      "evidenceEffects": {
+        "chat_rival_contact": {
+          "ishaan_m": 0.18
+        },
+        "chat_audit_access": {
+          "ishaan_m": 0.12
+        },
+        "file_wiper_code": {
+          "ishaan_m": 0.15
+        },
+        "file_deployment_log": {
+          "ishaan_m": 0.2
+        },
+        "file_salary_trace": {
+          "ishaan_m": 0.2
+        },
+        "file_backdoor": {
+          "ishaan_m": 0.2
+        },
+        "meta_backup_deletion": {
+          "ishaan_m": 0.2
+        },
+        "meta_c2_silence": {
+          "ishaan_m": 0.15
+        },
+        "ip_internal_ws": {
+          "ishaan_m": 0.18
+        },
+        "hidden_suspect_profile": {
+          "ishaan_m": 0.18
+        },
+        "timeline_alibi_break": {
+          "ishaan_m": 0.18
+        }
+      },
+      "minigameEffects": {
+        "vault_decode": {
+          "ishaan_m": 0.12
+        },
+        "advanced_hidden_suspect_case_vanishingvault": {
+          "ishaan_m": 0.12
+        },
+        "advanced_timeline_trap_case_vanishingvault": {
+          "ishaan_m": 0.12
+        }
+      }
+    }
   }
-}

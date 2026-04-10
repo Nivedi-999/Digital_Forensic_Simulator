@@ -422,5 +422,43 @@
       "label": "COLD CASE",
       "xp": 0
     }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_deadline": {
+        "unknown_system": 0.15
+      },
+      "chat_joke": {
+        "unknown_system": 0.1
+      },
+      "chat_reply": {
+        "unknown_system": 0.15
+      },
+      "device_login": {
+        "unknown_system": 0.25
+      },
+      "device_timing": {
+        "unknown_system": 0.25
+      },
+      "device_aria_manifest": {
+        "unknown_system": 0.18
+      },
+      "ip_simultaneous": {
+        "unknown_system": 0.22
+      },
+      "ip_server": {
+        "unknown_system": 0.22
+      }
+    },
+    "minigameEffects": {
+      "last_login_decode": {
+        "unknown_system": 0.15
+      }
+    }
   }
 }

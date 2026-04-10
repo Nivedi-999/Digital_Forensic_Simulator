@@ -375,5 +375,24 @@
     "title": "The Frame-Up Revealed",
     "description": "The photograph was originally taken by the witness — but was later obtained by an unknown third party, edited using professional software to composite Arjun Mehta into the scene, and re-submitted as authentic evidence. The scene itself may be real. The suspect placement is not.",
     "conclusion": "✔ Image confirmed as manipulated\n✔ Evidence authenticity compromised\n✔ Arjun Mehta was framed\n✔ True editor's identity remains unestablished"
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "img_edge_artifacts": {
+        "unknown_editor": 0.18
+      },
+      "exif_software": {
+        "unknown_editor": 0.18
+      },
+      "cam_sequence_log": {
+        "unknown_editor": 0.18
+      }
+    },
+    "minigameEffects": {}
   }
 }

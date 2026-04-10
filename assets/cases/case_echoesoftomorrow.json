@@ -9,8 +9,8 @@
   "status": "Locked",
   "tutorialEnabled": false,
   "briefing": {
-    "incidentSummary": "A secure internal system begins behaving strangely.\nEngineers report fixes being prepared before issues are logged.\nFiles move before anyone asks for them.\nDiagnostics are queued before alerts are raised.\n\nNo malware is detected. No accounts are compromised.\nEvery action is signed, logged, and approved.\n\nChat conversations sound normal, yet replies arrive too early.\nSystem files reposition themselves quietly.\nNetwork traffic pretends to leave the system \u2014 but never does.\n\nThe environment feels like it is rehearsing incidents.\nPreparing responses in advance.\nOptimizing reactions.\n\nAs you investigate, the system begins adjusting itself \u2014 based on your own investigative behavior.",
-    "missionText": "Your Mission:\n\n\u203a Determine whether this is sabotage, insider abuse, or a new class of threat\n\n\u203a Analyze chat timing, file movement, and IP routing\n\n\u203a Collect at least 3 correct evidence items\n\n\u203a Identify who built the behavioral simulation\n\n\u203a Flag the correct suspect to close the case"
+    "incidentSummary": "A secure internal system begins behaving strangely.\nEngineers report fixes being prepared before issues are logged.\nFiles move before anyone asks for them.\nDiagnostics are queued before alerts are raised.\n\nNo malware is detected. No accounts are compromised.\nEvery action is signed, logged, and approved.\n\nChat conversations sound normal, yet replies arrive too early.\nSystem files reposition themselves quietly.\nNetwork traffic pretends to leave the system — but never does.\n\nThe environment feels like it is rehearsing incidents.\nPreparing responses in advance.\nOptimizing reactions.\n\nAs you investigate, the system begins adjusting itself — based on your own investigative behavior.",
+    "missionText": "Your Mission:\n\n› Determine whether this is sabotage, insider abuse, or a new class of threat\n\n› Analyze chat timing, file movement, and IP routing\n\n› Collect at least 3 correct evidence items\n\n› Identify who built the behavioral simulation\n\n› Flag the correct suspect to close the case"
   },
   "suspects": [
     {
@@ -21,8 +21,8 @@
       "riskLevel": "high",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "10.2.11.5 \u2014 standard engineer access",
-        "deviceUsage": "Engineering workstation \u2014 normal logs",
+        "ipActivity": "10.2.11.5 — standard engineer access",
+        "deviceUsage": "Engineering workstation — normal logs",
         "locationTrace": "Infrastructure Wing",
         "vpnCheck": "Internal VPN"
       },
@@ -38,12 +38,12 @@
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "10.2.14.9 \u2014 analytics cluster",
-        "deviceUsage": "Data workstation \u2014 query logs only",
+        "ipActivity": "10.2.14.9 — analytics cluster",
+        "deviceUsage": "Data workstation — query logs only",
         "locationTrace": "Analytics Floor",
         "vpnCheck": "Internal only"
       },
-      "profileNotes": "Skilled in pattern analysis. Partial false lead \u2014 can read the behavioral data but has no execution authority to deploy or activate the simulation system. Suspicion partial and unconfirmed.",
+      "profileNotes": "Skilled in pattern analysis. Partial false lead — can read the behavioral data but has no execution authority to deploy or activate the simulation system. Suspicion partial and unconfirmed.",
       "image": "assets/avatars/aniket_b.png",
       "description": "Aniket B is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -51,16 +51,16 @@
       "id": "manav_r",
       "name": "Manav R",
       "role": "Behavioral Research Consultant",
-      "department": "External Consultant \u2014 Research Division",
+      "department": "External Consultant — Research Division",
       "riskLevel": "medium",
       "isGuilty": true,
       "digitalFootprint": {
-        "ipActivity": "10.2.99.1 \u2014 consultant terminal",
-        "deviceUsage": "Consultant workstation \u2014 indirect access",
+        "ipActivity": "10.2.99.1 — consultant terminal",
+        "deviceUsage": "Consultant workstation — indirect access",
         "locationTrace": "Research Division, consultant bay",
-        "vpnCheck": "Research VPN \u2014 elevated"
+        "vpnCheck": "Research VPN — elevated"
       },
-      "profileNotes": "Reads chat summaries and advises on response optimization. Specializes in human decision modeling. Suspicion only rises when chat logs AND metadata are cross-linked \u2014 the system anticipation pattern matches his behavioral modeling research exactly. He built the simulation to study how investigators respond to anomalies. You are the dataset.",
+      "profileNotes": "Reads chat summaries and advises on response optimization. Specializes in human decision modeling. Suspicion only rises when chat logs AND metadata are cross-linked — the system anticipation pattern matches his behavioral modeling research exactly. He built the simulation to study how investigators respond to anomalies. You are the dataset.",
       "image": "assets/avatars/manav_r.png",
       "description": "Manav R is a person of interest in this case. Their motives and involvement remain under investigation."
     },
@@ -68,14 +68,14 @@
       "id": "ayon_r",
       "name": "Ayon R",
       "role": "Automation Vendor",
-      "department": "External Vendor \u2014 Systems Integration",
+      "department": "External Vendor — Systems Integration",
       "riskLevel": "medium",
       "isGuilty": false,
       "digitalFootprint": {
-        "ipActivity": "Vendor portal \u2014 logged entry/exit",
+        "ipActivity": "Vendor portal — logged entry/exit",
         "deviceUsage": "Integration tools only",
         "locationTrace": "Vendor access terminal",
-        "vpnCheck": "Vendor VPN \u2014 restricted"
+        "vpnCheck": "Vendor VPN — restricted"
       },
       "profileNotes": "Has systems access but no behavioral modeling layer knowledge. Could deploy tools but cannot explain the anticipation pattern in the chat timing data. Suspicion weakens after IP analysis confirms purely internal routing.",
       "image": "assets/avatars/ayon_r.png",
@@ -98,7 +98,7 @@
         "solution": "templated_responses",
         "maxHints": 3,
         "hints": [
-          "Compare sentence length across Eng-B's replies \u2014 is there natural variation?",
+          "Compare sentence length across Eng-B's replies — is there natural variation?",
           "Check the timestamp gap between Eng-A's message and Eng-B's reply.",
           "Humans pause to think. If replies arrive before decisions are made, the responses are pre-generated."
         ],
@@ -114,7 +114,7 @@
           "sender": "Eng-B",
           "isKeyEvidence": true,
           "isSuspectMessage": true,
-          "detail": "Eng-A sent 'We might need diagnostics later today' at 10:21. Eng-B replied 'Already queued the workaround' at 10:22 \u2014 one minute later. The workaround could not have been queued in that time unless the decision was anticipated in advance.",
+          "detail": "Eng-A sent 'We might need diagnostics later today' at 10:21. Eng-B replied 'Already queued the workaround' at 10:22 — one minute later. The workaround could not have been queued in that time unless the decision was anticipated in advance.",
           "pointsToSuspect": "manav_r"
         },
         {
@@ -123,7 +123,7 @@
           "sender": "Eng-A",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Eng-A expresses surprise at the preemptive action. This is the moment the anomaly becomes visible \u2014 the system prepared a response before the request existed.",
+          "detail": "Eng-A expresses surprise at the preemptive action. This is the moment the anomaly becomes visible — the system prepared a response before the request existed.",
           "pointsToSuspect": "manav_r"
         },
         {
@@ -132,7 +132,7 @@
           "sender": "Eng-A",
           "isKeyEvidence": false,
           "isSuspectMessage": false,
-          "detail": "Normal operational message. No anomaly. Serves as the baseline \u2014 the action that was anticipated before it was made.",
+          "detail": "Normal operational message. No anomaly. Serves as the baseline — the action that was anticipated before it was made.",
           "pointsToSuspect": null
         },
         {
@@ -141,7 +141,7 @@
           "sender": "Dr. Priya T (team lead, internal message)",
           "isKeyEvidence": false,
           "isSuspect": false,
-          "detail": "Dr. Priya T initially assumed the early diagnostic archive was triggered by the lab's automated maintenance scheduler. The scheduler does run diagnostics, but its logs show no scheduled task was due for another 4 days. The scheduled tasks run under a service account \u2014 not under MANAV-R-SESSION-7. This message documents her initial misattribution, not the actual cause.",
+          "detail": "Dr. Priya T initially assumed the early diagnostic archive was triggered by the lab's automated maintenance scheduler. The scheduler does run diagnostics, but its logs show no scheduled task was due for another 4 days. The scheduled tasks run under a service account — not under MANAV-R-SESSION-7. This message documents her initial misattribution, not the actual cause.",
           "pointsToSuspect": "auto_scheduler",
           "irrelevantReason": "The automated scheduler was not due for 4 days and runs under a different service account. The archive was manually triggered under Manav R's session."
         }
@@ -162,35 +162,35 @@
         "maxHints": 3,
         "hints": [
           "The first character is a single digit.",
-          "The second is a letter from A\u2013F.",
+          "The second is a letter from A–F.",
           "The code is 9A2"
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_session_record",
-          "message": "BREAKTHROUGH \u2014 manav_r_session_forensics.pdf decrypted. Session log confirms Manav R staged the model theft disguised as a diagnostic operation. The financial motive is now confirmed."
+          "message": "BREAKTHROUGH — manav_r_session_forensics.pdf decrypted. Session log confirms Manav R staged the model theft disguised as a diagnostic operation. The financial motive is now confirmed."
         }
       },
       "items": [
         {
           "id": "file_preemptive_archive",
-          "label": "diag_cache.sys \u2014 Archived Before Request",
+          "label": "diag_cache.sys — Archived Before Request",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "File system journal entry from the prediction engine's primary data node. diag_cache.sys \u2014 a diagnostic snapshot of the active prediction model's internal state \u2014 was written to the /archive/outbound/ staging directory at 09:58:14 AM. The anomaly: the engineering team's diagnostic request was only submitted at 10:02 AM \u2014 4 minutes after the file was already staged. No automated scheduled task exists for this operation. The file's creation process was initiated by user session MANAV-R-SESSION-7, which had been authenticated since 09:45 AM. The /archive/outbound/ directory is normally used to stage files for transfer to the DR (disaster recovery) site \u2014 not for internal diagnostics. The file was 2.3GB \u2014 far larger than a standard diagnostic snapshot, suggesting it contained the full model weights.",
+          "detail": "File system journal entry from the prediction engine's primary data node. diag_cache.sys — a diagnostic snapshot of the active prediction model's internal state — was written to the /archive/outbound/ staging directory at 09:58:14 AM. The anomaly: the engineering team's diagnostic request was only submitted at 10:02 AM — 4 minutes after the file was already staged. No automated scheduled task exists for this operation. The file's creation process was initiated by user session MANAV-R-SESSION-7, which had been authenticated since 09:45 AM. The /archive/outbound/ directory is normally used to stage files for transfer to the DR (disaster recovery) site — not for internal diagnostics. The file was 2.3GB — far larger than a standard diagnostic snapshot, suggesting it contained the full model weights.",
           "metadata": {
             "size": "18.4 MB",
-            "modifier": "System \u2014 automated",
+            "modifier": "System — automated",
             "modifiedAt": "09:58"
           },
           "rows": [
             {
               "key": "Archived",
-              "value": "09:58 \u2014 no user request",
+              "value": "09:58 — no user request",
               "highlight": true
             },
             {
               "key": "Requested",
-              "value": "10:01 \u2014 by Eng-A"
+              "value": "10:01 — by Eng-A"
             },
             {
               "key": "Anticipation Window",
@@ -199,20 +199,20 @@
             },
             {
               "key": "Authorized By",
-              "value": "Trusted internal process \u2014 signed"
+              "value": "Trusted internal process — signed"
             }
           ],
           "pointsToSuspect": "manav_r"
         },
         {
           "id": "file_response_model",
-          "label": "response_model.bin \u2014 Moved Preemptively",
+          "label": "response_model.bin — Moved Preemptively",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "File system journal entry for response_model.bin \u2014 the core executable of the prediction engine's active response module. The file was moved from /models/staging/ to /models/active/ at 10:00:14 AM, 2 minutes before the first anomalous prediction was recorded. The move operation was executed under user session MANAV-R-SESSION-7. Crucially, no deployment ticket, change request, or sign-off from the team lead exists for this operation \u2014 all model promotions to active status require dual authorisation per the lab's SOC protocol. The file's hash at time of promotion does not match the hash of any version in the official model version control repository, suggesting it was either locally modified or entirely replaced. The file has since been quarantined for forensic analysis.",
+          "detail": "File system journal entry for response_model.bin — the core executable of the prediction engine's active response module. The file was moved from /models/staging/ to /models/active/ at 10:00:14 AM, 2 minutes before the first anomalous prediction was recorded. The move operation was executed under user session MANAV-R-SESSION-7. Crucially, no deployment ticket, change request, or sign-off from the team lead exists for this operation — all model promotions to active status require dual authorisation per the lab's SOC protocol. The file's hash at time of promotion does not match the hash of any version in the official model version control repository, suggesting it was either locally modified or entirely replaced. The file has since been quarantined for forensic analysis.",
           "metadata": {
             "size": "4.2 MB",
-            "modifier": "System \u2014 automated",
+            "modifier": "System — automated",
             "modifiedAt": "10:00"
           },
           "rows": [
@@ -241,7 +241,7 @@
       "hiddenItem": {
         "id": "file_session_record",
         "label": "manav_r_session_forensics.pdf",
-        "detail": "DECRYPTED \u2014 Full Session Forensics Report for MANAV-R-SESSION-7. The session was authenticated at 09:45 AM using Manav R's biometric token \u2014 confirmed active on his registered device. Session activity log: 09:45 \u2014 login. 09:51 \u2014 opened model staging directory. 09:58 \u2014 initiated archive write of diag_cache.sys (2.3GB) to /archive/outbound/. 10:00 \u2014 promoted response_model.bin to active status. 10:03 \u2014 session idle. 10:04 \u2014 logout. The critical finding: a metadata comparison between diag_cache.sys and the legitimate diagnostic tool shows the archived file contains full model weights \u2014 not a diagnostic snapshot. The file was renamed to disguise its contents. Combined with Manav R's financial records showing \u20b918 lakh received from an external consulting account in the 3 months prior, this session log confirms deliberate model theft under the cover of routine maintenance activity.",
+        "detail": "DECRYPTED — Full Session Forensics Report for MANAV-R-SESSION-7. The session was authenticated at 09:45 AM using Manav R's biometric token — confirmed active on his registered device. Session activity log: 09:45 — login. 09:51 — opened model staging directory. 09:58 — initiated archive write of diag_cache.sys (2.3GB) to /archive/outbound/. 10:00 — promoted response_model.bin to active status. 10:03 — session idle. 10:04 — logout. The critical finding: a metadata comparison between diag_cache.sys and the legitimate diagnostic tool shows the archived file contains full model weights — not a diagnostic snapshot. The file was renamed to disguise its contents. Combined with Manav R's financial records showing ₹18 lakh received from an external consulting account in the 3 months prior, this session log confirms deliberate model theft under the cover of routine maintenance activity.",
         "isKeyEvidence": true,
         "pointsToSuspect": "manav_r",
         "unlockedByMinigame": "echoes_decode",
@@ -265,20 +265,20 @@
           "label": "Simulated External Traffic",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Network hops between Internal-A, Internal-B, and Internal-C show latency of 208\u2013210ms \u2014 suggestive of geographic distance. However, all three nodes are internal campus addresses. The distance is simulated. External traffic is an illusion.",
+          "detail": "Network hops between Internal-A, Internal-B, and Internal-C show latency of 208–210ms — suggestive of geographic distance. However, all three nodes are internal campus addresses. The distance is simulated. External traffic is an illusion.",
           "rows": [
             {
-              "key": "Internal-A \u2192 Internal-B",
+              "key": "Internal-A → Internal-B",
               "value": "210ms latency",
               "highlight": true
             },
             {
-              "key": "Internal-B \u2192 Internal-C",
+              "key": "Internal-B → Internal-C",
               "value": "208ms latency"
             },
             {
               "key": "All Nodes",
-              "value": "Internal campus IPs \u2014 no external routing",
+              "value": "Internal campus IPs — no external routing",
               "highlight": true
             },
             {
@@ -293,7 +293,7 @@
           "label": "No External Traffic",
           "isKeyEvidence": true,
           "isSuspectMessage": false,
-          "detail": "Despite routing that mimics exfiltration, no data ever leaves the campus. The network illusion is designed to draw investigators toward an external attacker assumption \u2014 and away from an internal behavioral modeling project.",
+          "detail": "Despite routing that mimics exfiltration, no data ever leaves the campus. The network illusion is designed to draw investigators toward an external attacker assumption — and away from an internal behavioral modeling project.",
           "rows": [
             {
               "key": "External Exits",
@@ -306,7 +306,7 @@
             },
             {
               "key": "Purpose",
-              "value": "Misdirection \u2014 simulates external threat",
+              "value": "Misdirection — simulates external threat",
               "highlight": true
             }
           ],
@@ -331,13 +331,13 @@
     {
       "time": "10:21",
       "title": "Eng-A Sends Diagnostic Message",
-      "description": "'We might need diagnostics later today.' \u2014 standard message.",
+      "description": "'We might need diagnostics later today.' — standard message.",
       "severity": "low"
     },
     {
       "time": "10:22",
       "title": "Preemptive Reply Sent",
-      "description": "Eng-B: 'Already queued the workaround.' \u2014 before request was finalized.",
+      "description": "Eng-B: 'Already queued the workaround.' — before request was finalized.",
       "severity": "high"
     },
     {
@@ -378,7 +378,7 @@
     "wrongAccusation": {
       "condition": "wrong_suspect",
       "title": "Investigation Compromised",
-      "subtitle": "Wrong assumption. The simulation predicted your conclusion. Manav R's model continues operating \u2014 now with data from your investigation.",
+      "subtitle": "Wrong assumption. The simulation predicted your conclusion. Manav R's model continues operating — now with data from your investigation.",
       "label": "CASE FAILED",
       "xp": 0
     },
@@ -388,6 +388,47 @@
       "subtitle": "No evidence collected. The behavioral system continues learning from every investigator it encounters.",
       "label": "COLD CASE",
       "xp": 0
+    }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_preemptive_reply": {
+        "manav_r": 0.18
+      },
+      "chat_confusion": {
+        "manav_r": 0.18
+      },
+      "chat_normal": {
+        "manav_r": 0.05
+      },
+      "file_preemptive_archive": {
+        "manav_r": 0.22
+      },
+      "file_response_model": {
+        "manav_r": 0.22
+      },
+      "file_session_record": {
+        "manav_r": 0.18
+      },
+      "ip_simulated_external": {
+        "manav_r": 0.18
+      },
+      "ip_no_external_exit": {
+        "manav_r": 0.15
+      }
+    },
+    "minigameEffects": {
+      "intent_patterning": {
+        "manav_r": 0.12
+      },
+      "echoes_decode": {
+        "manav_r": 0.12
+      }
     }
   }
 }

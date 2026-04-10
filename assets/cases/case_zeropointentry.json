@@ -534,5 +534,58 @@
       "label": "COLD CASE",
       "xp": 0
     }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_exploit_sale": {
+        "ronak_s": 0.12
+      },
+      "chat_early_kill": {
+        "ronak_s": 0.12
+      },
+      "file_exploit_code": {
+        "ronak_s": 0.15
+      },
+      "file_financial": {
+        "ronak_s": 0.18
+      },
+      "file_scada_access": {
+        "ronak_s": 0.2
+      },
+      "file_pgp_key": {
+        "ronak_s": 0.22
+      },
+      "meta_controlled_shutdown": {
+        "ronak_s": 0.15
+      },
+      "meta_code_style": {
+        "ronak_s": 0.18
+      },
+      "ip_jumpserver": {
+        "ronak_s": 0.18
+      },
+      "hidden_suspect_profile": {
+        "ronak_s": 0.18
+      },
+      "timeline_alibi_break": {
+        "ronak_s": 0.18
+      }
+    },
+    "minigameEffects": {
+      "pgp_decode": {
+        "ronak_s": 0.12
+      },
+      "advanced_hidden_suspect_case_zeropointentry": {
+        "ronak_s": 0.12
+      },
+      "advanced_timeline_trap_case_zeropointentry": {
+        "ronak_s": 0.12
+      }
+    }
   }
 }

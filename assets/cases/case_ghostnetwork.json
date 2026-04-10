@@ -304,8 +304,142 @@
         }
       ],
       "minigame": null
+    },
+    {
+      "id": "logic_link",
+      "label": "Logic Link Matrix",
+      "icon": "meta",
+      "evidenceType": "meta",
+      "items": [
+        {
+          "id": "logic_matrix_brief",
+          "label": "Correlation Matrix Brief",
+          "detail": "Cross-case behaviour fragments were extracted from logs, commit metadata, and communication fingerprints. Match each fragment to the suspect it most strongly identifies.",
+          "isKeyEvidence": false
+        }
+      ],
+      "hiddenItem": {
+        "id": "hidden_suspect_profile",
+        "label": "Hidden Suspect Unmasked",
+        "detail": "The matrix reveals a previously obscured operator profile tied to Nalini V. Their unique workflow signature and language fingerprints align across all critical events.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "nalini_v",
+        "unlockedByMinigame": "advanced_hidden_suspect_case_ghostnetwork"
+      },
+      "minigame": {
+        "id": "advanced_hidden_suspect_case_ghostnetwork",
+        "type": "metadata_correlation",
+        "title": "Suspect Correlation Matrix",
+        "instruction": "Match each forensic fragment to the most likely suspect. Only one mapping set is fully consistent.",
+        "fragments": [
+          {
+            "id": "fragment_workflow",
+            "label": "Workflow Fingerprint",
+            "value": "Task execution cadence matches an operator who batches actions in 17-minute windows and pivots immediately after privileged checks.",
+            "hint": "Compare this to known operating patterns.",
+            "correctSuspectId": "nalini_v",
+            "explanation": "This disciplined pattern matches Nalini V, who used the same cadence during the breach stages."
+          },
+          {
+            "id": "fragment_noise",
+            "label": "Noise Signature",
+            "value": "An intentionally noisy decoy pattern appears in low-value logs with inconsistent timezone usage.",
+            "hint": "This fragment points to a distractor suspect.",
+            "correctSuspectId": "new_hire",
+            "explanation": "The inconsistent decoy style maps to Kabir J and does not align with the core intrusion chain."
+          },
+          {
+            "id": "fragment_language",
+            "label": "Language Marker",
+            "value": "Incident notes reuse a rare phrase sequence that appears in insider coordination messages.",
+            "hint": "Look for the suspect with matching communication style.",
+            "correctSuspectId": "external_auditor",
+            "explanation": "The phrase reuse is linked to Meghna T, but it appears only in support communications, not execution logs."
+          }
+        ],
+        "suspects": [
+          {
+            "id": "nalini_v",
+            "name": "Nalini V"
+          },
+          {
+            "id": "new_hire",
+            "name": "Kabir J"
+          },
+          {
+            "id": "external_auditor",
+            "name": "Meghna T"
+          }
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "hidden_suspect_profile",
+          "message": "Hidden suspect profile unlocked: Nalini V emerges as the only suspect matching the complete matrix."
+        }
+      }
+    },
+    {
+      "id": "timeline_trap",
+      "label": "Timeline Trap",
+      "icon": "chat",
+      "evidenceType": "chat",
+      "items": [
+        {
+          "id": "timeline_trap_brief",
+          "label": "Breach Window Interrogation Notes",
+          "detail": "Interview transcripts captured each suspect's alibi during the critical breach window. Verify which alibi collapses against timeline telemetry.",
+          "isKeyEvidence": false
+        }
+      ],
+      "hiddenItem": {
+        "id": "timeline_alibi_break",
+        "label": "Critical Alibi Contradiction",
+        "detail": "Timeline reconstruction disproves Nalini V's alibi. Their claimed location conflicts with system access records at the breach timestamp.",
+        "isKeyEvidence": true,
+        "pointsToSuspect": "nalini_v",
+        "unlockedByMinigame": "advanced_timeline_trap_case_ghostnetwork"
+      },
+      "minigame": {
+        "id": "advanced_timeline_trap_case_ghostnetwork",
+        "type": "alibi_verify",
+        "title": "Breach Window Alibi Check",
+        "instruction": "Review each alibi and identify the one contradicted by forensic timeline data.",
+        "timelineEvent": {
+          "time": "Critical Window",
+          "event": "Privilege escalation and staged exfiltration occurred during this exact interval."
+        },
+        "alibis": [
+          {
+            "id": "alibi_guilty",
+            "suspectId": "nalini_v",
+            "suspectName": "Nalini V",
+            "alibi": "Claims to be offline in a routine maintenance meeting with no system access.",
+            "isContradicted": true,
+            "contradiction": "Authentication and command logs show privileged actions from this suspect's account during the same window."
+          },
+          {
+            "id": "alibi_other1",
+            "suspectId": "new_hire",
+            "suspectName": "Kabir J",
+            "alibi": "States they were in a monitored support call with screen recording enabled.",
+            "isContradicted": false,
+            "contradiction": ""
+          },
+          {
+            "id": "alibi_other2",
+            "suspectId": "external_auditor",
+            "suspectName": "Meghna T",
+            "alibi": "Reports compiling a non-production patch with signed CI traces.",
+            "isContradicted": false,
+            "contradiction": ""
+          }
+        ],
+        "onSuccess": {
+          "unlocksHiddenItem": "timeline_alibi_break",
+          "message": "Contradiction confirmed: Nalini V's alibi collapses under timeline verification."
+        }
+      }
     }
-  ],
+      ],
   "timeline": [
     {
       "time": "16 Months Prior",
@@ -357,6 +491,9 @@
     "meta_access_pattern",
     "meta_stego_timing",
     "ip_canary_access",
+    "file_handler_identity",
+    "hidden_suspect_profile",
+    "timeline_alibi_break",
     "file_handler_identity"
   ],
   "outcomes": {
@@ -387,6 +524,62 @@
       "subtitle": "No evidence collected.",
       "label": "COLD CASE",
       "xp": 0
+    }
+  },
+  "suspicionConfig": {
+    "initialByRiskLevel": {
+      "low": 0.05,
+      "medium": 0.05,
+      "high": 0.05
+    },
+    "evidenceEffects": {
+      "chat_handler": {
+        "nalini_v": 0.12
+      },
+      "chat_recruitment": {
+        "nalini_v": 0.18
+      },
+      "chat_canary_alert": {
+        "nalini_v": 0.12
+      },
+      "file_stego_reports": {
+        "nalini_v": 0.15
+      },
+      "file_lateral_movement": {
+        "nalini_v": 0.18
+      },
+      "file_financial_trace": {
+        "nalini_v": 0.18
+      },
+      "file_handler_identity": {
+        "nalini_v": 0.2
+      },
+      "meta_access_pattern": {
+        "nalini_v": 0.18
+      },
+      "meta_stego_timing": {
+        "nalini_v": 0.18
+      },
+      "ip_canary_access": {
+        "nalini_v": 0.18
+      },
+      "hidden_suspect_profile": {
+        "nalini_v": 0.18
+      },
+      "timeline_alibi_break": {
+        "nalini_v": 0.18
+      }
+    },
+    "minigameEffects": {
+      "handler_decode": {
+        "nalini_v": 0.12
+      },
+      "advanced_hidden_suspect_case_ghostnetwork": {
+        "nalini_v": 0.12
+      },
+      "advanced_timeline_trap_case_ghostnetwork": {
+        "nalini_v": 0.12
+      }
     }
   }
 }
