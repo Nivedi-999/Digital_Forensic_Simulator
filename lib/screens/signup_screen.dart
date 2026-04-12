@@ -14,7 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/cyber_theme.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
-
+import '../services/progress_service.dart';
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
@@ -125,6 +125,8 @@ class _SignupScreenState extends State<SignupScreen>
 
       // Save the agent codename as the Firebase display name
       await credential.user?.updateDisplayName(_nameCtrl.text.trim());
+      await ProgressService.instance.init();
+      await ProgressService.instance.saveDisplayName(_nameCtrl.text.trim());
 
       if (!mounted) return;
 
