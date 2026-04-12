@@ -6,7 +6,6 @@
 //  Risk-colour theming throughout (red/amber/green per suspect)
 // ═══════════════════════════════════════════════════════════════
 
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/cyber_theme.dart';
@@ -144,9 +143,9 @@ class _SuspectProfileScreenState extends State<SuspectProfileScreen>
                 _GlowCard(accentColor: riskColor, child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center, children: [
 
-                  // Hex avatar
+                  // Rect avatar
                   AnimatedBuilder(animation: _pulse, builder: (_, __) =>
-                      _HexAvatar(suspect: suspect, pulse: _pulse.value,
+                      _RectAvatar(suspect: suspect, pulse: _pulse.value,
                           color: riskColor, avatarIcon: _avatarIcon(suspect.role))),
 
                   const SizedBox(width: 18),
@@ -342,61 +341,81 @@ class _SuspectTopBar extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────
-//  HEX AVATAR — loads image asset, falls back to icon+initial
+//  RECT AVATAR — loads image asset, falls back to icon+initial
+//
+//  To resize: change avatarWidth and avatarHeight below.
+//  To change corner rounding: change borderRadius below.
+//  To change border thickness: change borderWidth below.
 // ─────────────────────────────────────────────────────────────
 
-class _HexAvatar extends StatelessWidget {
-  final Suspect suspect; final double pulse;
-  final Color color; final IconData avatarIcon;
-  const _HexAvatar({required this.suspect, required this.pulse,
-    required this.color, required this.avatarIcon});
+class _RectAvatar extends StatelessWidget {
+  final Suspect suspect;
+  final double pulse;
+  final Color color;
+  final IconData avatarIcon;
+
+  const _RectAvatar({
+    required this.suspect,
+    required this.pulse,
+    required this.color,
+    required this.avatarIcon,
+  });
+
+  // ── SIZE CONTROLS ─────────────────────────────────────────
+  static const double avatarWidth  = 100.0; // ← change width here
+  static const double avatarHeight = 120.0; // ← change height here
+  static const double borderRadius = 10.0;  // ← change corner rounding here
+  static const double borderWidth  = 1.5;   // ← change border thickness here
+  // ─────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
-    const size = 80.0;
-    return SizedBox(width: size, height: size, child: Stack(
-        alignment: Alignment.center, children: [
-      // Pulse ring
-      CustomPaint(size: const Size(size, size), painter: _SuspectHexOutline(
-          color: color.withOpacity(0.1 + pulse * 0.2), scale: 1.0 + pulse * 0.09)),
-      // Hex clip
-      ClipPath(clipper: _HexClipper(), child: Container(
-          width: size * 0.88, height: size * 0.88,
-          color: color.withOpacity(0.1),
-          child: suspect.imagePath != null
-              ? Image.asset(suspect.imagePath!,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => _fallback(color))
-              : _fallback(color))),
-      // Border on top
-      CustomPaint(size: const Size(size, size), painter: _SuspectHexBorder(
-          stroke: color, strokeW: 1.8)),
-    ]));
+    return Container(
+      width:  avatarWidth,
+      height: avatarHeight,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(borderRadius),
+        // Transparent border that subtly glows with the suspect's risk colour
+        border: Border.all(
+          color: color.withOpacity(0.0), // fully transparent — change to e.g. 0.4 to make it visible
+          width: borderWidth,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.15 + pulse * 0.15),
+            blurRadius: 18,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(borderRadius - 1),
+        child: suspect.imagePath != null
+            ? Image.asset(
+          suspect.imagePath!,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => _fallback(),
+        )
+            : _fallback(),
+      ),
+    );
   }
 
-  Widget _fallback(Color color) => Stack(alignment: Alignment.center, children: [
-    Icon(avatarIcon, color: color.withOpacity(0.18), size: 36),
-    Text(suspect.name.substring(0, 1).toUpperCase(),
-        style: GoogleFonts.orbitron(fontSize: 26, fontWeight: FontWeight.w800,
-            color: color, shadows: [Shadow(color: color, blurRadius: 10)])),
-  ]);
-}
-
-// Hex clip path for avatar image
-class _HexClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final c = Offset(size.width / 2, size.height / 2);
-    final r = size.width / 2 * 0.96;
-    final p = Path();
-    for (int i = 0; i < 6; i++) {
-      final a = (pi / 3) * i - pi / 6;
-      final pt = Offset(c.dx + r * cos(a), c.dy + r * sin(a));
-      if (i == 0) p.moveTo(pt.dx, pt.dy); else p.lineTo(pt.dx, pt.dy);
-    }
-    return p..close();
-  }
-  @override bool shouldReclip(_) => false;
+  Widget _fallback() => Container(
+    color: color.withOpacity(0.08),
+    child: Stack(alignment: Alignment.center, children: [
+      Icon(avatarIcon, color: color.withOpacity(0.18), size: 38),
+      Text(
+        suspect.name.substring(0, 1).toUpperCase(),
+        style: GoogleFonts.orbitron(
+          fontSize: 30,
+          fontWeight: FontWeight.w800,
+          color: color,
+          shadows: [Shadow(color: color, blurRadius: 10)],
+        ),
+      ),
+    ]),
+  );
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -582,43 +601,4 @@ class _GridPainter extends CustomPainter {
     for (double y = 0; y < size.height; y += s) canvas.drawLine(Offset(0, y), Offset(size.width, y), p);
   }
   @override bool shouldRepaint(_GridPainter _) => false;
-}
-
-class _SuspectHexBorder extends CustomPainter {
-  final Color stroke; final double strokeW;
-  const _SuspectHexBorder({required this.stroke, required this.strokeW});
-  @override
-  void paint(Canvas canvas, Size size) {
-    final c = Offset(size.width / 2, size.height / 2);
-    final r = size.width / 2 * 0.86;
-    final p = Path();
-    for (int i = 0; i < 6; i++) {
-      final a = (pi / 3) * i - pi / 6;
-      final pt = Offset(c.dx + r * cos(a), c.dy + r * sin(a));
-      if (i == 0) p.moveTo(pt.dx, pt.dy); else p.lineTo(pt.dx, pt.dy);
-    }
-    p.close();
-    canvas.drawPath(p, Paint()..color = stroke..style = PaintingStyle.stroke..strokeWidth = strokeW);
-  }
-  @override bool shouldRepaint(_SuspectHexBorder _) => false;
-}
-
-class _SuspectHexOutline extends CustomPainter {
-  final Color color; final double scale;
-  const _SuspectHexOutline({required this.color, required this.scale});
-  @override
-  void paint(Canvas canvas, Size size) {
-    final c = Offset(size.width / 2, size.height / 2);
-    final r = size.width / 2 * 0.86 * scale;
-    final p = Path();
-    for (int i = 0; i < 6; i++) {
-      final a = (pi / 3) * i - pi / 6;
-      final pt = Offset(c.dx + r * cos(a), c.dy + r * sin(a));
-      if (i == 0) p.moveTo(pt.dx, pt.dy); else p.lineTo(pt.dx, pt.dy);
-    }
-    p.close();
-    canvas.drawPath(p, Paint()..color = color..style = PaintingStyle.stroke..strokeWidth = 2);
-  }
-  @override bool shouldRepaint(_SuspectHexOutline old) =>
-      old.color != color || old.scale != scale;
 }

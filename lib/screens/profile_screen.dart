@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../services/game_progress.dart';
 import '../theme/cyber_theme.dart';
 import 'case_list_screen.dart';
+import 'signup_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -175,103 +177,238 @@ class _AgentIdPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initials = GameProgress.avatarInitials;
+    final user      = FirebaseAuth.instance.currentUser;
+    final codename  = (user?.displayName ?? '').isNotEmpty
+        ? user!.displayName!.toUpperCase()
+        : 'UNKNOWN AGENT';
+    final email     = user?.email ?? '—';
+    final initials  = codename.isNotEmpty ? codename[0] : '?';
 
     return AnimatedBuilder(
       animation: pulse,
       builder: (_, __) {
         return Container(
-          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: CyberColors.neonCyan.withOpacity(0.04),
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: CyberColors.neonCyan.withOpacity(0.24)),
+            color: CyberColors.neonCyan.withOpacity(0.03),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: CyberColors.neonCyan.withOpacity(0.22)),
             boxShadow: [
               BoxShadow(
-                color: CyberColors.neonCyan.withOpacity(0.16 * pulse.value),
-                blurRadius: 15,
+                color: CyberColors.neonCyan.withOpacity(0.12 * pulse.value),
+                blurRadius: 20,
               ),
             ],
           ),
-          child: Row(
+          child: Column(
             children: [
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: CyberColors.neonCyan.withOpacity(0.35)),
-                  color: const Color(0xFF08131E),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(7),
-                  child: Image.asset(
-                    'assets/avatars/agent_default.png',
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Center(
-                      child: Text(
-                        initials,
-                        style: TextStyle(
-                          fontFamily: 'DotMatrix',
-                          fontSize: 26,
-                          color: CyberColors.neonCyan,
-                          shadows: [
-                            Shadow(
-                              color: CyberColors.neonCyan.withOpacity(0.9),
-                              blurRadius: 10,
+
+              // ── Top row: photo + identity ──────────────────
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+
+                    // Avatar photo
+                    Container(
+                      width: 88,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: CyberColors.neonCyan.withOpacity(0.35),
+                          width: 1.5,
+                        ),
+                        color: const Color(0xFF08131E),
+                        boxShadow: [
+                          BoxShadow(
+                            color: CyberColors.neonCyan.withOpacity(0.18 * pulse.value),
+                            blurRadius: 14,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(9),
+                        child: Image.asset(
+                          'assets/avatars/agent_default.png',
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Center(
+                            child: Text(
+                              initials,
+                              style: GoogleFonts.orbitron(
+                                fontSize: 34,
+                                fontWeight: FontWeight.w800,
+                                color: CyberColors.neonCyan,
+                                shadows: [Shadow(
+                                  color: CyberColors.neonCyan.withOpacity(0.9),
+                                  blurRadius: 12,
+                                )],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
+
+                    const SizedBox(width: 14),
+
+                    // Identity block
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          // Rank badge
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: CyberColors.neonGreen.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(4),
+                              border: Border.all(
+                                color: CyberColors.neonGreen.withOpacity(0.4),
+                              ),
+                            ),
+                            child: Text(
+                              'RANK  ${GameProgress.title.toUpperCase()}',
+                              style: GoogleFonts.shareTechMono(
+                                fontSize: 9,
+                                color: CyberColors.neonGreen,
+                                letterSpacing: 1.5,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 8),
+
+                          // Codename
+                          Text(
+                            codename,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.orbitron(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: CyberColors.neonCyan,
+                              letterSpacing: 1.2,
+                              shadows: [Shadow(
+                                color: CyberColors.neonCyan.withOpacity(0.6),
+                                blurRadius: 10,
+                              )],
+                            ),
+                          ),
+
+                          const SizedBox(height: 4),
+
+                          // Email
+                          Row(children: [
+                            Icon(Icons.alternate_email,
+                                size: 10,
+                                color: CyberColors.textMuted),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                email,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.shareTechMono(
+                                  fontSize: 9,
+                                  color: CyberColors.textMuted,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                            ),
+                          ]),
+
+                          const SizedBox(height: 12),
+
+                          // XP + cases inline
+                          Row(children: [
+                            _StatPill(
+                              icon: Icons.bolt,
+                              label: '${GameProgress.xp} XP',
+                              color: CyberColors.neonCyan,
+                            ),
+                            const SizedBox(width: 8),
+                            _StatPill(
+                              icon: Icons.task_alt,
+                              label: '${GameProgress.casesSolved} CASES',
+                              color: CyberColors.neonPurple,
+                            ),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(
+
+              // ── Rank progress bar (full width strip) ───────
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      GameProgress.title.toUpperCase(),
-                      style: GoogleFonts.orbitron(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: CyberColors.neonCyan,
-                        letterSpacing: 1.5,
-                      ),
+                    // Label row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'RANK PROGRESS',
+                          style: GoogleFonts.shareTechMono(
+                            fontSize: 8,
+                            color: CyberColors.textMuted,
+                            letterSpacing: 1.5,
+                          ),
+                        ),
+                        Text(
+                          '${(rankProgress * 100).toInt()}%  →  ${GameProgress.nextRankName.toUpperCase()}',
+                          style: GoogleFonts.shareTechMono(
+                            fontSize: 8,
+                            color: CyberColors.neonGreen.withOpacity(0.8),
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 6),
-                    Text(
-                      'XP ${GameProgress.xp} • CASES ${GameProgress.casesSolved}',
-                      style: GoogleFonts.shareTechMono(
-                        fontSize: 10,
-                        color: CyberColors.textSecondary,
-                        letterSpacing: 1,
+                    // Bar
+                    Stack(children: [
+                      Container(
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: CyberColors.neonGreen.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(99),
-                      child: LinearProgressIndicator(
-                        value: rankProgress,
-                        minHeight: 8,
-                        backgroundColor: CyberColors.bgCard,
-                        valueColor: const AlwaysStoppedAnimation(CyberColors.neonGreen),
+                      FractionallySizedBox(
+                        widthFactor: rankProgress.clamp(0.0, 1.0),
+                        child: Container(
+                          height: 6,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: CyberColors.neonGreen,
+                            boxShadow: [BoxShadow(
+                              color: CyberColors.neonGreen.withOpacity(0.5),
+                              blurRadius: 6,
+                            )],
+                          ),
+                        ),
                       ),
-                    ),
+                    ]),
                     const SizedBox(height: 5),
                     Text(
-                      '${(rankProgress * 100).toInt()}% TO ${GameProgress.nextRankName.toUpperCase()}  •  ${GameProgress.xpToNextRank} XP REM',
+                      '${GameProgress.xpToNextRank} XP REMAINING TO NEXT RANK',
                       style: GoogleFonts.shareTechMono(
-                        fontSize: 9,
-                        color: CyberColors.neonGreen.withOpacity(0.86),
+                        fontSize: 8,
+                        color: CyberColors.textMuted,
                         letterSpacing: 1,
                       ),
                     ),
                   ],
                 ),
               ),
+
             ],
           ),
         );
@@ -280,28 +417,53 @@ class _AgentIdPanel extends StatelessWidget {
   }
 }
 
+// Small pill badge used inside the agent panel
+class _StatPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  const _StatPill({required this.icon, required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(children: [
+        Icon(icon, size: 10, color: color),
+        const SizedBox(width: 4),
+        Text(label, style: GoogleFonts.shareTechMono(
+          fontSize: 9,
+          color: color,
+          letterSpacing: 1,
+          fontWeight: FontWeight.bold,
+        )),
+      ]),
+    );
+  }
+}
+
 class _StatsGrid extends StatelessWidget {
   final _stats = const [
-    _StatData('CASES SOLVED', Icons.task_alt, CyberColors.neonBlue),
-    _StatData('ACCURACY', Icons.gps_fixed, CyberColors.neonPurple),
-    _StatData('TOTAL XP', Icons.bolt, CyberColors.neonCyan),
-    _StatData('NEXT RANK', Icons.workspace_premium_outlined, CyberColors.neonAmber),
+    _StatData('CASES SOLVED',  Icons.task_alt,                  CyberColors.neonBlue),
+    _StatData('ACCURACY',      Icons.gps_fixed,                 CyberColors.neonPurple),
+    _StatData('TOTAL XP',      Icons.bolt,                      CyberColors.neonCyan),
+    _StatData('FLAGS CORRECT', Icons.flag_outlined,             CyberColors.neonAmber),
   ];
 
   _StatsGrid();
 
   String _valueFor(String label) {
     switch (label) {
-      case 'CASES SOLVED':
-        return '${GameProgress.casesSolved}';
-      case 'ACCURACY':
-        return '${GameProgress.accuracy.toStringAsFixed(1)}%';
-      case 'TOTAL XP':
-        return '${GameProgress.xp}';
-      case 'NEXT RANK':
-        return GameProgress.nextRankName.toUpperCase();
-      default:
-        return '--';
+      case 'CASES SOLVED':  return '${GameProgress.casesSolved}';
+      case 'ACCURACY':      return '${GameProgress.accuracy.toStringAsFixed(1)}%';
+      case 'TOTAL XP':      return '${GameProgress.xp}';
+      case 'FLAGS CORRECT': return '${GameProgress.correctFlags}/${GameProgress.totalFlags}';
+      default:              return '--';
     }
   }
 
@@ -387,9 +549,18 @@ class _ActionRow extends StatelessWidget {
             icon: Icons.logout,
             label: 'LOG OUT',
             color: CyberColors.neonRed,
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Logged out')),
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              GameProgress.resetAll();
+              if (!context.mounted) return;
+              Navigator.of(context).pushAndRemoveUntil(
+                PageRouteBuilder(
+                  pageBuilder: (_, __, ___) => const SignupScreen(),
+                  transitionsBuilder: (_, anim, __, child) =>
+                      FadeTransition(opacity: anim, child: child),
+                  transitionDuration: const Duration(milliseconds: 400),
+                ),
+                    (route) => false,
               );
             },
           ),
