@@ -19,6 +19,7 @@ import '../logic/game_engine.dart';
 import '../state/case_engine_provider.dart';
 import '../services/game_progress.dart';
 import '../services/case_repository.dart';
+import '../services/progress_service.dart'; // ← ADDED: Firestore integration
 import 'profile_screen.dart';
 import 'case_analysis_screen.dart';
 
@@ -144,6 +145,22 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
       GameProgress.recordFlag(correct: true);
       _nextUnlockedCaseTitle = _findNextUnlockedCase(engine.caseFile);
 
+      // ── ADDED: Persist win to Firestore ──────────────────
+      // Derive a 0–3 star score from the XP breakdown:
+      //   3 = perfect outcome with no deductions
+      //   2 = partial or minor deductions
+      //   1 = solved but heavily penalised
+      final int score = (_outcomeType == OutcomeType.perfect
+          ? (engine.irrelevantEvidenceCount == 0 && engine.hintsUsed == 0 ? 3 : 2)
+          : 1).clamp(0, 3);
+
+      ProgressService.instance.recordAttempt(
+        caseId: engine.caseFile.id,
+        solved: true,
+        score: score,
+      );
+      // ─────────────────────────────────────────────────────
+
       _barProgress = Tween<double>(begin: 0.0, end: GameProgress.rankProgress)
           .animate(CurvedAnimation(parent: _barCtrl, curve: Curves.easeOutCubic));
 
@@ -169,11 +186,21 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
       });
     } else if (outcomeType == OutcomeType.wrongAccusation) {
       GameProgress.recordFlag(correct: false);
+
+      // ── ADDED: Persist failed attempt to Firestore ────────
+      ProgressService.instance.recordAttempt(
+        caseId: engine.caseFile.id,
+        solved: false,
+        score: 0,
+      );
+      // ─────────────────────────────────────────────────────
+
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) _escapeCtrl.forward();
       });
     } else {
-      // cold case / partial with 0 evidence
+      // cold case / partial with 0 evidence — no recordAttempt,
+      // the player never actually submitted a suspect accusation.
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) _coldCtrl.forward();
       });

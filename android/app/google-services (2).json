@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1015763305992",
+    "project_id": "cyber-investigator-app-123",
+    "storage_bucket": "cyber-investigator-app-123.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015763305992:android:ff2da82fd72593532533bd",
+        "android_client_info": {
+          "package_name": "com.example.cyber_investigator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-8wlxfsrSxIfHdYrLEW5vx7fMU4T-grM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015763305992:android:4d434fd1674e61bb2533bd",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-8wlxfsrSxIfHdYrLEW5vx7fMU4T-grM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,6 +11,7 @@ import 'screens/home_screen.dart';
 import 'theme/cyber_theme.dart';
 import 'firebase_options.dart';
 import 'Auth/auth_screen.dart';
+import 'services/progress_service.dart'; // ← ADD THIS
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +20,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // Initialize progress service (loads local cache + syncs Firestore)
+  await ProgressService.instance.init(); // ← ADD THIS
 
   // Lock to portrait
   SystemChrome.setPreferredOrientations([
