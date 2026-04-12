@@ -205,8 +205,8 @@ class _StorylineScreenState extends State<StorylineScreen>
                 children: [
                   Expanded(
                     child: _VisualInfoCard(
-                      icon: Icons.calendar_today,
-                      title: 'DATE',
+                      icon: Icons.file_copy_outlined,
+                      title: 'CASE NUMBER',
                       value: caseFile.caseNumber,
                       color: CyberColors.neonCyan,
                     ),
@@ -216,7 +216,7 @@ class _StorylineScreenState extends State<StorylineScreen>
                     child: _VisualInfoCard(
                       icon: Icons.schedule,
                       title: 'TIME ESTIMATE',
-                      value: '${caseFile.estimatedDuration} min',
+                      value: '${caseFile.estimatedDuration}',
                       color: CyberColors.neonCyan,
                     ),
                   ),

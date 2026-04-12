@@ -277,7 +277,7 @@ String _tierName(String tier) {
     case 'hard':
       return 'BLACK OPS';
     case 'advanced':
-      return 'CLASSIFIED';
+      return 'ADVANCED';
     default:
       return tier.toUpperCase();
   }
