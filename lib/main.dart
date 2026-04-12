@@ -1,6 +1,12 @@
 // lib/main.dart
 // ═══════════════════════════════════════════════════════════════
 //  CYBER INVESTIGATOR — Entry Point (with Firebase Auth)
+//
+//  Auth flow:
+//    • Not logged in  →  SignupScreen  (first-time landing)
+//    • Tap "ALREADY ENLISTED? ACCESS PORTAL"  →  LoginScreen
+//    • Tap "NEW OPERATIVE? REQUEST ACCESS"     →  SignupScreen
+//    • Successful auth  →  MainMenuScreen
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
@@ -8,29 +14,22 @@ import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/home_screen.dart';
+import 'screens/signup_screen.dart';
 import 'theme/cyber_theme.dart';
 import 'firebase_options.dart';
-import 'Auth/auth_screen.dart';
-import 'services/progress_service.dart'; // ← ADD THIS
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Initialize progress service (loads local cache + syncs Firestore)
-  await ProgressService.instance.init(); // ← ADD THIS
-
-  // Lock to portrait
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // Transparent status bar so background shows through
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
@@ -49,11 +48,7 @@ class CyberInvestigatorApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Cyber Investigator',
-
-      // Apply the new cyber theme
       theme: buildCyberTheme(),
-
-      // Smooth page transitions globally
       onGenerateRoute: (settings) {
         return PageRouteBuilder(
           settings: settings,
@@ -63,31 +58,19 @@ class CyberInvestigatorApp extends StatelessWidget {
           transitionDuration: const Duration(milliseconds: 300),
         );
       },
-
-      // 🔐 Auth gate — shows login screen if not logged in,
-      // game home screen if already logged in
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
-          // Still connecting to Firebase
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Scaffold(
               backgroundColor: Color(0xFF05070D),
               body: Center(
-                child: CircularProgressIndicator(
-                  color: Color(0xFF00F0FF),
-                ),
+                child: CircularProgressIndicator(color: Color(0xFF00F0FF)),
               ),
             );
           }
-
-          // User is logged in → go to game
-          if (snapshot.hasData) {
-            return const MainMenuScreen();
-          }
-
-          // Not logged in → show auth screen
-          return const AuthScreen();
+          if (snapshot.hasData) return const MainMenuScreen();
+          return const SignupScreen();
         },
       ),
     );
