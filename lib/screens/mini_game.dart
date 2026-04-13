@@ -470,21 +470,20 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame> with TickerProvide
                     ]))],
 
               const SizedBox(height: 20),
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                alignment: WrapAlignment.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(
-                    width: 220,
+                    width: 190,
                     child: CyberButton(
                       label: 'Submit Decode',
                       icon: Icons.check_outlined,
                       onTap: () => _check(engine),
                     ),
                   ),
+                  SizedBox(width: 12), // spacing
                   SizedBox(
-                    width: 180,
+                    width: 150,
                     child: CyberButton(
                       label: 'Hint (${mg.hints.length - _hintsUsed} left)',
                       icon: Icons.lightbulb_outline,
@@ -495,16 +494,7 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame> with TickerProvide
                     ),
                   ),
                 ],
-              ),
-              Row(children: [
-                Expanded(child: CyberButton(label: 'Submit Decode',
-                    icon: Icons.check_outlined, onTap: () => _check(engine))),
-                const SizedBox(width: 12),
-                CyberButton(label: 'Hint (${mg.hints.length - _hintsUsed} left)',
-                    icon: Icons.lightbulb_outline, isOutlined: true, isSmall: true,
-                    accentColor: CyberColors.neonAmber,
-                    onTap: _hintsUsed < mg.hints.length ? () => _hint(engine) : null),
-              ]),
+              )
             ]),
           )),
           if (_success) _SuccessOverlay(

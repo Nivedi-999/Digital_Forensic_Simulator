@@ -135,6 +135,7 @@ class MinigameConfig {
   // alibi_verify
   final List<AlibiEntry> alibis;
   final Map<String, String>? timelineEvent;
+  final Map<String, double> suspicionEffectsOnSolve;
 
   const MinigameConfig({
     required this.id,
@@ -162,6 +163,7 @@ class MinigameConfig {
     this.metaSuspects = const [],
     this.alibis = const [],
     this.timelineEvent,
+    this.suspicionEffectsOnSolve = const {},
   });
 
   factory MinigameConfig.fromJson(Map<String, dynamic> json) {
@@ -202,6 +204,12 @@ class MinigameConfig {
       timelineEvent: json['timelineEvent'] != null
           ? Map<String, String>.from(json['timelineEvent'] as Map)
           : null,
+      suspicionEffectsOnSolve:
+      (json['suspicionEffectsOnSolve'] is Map)
+          ? Map<String, dynamic>.from(
+        json['suspicionEffectsOnSolve'] as Map,
+      ).map((k, v) => MapEntry(k, (v as num).toDouble()))
+          : const {},
     );
   }
 }
@@ -219,6 +227,7 @@ class EvidenceItem {
   final List<EvidenceRow> rows;
   final bool isHidden;
   final String? unlockedByMinigameId;
+  final Map<String, double> suspicionEffects;
 
   const EvidenceItem({
     required this.id,
@@ -233,6 +242,7 @@ class EvidenceItem {
     this.rows = const [],
     this.isHidden = false,
     this.unlockedByMinigameId,
+    this.suspicionEffects = const {},
   });
 
   factory EvidenceItem.fromJson(Map<String, dynamic> json,
@@ -254,6 +264,10 @@ class EvidenceItem {
           .toList() ?? [],
       isHidden: isHidden,
       unlockedByMinigameId: json['unlockedByMinigame'] as String?,
+      suspicionEffects: (json['suspicionEffects'] is Map)
+          ? Map<String, dynamic>.from(json['suspicionEffects'] as Map)
+          .map((k, v) => MapEntry(k, (v as num).toDouble()))
+          : const {},
     );
   }
 }

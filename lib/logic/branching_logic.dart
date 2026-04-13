@@ -315,12 +315,23 @@ class BranchingLogic {
   };
 
   void applyEvidenceEffects(String evidenceId, Map<String, double> suspicion) {
-    final effects = _evidenceEffects[evidenceId];
-    if (effects == null) return;
-    for (final entry in effects.entries) {
-      final current = suspicion[entry.key] ?? 0.0;
-      suspicion[entry.key] = (current + entry.value).clamp(0.0, 1.0);
+    final fromJson = caseFile.evidenceItemById(evidenceId)?.suspicionEffects;
+    if (fromJson != null && fromJson.isNotEmpty) {
+      _applyEffectsMap(fromJson, suspicion);
+      return;
     }
+    final effects = _evidenceEffects[evidenceId];
+    if (effects != null) {
+      _applyEffectsMap(effects, suspicion);
+      return;
+    }
+    final item = caseFile.evidenceItemById(evidenceId);
+    final suspectId = item?.pointsToSuspectId;
+    if (suspectId == null || suspectId.isEmpty) return;
+
+    final fallbackDelta = item?.isKeyEvidence == true ? 0.18 : 0.10;
+    final current = suspicion[suspectId] ?? 0.0;
+    suspicion[suspectId] = (current + fallbackDelta).clamp(0.0, 1.0);
   }
 
   static const Map<String, Map<String, double>> _minigameEffects = {
@@ -404,8 +415,33 @@ class BranchingLogic {
   };
 
   void applyMinigameEffects(String minigameId, Map<String, double> suspicion) {
+    for (final panel in caseFile.evidencePanels) {
+      final mg = panel.minigame;
+      if (mg == null || mg.id != minigameId) continue;
+
+      if (mg.suspicionEffectsOnSolve.isNotEmpty) {
+        _applyEffectsMap(mg.suspicionEffectsOnSolve, suspicion);
+        return;
+      }
+
+      if (mg.unlocksHiddenSuspectId != null &&
+          mg.unlocksHiddenSuspectId!.isNotEmpty) {
+        final hiddenId = mg.unlocksHiddenSuspectId!;
+        final current = suspicion[hiddenId] ?? 0.0;
+        suspicion[hiddenId] = (current + 0.10).clamp(0.0, 1.0);
+      }
+      break;
+    }
+
     final effects = _minigameEffects[minigameId];
     if (effects == null) return;
+    _applyEffectsMap(effects, suspicion);
+  }
+
+  void _applyEffectsMap(
+      Map<String, double> effects,
+      Map<String, double> suspicion,
+      ) {
     for (final entry in effects.entries) {
       final current = suspicion[entry.key] ?? 0.0;
       suspicion[entry.key] = (current + entry.value).clamp(0.0, 1.0);

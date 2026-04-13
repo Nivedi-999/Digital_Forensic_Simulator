@@ -59,12 +59,37 @@ class CaseRepository {
   static String _keyFromPath(String path) =>
       path.split('/').last.replaceAll('.json', '');
 
+  Future<List<String>> _discoverCasePathsFromAssetManifest() async {
+    try {
+      final rawManifest = await rootBundle.loadString('AssetManifest.json');
+      final decoded = jsonDecode(rawManifest);
+      if (decoded is! Map<String, dynamic>) return const [];
+
+      final discovered = decoded.keys
+          .where((p) => p.startsWith('assets/cases/') && p.endsWith('.json'))
+          .toSet()
+          .toList()
+        ..sort();
+      return discovered;
+    } catch (_) {
+      return const [];
+    }
+  }
+
   Future<void> loadAll() async {
     if (_loaded) return;
     _cache.clear();
     _loadedIds.clear();
 
-    for (final path in _casePaths) {
+    final discoveredPaths = await _discoverCasePathsFromAssetManifest();
+    final pathsToLoad = [..._casePaths];
+    for (final path in discoveredPaths) {
+      if (!pathsToLoad.contains(path)) {
+        pathsToLoad.add(path);
+      }
+    }
+
+    for (final path in pathsToLoad) {
       final key = _keyFromPath(path);
       try {
         final raw = await rootBundle.loadString(path);
@@ -83,12 +108,12 @@ class CaseRepository {
 
     // Summary log so it is easy to spot missing cases
     // ignore: avoid_print
-    print('[CaseRepository] Loaded ${_cache.length}/${_casePaths.length} cases.');
+    print('[CaseRepository] Loaded ${_cache.length}/${pathsToLoad.length} cases.');
   }
 
   /// All loaded cases in registration order.
-  List<CaseFile> get all => _casePaths
-      .map((p) => _cache[_keyFromPath(p)])
+  List<CaseFile> get all => _loadedIds
+      .map((id) => _cache[id])
       .whereType<CaseFile>()
       .toList();
 
