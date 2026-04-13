@@ -14,6 +14,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../theme/cyber_theme.dart';
 import 'home_screen.dart';
 import 'signup_screen.dart';
+import '../services/progress_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -101,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen>
         email: _emailCtrl.text.trim(),
         password: _passwordCtrl.text.trim(),
       );
+      await ProgressService.instance.init();
 
       if (!mounted) return;
 

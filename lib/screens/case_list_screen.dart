@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/cyber_theme.dart';
 import '../models/case.dart';
 import '../services/case_repository.dart';
-import '../services/game_progress.dart';
+import '../services/progress_service.dart'; // ← CHANGED: replaced game_progress.dart
 import 'case_story_screen.dart';
 
 class CaseListScreen extends StatefulWidget {
@@ -49,6 +49,7 @@ class _CaseListScreenState extends State<CaseListScreen>
 
   Future<void> _loadCases() async {
     await CaseRepository.instance.loadAll();
+    await ProgressService.instance.init(); // ← ADDED: pull Firestore progress first
     if (!mounted) return;
 
     final all = CaseRepository.instance.all;
@@ -79,10 +80,15 @@ class _CaseListScreenState extends State<CaseListScreen>
     // First case in tier is always unlocked
     if (tier.first == c.id) return true;
 
-    return GameProgress.isCaseUnlocked(c.id, tier);
+    // ← CHANGED: use ProgressService instead of GameProgress
+    // A case is unlocked if the previous case in the tier is completed
+    final idx = tier.indexOf(c.id);
+    if (idx <= 0) return true;
+    return ProgressService.instance.isCompleted(tier[idx - 1]);
   }
 
-  bool _isCompleted(CaseFile c) => GameProgress.isCaseCompleted(c.id);
+  // ← CHANGED: use ProgressService instead of GameProgress
+  bool _isCompleted(CaseFile c) => ProgressService.instance.isCompleted(c.id);
 
   @override
   void dispose() {
