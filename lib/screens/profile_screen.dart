@@ -82,7 +82,9 @@ class _ProfileScreenState extends State<ProfileScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _AgentIdPanel(pulse: _pulse, rankProgress: rankProgress),
+                          _AgentIdPanel(pulse: _pulse),
+                          const SizedBox(height: 12),
+                          _RankProgressBar(pulse: _pulse, rankProgress: rankProgress),
                           const SizedBox(height: 16),
                           const _SectionLabel(
                             title: 'PERFORMANCE MATRIX',
@@ -171,9 +173,8 @@ class _ProfileTopBar extends StatelessWidget {
 
 class _AgentIdPanel extends StatelessWidget {
   final Animation<double> pulse;
-  final double rankProgress;
 
-  const _AgentIdPanel({required this.pulse, required this.rankProgress});
+  const _AgentIdPanel({required this.pulse});
 
   @override
   Widget build(BuildContext context) {
@@ -343,72 +344,6 @@ class _AgentIdPanel extends StatelessWidget {
                 ),
               ),
 
-              // ── Rank progress bar (full width strip) ───────
-              Container(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Label row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'RANK PROGRESS',
-                          style: GoogleFonts.shareTechMono(
-                            fontSize: 8,
-                            color: CyberColors.textMuted,
-                            letterSpacing: 1.5,
-                          ),
-                        ),
-                        Text(
-                          '${(rankProgress * 100).toInt()}%  →  ${GameProgress.nextRankName.toUpperCase()}',
-                          style: GoogleFonts.shareTechMono(
-                            fontSize: 8,
-                            color: CyberColors.neonGreen.withOpacity(0.8),
-                            letterSpacing: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    // Bar
-                    Stack(children: [
-                      Container(
-                        height: 6,
-                        decoration: BoxDecoration(
-                          color: CyberColors.neonGreen.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                      ),
-                      FractionallySizedBox(
-                        widthFactor: rankProgress.clamp(0.0, 1.0),
-                        child: Container(
-                          height: 6,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            color: CyberColors.neonGreen,
-                            boxShadow: [BoxShadow(
-                              color: CyberColors.neonGreen.withOpacity(0.5),
-                              blurRadius: 6,
-                            )],
-                          ),
-                        ),
-                      ),
-                    ]),
-                    const SizedBox(height: 5),
-                    Text(
-                      '${GameProgress.xpToNextRank} XP REMAINING TO NEXT RANK',
-                      style: GoogleFonts.shareTechMono(
-                        fontSize: 8,
-                        color: CyberColors.textMuted,
-                        letterSpacing: 1,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
             ],
           ),
         );
@@ -447,82 +382,177 @@ class _StatPill extends StatelessWidget {
   }
 }
 
-class _StatsGrid extends StatelessWidget {
-  final _stats = const [
-    _StatData('CASES SOLVED',  Icons.task_alt,                  CyberColors.neonBlue),
-    _StatData('ACCURACY',      Icons.gps_fixed,                 CyberColors.neonPurple),
-    _StatData('TOTAL XP',      Icons.bolt,                      CyberColors.neonCyan),
-    _StatData('FLAGS CORRECT', Icons.flag_outlined,             CyberColors.neonAmber),
-  ];
+// ─────────────────────────────────────────────────────────────
+//  STANDALONE RANK PROGRESS BAR
+// ─────────────────────────────────────────────────────────────
 
+class _RankProgressBar extends StatelessWidget {
+  final Animation<double> pulse;
+  final double rankProgress;
+  const _RankProgressBar({required this.pulse, required this.rankProgress});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: pulse,
+      builder: (_, __) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: CyberColors.neonGreen.withOpacity(0.04),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+            color: CyberColors.neonGreen.withOpacity(0.5 + pulse.value * 0.3),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: CyberColors.neonGreen.withOpacity(0.12 * pulse.value),
+              blurRadius: 16,
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(children: [
+                  Icon(Icons.workspace_premium_outlined,
+                      color: CyberColors.neonGreen, size: 13),
+                  const SizedBox(width: 6),
+                  Text(
+                    'RANK PROGRESS',
+                    style: GoogleFonts.shareTechMono(
+                      fontSize: 9,
+                      color: CyberColors.neonGreen,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ]),
+                Text(
+                  '${(rankProgress * 100).toInt()}%  →  ${GameProgress.nextRankName.toUpperCase()}',
+                  style: GoogleFonts.shareTechMono(
+                    fontSize: 9,
+                    color: CyberColors.neonGreen.withOpacity(0.8),
+                    letterSpacing: 1,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Stack(children: [
+              Container(
+                height: 7,
+                decoration: BoxDecoration(
+                  color: CyberColors.neonGreen.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              FractionallySizedBox(
+                widthFactor: rankProgress.clamp(0.0, 1.0),
+                child: Container(
+                  height: 7,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    color: CyberColors.neonGreen,
+                    boxShadow: [BoxShadow(
+                      color: CyberColors.neonGreen.withOpacity(0.6),
+                      blurRadius: 8,
+                    )],
+                  ),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 6),
+            Text(
+              '${GameProgress.xpToNextRank} XP REMAINING',
+              style: GoogleFonts.shareTechMono(
+                fontSize: 8,
+                color: CyberColors.textMuted,
+                letterSpacing: 1,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatsGrid extends StatelessWidget {
   _StatsGrid();
+
+  static const _stats = [
+    _StatData('CASES SOLVED', Icons.task_alt,                   CyberColors.neonBlue),
+    _StatData('ACCURACY',     Icons.gps_fixed,                  CyberColors.neonPurple),
+    _StatData('TOTAL XP',     Icons.bolt,                       CyberColors.neonCyan),
+    _StatData('NEXT RANK',    Icons.workspace_premium_outlined, CyberColors.neonAmber),
+  ];
 
   String _valueFor(String label) {
     switch (label) {
-      case 'CASES SOLVED':  return '${GameProgress.casesSolved}';
-      case 'ACCURACY':      return '${GameProgress.accuracy.toStringAsFixed(1)}%';
-      case 'TOTAL XP':      return '${GameProgress.xp}';
-      case 'FLAGS CORRECT': return '${GameProgress.correctFlags}/${GameProgress.totalFlags}';
-      default:              return '--';
+      case 'CASES SOLVED': return '${GameProgress.casesSolved}';
+      case 'ACCURACY':     return '${GameProgress.accuracy.toStringAsFixed(1)}%';
+      case 'TOTAL XP':     return '${GameProgress.xp}';
+      case 'NEXT RANK':    return GameProgress.nextRankName.toUpperCase();
+      default:             return '--';
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      itemCount: _stats.length,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 1.55,
-      ),
-      itemBuilder: (_, i) {
-        final stat = _stats[i];
+    return Column(
+      children: List.generate(_stats.length, (i) {
+        final stat  = _stats[i];
+        final value = _valueFor(stat.label);
         return Container(
-          padding: const EdgeInsets.all(12),
+          margin: EdgeInsets.only(bottom: i < _stats.length - 1 ? 10 : 0),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
             color: stat.color.withOpacity(0.05),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: stat.color.withOpacity(0.28)),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Row(
-                children: [
-                  Icon(stat.icon, color: stat.color, size: 15),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      stat.label,
-                      style: GoogleFonts.shareTechMono(
-                        fontSize: 9,
-                        color: stat.color,
-                        letterSpacing: 1.2,
-                      ),
-                    ),
-                  ),
-                ],
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: stat.color.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: stat.color.withOpacity(0.3)),
+                ),
+                child: Icon(stat.icon, color: stat.color, size: 16),
               ),
-              const Spacer(),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  stat.label,
+                  style: GoogleFonts.shareTechMono(
+                    fontSize: 10,
+                    color: stat.color.withOpacity(0.8),
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
               Text(
-                _valueFor(stat.label),
+                value,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'DotMatrix',
-                  fontSize: 20,
+                  fontSize: 22,
                   color: stat.color,
-                  shadows: [Shadow(color: stat.color.withOpacity(0.9), blurRadius: 8)],
+                  shadows: [Shadow(color: stat.color.withOpacity(0.8), blurRadius: 8)],
                 ),
               ),
             ],
           ),
         );
-      },
+      }),
     );
   }
 }

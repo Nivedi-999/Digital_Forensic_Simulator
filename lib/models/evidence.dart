@@ -113,6 +113,9 @@ class MinigameConfig {
   // caesar_cipher
   final String? cipherText;
   final String? solution;
+  final String? jwtEncoded;
+  final Map<String, dynamic>? decodedPayload;
+  final String? iatHumanReadable;
 
   // ip_trace
   final List<String> decoys;
@@ -145,6 +148,9 @@ class MinigameConfig {
     this.successMessage,
     this.cipherText,
     this.solution,
+    this.jwtEncoded,
+    this.decodedPayload,
+    this.iatHumanReadable,
     this.decoys = const [],
     this.emailFrom,
     this.emailSubject,
@@ -172,6 +178,11 @@ class MinigameConfig {
       successMessage: onSuccess?['message'] as String?,
       cipherText: json['cipherText'] as String?,
       solution: json['solution'] as String?,
+      jwtEncoded: json['jwtEncoded'] as String?,
+      decodedPayload: json['decodedPayload'] is Map<String, dynamic>
+          ? json['decodedPayload'] as Map<String, dynamic>
+          : null,
+      iatHumanReadable: json['iatHumanReadable'] as String?,
       decoys: (json['decoys'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       emailFrom: json['emailFrom'] as String?,
       emailSubject: json['emailSubject'] as String?,

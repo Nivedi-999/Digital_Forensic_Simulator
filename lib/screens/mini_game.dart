@@ -3,6 +3,7 @@
 
 import 'dart:async';
 import 'dart:math';
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -35,17 +36,111 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen> {
           child: const Center(child: Text('No mini-game found.')));
     }
     switch (mg.type) {
+      case 'base64_decode': return _Base64DecodeGame(panelId: widget.panelId, minigame: mg);
       case 'ip_trace': return _IpTraceGame(panelId: widget.panelId, minigame: mg);
       case 'code_crack': return _CodeCrackGame(panelId: widget.panelId, minigame: mg);
       case 'phishing_analysis': return _PhishingGame(panelId: widget.panelId, minigame: mg);
       case 'metadata_correlation': return _MetadataCorrelationGame(panelId: widget.panelId, minigame: mg);
       case 'alibi_verify': return _AlibiVerifyGame(panelId: widget.panelId, minigame: mg);
-      case 'caesar_cipher':
-      default: return _CaesarCipherGame(panelId: widget.panelId, minigame: mg);
+      case 'caesar_cipher':return _CaesarCipherGame(panelId: widget.panelId, minigame: mg);
+      default: return _UnsupportedMiniGame(panelId: widget.panelId, minigame: mg);
     }
   }
   @override
   Widget buildAriaLayer({void Function()? onDismiss}) => const SizedBox.shrink();
+}
+
+
+class _UnsupportedMiniGame extends StatefulWidget {
+  final String panelId;
+  final MinigameConfig minigame;
+  const _UnsupportedMiniGame({required this.panelId, required this.minigame});
+
+  @override
+  State<_UnsupportedMiniGame> createState() => _UnsupportedMiniGameState();
+}
+
+class _UnsupportedMiniGameState extends State<_UnsupportedMiniGame> {
+  bool _success = false;
+  int _hintsUsed = 0;
+  String _hintText = '';
+
+  void _complete(CaseEngine engine) {
+    engine.solveMinigame(widget.minigame.id);
+    setState(() => _success = true);
+  }
+
+  void _useHint(CaseEngine engine) {
+    final hints = widget.minigame.hints;
+    if (_hintsUsed < hints.length) {
+      engine.recordHintUsed();
+      setState(() {
+        _hintText = hints[_hintsUsed];
+        _hintsUsed++;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final engine = CaseEngineProvider.of(context);
+    final mg = widget.minigame;
+
+    return AppShell(
+      title: 'Mini-Game',
+      showBack: true,
+      showBottomNav: false,
+      child: Stack(children: [
+        SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            NeonContainer(
+              borderColor: CyberColors.neonAmber,
+              padding: const EdgeInsets.all(16),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(mg.title, style: CyberText.sectionTitle.copyWith(color: CyberColors.neonAmber)),
+                const SizedBox(height: 8),
+                Text('This challenge type (${mg.type}) is now rendered in compatibility mode.',
+                    style: CyberText.bodySmall),
+                if ((mg.instruction ?? '').isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(mg.instruction!, style: CyberText.bodySmall.copyWith(height: 1.5)),
+                ],
+              ]),
+            ),
+            if (_hintText.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              NeonContainer(
+                borderColor: CyberColors.neonPurple,
+                child: Text(_hintText, style: CyberText.bodySmall),
+              ),
+            ],
+            const SizedBox(height: 20),
+            Wrap(spacing: 12, runSpacing: 12, children: [
+              CyberButton(
+                label: 'Complete Challenge',
+                icon: Icons.check_outlined,
+                onTap: () => _complete(engine),
+              ),
+              CyberButton(
+                label: 'Hint (${mg.hints.length - _hintsUsed} left)',
+                icon: Icons.lightbulb_outline,
+                isOutlined: true,
+                isSmall: true,
+                accentColor: CyberColors.neonAmber,
+                onTap: _hintsUsed < mg.hints.length ? () => _useHint(engine) : null,
+              ),
+            ]),
+          ]),
+        ),
+        if (_success)
+          _SuccessOverlay(
+            message: mg.successMessage ?? 'Challenge completed.',
+            onContinue: () => Navigator.pop(context),
+          ),
+      ]),
+    );
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -375,6 +470,32 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame> with TickerProvide
                     ]))],
 
               const SizedBox(height: 20),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                alignment: WrapAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 220,
+                    child: CyberButton(
+                      label: 'Submit Decode',
+                      icon: Icons.check_outlined,
+                      onTap: () => _check(engine),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 180,
+                    child: CyberButton(
+                      label: 'Hint (${mg.hints.length - _hintsUsed} left)',
+                      icon: Icons.lightbulb_outline,
+                      isOutlined: true,
+                      isSmall: true,
+                      accentColor: CyberColors.neonAmber,
+                      onTap: _hintsUsed < mg.hints.length ? () => _hint(engine) : null,
+                    ),
+                  ),
+                ],
+              ),
               Row(children: [
                 Expanded(child: CyberButton(label: 'Submit Decode',
                     icon: Icons.check_outlined, onTap: () => _check(engine))),
@@ -412,6 +533,167 @@ class _WheelArrow extends StatelessWidget {
           color: CyberColors.neonPurple, size: 22),
     ),
   );
+}
+
+class _Base64DecodeGame extends StatefulWidget {
+  final String panelId;
+  final MinigameConfig minigame;
+  const _Base64DecodeGame({required this.panelId, required this.minigame});
+
+  @override
+  State<_Base64DecodeGame> createState() => _Base64DecodeGameState();
+}
+
+class _Base64DecodeGameState extends State<_Base64DecodeGame> {
+  bool _success = false;
+  int _hintsUsed = 0;
+  String _feedback = '';
+
+  String _decodedPreview(String jwt) {
+    try {
+      final parts = jwt.split('.');
+      if (parts.length < 2) return 'Invalid JWT format';
+      final payload = parts[1];
+      final normalized = base64Url.normalize(payload);
+      final bytes = base64Url.decode(normalized);
+      return utf8.decode(bytes);
+    } catch (_) {
+      return 'Unable to decode payload. Check JWT format.';
+    }
+  }
+
+  void _submit(CaseEngine engine) {
+    engine.solveMinigame(widget.minigame.id);
+    setState(() => _success = true);
+    HapticFeedback.heavyImpact();
+  }
+
+  void _hint(CaseEngine engine) {
+    final hints = widget.minigame.hints;
+    if (_hintsUsed < hints.length) {
+      engine.recordHintUsed();
+      setState(() {
+        _feedback = hints[_hintsUsed];
+        _hintsUsed++;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final engine = CaseEngineProvider.of(context);
+    final mg = widget.minigame;
+    final encoded = (mg.jwtEncoded ?? '').trim();
+    final decoded = encoded.isEmpty ? 'No encoded payload found for this challenge.' : _decodedPreview(encoded);
+
+    return AppShell(
+      title: 'Mini-Game',
+      showBack: true,
+      showBottomNav: false,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 40),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                NeonContainer(
+                  borderColor: CyberColors.neonPurple,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(mg.title, style: CyberText.sectionTitle.copyWith(color: CyberColors.neonPurple)),
+                      if ((mg.instruction ?? '').isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Text(mg.instruction!, style: CyberText.bodySmall.copyWith(height: 1.5)),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                NeonContainer(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('ENCODED JWT', style: CyberText.caption.copyWith(letterSpacing: 2)),
+                    const SizedBox(height: 8),
+                    SelectableText(
+                      encoded.isEmpty ? 'N/A' : encoded,
+                      style: const TextStyle(
+                        fontFamily: 'DotMatrix',
+                        fontSize: 17,
+                        color: CyberColors.neonAmber,
+                        height: 1.35,
+                      ),
+                    ),
+                  ]),
+                ),
+                const SizedBox(height: 16),
+                NeonContainer(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text('DECODED PAYLOAD', style: CyberText.caption.copyWith(letterSpacing: 2)),
+                    const SizedBox(height: 8),
+                    SelectableText(
+                      decoded,
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 14,
+                        color: CyberColors.neonCyan,
+                        height: 1.4,
+                      ),
+                    ),
+                    if ((mg.iatHumanReadable ?? '').isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Text('IAT: ${mg.iatHumanReadable!}', style: CyberText.bodySmall),
+                    ],
+                  ]),
+                ),
+                if (_feedback.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: CyberColors.neonAmber.withOpacity(0.08),
+                      borderRadius: CyberRadius.small,
+                      border: Border.all(color: CyberColors.neonAmber.withOpacity(0.3)),
+                    ),
+                    child: Text(_feedback, style: const TextStyle(color: CyberColors.neonAmber, fontSize: 13)),
+                  ),
+                ],
+                const SizedBox(height: 20),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    CyberButton(
+                      label: 'Confirm Findings',
+                      icon: Icons.check_outlined,
+                      onTap: () => _submit(engine),
+                    ),
+                    CyberButton(
+                      label: 'Hint (${mg.hints.length - _hintsUsed} left)',
+                      icon: Icons.lightbulb_outline,
+                      isOutlined: true,
+                      isSmall: true,
+                      accentColor: CyberColors.neonAmber,
+                      onTap: _hintsUsed < mg.hints.length ? () => _hint(engine) : null,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (_success)
+            _SuccessOverlay(
+              message: mg.successMessage ?? 'Decoded successfully.',
+              onContinue: () => Navigator.pop(context),
+            ),
+        ],
+      ),
+    );
+  }
 }
 
 class _CipherWheelPainter extends CustomPainter {
@@ -966,9 +1248,10 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
   @override
   void initState() {
     super.initState();
-    _currentIndices = [0, 0, 0];
-    _isSpinning = [false, false, false];
-    _spinCtrls = List.generate(3, (_) => AnimationController(
+    final reelCount = _reelCount;
+    _currentIndices = List<int>.filled(reelCount, 0);
+    _isSpinning = List<bool>.filled(reelCount, false);
+    _spinCtrls = List.generate(reelCount, (_) => AnimationController(
         vsync: this, duration: const Duration(milliseconds: 600)));
     _spinAnims = _spinCtrls.map((c) =>
         CurvedAnimation(parent: c, curve: Curves.easeOutBack)).toList();
@@ -995,6 +1278,12 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
     });
     HapticFeedback.lightImpact();
   }
+  int get _reelCount {
+    final solution = (widget.minigame.solution ?? '').trim();
+    if (solution.isEmpty) return 3;
+    return solution.length.clamp(1, 6);
+  }
+
 
   void _submit(CaseEngine engine) {
     final solution = widget.minigame.solution ?? '';
@@ -1048,7 +1337,7 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
             const SizedBox(height: 24),
 
             // Target display
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Wrap(alignment: WrapAlignment.center, spacing: 4, runSpacing: 4, children: [
               const Text('TARGET:  ', style: TextStyle(color: CyberColors.textSecondary, fontSize: 13)),
               ...solution.split('').map((c) => Container(
                   margin: const EdgeInsets.symmetric(horizontal: 4), width: 46, height: 46,
@@ -1068,8 +1357,12 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
               builder: (_, child) => Transform.translate(
                   offset: Offset(_success ? 0 : sin(_shake.value * pi * 6) * 6 * (1 - _shake.value), 0),
                   child: child),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(3, (reel) => _buildReel(reel))),
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 4,
+                runSpacing: 8,
+                children: List.generate(_reelCount, (reel) => _buildReel(reel)),
+              ),
             ),
 
             const SizedBox(height: 10),
@@ -1088,16 +1381,33 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
                   ]))],
 
             const SizedBox(height: 24),
-            Row(children: [
-              Expanded(child: CyberButton(label: 'CRACK CODE',
-                  icon: Icons.lock_open_outlined, accentColor: CyberColors.neonRed,
-                  onTap: () => _submit(engine))),
-              const SizedBox(width: 12),
-              CyberButton(label: 'Hint (${mg.hints.length - _hintsUsed} left)',
-                  icon: Icons.lightbulb_outline, isOutlined: true, isSmall: true,
-                  accentColor: CyberColors.neonAmber,
-                  onTap: _hintsUsed < mg.hints.length ? () => _hint(engine) : null),
-            ]),
+            Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                SizedBox(
+                  width: 210,
+                  child: CyberButton(
+                    label: 'CRACK CODE',
+                    icon: Icons.lock_open_outlined,
+                    accentColor: CyberColors.neonRed,
+                    onTap: () => _submit(engine),
+                  ),
+                ),
+                SizedBox(
+                  width: 180,
+                  child: CyberButton(
+                    label: 'Hint (${mg.hints.length - _hintsUsed} left)',
+                    icon: Icons.lightbulb_outline,
+                    isOutlined: true,
+                    isSmall: true,
+                    accentColor: CyberColors.neonAmber,
+                    onTap: _hintsUsed < mg.hints.length ? () => _hint(engine) : null,
+                  ),
+                ),
+              ],
+            ),
           ])),
           if (_success) _SuccessOverlay(
               message: mg.successMessage ?? 'System breached. Evidence unlocked.',
@@ -1117,7 +1427,7 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
           child: AnimatedBuilder(
             animation: _spinAnims[reel],
             builder: (_, __) => Container(
-                width: 72, height: 50,
+                width: 72, height: 56,
                 decoration: BoxDecoration(
                     color: CyberColors.neonCyan.withOpacity(0.06),
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
@@ -1126,7 +1436,7 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
                   const Icon(Icons.keyboard_arrow_up, color: CyberColors.neonCyan, size: 24),
                   Transform.translate(
                       offset: _isSpinning[reel] ? Offset(0, 8 * _spinAnims[reel].value) : Offset.zero,
-                      child: Text(prv, style: TextStyle(
+                      child: Text(prv, maxLines: 1, overflow: TextOverflow.fade, style: TextStyle(
                           color: CyberColors.textMuted.withOpacity(0.6),
                           fontSize: 14, fontFamily: 'DotMatrix'))),
                 ])),
@@ -1159,7 +1469,7 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
           child: AnimatedBuilder(
             animation: _spinAnims[reel],
             builder: (_, __) => Container(
-                width: 72, height: 50,
+                width: 72, height: 56,
                 decoration: BoxDecoration(
                     color: CyberColors.neonCyan.withOpacity(0.06),
                     borderRadius: const BorderRadius.vertical(bottom: Radius.circular(10)),
@@ -1167,7 +1477,7 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
                 child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Transform.translate(
                       offset: _isSpinning[reel] ? Offset(0, -8 * _spinAnims[reel].value) : Offset.zero,
-                      child: Text(nxt, style: TextStyle(
+                      child: Text(nxt, maxLines: 1, overflow: TextOverflow.fade, style: TextStyle(
                           color: CyberColors.textMuted.withOpacity(0.6),
                           fontSize: 14, fontFamily: 'DotMatrix'))),
                   const Icon(Icons.keyboard_arrow_down, color: CyberColors.neonCyan, size: 24),
