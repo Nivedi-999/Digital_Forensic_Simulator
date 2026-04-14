@@ -1,10 +1,8 @@
 // lib/screens/case_outcome_screen.dart
 // ═══════════════════════════════════════════════════════════════
 //  CASE OUTCOME — Three fully animated outcome screens
-//
-//  perfect/partial  → File slam + CASE CLOSED sticker slap
-//  wrongAccusation  → Culprit smirk avatar + escape quote
-//  coldCase         → Insufficient evidence briefing
+//  v2: stops CaseTimer, passes timeTakenSeconds to recordAttempt,
+//      adds "View Leaderboard" button on win screen
 // ═══════════════════════════════════════════════════════════════
 
 import 'dart:math';
@@ -19,9 +17,10 @@ import '../logic/game_engine.dart';
 import '../state/case_engine_provider.dart';
 import '../services/game_progress.dart';
 import '../services/case_repository.dart';
-import '../services/progress_service.dart'; // ← ADDED: Firestore integration
+import '../services/progress_service.dart';
 import 'profile_screen.dart';
 import 'case_analysis_screen.dart';
+import 'leaderboard_screen.dart'; // ← NEW
 
 class CaseOutcomeScreen extends StatefulWidget {
   final String suspectId;
@@ -42,12 +41,15 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
   String? _nextUnlockedCaseTitle;
   bool _bootstrapped = false;
 
-  // ── Win animation controllers ─────────────────────────────
-  late AnimationController _fileDropCtrl;   // file falls from top
-  late AnimationController _slamCtrl;       // slam impact + shake
-  late AnimationController _stickerCtrl;    // sticker slap
-  late AnimationController _contentCtrl;    // stats/xp panel fade in
-  late AnimationController _barCtrl;        // XP bar fill
+  // ── Captured solve time (set during bootstrap) ────────────
+  int _solveTimeSecs = 0;
+
+  // ── Win controllers ───────────────────────────────────────
+  late AnimationController _fileDropCtrl;
+  late AnimationController _slamCtrl;
+  late AnimationController _stickerCtrl;
+  late AnimationController _contentCtrl;
+  late AnimationController _barCtrl;
 
   late Animation<double> _fileDrop;
   late Animation<double> _fileRotate;
@@ -60,14 +62,14 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
   late Animation<Offset> _contentSlide;
   late Animation<double> _barProgress;
 
-  // ── Lose/escape animation controllers ─────────────────────
+  // ── Escape controllers ────────────────────────────────────
   late AnimationController _escapeCtrl;
   late Animation<double> _escapeFade;
   late Animation<double> _escapeScale;
   late Animation<Offset> _escapeSlide;
   late Animation<double> _quoteCtrl2;
 
-  // ── Cold case animation ───────────────────────────────────
+  // ── Cold case controller ──────────────────────────────────
   late AnimationController _coldCtrl;
   late Animation<double> _coldFade;
 
@@ -78,16 +80,12 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
   }
 
   void _setupAnimations() {
-    // ── WIN sequence ──────────────────────────────────────
-
-    // File drops from top (0→1 = off screen → resting position)
     _fileDropCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
-    _fileDrop = CurvedAnimation(parent: _fileDropCtrl, curve: Curves.easeIn);
-    _fileRotate = Tween<double>(begin: -0.08, end: 0.0)
+    _fileDrop     = CurvedAnimation(parent: _fileDropCtrl, curve: Curves.easeIn);
+    _fileRotate   = Tween<double>(begin: -0.08, end: 0.0)
         .animate(CurvedAnimation(parent: _fileDropCtrl, curve: Curves.easeOut));
 
-    // Slam: quick scale punch + shake
-    _slamCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
+    _slamCtrl  = AnimationController(vsync: this, duration: const Duration(milliseconds: 350));
     _slamShake = Tween<double>(begin: 0, end: 1)
         .animate(CurvedAnimation(parent: _slamCtrl, curve: Curves.elasticOut));
     _slamScale = TweenSequence([
@@ -96,37 +94,30 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
       TweenSequenceItem(tween: Tween(begin: 0.97, end: 1.0), weight: 30),
     ]).animate(_slamCtrl);
 
-    // Sticker slaps in from upper-right, rotated
-    _stickerCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
-    _stickerSlide = Tween<double>(begin: 0.0, end: 1.0)
+    _stickerCtrl   = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
+    _stickerSlide  = Tween<double>(begin: 0.0, end: 1.0)
         .animate(CurvedAnimation(parent: _stickerCtrl, curve: Curves.easeOutBack));
     _stickerRotate = Tween<double>(begin: 0.3, end: -0.13)
         .animate(CurvedAnimation(parent: _stickerCtrl, curve: Curves.easeOutCubic));
-    _stickerFade = CurvedAnimation(parent: _stickerCtrl, curve: Curves.easeIn);
+    _stickerFade   = CurvedAnimation(parent: _stickerCtrl, curve: Curves.easeIn);
 
-    // Content fades in last
-    _contentCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
-    _contentFade = CurvedAnimation(parent: _contentCtrl, curve: Curves.easeOut);
+    _contentCtrl  = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _contentFade  = CurvedAnimation(parent: _contentCtrl, curve: Curves.easeOut);
     _contentSlide = Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero)
         .animate(CurvedAnimation(parent: _contentCtrl, curve: Curves.easeOutCubic));
 
-    // XP bar
-    _barCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
-    _barProgress = const AlwaysStoppedAnimation(0.0); // set after bootstrap
+    _barCtrl      = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    _barProgress  = const AlwaysStoppedAnimation(0.0);
 
-    // ── ESCAPE sequence ───────────────────────────────────
-
-    _escapeCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
-    _escapeFade = CurvedAnimation(parent: _escapeCtrl, curve: Curves.easeOut);
-    _escapeScale = Tween<double>(begin: 0.7, end: 1.0)
+    _escapeCtrl   = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _escapeFade   = CurvedAnimation(parent: _escapeCtrl, curve: Curves.easeOut);
+    _escapeScale  = Tween<double>(begin: 0.7, end: 1.0)
         .animate(CurvedAnimation(parent: _escapeCtrl, curve: Curves.elasticOut));
-    _escapeSlide = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
+    _escapeSlide  = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
         .animate(CurvedAnimation(parent: _escapeCtrl, curve: Curves.easeOutCubic));
-    _quoteCtrl2 = CurvedAnimation(
-        parent: _escapeCtrl,
+    _quoteCtrl2   = CurvedAnimation(parent: _escapeCtrl,
         curve: const Interval(0.5, 1.0, curve: Curves.easeOut));
 
-    // ── COLD CASE ─────────────────────────────────────────
     _coldCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
     _coldFade = CurvedAnimation(parent: _coldCtrl, curve: Curves.easeOut);
   }
@@ -135,36 +126,34 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
     final outcomeType = engine.outcomeType;
     if (outcomeType == null) return;
     _outcomeType = outcomeType;
-    _config = engine.resolvedOutcomeConfig!;
-    _isWin = outcomeType == OutcomeType.perfect || outcomeType == OutcomeType.partial;
+    _config  = engine.resolvedOutcomeConfig!;
+    _isWin   = outcomeType == OutcomeType.perfect || outcomeType == OutcomeType.partial;
+
+    // ── Stop the timer and capture elapsed seconds ─────────
+    _solveTimeSecs = engine.stopTimer();   // engine.stopTimer() calls caseTimer.stop()
 
     if (_isWin) {
-      final finalXp = engine.computeFinalXp(_config.xp);
-      _breakdown = engine.xpBreakdown(_config.xp);
-      _xpAwarded = GameProgress.completeCaseWithXp(engine.caseFile.id, finalXp);
+      final finalXp  = engine.computeFinalXp(_config.xp);
+      _breakdown     = engine.xpBreakdown(_config.xp);
+      _xpAwarded     = GameProgress.completeCaseWithXp(engine.caseFile.id, finalXp);
       GameProgress.recordFlag(correct: true);
       _nextUnlockedCaseTitle = _findNextUnlockedCase(engine.caseFile);
 
-      // ── ADDED: Persist win to Firestore ──────────────────
-      // Derive a 0–3 star score from the XP breakdown:
-      //   3 = perfect outcome with no deductions
-      //   2 = partial or minor deductions
-      //   1 = solved but heavily penalised
       final int score = (_outcomeType == OutcomeType.perfect
           ? (engine.irrelevantEvidenceCount == 0 && engine.hintsUsed == 0 ? 3 : 2)
           : 1).clamp(0, 3);
 
+      // ── recordAttempt now receives timeTakenSeconds ───────
       ProgressService.instance.recordAttempt(
         caseId: engine.caseFile.id,
         solved: true,
         score: score,
+        timeTakenSeconds: _solveTimeSecs,   // ← NEW
       );
-      // ─────────────────────────────────────────────────────
 
       _barProgress = Tween<double>(begin: 0.0, end: GameProgress.rankProgress)
           .animate(CurvedAnimation(parent: _barCtrl, curve: Curves.easeOutCubic));
 
-      // Sequence: drop → slam → sticker → content
       Future.delayed(const Duration(milliseconds: 200), () {
         if (!mounted) return;
         _fileDropCtrl.forward().then((_) {
@@ -187,20 +176,17 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
     } else if (outcomeType == OutcomeType.wrongAccusation) {
       GameProgress.recordFlag(correct: false);
 
-      // ── ADDED: Persist failed attempt to Firestore ────────
       ProgressService.instance.recordAttempt(
         caseId: engine.caseFile.id,
         solved: false,
         score: 0,
+        // No timeTakenSeconds for a failed attempt
       );
-      // ─────────────────────────────────────────────────────
 
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) _escapeCtrl.forward();
       });
     } else {
-      // cold case / partial with 0 evidence — no recordAttempt,
-      // the player never actually submitted a suspect accusation.
       Future.delayed(const Duration(milliseconds: 300), () {
         if (mounted) _coldCtrl.forward();
       });
@@ -210,7 +196,7 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
   String? _findNextUnlockedCase(CaseFile completed) {
     final allCases = CaseRepository.instance.all;
     final tier = allCases.where((c) => c.difficulty == completed.difficulty).toList();
-    final idx = tier.indexWhere((c) => c.id == completed.id);
+    final idx  = tier.indexWhere((c) => c.id == completed.id);
     if (idx < 0 || idx + 1 >= tier.length) return null;
     return tier[idx + 1].title;
   }
@@ -247,60 +233,49 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
   }
 
   // ════════════════════════════════════════════════════════════
-  //  WIN SCREEN — File slam + CASE CLOSED sticker
+  //  WIN SCREEN
   // ════════════════════════════════════════════════════════════
 
   Widget _buildWinScreen(BuildContext context, CaseEngine engine) {
     final accusedSuspect = engine.caseFile.suspectById(widget.suspectId);
-    final isPerfect = _outcomeType == OutcomeType.perfect;
-    final accentColor = isPerfect ? CyberColors.neonGreen : CyberColors.neonAmber;
+    final isPerfect      = _outcomeType == OutcomeType.perfect;
+    final accentColor    = isPerfect ? CyberColors.neonGreen : CyberColors.neonAmber;
 
     return Scaffold(
       backgroundColor: const Color(0xFF040A0F),
       body: SafeArea(
         child: Column(children: [
-          // ── Top bar ──
           _OutcomeTopBar(title: 'CASE OUTCOME'),
-
           Expanded(child: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(24, 0, 24, 40),
             child: Column(children: [
-
               const SizedBox(height: 20),
-
-              // ── FILE SLAM ANIMATION ──
               AnimatedBuilder(
                 animation: Listenable.merge([_fileDropCtrl, _slamCtrl, _stickerCtrl]),
                 builder: (_, __) {
-                  final dropY = Tween<double>(begin: -300.0, end: 0.0)
+                  final dropY  = Tween<double>(begin: -300.0, end: 0.0)
                       .evaluate(CurvedAnimation(parent: _fileDropCtrl, curve: Curves.easeIn));
                   final shakeX = sin(_slamShake.value * pi * 6) * 4 * (1 - _slamCtrl.value);
-
                   return Transform.translate(
                     offset: Offset(shakeX, dropY),
                     child: Transform.scale(
                       scale: _fileDropCtrl.isCompleted ? _slamScale.value : 1.0,
                       child: Transform.rotate(
                         angle: _fileRotate.value,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            // The file itself
-                            _FileDossier(accentColor: accentColor, caseFile: engine.caseFile),
-                            // CASE CLOSED sticker — appears after slam
-                            if (_stickerCtrl.value > 0)
-                              Transform.rotate(
-                                angle: _stickerRotate.value,
-                                child: Transform.scale(
-                                  scale: _stickerSlide.value,
-                                  child: Opacity(
-                                    opacity: _stickerFade.value,
-                                    child: _CaseClosedSticker(isPerfect: isPerfect),
-                                  ),
+                        child: Stack(alignment: Alignment.center, children: [
+                          _FileDossier(accentColor: accentColor, caseFile: engine.caseFile),
+                          if (_stickerCtrl.value > 0)
+                            Transform.rotate(
+                              angle: _stickerRotate.value,
+                              child: Transform.scale(
+                                scale: _stickerSlide.value,
+                                child: Opacity(
+                                  opacity: _stickerFade.value,
+                                  child: _CaseClosedSticker(isPerfect: isPerfect),
                                 ),
                               ),
-                          ],
-                        ),
+                            ),
+                        ]),
                       ),
                     ),
                   );
@@ -309,20 +284,21 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
 
               const SizedBox(height: 28),
 
-              // ── Stats + XP — fade in after sticker ──
               FadeTransition(
                 opacity: _contentFade,
                 child: SlideTransition(
                   position: _contentSlide,
                   child: Column(children: [
-                    // Stats
+                    // ── Solve time badge ──────────────────────
+                    _SolveTimeBadge(seconds: _solveTimeSecs),
+                    const SizedBox(height: 16),
+
                     _WinStatsPanel(
                       engine: engine,
                       suspectName: accusedSuspect?.name ?? '—',
                       accentColor: accentColor,
                     ),
                     const SizedBox(height: 20),
-                    // XP Panel
                     _XpPanel(
                       xpAwarded: _xpAwarded,
                       baseXp: _config.xp,
@@ -331,14 +307,17 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                       nextTitle: _nextUnlockedCaseTitle,
                     ),
                     const SizedBox(height: 28),
-                    // Buttons
+
+                    // ── Outcome buttons + leaderboard button ──
                     _OutcomeButtons(
+                      caseId: engine.caseFile.id,           // ← NEW
                       onAnalyze: () => Navigator.push(context, PageRouteBuilder(
                           pageBuilder: (_, __, ___) => const CaseAnalysisScreen(),
                           transitionsBuilder: (_, anim, __, child) =>
                               SlideTransition(position: Tween<Offset>(
                                   begin: const Offset(1, 0), end: Offset.zero)
-                                  .animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
+                                  .animate(CurvedAnimation(
+                                  parent: anim, curve: Curves.easeOutCubic)),
                                   child: child),
                           transitionDuration: const Duration(milliseconds: 350))),
                       onProfile: () => Navigator.push(context,
@@ -355,11 +334,11 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
   }
 
   // ════════════════════════════════════════════════════════════
-  //  ESCAPE SCREEN — Wrong culprit — suspect smirks
+  //  ESCAPE SCREEN
   // ════════════════════════════════════════════════════════════
 
   Widget _buildEscapeScreen(BuildContext context, CaseEngine engine) {
-    final realCulprit = engine.caseFile.suspects.firstWhere(
+    final realCulprit  = engine.caseFile.suspects.firstWhere(
             (s) => s.isGuilty, orElse: () => engine.caseFile.suspects.first);
     final wrongSuspect = engine.caseFile.suspectById(widget.suspectId);
 
@@ -382,7 +361,6 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
             child: AnimatedBuilder(
               animation: _escapeCtrl,
               builder: (_, __) => Column(children: [
-                // Wrong accusation banner
                 FadeTransition(
                   opacity: _escapeFade,
                   child: Container(
@@ -390,8 +368,8 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                       decoration: BoxDecoration(
                           color: CyberColors.neonRed.withOpacity(0.1),
-                          border: Border(
-                              bottom: BorderSide(color: CyberColors.neonRed.withOpacity(0.4)))),
+                          border: Border(bottom: BorderSide(
+                              color: CyberColors.neonRed.withOpacity(0.4)))),
                       child: Row(children: [
                         Icon(Icons.error_outline, color: CyberColors.neonRed, size: 16),
                         const SizedBox(width: 8),
@@ -400,34 +378,24 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                                 fontSize: 10, color: CyberColors.neonRed, letterSpacing: 1.5)),
                       ])),
                 ),
-
                 const SizedBox(height: 32),
-
-                // Culprit smirk card
                 Transform.scale(
                   scale: _escapeScale.value,
                   child: FadeTransition(
                     opacity: _escapeFade,
                     child: _CulpritEscapeCard(
-                      culprit: realCulprit,
-                      quote: quote,
-                      quoteOpacity: _quoteCtrl2.value,
-                    ),
+                        culprit: realCulprit, quote: quote,
+                        quoteOpacity: _quoteCtrl2.value),
                   ),
                 ),
-
                 const SizedBox(height: 28),
-
-                // Wrong accusation detail
                 FadeTransition(
                   opacity: _quoteCtrl2,
                   child: SlideTransition(
                     position: _escapeSlide,
                     child: Column(children: [
-                      // You accused...
                       Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
+                        width: double.infinity, padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                             color: const Color(0xFF0A050A),
                             borderRadius: BorderRadius.circular(8),
@@ -455,8 +423,7 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                       ),
                       const SizedBox(height: 12),
                       Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
+                        width: double.infinity, padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
                             color: const Color(0xFF050A08),
                             borderRadius: BorderRadius.circular(8),
@@ -484,6 +451,7 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                       ),
                       const SizedBox(height: 24),
                       _OutcomeButtons(
+                        caseId: engine.caseFile.id,
                         onAnalyze: () => Navigator.push(context, PageRouteBuilder(
                             pageBuilder: (_, __, ___) => const CaseAnalysisScreen(),
                             transitionsBuilder: (_, anim, __, child) =>
@@ -504,7 +472,7 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
   }
 
   // ════════════════════════════════════════════════════════════
-  //  COLD CASE SCREEN — Insufficient evidence
+  //  COLD CASE SCREEN
   // ════════════════════════════════════════════════════════════
 
   Widget _buildColdScreen(BuildContext context, CaseEngine engine) {
@@ -518,8 +486,6 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(24, 20, 24, 60),
               child: Column(children: [
-
-                // Briefing failure visual
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.all(28),
@@ -528,17 +494,18 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.blueGrey.withOpacity(0.3))),
                   child: Column(children: [
-                    // Stamped COLD CASE indicator
                     Container(
                         width: 100, height: 100,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.blueGrey.withOpacity(0.08),
                             border: Border.all(color: Colors.blueGrey.withOpacity(0.4), width: 2)),
-                        child: const Icon(Icons.ac_unit_outlined, color: Colors.blueGrey, size: 48)),
+                        child: const Icon(Icons.ac_unit_outlined,
+                            color: Colors.blueGrey, size: 48)),
                     const SizedBox(height: 20),
                     Text('CASE GONE COLD', style: GoogleFonts.orbitron(
-                        fontSize: 22, color: Colors.blueGrey, fontWeight: FontWeight.w900, letterSpacing: 2)),
+                        fontSize: 22, color: Colors.blueGrey,
+                        fontWeight: FontWeight.w900, letterSpacing: 2)),
                     const SizedBox(height: 12),
                     Text('NOT ENOUGH EVIDENCE', style: GoogleFonts.shareTechMono(
                         fontSize: 11, color: Colors.blueGrey.withOpacity(0.7), letterSpacing: 3)),
@@ -551,23 +518,21 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(color: Colors.blueGrey.withOpacity(0.2))),
                         child: Column(children: [
-                          Text('"Without sufficient evidence, no case can be made.', style: GoogleFonts.shareTechMono(
-                              fontSize: 11, color: CyberColors.textSecondary,
-                              height: 1.7, fontStyle: FontStyle.italic)),
+                          Text('"Without sufficient evidence, no case can be made.',
+                              style: GoogleFonts.shareTechMono(
+                                  fontSize: 11, color: CyberColors.textSecondary,
+                                  height: 1.7, fontStyle: FontStyle.italic)),
                           const SizedBox(height: 4),
-                          Text('The file goes into the cold case drawer."', style: GoogleFonts.shareTechMono(
-                              fontSize: 11, color: CyberColors.textSecondary,
-                              height: 1.7, fontStyle: FontStyle.italic)),
+                          Text('The file goes into the cold case drawer."',
+                              style: GoogleFonts.shareTechMono(
+                                  fontSize: 11, color: CyberColors.textSecondary,
+                                  height: 1.7, fontStyle: FontStyle.italic)),
                         ])),
                   ]),
                 ),
-
                 const SizedBox(height: 24),
-
-                // Evidence stats
                 Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
+                  width: double.infinity, padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: const Color(0xFF060C18),
                       borderRadius: BorderRadius.circular(8),
@@ -584,12 +549,9 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                     _ColdStatRow('Verdict', 'INSUFFICIENT EVIDENCE', isRed: true),
                   ]),
                 ),
-
                 const SizedBox(height: 12),
-
                 Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(14),
+                  width: double.infinity, padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
                       color: CyberColors.neonAmber.withOpacity(0.05),
                       borderRadius: BorderRadius.circular(8),
@@ -599,14 +561,16 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
                     const SizedBox(width: 10),
                     Expanded(child: Text(
                         'Explore all evidence panels before flagging a suspect. '
-                            'You need at least ${engine.caseFile.winCondition.minCorrectEvidence} correct evidence items.',
+                            'You need at least '
+                            '${engine.caseFile.winCondition.minCorrectEvidence} '
+                            'correct evidence items.',
                         style: GoogleFonts.shareTechMono(
                             fontSize: 10, color: CyberColors.neonAmber, height: 1.6))),
                   ]),
                 ),
-
                 const SizedBox(height: 24),
                 _OutcomeButtons(
+                  caseId: engine.caseFile.id,
                   onAnalyze: () => Navigator.push(context, PageRouteBuilder(
                       pageBuilder: (_, __, ___) => const CaseAnalysisScreen(),
                       transitionsBuilder: (_, anim, __, child) =>
@@ -625,7 +589,46 @@ class _CaseOutcomeScreenState extends State<CaseOutcomeScreen>
 }
 
 // ════════════════════════════════════════════════════════════
-//  FILE DOSSIER WIDGET — the physical case file that drops
+//  SOLVE TIME BADGE — shown on win screen
+// ════════════════════════════════════════════════════════════
+
+class _SolveTimeBadge extends StatelessWidget {
+  final int seconds;
+  const _SolveTimeBadge({required this.seconds});
+
+  String get _formatted {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      decoration: BoxDecoration(
+        color: CyberColors.neonAmber.withOpacity(0.07),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: CyberColors.neonAmber.withOpacity(0.35)),
+      ),
+      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Icon(Icons.timer_outlined, color: CyberColors.neonAmber, size: 18),
+        const SizedBox(width: 10),
+        Text('SOLVE TIME', style: GoogleFonts.shareTechMono(
+            fontSize: 9, color: CyberColors.textMuted, letterSpacing: 2)),
+        const SizedBox(width: 14),
+        Text(_formatted, style: GoogleFonts.orbitron(
+            fontSize: 22, color: CyberColors.neonAmber,
+            fontWeight: FontWeight.w900, letterSpacing: 3,
+            shadows: [Shadow(color: CyberColors.neonAmber.withOpacity(0.6), blurRadius: 12)])),
+      ]),
+    );
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+//  FILE DOSSIER
 // ════════════════════════════════════════════════════════════
 
 class _FileDossier extends StatelessWidget {
@@ -648,7 +651,6 @@ class _FileDossier extends StatelessWidget {
         ],
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // File header tabs
         Row(children: [
           Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -657,7 +659,8 @@ class _FileDossier extends StatelessWidget {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(4), topRight: Radius.circular(4))),
               child: Text('CLASSIFIED', style: GoogleFonts.shareTechMono(
-                  fontSize: 8, color: accentColor, letterSpacing: 2, fontWeight: FontWeight.bold))),
+                  fontSize: 8, color: accentColor,
+                  letterSpacing: 2, fontWeight: FontWeight.bold))),
           Container(
               margin: const EdgeInsets.only(left: 4),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -665,13 +668,12 @@ class _FileDossier extends StatelessWidget {
                   color: CyberColors.borderSubtle.withOpacity(0.3),
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(4), topRight: Radius.circular(4))),
-              child: Text('CASE #${caseFile.caseNumber}', style: GoogleFonts.shareTechMono(
-                  fontSize: 8, color: CyberColors.textMuted, letterSpacing: 1.5))),
+              child: Text('CASE #${caseFile.caseNumber}',
+                  style: GoogleFonts.shareTechMono(
+                      fontSize: 8, color: CyberColors.textMuted, letterSpacing: 1.5))),
         ]),
         const SizedBox(height: 16),
-        // File content
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          // Left: lines simulating text (paper texture)
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text('INVESTIGATION FILE', style: GoogleFonts.shareTechMono(
                 fontSize: 8, color: accentColor.withOpacity(0.6), letterSpacing: 2)),
@@ -684,11 +686,9 @@ class _FileDossier extends StatelessWidget {
                 fontSize: 9, color: CyberColors.textSecondary, height: 1.6),
                 maxLines: 2, overflow: TextOverflow.ellipsis),
             const SizedBox(height: 12),
-            // Paper lines
             ..._buildPaperLines(accentColor),
           ])),
           const SizedBox(width: 16),
-          // Right: case badge
           Container(
               width: 64, height: 64,
               decoration: BoxDecoration(
@@ -701,18 +701,16 @@ class _FileDossier extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildPaperLines(Color accent) {
-    return [
-      Container(height: 1, color: accent.withOpacity(0.08), margin: const EdgeInsets.only(bottom: 5)),
-      Container(height: 1, width: 180, color: accent.withOpacity(0.06), margin: const EdgeInsets.only(bottom: 5)),
-      Container(height: 1, color: accent.withOpacity(0.08), margin: const EdgeInsets.only(bottom: 5)),
-      Container(height: 1, width: 140, color: accent.withOpacity(0.05)),
-    ];
-  }
+  List<Widget> _buildPaperLines(Color accent) => [
+    Container(height: 1, color: accent.withOpacity(0.08), margin: const EdgeInsets.only(bottom: 5)),
+    Container(height: 1, width: 180, color: accent.withOpacity(0.06), margin: const EdgeInsets.only(bottom: 5)),
+    Container(height: 1, color: accent.withOpacity(0.08), margin: const EdgeInsets.only(bottom: 5)),
+    Container(height: 1, width: 140, color: accent.withOpacity(0.05)),
+  ];
 }
 
 // ════════════════════════════════════════════════════════════
-//  CASE CLOSED STICKER — rubber stamp style
+//  CASE CLOSED STICKER
 // ════════════════════════════════════════════════════════════
 
 class _CaseClosedSticker extends StatelessWidget {
@@ -734,16 +732,13 @@ class _CaseClosedSticker extends StatelessWidget {
         ],
       ),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text(
-          isPerfect ? 'CASE CLOSED' : 'PARTIAL',
-          style: GoogleFonts.orbitron(
-            fontSize: isPerfect ? 22 : 18,
-            fontWeight: FontWeight.w900,
-            color: stamp,
-            letterSpacing: isPerfect ? 4 : 3,
-            shadows: [Shadow(color: stamp, blurRadius: 12)],
-          ),
-        ),
+        Text(isPerfect ? 'CASE CLOSED' : 'PARTIAL',
+            style: GoogleFonts.orbitron(
+                fontSize: isPerfect ? 22 : 18,
+                fontWeight: FontWeight.w900,
+                color: stamp,
+                letterSpacing: isPerfect ? 4 : 3,
+                shadows: [Shadow(color: stamp, blurRadius: 12)])),
         if (isPerfect) ...[
           const SizedBox(height: 2),
           Container(height: 1.5, width: 100, color: stamp.withOpacity(0.6)),
@@ -761,63 +756,50 @@ class _CaseClosedSticker extends StatelessWidget {
 // ════════════════════════════════════════════════════════════
 
 class _CulpritEscapeCard extends StatelessWidget {
-  final dynamic culprit; // Suspect
+  final dynamic culprit;
   final String quote;
   final double quoteOpacity;
-
-  const _CulpritEscapeCard({
-    required this.culprit, required this.quote, required this.quoteOpacity});
+  const _CulpritEscapeCard({required this.culprit, required this.quote, required this.quoteOpacity});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      width: double.infinity, padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: const Color(0xFF0A0508),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: CyberColors.neonRed.withOpacity(0.3), width: 1.5),
-        boxShadow: [
-          BoxShadow(color: CyberColors.neonRed.withOpacity(0.12), blurRadius: 30, spreadRadius: 2),
-        ],
+        boxShadow: [BoxShadow(color: CyberColors.neonRed.withOpacity(0.12), blurRadius: 30, spreadRadius: 2)],
       ),
       child: Column(children: [
-        // Suspect avatar — large circle with initial + smirk icon
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            // Glow
-            Container(width: 110, height: 110, decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: CyberColors.neonRed.withOpacity(0.3), blurRadius: 40, spreadRadius: 8)])),
-            // Avatar circle
-            Container(
-                width: 100, height: 100,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(colors: [
-                      CyberColors.neonRed.withOpacity(0.2),
-                      const Color(0xFF0A0508),
-                    ]),
-                    border: Border.all(color: CyberColors.neonRed.withOpacity(0.6), width: 2)),
-                child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text(culprit.name.isNotEmpty ? culprit.name[0] : '?',
-                      style: GoogleFonts.orbitron(
-                          fontSize: 36, color: CyberColors.neonRed,
-                          fontWeight: FontWeight.w900,
-                          shadows: [Shadow(color: CyberColors.neonRed, blurRadius: 16)])),
-                ])),
-            // Smirk badge
-            Positioned(bottom: 0, right: 0,
-                child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: const Color(0xFF0A0508),
-                        border: Border.all(color: CyberColors.neonRed.withOpacity(0.5), width: 1.5)),
-                    child: Text('😏', style: const TextStyle(fontSize: 18)))),
-          ],
-        ),
+        Stack(alignment: Alignment.center, children: [
+          Container(width: 110, height: 110, decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              boxShadow: [BoxShadow(color: CyberColors.neonRed.withOpacity(0.3), blurRadius: 40, spreadRadius: 8)])),
+          Container(
+              width: 100, height: 100,
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(colors: [
+                    CyberColors.neonRed.withOpacity(0.2),
+                    const Color(0xFF0A0508),
+                  ]),
+                  border: Border.all(color: CyberColors.neonRed.withOpacity(0.6), width: 2)),
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Text(culprit.name.isNotEmpty ? culprit.name[0] : '?',
+                    style: GoogleFonts.orbitron(
+                        fontSize: 36, color: CyberColors.neonRed, fontWeight: FontWeight.w900,
+                        shadows: [Shadow(color: CyberColors.neonRed, blurRadius: 16)])),
+              ])),
+          Positioned(bottom: 0, right: 0,
+              child: Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: const Color(0xFF0A0508),
+                      border: Border.all(color: CyberColors.neonRed.withOpacity(0.5), width: 1.5)),
+                  child: const Text('😏', style: TextStyle(fontSize: 18)))),
+        ]),
         const SizedBox(height: 16),
         Text(culprit.name, style: GoogleFonts.orbitron(
             fontSize: 16, color: CyberColors.neonRed, fontWeight: FontWeight.w800)),
@@ -825,7 +807,6 @@ class _CulpritEscapeCard extends StatelessWidget {
         Text(culprit.role, style: GoogleFonts.shareTechMono(
             fontSize: 9, color: CyberColors.textMuted, letterSpacing: 1.5)),
         const SizedBox(height: 20),
-        // Speech bubble
         Opacity(
           opacity: quoteOpacity,
           child: Container(
@@ -836,11 +817,9 @@ class _CulpritEscapeCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: CyberColors.neonRed.withOpacity(0.25))),
             child: Column(children: [
-              Text('"$quote"',
-                  style: GoogleFonts.shareTechMono(
-                      fontSize: 14, color: CyberColors.textPrimary,
-                      height: 1.6, fontStyle: FontStyle.italic),
-                  textAlign: TextAlign.center),
+              Text('"$quote"', style: GoogleFonts.shareTechMono(
+                  fontSize: 14, color: CyberColors.textPrimary,
+                  height: 1.6, fontStyle: FontStyle.italic), textAlign: TextAlign.center),
               const SizedBox(height: 8),
               Text('— ${culprit.name}', style: GoogleFonts.shareTechMono(
                   fontSize: 9, color: CyberColors.neonRed.withOpacity(0.6), letterSpacing: 1)),
@@ -860,18 +839,14 @@ class _WinStatsPanel extends StatelessWidget {
   final CaseEngine engine;
   final String suspectName;
   final Color accentColor;
-
-  const _WinStatsPanel({
-    required this.engine, required this.suspectName, required this.accentColor});
+  const _WinStatsPanel({required this.engine, required this.suspectName, required this.accentColor});
 
   @override
   Widget build(BuildContext context) {
     final correct = engine.correctEvidenceCount;
-    final total = engine.caseFile.correctEvidenceIds.length;
-
+    final total   = engine.caseFile.correctEvidenceIds.length;
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      width: double.infinity, padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
           color: const Color(0xFF060D14),
           borderRadius: BorderRadius.circular(8),
@@ -888,17 +863,8 @@ class _WinStatsPanel extends StatelessWidget {
             engine.irrelevantEvidenceCount > 0 ? CyberColors.neonRed : CyberColors.neonGreen),
         if (engine.hintsUsed > 0)
           _WinStatRow('Hints Used', '${engine.hintsUsed}', CyberColors.neonAmber),
-        if (engine.hasTimer)
-          _WinStatRow('Time Used', _formatTime(engine.elapsedSeconds),
-              engine.isTimeUp ? CyberColors.neonRed : CyberColors.neonGreen),
       ]),
     );
-  }
-
-  String _formatTime(int seconds) {
-    final m = seconds ~/ 60;
-    final s = seconds % 60;
-    return '${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}';
   }
 }
 
@@ -930,7 +896,6 @@ class _XpPanel extends StatelessWidget {
   final List<XpBreakdownItem> breakdown;
   final Animation<double> barAnim;
   final String? nextTitle;
-
   const _XpPanel({
     required this.xpAwarded, required this.baseXp,
     required this.breakdown, required this.barAnim, this.nextTitle});
@@ -938,8 +903,7 @@ class _XpPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      width: double.infinity, padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
           color: const Color(0xFF060D14),
           borderRadius: BorderRadius.circular(8),
@@ -955,9 +919,11 @@ class _XpPanel extends StatelessWidget {
               ? Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [CyberColors.neonCyan, CyberColors.neonPurple]),
+                  gradient: const LinearGradient(
+                      colors: [CyberColors.neonCyan, CyberColors.neonPurple]),
                   borderRadius: BorderRadius.circular(20),
-                  boxShadow: [BoxShadow(color: CyberColors.neonCyan.withOpacity(0.4), blurRadius: 10)]),
+                  boxShadow: [BoxShadow(
+                      color: CyberColors.neonCyan.withOpacity(0.4), blurRadius: 10)]),
               child: Text('+$xpAwarded XP', style: GoogleFonts.orbitron(
                   fontSize: 13, color: Colors.black, fontWeight: FontWeight.w900)))
               : Container(
@@ -989,7 +955,6 @@ class _XpPanel extends StatelessWidget {
           ]),
         ],
         const SizedBox(height: 14),
-        // Rank progress bar
         Row(children: [
           Text('${GameProgress.title.toUpperCase()}', style: GoogleFonts.shareTechMono(
               fontSize: 9, color: CyberColors.neonPurple, letterSpacing: 1)),
@@ -1007,8 +972,10 @@ class _XpPanel extends StatelessWidget {
                   widthFactor: barAnim.value.clamp(0.0, 1.0),
                   child: Container(height: 6, decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(3),
-                      gradient: const LinearGradient(colors: [CyberColors.neonCyan, CyberColors.neonPurple]),
-                      boxShadow: [BoxShadow(color: CyberColors.neonCyan.withOpacity(0.5), blurRadius: 6)]))),
+                      gradient: const LinearGradient(
+                          colors: [CyberColors.neonCyan, CyberColors.neonPurple]),
+                      boxShadow: [BoxShadow(
+                          color: CyberColors.neonCyan.withOpacity(0.5), blurRadius: 6)]))),
             ])),
         if (nextTitle != null) ...[
           const SizedBox(height: 14),
@@ -1036,6 +1003,102 @@ class _XpPanel extends StatelessWidget {
 }
 
 // ════════════════════════════════════════════════════════════
+//  OUTCOME BUTTONS — now includes "View Leaderboard"
+// ════════════════════════════════════════════════════════════
+
+class _OutcomeButtons extends StatelessWidget {
+  final String caseId;
+  final VoidCallback onAnalyze;
+  final VoidCallback onProfile;
+  const _OutcomeButtons({
+    required this.caseId,
+    required this.onAnalyze,
+    required this.onProfile,
+  });
+
+  @override
+  Widget build(BuildContext context) => Column(children: [
+    // ── VIEW LEADERBOARD — primary CTA on outcome screen ──
+    GestureDetector(
+      onTap: () => Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => LeaderboardScreen(caseId: caseId),
+          transitionsBuilder: (_, anim, __, child) => SlideTransition(
+            position: Tween<Offset>(
+                begin: const Offset(0, 1), end: Offset.zero)
+                .animate(CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
+            child: child,
+          ),
+          transitionDuration: const Duration(milliseconds: 400),
+        ),
+      ),
+      child: Container(
+          width: double.infinity, height: 52,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              gradient: LinearGradient(colors: [
+                CyberColors.neonCyan.withOpacity(0.18),
+                CyberColors.neonPurple.withOpacity(0.12)
+              ]),
+              border: Border.all(color: CyberColors.neonCyan.withOpacity(0.6)),
+              boxShadow: [
+                BoxShadow(color: CyberColors.neonCyan.withOpacity(0.15), blurRadius: 16)
+              ]),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Icon(Icons.leaderboard_outlined, color: CyberColors.neonCyan, size: 18),
+            const SizedBox(width: 10),
+            Text('VIEW LEADERBOARD', style: GoogleFonts.orbitron(
+                fontSize: 13, color: CyberColors.neonCyan,
+                fontWeight: FontWeight.w700, letterSpacing: 1)),
+          ])),
+    ),
+    const SizedBox(height: 10),
+    GestureDetector(
+      onTap: onAnalyze,
+      child: Container(
+          width: double.infinity, height: 52,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              gradient: LinearGradient(colors: [
+                CyberColors.neonAmber.withOpacity(0.15),
+                CyberColors.neonAmber.withOpacity(0.06)
+              ]),
+              border: Border.all(color: CyberColors.neonAmber.withOpacity(0.5)),
+              boxShadow: [BoxShadow(
+                  color: CyberColors.neonAmber.withOpacity(0.1), blurRadius: 12)]),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Icon(Icons.manage_search_outlined, color: CyberColors.neonAmber, size: 18),
+            const SizedBox(width: 10),
+            Text('ANALYZE CASE', style: GoogleFonts.orbitron(
+                fontSize: 13, color: CyberColors.neonAmber,
+                fontWeight: FontWeight.w700, letterSpacing: 1)),
+          ])),
+    ),
+    const SizedBox(height: 10),
+    GestureDetector(
+      onTap: onProfile,
+      child: Container(
+          width: double.infinity, height: 52,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              gradient: LinearGradient(colors: [
+                CyberColors.neonCyan.withOpacity(0.08),
+                CyberColors.neonCyan.withOpacity(0.03)
+              ]),
+              border: Border.all(color: CyberColors.neonCyan.withOpacity(0.25))),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Icon(Icons.person_outline, color: CyberColors.neonCyan, size: 18),
+            const SizedBox(width: 10),
+            Text('CHECK PROFILE', style: GoogleFonts.orbitron(
+                fontSize: 13, color: CyberColors.neonCyan,
+                fontWeight: FontWeight.w700, letterSpacing: 1)),
+          ])),
+    ),
+  ]);
+}
+
+// ════════════════════════════════════════════════════════════
 //  SHARED WIDGETS
 // ════════════════════════════════════════════════════════════
 
@@ -1049,7 +1112,8 @@ class _OutcomeTopBar extends StatelessWidget {
       height: 56,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: CyberColors.neonCyan.withOpacity(0.1)))),
+          border: Border(bottom: BorderSide(
+              color: CyberColors.neonCyan.withOpacity(0.1)))),
       child: Row(children: [
         Text(title, style: GoogleFonts.orbitron(
             fontSize: 16, color: CyberColors.neonCyan,
@@ -1068,58 +1132,13 @@ class _OutcomeTopBar extends StatelessWidget {
   }
 }
 
-class _OutcomeButtons extends StatelessWidget {
-  final VoidCallback onAnalyze;
-  final VoidCallback onProfile;
-  const _OutcomeButtons({required this.onAnalyze, required this.onProfile});
-
-  @override
-  Widget build(BuildContext context) => Column(children: [
-    GestureDetector(
-      onTap: onAnalyze,
-      child: Container(
-          width: double.infinity, height: 52,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              gradient: LinearGradient(colors: [
-                CyberColors.neonAmber.withOpacity(0.15),
-                CyberColors.neonAmber.withOpacity(0.06)]),
-              border: Border.all(color: CyberColors.neonAmber.withOpacity(0.5)),
-              boxShadow: [BoxShadow(color: CyberColors.neonAmber.withOpacity(0.1), blurRadius: 12)]),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Icon(Icons.manage_search_outlined, color: CyberColors.neonAmber, size: 18),
-            const SizedBox(width: 10),
-            Text('ANALYZE CASE', style: GoogleFonts.orbitron(
-                fontSize: 13, color: CyberColors.neonAmber, fontWeight: FontWeight.w700, letterSpacing: 1)),
-          ])),
-    ),
-    const SizedBox(height: 10),
-    GestureDetector(
-      onTap: onProfile,
-      child: Container(
-          width: double.infinity, height: 52,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              gradient: LinearGradient(colors: [
-                CyberColors.neonCyan.withOpacity(0.15),
-                CyberColors.neonCyan.withOpacity(0.06)]),
-              border: Border.all(color: CyberColors.neonCyan.withOpacity(0.4))),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Icon(Icons.person_outline, color: CyberColors.neonCyan, size: 18),
-            const SizedBox(width: 10),
-            Text('CHECK PROFILE', style: GoogleFonts.orbitron(
-                fontSize: 13, color: CyberColors.neonCyan, fontWeight: FontWeight.w700, letterSpacing: 1)),
-          ])),
-    ),
-  ]);
-}
-
 class _ColdStatRow extends StatelessWidget {
   final String label;
   final String value;
   final bool highlight;
   final bool isRed;
-  const _ColdStatRow(this.label, this.value, {this.highlight = false, this.isRed = false});
+  const _ColdStatRow(this.label, this.value,
+      {this.highlight = false, this.isRed = false});
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -1127,7 +1146,10 @@ class _ColdStatRow extends StatelessWidget {
       child: Row(children: [
         Expanded(child: Text(label, style: GoogleFonts.shareTechMono(
             fontSize: 10, color: CyberColors.textSecondary))),
-        Text(value, style: GoogleFonts.orbitron(fontSize: 11, fontWeight: FontWeight.w700,
-            color: isRed ? CyberColors.neonRed : highlight ? CyberColors.neonAmber : CyberColors.textPrimary)),
+        Text(value, style: GoogleFonts.orbitron(fontSize: 11,
+            fontWeight: FontWeight.w700,
+            color: isRed ? CyberColors.neonRed
+                : highlight ? CyberColors.neonAmber
+                : CyberColors.textPrimary)),
       ]));
 }

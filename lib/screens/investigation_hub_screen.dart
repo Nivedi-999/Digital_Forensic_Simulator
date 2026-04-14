@@ -1,6 +1,7 @@
 // lib/screens/investigation_hub_screen.dart
 // ═══════════════════════════════════════════════════════════════
 //  INVESTIGATION HUB — data-driven via CaseEngine
+//  v2: live case timer displayed in AppShell title area
 // ═══════════════════════════════════════════════════════════════
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import '../models/case.dart';
 import '../models/evidence.dart';
 import '../logic/game_engine.dart';
 import '../state/case_engine_provider.dart';
+import '../services/case_timer.dart';
 import 'evidence_analysis_screen.dart';
 import 'suspect_profile_screen.dart';
 import '../widgets/crime_board.dart';
@@ -29,6 +31,9 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
   late AnimationController _entryCtrl;
   late Animation<double> _fadeIn;
 
+  // ── Timer ──────────────────────────────────────────────────
+  late final CaseTimer _caseTimer;
+
   @override
   void initState() {
     super.initState();
@@ -38,11 +43,18 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
       duration: const Duration(milliseconds: 600),
     )..forward();
     _fadeIn = CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut);
+
+    // Start timing immediately when investigation opens
+    _caseTimer = CaseTimer();
+    _caseTimer.start();
   }
 
   @override
   void dispose() {
     _entryCtrl.dispose();
+    // Do NOT call _caseTimer.dispose() here — the timer is passed to the
+    // outcome screen via CaseEngineProvider so it can read the final time.
+    // The outcome screen is responsible for stopping it.
     super.dispose();
   }
 
@@ -75,32 +87,38 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
     final engine = CaseEngineProvider.of(context);
     final caseFile = engine.caseFile;
 
+    // Attach timer to engine so the outcome screen can read it
+    engine.attachTimer(_caseTimer);
+
     return AppShell(
-      title: 'Investigation Hub',
+      title: 'Investigation Hub', // Back to a simple String
       showBack: true,
       child: Stack(
         children: [
-          // ── Vertical scan line in background ──
           const Positioned.fill(
             child: IgnorePointer(child: _VerticalScanLine()),
+          ),
+
+          // ── NEW: Manually position the timer at the top ──
+          Positioned(
+            top: 10,
+            right: 20,
+            child: _TimerBadge(timer: _caseTimer),
           ),
 
           FadeTransition(
             opacity: _fadeIn,
             child: SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 140),
+              // Increased top padding (from 12 to 60) to make room for the timer
+              padding: const EdgeInsets.fromLTRB(20, 60, 20, 140),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Case Header ──
                   _CaseHeader(caseFile: caseFile),
                   const SizedBox(height: 14),
-
-                  // ── Evidence Progress Bar ──
                   _EvidenceProgressBar(engine: engine),
+                  // ... rest of your Column code stays exactly the same
                   const SizedBox(height: 24),
-
-                  // ── Feed Tabs ──
                   const CyberSectionHeader(
                     title: 'Crime Board',
                     subtitle: 'Tap a card to analyse evidence',
@@ -108,14 +126,11 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                   _FeedTabBar(
                     panels: caseFile.evidencePanels,
                     activeFeed: _activeFeed,
-                    onTabChanged: (key) {
-                      setState(() => _activeFeed = key);
-                    },
+                    onTabChanged: (key) => setState(() => _activeFeed = key),
                     showSuspects: true,
                   ),
                   const SizedBox(height: 14),
 
-                  // ── Evidence Viewer — Crime Board or Suspect Feed ──
                   _activeFeed == 'suspects'
                       ? NeonContainer(
                     padding: const EdgeInsets.all(12),
@@ -128,7 +143,8 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                     ),
                   )
                       : (() {
-                    final panel = engine.caseFile.panelById(_activeFeed);
+                    final panel =
+                    engine.caseFile.panelById(_activeFeed);
                     if (panel == null) return const SizedBox();
                     return CrimeBoard(
                       panel: panel,
@@ -140,7 +156,6 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
 
                   const SizedBox(height: 28),
 
-                  // ── Timeline ──
                   const CyberSectionHeader(
                     title: 'Event Timeline',
                     subtitle: 'Chronological breach activity',
@@ -149,7 +164,8 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                     borderColor: CyberColors.neonPurple,
                     padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
                     child: Column(
-                      children: caseFile.timeline.asMap().entries.map((entry) {
+                      children:
+                      caseFile.timeline.asMap().entries.map((entry) {
                         final i = entry.key;
                         final event = entry.value;
                         return TimelineItem(
@@ -171,14 +187,11 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
     );
   }
 
-  // ── Suspect feed ─────────────────────────────────────────
-
   Widget _buildSuspectFeed(BuildContext context, CaseEngine engine) {
     return Column(
       children: engine.caseFile.suspects.map((suspect) {
         final isUnlocked = engine.isSuspectUnlocked(suspect.id);
 
-        // Hidden suspects show as a locked card until minigame is solved
         if (!isUnlocked) {
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
@@ -188,30 +201,40 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
                 color: CyberColors.bgCard,
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                    color: CyberColors.borderSubtle.withOpacity(0.4), width: 1),
+                    color: CyberColors.borderSubtle.withOpacity(0.4),
+                    width: 1),
               ),
               child: Row(children: [
-                Container(width: 44, height: 44,
+                Container(
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: CyberColors.textMuted.withOpacity(0.06),
-                      border: Border.all(color: CyberColors.textMuted.withOpacity(0.25)),
+                      border: Border.all(
+                          color: CyberColors.textMuted.withOpacity(0.25)),
                     ),
                     child: const Icon(Icons.lock_outline,
                         color: CyberColors.textMuted, size: 20)),
                 const SizedBox(width: 14),
-                Expanded(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('SUSPECT IDENTITY LOCKED',
-                      style: GoogleFonts.orbitron(fontSize: 10,
-                          fontWeight: FontWeight.w700,
-                          color: CyberColors.textMuted, letterSpacing: 1)),
-                  const SizedBox(height: 4),
-                  Text('Complete a mini-game to reveal this suspect.',
-                      style: GoogleFonts.shareTechMono(
-                          fontSize: 9, color: CyberColors.textMuted,
-                          letterSpacing: 0.5)),
-                ])),
+                Expanded(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('SUSPECT IDENTITY LOCKED',
+                              style: GoogleFonts.orbitron(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: CyberColors.textMuted,
+                                  letterSpacing: 1)),
+                          const SizedBox(height: 4),
+                          Text(
+                              'Complete a mini-game to reveal this suspect.',
+                              style: GoogleFonts.shareTechMono(
+                                  fontSize: 9,
+                                  color: CyberColors.textMuted,
+                                  letterSpacing: 0.5)),
+                        ])),
                 const Icon(Icons.chevron_right,
                     color: CyberColors.textMuted, size: 18),
               ]),
@@ -231,9 +254,8 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => SuspectProfileScreen(
-                    suspectId: suspect.id,
-                  ),
+                  builder: (_) =>
+                      SuspectProfileScreen(suspectId: suspect.id),
                 ),
               );
             },
@@ -245,19 +267,71 @@ class _InvestigationHubScreenState extends State<InvestigationHubScreen>
 
   Color _severityColor(String severity) {
     switch (severity) {
-      case 'critical':
-        return CyberColors.neonRed;
-      case 'high':
-        return CyberColors.neonAmber;
-      case 'medium':
-        return CyberColors.neonPurple;
-      default:
-        return CyberColors.neonCyan;
+      case 'critical': return CyberColors.neonRed;
+      case 'high':     return CyberColors.neonAmber;
+      case 'medium':   return CyberColors.neonPurple;
+      default:         return CyberColors.neonCyan;
     }
   }
 }
 
-// ── Case Header ─────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+//  TIMER BADGE — live MM:SS counter shown in the AppBar
+// ─────────────────────────────────────────────────────────────
+
+class _TimerBadge extends StatefulWidget {
+  final CaseTimer timer;
+  const _TimerBadge({required this.timer});
+
+  @override
+  State<_TimerBadge> createState() => _TimerBadgeState();
+}
+
+class _TimerBadgeState extends State<_TimerBadge> {
+  late String _display;
+
+  @override
+  void initState() {
+    super.initState();
+    _display = widget.timer.formattedTime;
+    widget.timer.secondStream.listen((_) {
+      if (mounted) setState(() => _display = widget.timer.formattedTime);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: CyberColors.neonAmber.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: CyberColors.neonAmber.withOpacity(0.4)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.timer_outlined,
+              color: CyberColors.neonAmber, size: 12),
+          const SizedBox(width: 5),
+          Text(
+            _display,
+            style: GoogleFonts.shareTechMono(
+              fontSize: 12,
+              color: CyberColors.neonAmber,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  The rest of the file is unchanged from v1
+// ─────────────────────────────────────────────────────────────
 
 class _CaseHeader extends StatelessWidget {
   final CaseFile caseFile;
@@ -298,15 +372,12 @@ class _CaseHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  caseFile.title,
-                  style: GoogleFonts.orbitron(
-                    fontSize: 14,
-                    color: CyberColors.neonCyan,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                  ),
-                ),
+                Text(caseFile.title,
+                    style: GoogleFonts.orbitron(
+                        fontSize: 14,
+                        color: CyberColors.neonCyan,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3)),
                 const SizedBox(height: 4),
                 Text(caseFile.shortDescription, style: CyberText.bodySmall),
               ],
@@ -316,10 +387,9 @@ class _CaseHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               StatusChip(
-                label: caseFile.status,
-                color: CyberColors.neonGreen,
-                pulsing: true,
-              ),
+                  label: caseFile.status,
+                  color: CyberColors.neonGreen,
+                  pulsing: true),
               const SizedBox(height: 6),
               Text(caseFile.estimatedDuration, style: CyberText.caption),
             ],
@@ -329,8 +399,6 @@ class _CaseHeader extends StatelessWidget {
     );
   }
 }
-
-// ── Feed Tab Bar ─────────────────────────────────────────────
 
 class _FeedTabBar extends StatelessWidget {
   final List<EvidencePanel> panels;
@@ -351,7 +419,6 @@ class _FeedTabBar extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
-          // Evidence panel tabs — driven by the case JSON
           ...panels.map((panel) => Padding(
             padding: const EdgeInsets.only(right: 8),
             child: FeedTabButton(
@@ -360,7 +427,6 @@ class _FeedTabBar extends StatelessWidget {
               onTap: () => onTabChanged(panel.id),
             ),
           )),
-          // Suspects tab is always present
           if (showSuspects)
             Padding(
               padding: const EdgeInsets.only(right: 8),
@@ -375,9 +441,6 @@ class _FeedTabBar extends StatelessWidget {
     );
   }
 }
-// ─────────────────────────────────────────────────────────────
-//  VERTICAL SCAN LINE — animated moving line across the screen
-// ─────────────────────────────────────────────────────────────
 
 class _VerticalScanLine extends StatefulWidget {
   const _VerticalScanLine();
@@ -393,10 +456,8 @@ class _VerticalScanLineState extends State<_VerticalScanLine>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 5),
-    )..repeat();
+    _ctrl = AnimationController(vsync: this, duration: const Duration(seconds: 5))
+      ..repeat();
     _anim = Tween<double>(begin: 0.0, end: 1.0).animate(_ctrl);
   }
 
@@ -407,9 +468,8 @@ class _VerticalScanLineState extends State<_VerticalScanLine>
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: _anim,
-      builder: (_, __) => CustomPaint(
-        painter: _ScanLinePainter(progress: _anim.value),
-      ),
+      builder: (_, __) =>
+          CustomPaint(painter: _ScanLinePainter(progress: _anim.value)),
     );
   }
 }
@@ -421,8 +481,6 @@ class _ScanLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final x = size.width * progress;
-
-    // Main line
     final linePaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
@@ -438,10 +496,8 @@ class _ScanLinePainter extends CustomPainter {
       ).createShader(Rect.fromLTWH(x - 1, 0, 2, size.height))
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
-
     canvas.drawLine(Offset(x, 0), Offset(x, size.height), linePaint);
 
-    // Glow band
     final glowPaint = Paint()
       ..shader = LinearGradient(
         begin: Alignment.centerLeft,
@@ -452,15 +508,12 @@ class _ScanLinePainter extends CustomPainter {
           Colors.transparent,
         ],
       ).createShader(Rect.fromLTWH(x - 12, 0, 24, size.height));
-
     canvas.drawRect(Rect.fromLTWH(x - 12, 0, 24, size.height), glowPaint);
   }
 
   @override
   bool shouldRepaint(_ScanLinePainter old) => old.progress != progress;
 }
-
-// ── Evidence Progress Bar ────────────────────────────────────
 
 class _EvidenceProgressBar extends StatelessWidget {
   final CaseEngine engine;
@@ -472,11 +525,9 @@ class _EvidenceProgressBar extends StatelessWidget {
     final needed    = engine.caseFile.winCondition.minCorrectEvidence;
     final correct   = engine.correctEvidenceCount;
     final total     = engine.caseFile.correctEvidenceIds.length;
-
-    // Progress fraction toward win condition
-    final double fraction = total == 0 ? 0.0 : (correct / needed).clamp(0.0, 1.0);
-    final bool canAccuse  = engine.canAccuse;
-
+    final double fraction =
+    total == 0 ? 0.0 : (correct / needed).clamp(0.0, 1.0);
+    final bool canAccuse = engine.canAccuse;
     final barColor = canAccuse ? CyberColors.neonGreen : CyberColors.neonCyan;
 
     return Container(
@@ -492,58 +543,42 @@ class _EvidenceProgressBar extends StatelessWidget {
         ),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Label row
         Row(children: [
-          Icon(
-            canAccuse ? Icons.verified_outlined : Icons.folder_outlined,
-            color: barColor,
-            size: 13,
-          ),
+          Icon(canAccuse ? Icons.verified_outlined : Icons.folder_outlined,
+              color: barColor, size: 13),
           const SizedBox(width: 7),
-          Text(
-            canAccuse ? 'READY TO ACCUSE' : 'EVIDENCE CHAIN',
-            style: GoogleFonts.shareTechMono(
-              color: barColor,
-              fontSize: 9,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.6,
-            ),
-          ),
+          Text(canAccuse ? 'READY TO ACCUSE' : 'EVIDENCE CHAIN',
+              style: GoogleFonts.shareTechMono(
+                  color: barColor,
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.6)),
           const Spacer(),
-          RichText(text: TextSpan(children: [
-            TextSpan(
-              text: '$correct',
-              style: GoogleFonts.orbitron(
-                color: barColor, fontSize: 12, fontWeight: FontWeight.w700,
-              ),
-            ),
-            TextSpan(
-              text: ' / $needed correct',
-              style: GoogleFonts.shareTechMono(
-                color: CyberColors.textMuted, fontSize: 10,
-              ),
-            ),
-            if (collected > correct) TextSpan(
-              text: '  ($collected collected)',
-              style: GoogleFonts.shareTechMono(
-                color: CyberColors.textMuted.withOpacity(0.6), fontSize: 9,
-              ),
-            ),
-          ])),
+          RichText(
+              text: TextSpan(children: [
+                TextSpan(
+                    text: '$correct',
+                    style: GoogleFonts.orbitron(
+                        color: barColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700)),
+                TextSpan(
+                    text: ' / $needed correct',
+                    style: GoogleFonts.shareTechMono(
+                        color: CyberColors.textMuted, fontSize: 10)),
+                if (collected > correct)
+                  TextSpan(
+                      text: '  ($collected collected)',
+                      style: GoogleFonts.shareTechMono(
+                          color: CyberColors.textMuted.withOpacity(0.6),
+                          fontSize: 9)),
+              ])),
         ]),
-
         const SizedBox(height: 8),
-
-        // Bar
         ClipRRect(
           borderRadius: CyberRadius.pill,
           child: Stack(children: [
-            // Background track
-            Container(
-              height: 6,
-              color: CyberColors.borderSubtle,
-            ),
-            // Fill
+            Container(height: 6, color: CyberColors.borderSubtle),
             FractionallySizedBox(
               widthFactor: fraction,
               child: Container(
@@ -552,18 +587,17 @@ class _EvidenceProgressBar extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: canAccuse
                         ? [CyberColors.neonGreen, CyberColors.neonGreen]
-                        : [CyberColors.neonCyan.withOpacity(0.5), CyberColors.neonCyan],
+                        : [
+                      CyberColors.neonCyan.withOpacity(0.5),
+                      CyberColors.neonCyan
+                    ],
                   ),
                   boxShadow: [
-                    BoxShadow(
-                      color: barColor.withOpacity(0.5),
-                      blurRadius: 6,
-                    ),
+                    BoxShadow(color: barColor.withOpacity(0.5), blurRadius: 6)
                   ],
                 ),
               ),
             ),
-            // Milestone tick marks
             ...List.generate(needed, (i) {
               final pos = (i + 1) / needed;
               return Positioned(
@@ -573,9 +607,9 @@ class _EvidenceProgressBar extends StatelessWidget {
                   widthFactor: pos,
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    width: 1.5, height: 6,
-                    color: CyberColors.bgDeep.withOpacity(0.5),
-                  ),
+                      width: 1.5,
+                      height: 6,
+                      color: CyberColors.bgDeep.withOpacity(0.5)),
                 ),
               );
             }),

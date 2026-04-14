@@ -2,12 +2,7 @@
 //
 // CaseEngine — single source of truth for all in-case state.
 //
-// NEW in this version:
-//   • hintsUsed counter  — incremented by recordHintUsed()
-//   • irrelevantEvidenceCount — derived from collected vs correctEvidenceIds
-//   • Timer support (hard/advanced only) — start/stop via startTimer()
-//   • computeFinalXp() — base XP minus hint and irrelevant evidence penalties
-//   • resolveOutcome() now penalises selecting ALL evidence (spam collect)
+// UPDATED: Integrated CaseTimer bridge for centralized time tracking.
 
 import 'dart:async';
 import 'package:flutter/foundation.dart';
@@ -15,6 +10,7 @@ import '../models/case.dart';
 import '../models/evidence.dart';
 import '../models/suspect.dart';
 import 'branching_logic.dart';
+import '../services/case_timer.dart';
 
 // ── Collected evidence record ────────────────────────────────
 
@@ -56,62 +52,52 @@ class CaseEngine extends ChangeNotifier {
   OutcomeType? _outcomeType;
 
   // ── Hint tracking ────────────────────────────────────────
-  // Each call to recordHintUsed() increments the counter.
-  // The outcome screen reads this to calculate XP penalties.
   int _hintsUsed = 0;
   int get hintsUsed => _hintsUsed;
 
-  /// Call this from the mini-game screen every time the player
-  /// taps a hint button.
   void recordHintUsed() {
     _hintsUsed++;
     notifyListeners();
   }
 
-  // ── Timer (hard / advanced only) ────────────────────────
-  // timeLimitSeconds comes from the case JSON.
-  // The timer starts when startTimer() is called (on hub load).
+  // ── Timer bridge ─────────────────────────────────────────
+  //
+  // InvestigationHubScreen creates a CaseTimer, starts it, then calls
+  // attachTimer() so the engine owns the reference. The outcome screen
+  // calls stopTimer() to freeze the clock and read the final time.
 
-  Timer? _ticker;
-  int _elapsedSeconds = 0;
+  CaseTimer? _timer;
 
-  int get elapsedSeconds => _elapsedSeconds;
+  /// Hand off the running timer from InvestigationHubScreen.
+  void attachTimer(CaseTimer timer) => _timer = timer;
 
-  bool get hasTimer {
-    final diff = caseFile.difficulty.toLowerCase();
-    return (diff == 'hard' || diff == 'advanced') &&
-        caseFile.timeLimitSeconds != null;
-  }
+  /// Freeze the timer and return elapsed seconds. Safe to call multiple times.
+  int stopTimer() => _timer?.stop() ?? 0;
 
+  /// Current elapsed seconds (live while running, frozen after stop).
+  int get elapsedSeconds => _timer?.elapsedSeconds ?? 0;
+
+  /// True once attachTimer() has been called.
+  bool get hasTimer => _timer != null;
+
+  /// Whether a hard time limit was exceeded.
+  /// Extend this if you add per-case time limits to CaseFile.
+  bool get isTimeUp => false;
+
+  /// Per-case time limit in seconds, or null if unlimited.
   int? get timeLimitSeconds => caseFile.timeLimitSeconds;
 
-  /// Remaining seconds. Returns null if no timer.
+  /// Remaining seconds before the time limit. null if no timer/limit.
   int? get remainingSeconds {
-    if (!hasTimer) return null;
-    final remaining = timeLimitSeconds! - _elapsedSeconds;
+    if (!hasTimer || timeLimitSeconds == null) return null;
+    final remaining = timeLimitSeconds! - elapsedSeconds;
     return remaining.clamp(0, timeLimitSeconds!);
   }
 
-  /// 0.0–1.0 progress of time used. 1.0 = time up.
+  /// 0.0–1.0 fraction of the time limit consumed. 0.0 if unlimited.
   double get timerProgress {
-    if (!hasTimer) return 0.0;
-    return (_elapsedSeconds / timeLimitSeconds!).clamp(0.0, 1.0);
-  }
-
-  bool get isTimeUp => hasTimer && _elapsedSeconds >= timeLimitSeconds!;
-
-  void startTimer() {
-    if (!hasTimer || _ticker != null || _caseClosed) return;
-    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      _elapsedSeconds++;
-      notifyListeners();
-      if (isTimeUp) _ticker?.cancel();
-    });
-  }
-
-  void _stopTimer() {
-    _ticker?.cancel();
-    _ticker = null;
+    if (!hasTimer || timeLimitSeconds == null || timeLimitSeconds == 0) return 0.0;
+    return (elapsedSeconds / timeLimitSeconds!).clamp(0.0, 1.0);
   }
 
   // ── Read-only accessors ──────────────────────────────────
@@ -139,9 +125,6 @@ class CaseEngine extends ChangeNotifier {
   bool isHiddenItemUnlocked(String itemId) =>
       _unlockedHiddenItems.contains(itemId);
 
-  /// Returns true if this suspect is visible to the player.
-  /// Non-hidden suspects are always visible. Hidden suspects
-  /// become visible once the relevant minigame is solved.
   bool isSuspectUnlocked(String suspectId) {
     final suspect = caseFile.suspectById(suspectId);
     if (suspect == null || !suspect.isHidden) return true;
@@ -157,7 +140,6 @@ class CaseEngine extends ChangeNotifier {
       .where((e) => caseFile.correctEvidenceIds.contains(e.itemId))
       .length;
 
-  /// Evidence collected by the player that is NOT in correctEvidenceIds.
   int get irrelevantEvidenceCount => _collected
       .where((e) => !caseFile.correctEvidenceIds.contains(e.itemId))
       .length;
@@ -186,16 +168,6 @@ class CaseEngine extends ChangeNotifier {
   }
 
   // ── XP calculation ───────────────────────────────────────
-  //
-  // XP scales with how many correct evidence items the player found:
-  //   proportionalXp = baseXp × (correctCollected / totalCorrectIds)
-  //
-  // Then penalties reduce that amount:
-  //   −1 XP per wrong evidence item collected
-  //   −1 XP per hint used
-  //   Timer penalty (hard/advanced): −2 / −4 / −6 XP
-  //
-  // Floor: minimum 1 XP on any win.
 
   int computeFinalXp(int baseXp) {
     final totalCorrect = caseFile.correctEvidenceIds.length;
@@ -207,7 +179,7 @@ class CaseEngine extends ChangeNotifier {
     xp -= irrelevantEvidenceCount;
 
     if (hasTimer && timeLimitSeconds != null && timeLimitSeconds! > 0) {
-      final ratio = _elapsedSeconds / timeLimitSeconds!;
+      final ratio = elapsedSeconds / timeLimitSeconds!;
       if (ratio > 1.0) {
         xp -= 6;
       } else if (ratio > 0.9) {
@@ -247,7 +219,7 @@ class CaseEngine extends ChangeNotifier {
     }
 
     if (hasTimer && timeLimitSeconds != null && timeLimitSeconds! > 0) {
-      final ratio = _elapsedSeconds / timeLimitSeconds!;
+      final ratio = elapsedSeconds / timeLimitSeconds!;
       if (ratio > 1.0) {
         items.add(const XpBreakdownItem('Time ran out', -6, positive: false));
       } else if (ratio > 0.9) {
@@ -305,16 +277,13 @@ class CaseEngine extends ChangeNotifier {
     for (final panel in caseFile.evidencePanels) {
       final mg = panel.minigame;
       if (mg != null && mg.id == minigameId) {
-        // Unlock hidden evidence item
         final hiddenId = mg.unlocksHiddenItemId;
         if (hiddenId != null) {
           _unlockedHiddenItems.add(hiddenId);
         }
-        // Unlock hidden suspect
         final hiddenSuspectId = mg.unlocksHiddenSuspectId;
         if (hiddenSuspectId != null) {
           _unlockedSuspects.add(hiddenSuspectId);
-          // Initialise suspicion for the newly visible suspect
           final suspect = caseFile.suspectById(hiddenSuspectId);
           if (suspect != null && !_suspicion.containsKey(hiddenSuspectId)) {
             _suspicion[hiddenSuspectId] = suspect.initialSuspicion
@@ -332,7 +301,7 @@ class CaseEngine extends ChangeNotifier {
   OutcomeType accuse(String suspectId) {
     if (_caseClosed) return _outcomeType!;
 
-    _stopTimer();
+    stopTimer(); // Freeze the clock the moment accusation is submitted
     _accusedSuspectId = suspectId;
     _caseClosed = true;
 
@@ -360,14 +329,11 @@ class CaseEngine extends ChangeNotifier {
   void _initSuspicionLevels() {
     _suspicion.clear();
     for (final suspect in caseFile.suspects) {
-      // Use per-suspect initialSuspicion from JSON if present,
-      // otherwise fall back to branching logic default.
       _suspicion[suspect.id] = suspect.initialSuspicion
           ?? _branching.initialSuspicion(suspect.riskLevel);
     }
   }
 
-  /// Count of all evidence items the player COULD collect in this case.
   int _totalAvailableEvidenceCount() {
     int count = 0;
     for (final panel in caseFile.evidencePanels) {
@@ -379,7 +345,7 @@ class CaseEngine extends ChangeNotifier {
 
   @override
   void dispose() {
-    _stopTimer();
+    stopTimer();
     super.dispose();
   }
 
