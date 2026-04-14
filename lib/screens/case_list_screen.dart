@@ -24,8 +24,8 @@ class _CaseListScreenState extends State<CaseListScreen>
   bool _loading = true;
   List<CaseFile> _cases = [];
 
-  // Maps difficulty → ordered list of case IDs for unlock calculation
-  final Map<String, List<String>> _tierOrder = {};
+  // Global registration order used for linear unlock progression
+  final List<String> _globalOrder = [];
 
   late AnimationController _entryCtrl;
   late Animation<double> _fadeIn;
@@ -54,14 +54,10 @@ class _CaseListScreenState extends State<CaseListScreen>
 
     final all = CaseRepository.instance.all;
 
-    // Build tier order from the cases that actually loaded, preserving
-    // registration order so the first case per tier is always index 0.
-    for (final diff in ['easy', 'medium', 'hard', 'advanced']) {
-      _tierOrder[diff] = all
-          .where((c) => c.difficulty.toLowerCase() == diff)
-          .map((c) => c.id)
-          .toList();
-    }
+    _globalOrder
+      ..clear()
+      ..addAll(all.map((c) => c.id));
+
 
     setState(() {
       _cases = all;
@@ -70,21 +66,15 @@ class _CaseListScreenState extends State<CaseListScreen>
   }
 
   /// Returns true when this case should be playable.
-  /// The very first case in each difficulty tier is ALWAYS unlocked so
-  /// players always have something to start with, even if earlier cases
-  /// from the same tier failed to load.
+  /// Unlock flow is global and linear:
+  /// case[n] unlocks only when case[n - 1] is completed.
+
   bool _isUnlocked(CaseFile c) {
-    final tier = _tierOrder[c.difficulty.toLowerCase()] ?? [];
-    if (tier.isEmpty) return false;
-
-    // First case in tier is always unlocked
-    if (tier.first == c.id) return true;
-
-    // ← CHANGED: use ProgressService instead of GameProgress
-    // A case is unlocked if the previous case in the tier is completed
-    final idx = tier.indexOf(c.id);
-    if (idx <= 0) return true;
-    return ProgressService.instance.isCompleted(tier[idx - 1]);
+    if (_globalOrder.isEmpty) return false;
+    final idx = _globalOrder.indexOf(c.id);
+    if (idx < 0) return false;
+    if (idx == 0) return true; // very first case only
+    return ProgressService.instance.isCompleted(_globalOrder[idx - 1]);
   }
 
   // ← CHANGED: use ProgressService instead of GameProgress
