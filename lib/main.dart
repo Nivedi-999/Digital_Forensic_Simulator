@@ -17,6 +17,8 @@ import 'screens/home_screen.dart';
 import 'screens/signup_screen.dart';
 import 'theme/cyber_theme.dart';
 import 'firebase_options.dart';
+import 'services/progress_service.dart';
+import 'services/game_progress.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -69,7 +71,15 @@ class CyberInvestigatorApp extends StatelessWidget {
               ),
             );
           }
-          if (snapshot.hasData) return const MainMenuScreen();
+          if (snapshot.hasData){
+            ProgressService.instance.init().then((_) {
+              GameProgress.loadFromStats(
+                ProgressService.instance.stats,
+                ProgressService.instance.completedCaseIds,
+              );
+            });
+            return const MainMenuScreen();
+          } return const MainMenuScreen();
           return const SignupScreen();
         },
       ),

@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'game_progress.dart';
 
 void _log(String msg)              => print('[ProgressService] $msg');
 void _logOk(String msg)            => print('[ProgressService] ✅ $msg');
@@ -309,6 +310,7 @@ class ProgressService {
       timeTakenSeconds: solved ? timeTakenSeconds : null,
     );
 
+
     final difficulty = _difficultyOf(caseId).name.toUpperCase();
     final timeStr = timeTakenSeconds != null ? '${timeTakenSeconds}s' : 'n/a';
     _log('Recording attempt — case: $caseId ($difficulty) | '
@@ -338,6 +340,12 @@ class ProgressService {
       _logWarn('Case $caseId NOT synced to Firestore — no signed-in user.');
     }
   }
+  /// Expose completed case IDs for GameProgress restoration.
+  Set<String> get completedCaseIds =>
+      _cache.entries
+          .where((e) => e.value.completed)
+          .map((e) => e.key)
+          .toSet();
 
   // ── Avatar / display name ──────────────────────────────────
 
@@ -534,6 +542,11 @@ class ProgressService {
 
       _recomputeStats();
       await _saveStatsLocal();
+      final completedIds = _cache.entries
+          .where((e) => e.value.completed)
+          .map((e) => e.key)
+          .toSet();
+      GameProgress.loadFromStats(_stats, completedIds);
       _logOk('Reconciliation complete — $mergedCount case(s) updated.');
     } catch (e) {
       _logErr('Firestore reconciliation failed. Falling back to local data.', e);

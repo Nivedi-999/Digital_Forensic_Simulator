@@ -15,6 +15,8 @@ import '../theme/cyber_theme.dart';
 import 'home_screen.dart';
 import 'signup_screen.dart';
 import '../services/progress_service.dart';
+import '../services/progress_service.dart';
+import '../services/game_progress.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -103,6 +105,10 @@ class _LoginScreenState extends State<LoginScreen>
         password: _passwordCtrl.text.trim(),
       );
       await ProgressService.instance.init();
+      GameProgress.loadFromStats(
+        ProgressService.instance.stats,
+        ProgressService.instance.completedCaseIds, // you'll add this getter
+      );
 
       if (!mounted) return;
 

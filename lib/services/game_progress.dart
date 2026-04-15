@@ -1,4 +1,5 @@
 // lib/services/game_progress.dart
+import 'progress_service.dart';
 class GameProgress {
   GameProgress._();
 
@@ -29,6 +30,19 @@ class GameProgress {
     if (idx <= 0) return false;
     return _completedCaseIds.contains(orderedTierIds[idx - 1]);
   }
+  /// Called after Firestore reconciliation to restore XP and completed cases.
+  static void loadFromStats(PlayerStats stats, Set<String> completedCaseIds) {
+    // Restore XP from total stars (3 stars = ~15 XP per case, adjust to your formula)
+    // Since you use stars as XP source, derive XP from totalStars
+    _xp = stats.totalStars * 5; // e.g. each star = 5 XP — match your completeCaseWithXp() formula
+
+    _casesSolved = stats.totalCompleted;
+
+    _completedCaseIds
+      ..clear()
+      ..addAll(completedCaseIds);
+  }
+
 
   static int _totalFlags = 0;
   static int _correctFlags = 0;
