@@ -823,6 +823,7 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
   int? _selectedNodeIndex;
   bool _showGraph = true;
   bool _invalidConfig = false;
+  bool _loggedInvalidConfig = false;
 
   @override
   void initState() {
@@ -831,9 +832,6 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
     // BUG 9: Invalid/blank solution makes the graph unwinnable; switch to error state.
     if (mg.solution == null || mg.solution!.trim().isEmpty) {
       _invalidConfig = true;
-      debugPrint(
-        '[IP_TRACE] Invalid config: empty solution for panel=${widget.panelId}, minigame=${mg.id}',
-      );
       return;
     }
     _ipList = List<String>.from(mg.decoys);
@@ -915,6 +913,13 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
     final engine = CaseEngineProvider.of(context);
     final mg = widget.minigame;
     if (_invalidConfig) {
+      // BUG 9: Log case + panel identifiers once so JSON issues are easy to trace.
+      if (!_loggedInvalidConfig) {
+        _loggedInvalidConfig = true;
+        debugPrint(
+          '[IP_TRACE] Invalid config: empty solution for case=${engine.caseFile.id}, panel=${widget.panelId}, minigame=${mg.id}',
+        );
+      }
       return AppShell(
         title: 'Mini-Game',
         showBack: true,
