@@ -46,8 +46,6 @@ class _DecryptionMiniGameScreenState extends State<DecryptionMiniGameScreen> {
       default: return _UnsupportedMiniGame(panelId: widget.panelId, minigame: mg);
     }
   }
-  @override
-  Widget buildAriaLayer({void Function()? onDismiss}) => const SizedBox.shrink();
 }
 
 
@@ -61,14 +59,8 @@ class _UnsupportedMiniGame extends StatefulWidget {
 }
 
 class _UnsupportedMiniGameState extends State<_UnsupportedMiniGame> {
-  bool _success = false;
   int _hintsUsed = 0;
   String _hintText = '';
-
-  void _complete(CaseEngine engine) {
-    engine.solveMinigame(widget.minigame.id);
-    setState(() => _success = true);
-  }
 
   void _useHint(CaseEngine engine) {
     final hints = widget.minigame.hints;
@@ -116,12 +108,24 @@ class _UnsupportedMiniGameState extends State<_UnsupportedMiniGame> {
               ),
             ],
             const SizedBox(height: 20),
-            Wrap(spacing: 12, runSpacing: 12, children: [
-              CyberButton(
-                label: 'Complete Challenge',
-                icon: Icons.check_outlined,
-                onTap: () => _complete(engine),
+            // BUG 2: Keep fallback renderer, but lock completion to avoid free evidence unlocks.
+            NeonContainer(
+              borderColor: CyberColors.neonRed,
+              child: Row(
+                children: const [
+                  Icon(Icons.lock_outline, color: CyberColors.neonRed, size: 18),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'This challenge is not yet available.',
+                      style: TextStyle(color: CyberColors.neonRed, fontSize: 13),
+                    ),
+                  ),
+                ],
               ),
+            ),
+            const SizedBox(height: 12),
+            Wrap(spacing: 12, runSpacing: 12, children: [
               CyberButton(
                 label: 'Hint (${mg.hints.length - _hintsUsed} left)',
                 icon: Icons.lightbulb_outline,
@@ -133,11 +137,6 @@ class _UnsupportedMiniGameState extends State<_UnsupportedMiniGame> {
             ]),
           ]),
         ),
-        if (_success)
-          _SuccessOverlay(
-            message: mg.successMessage ?? 'Challenge completed.',
-            onContinue: () => Navigator.pop(context),
-          ),
       ]),
     );
   }
@@ -309,11 +308,10 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame> with TickerProvide
     return cipher.split('').map((c) {
       if (c == ' ') return ' ';
       final upper = c.toUpperCase();
-      if (_alpha.contains(upper)) {
-        final idx = (_alpha.indexOf(upper) - shift + 26) % 26;
-        return c == c.toUpperCase() ? _alpha[idx] : _alpha[idx].toLowerCase();
-      }
-      return c;
+      // BUG 10: Preserve punctuation/digits unchanged (e.g. '!', '1') instead of indexing alphabet with -1.
+      if (!_alpha.contains(upper)) return c;
+      final idx = (_alpha.indexOf(upper) - shift + 26) % 26;
+      return c == c.toUpperCase() ? _alpha[idx] : _alpha[idx].toLowerCase();
     }).join();
   }
 
@@ -348,15 +346,24 @@ class _CaesarCipherGameState extends State<_CaesarCipherGame> with TickerProvide
   }
 
   void _onWheelDragUpdate(DragUpdateDetails d, Offset center) {
+    // BUG 3: Ignore micro-jitter so tiny drags do not desync wheel state.
+    if (d.delta.distance < 8) return;
     final dx = d.localPosition.dx - center.dx;
     final dy = d.localPosition.dy - center.dy;
     final angle = atan2(dy, dx);
-    final delta = angle - _dragStartAngle;
-    final steps = (delta / (2 * pi / 26) * 2).round();
-    final newShift = (_dragStartShift + steps + 26) % 26;
+    var delta = angle - _dragStartAngle;
+    if (delta > pi) delta -= (2 * pi);
+    if (delta < -pi) delta += (2 * pi);
+    final rawSteps = (delta / (2 * pi / 26)).round();
+    // BUG 3: Clamp to one step per frame to prevent rapid-swipe jumps.
+    final steps = rawSteps.clamp(-1, 1);
+    if (steps == 0) return;
+    final newShift = (_shift + steps + 26) % 26;
     if (newShift != _shift) {
       HapticFeedback.selectionClick();
       setState(() => _shift = newShift);
+      _dragStartAngle = angle;
+      _dragStartShift = _shift;
     }
   }
 
@@ -815,13 +822,22 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
   late Animation<double> _scan;
   int? _selectedNodeIndex;
   bool _showGraph = true;
+  bool _invalidConfig = false;
 
   @override
   void initState() {
     super.initState();
     final mg = widget.minigame;
+    // BUG 9: Invalid/blank solution makes the graph unwinnable; switch to error state.
+    if (mg.solution == null || mg.solution!.trim().isEmpty) {
+      _invalidConfig = true;
+      debugPrint(
+        '[IP_TRACE] Invalid config: empty solution for panel=${widget.panelId}, minigame=${mg.id}',
+      );
+      return;
+    }
     _ipList = List<String>.from(mg.decoys);
-    if (!_ipList.contains(mg.solution)) _ipList.add(mg.solution ?? '');
+    if (!_ipList.contains(mg.solution)) _ipList.add(mg.solution!);
     _ipList.shuffle();
     _correctIndex = _ipList.indexWhere((ip) => ip == mg.solution);
     _pulseCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1400))..repeat(reverse: true);
@@ -833,6 +849,7 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      // BUG 5: Exit immediately if widget is gone to prevent timer callback leak after dispose.
       if (!mounted) { t.cancel(); return; }
       setState(() => _remaining--);
       if (_remaining <= 0) { t.cancel(); setState(() => _failed = true); }
@@ -840,7 +857,15 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
   }
 
   @override
-  void dispose() { _timer?.cancel(); _pulseCtrl.dispose(); _scanCtrl.dispose(); super.dispose(); }
+  void dispose() {
+    // BUG 5: Cancel timer before super.dispose() so no periodic callbacks survive teardown.
+    _timer?.cancel();
+    if (!_invalidConfig) {
+      _pulseCtrl.dispose();
+      _scanCtrl.dispose();
+    }
+    super.dispose();
+  }
 
   void _selectNode(int index) {
     if (_success || _failed) return;
@@ -889,6 +914,22 @@ class _IpTraceGameState extends State<_IpTraceGame> with TickerProviderStateMixi
   Widget build(BuildContext context) {
     final engine = CaseEngineProvider.of(context);
     final mg = widget.minigame;
+    if (_invalidConfig) {
+      return AppShell(
+        title: 'Mini-Game',
+        showBack: true,
+        showBottomNav: false,
+        child: const Center(
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              'This challenge is misconfigured and cannot be loaded yet.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      );
+    }
     final progress = _remaining / _totalSeconds;
     final timerColor = _remaining > 20 ? CyberColors.neonGreen
         : _remaining > 10 ? CyberColors.neonAmber : CyberColors.neonRed;
@@ -1234,6 +1275,7 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
   String _feedback = '';
   late AnimationController _shakeCtrl;
   late Animation<double> _shake;
+  bool _loggedInvalidSolution = false;
 
   @override
   void initState() {
@@ -1307,6 +1349,18 @@ class _CodeCrackGameState extends State<_CodeCrackGame> with TickerProviderState
   Widget build(BuildContext context) {
     final engine = CaseEngineProvider.of(context);
     final mg = widget.minigame;
+    final trimmedSolution = (mg.solution ?? '').trim();
+    // BUG 4: Empty solution is unsolvable for reels; fall back and log panel/case identifiers.
+    if (trimmedSolution.isEmpty) {
+      if (!_loggedInvalidSolution) {
+        final caseId = engine.caseFile.id;
+        debugPrint(
+          '[CODE_CRACK] Invalid config: empty solution for case=$caseId, panel=${widget.panelId}, minigame=${mg.id}',
+        );
+        _loggedInvalidSolution = true;
+      }
+      return _UnsupportedMiniGame(panelId: widget.panelId, minigame: mg);
+    }
     final solution = mg.solution ?? '???';
 
     return AppShell(title: 'Mini-Game', showBack: true, showBottomNav: false,
@@ -1538,13 +1592,14 @@ class _PhishingGameState extends State<_PhishingGame> with TickerProviderStateMi
   void _openEmail() async {
     setState(() => _emailOpen = true);
     await _emailOpenCtrl.forward();
+    if (!mounted) return;
     // Animate flags appearing one by one
     for (int i = 0; i < _flagVisible.length; i++) {
       await Future.delayed(const Duration(milliseconds: 300));
-      if (mounted) {
-        setState(() => _flagVisible[i] = true);
-        _flagCtrls[i].forward();
-      }
+      // BUG 8: Stop loop immediately if disposed; do not touch disposed animation controllers.
+      if (!mounted) return;
+      setState(() => _flagVisible[i] = true);
+      _flagCtrls[i].forward();
     }
   }
 
@@ -1979,6 +2034,9 @@ class _MetadataCorrelationGameState extends State<_MetadataCorrelationGame> {
   @override
   void initState() {
     super.initState();
+    // BUG 6: Ensure clean maps so stale keys from prior fragment lists never persist.
+    _selections.clear();
+    _revealed.clear();
     for (final f in widget.minigame.fragments) { _selections[f.id] = null; _revealed[f.id] = false; }
   }
 
@@ -2004,6 +2062,9 @@ class _MetadataCorrelationGameState extends State<_MetadataCorrelationGame> {
 
   void _reset() {
     setState(() {
+      // BUG 6: Clear ghost state before repopulating from current fragment definitions.
+      _selections.clear();
+      _revealed.clear();
       for (final f in widget.minigame.fragments) { _selections[f.id] = null; _revealed[f.id] = false; }
       _submitted = false;
     });
@@ -2122,6 +2183,7 @@ class _AlibiVerifyGameState extends State<_AlibiVerifyGame> {
   bool _wrong = false;
   int _hintsUsed = 0;
   String _hintText = '';
+  bool _isDisposed = false;
 
   void _select(String alibiId, CaseEngine engine) {
     if (_submitted) return;
@@ -2135,7 +2197,9 @@ class _AlibiVerifyGameState extends State<_AlibiVerifyGame> {
       HapticFeedback.heavyImpact();
       setState(() => _wrong = true);
       Future.delayed(const Duration(seconds: 2), () {
-        if (mounted) setState(() { _submitted = false; _wrong = false; _selectedAlibiId = null; });
+        // BUG 7: Guard delayed reset from running after widget disposal.
+        if (!mounted || _isDisposed) return;
+        setState(() { _submitted = false; _wrong = false; _selectedAlibiId = null; });
       });
     }
   }
@@ -2146,6 +2210,13 @@ class _AlibiVerifyGameState extends State<_AlibiVerifyGame> {
       engine.recordHintUsed();
       setState(() { _hintText = mg.hints[_hintsUsed]; _hintsUsed++; });
     }
+  }
+
+  @override
+  void dispose() {
+    // BUG 7: Mark disposed before super to protect delayed callbacks.
+    _isDisposed = true;
+    super.dispose();
   }
 
   @override
