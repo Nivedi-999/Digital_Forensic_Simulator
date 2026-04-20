@@ -137,6 +137,9 @@ class MinigameConfig {
   final Map<String, String>? timelineEvent;
   final Map<String, double> suspicionEffectsOnSolve;
 
+  // Raw JSON — used by new game types to access custom fields not in the typed model.
+  final Map<String, dynamic> rawJson;
+
   const MinigameConfig({
     required this.id,
     required this.type,
@@ -164,6 +167,7 @@ class MinigameConfig {
     this.alibis = const [],
     this.timelineEvent,
     this.suspicionEffectsOnSolve = const {},
+    this.rawJson = const {},
   });
 
   factory MinigameConfig.fromJson(Map<String, dynamic> json) {
@@ -210,6 +214,7 @@ class MinigameConfig {
         json['suspicionEffectsOnSolve'] as Map,
       ).map((k, v) => MapEntry(k, (v as num).toDouble()))
           : const {},
+      rawJson: Map<String, dynamic>.from(json),
     );
   }
 }
