@@ -34,8 +34,7 @@ class CaseEngine extends ChangeNotifier {
   final CaseFile caseFile;
   final BranchingLogic _branching;
 
-  CaseEngine(this.caseFile)
-      : _branching = BranchingLogic(caseFile) {
+  CaseEngine(this.caseFile) : _branching = BranchingLogic(caseFile) {
     _initSuspicionLevels();
   }
 
@@ -96,7 +95,8 @@ class CaseEngine extends ChangeNotifier {
 
   /// 0.0–1.0 fraction of the time limit consumed. 0.0 if unlimited.
   double get timerProgress {
-    if (!hasTimer || timeLimitSeconds == null || timeLimitSeconds == 0) return 0.0;
+    if (!hasTimer || timeLimitSeconds == null || timeLimitSeconds == 0)
+      return 0.0;
     return (elapsedSeconds / timeLimitSeconds!).clamp(0.0, 1.0);
   }
 
@@ -107,17 +107,21 @@ class CaseEngine extends ChangeNotifier {
 
   Set<String> get solvedMinigames => Set.unmodifiable(_solvedMinigames);
 
-  Set<String> get unlockedHiddenItems =>
-      Set.unmodifiable(_unlockedHiddenItems);
+  Set<String> get unlockedHiddenItems => Set.unmodifiable(_unlockedHiddenItems);
 
-  Set<String> get unlockedSuspects =>
-      Set.unmodifiable(_unlockedSuspects);
+  Set<String> get unlockedSuspects => Set.unmodifiable(_unlockedSuspects);
 
   bool get caseClosed => _caseClosed;
   String? get accusedSuspectId => _accusedSuspectId;
   OutcomeType? get outcomeType => _outcomeType;
 
   double suspicionFor(String suspectId) => _suspicion[suspectId] ?? 0.0;
+
+  double normalizedSuspicionFor(String suspectId) {
+    final raw = suspicionFor(suspectId);
+    if (!raw.isFinite) return 0.0;
+    return raw.clamp(0.0, 1.0);
+  }
 
   bool isMinigameSolved(String minigameId) =>
       _solvedMinigames.contains(minigameId);
@@ -146,15 +150,29 @@ class CaseEngine extends ChangeNotifier {
 
   List<Suspect> get suspectsByThreat {
     final sorted = List<Suspect>.from(caseFile.suspects);
-    sorted.sort((a, b) =>
-        suspicionFor(b.id).compareTo(suspicionFor(a.id)));
+    sorted.sort((a, b) {
+      final bScore = normalizedSuspicionFor(b.id);
+      final aScore = normalizedSuspicionFor(a.id);
+      final byScore = bScore.compareTo(aScore);
+      if (byScore != 0) return byScore;
+      return a.id.compareTo(b.id);
+    });
     return sorted;
+  }
+
+  bool isPanelUnlocked(String panelId) {
+    final panel = caseFile.panelById(panelId);
+    if (panel == null) return false;
+    final gateMinigameId = panel.unlockedBy;
+    if (gateMinigameId == null || gateMinigameId.isEmpty) return true;
+    return isMinigameSolved(gateMinigameId);
   }
 
   bool get canAccuse =>
       correctEvidenceCount >= caseFile.winCondition.minCorrectEvidence;
 
   List<EvidenceItem> visibleItemsForPanel(String panelId) {
+    if (!isPanelUnlocked(panelId)) return [];
     final panel = caseFile.panelById(panelId);
     if (panel == null) return [];
     final items = List<EvidenceItem>.from(panel.items);
@@ -171,8 +189,9 @@ class CaseEngine extends ChangeNotifier {
 
   int computeFinalXp(int baseXp) {
     final totalCorrect = caseFile.correctEvidenceIds.length;
-    final double proportion =
-    totalCorrect == 0 ? 0.0 : correctEvidenceCount / totalCorrect;
+    final double proportion = totalCorrect == 0
+        ? 0.0
+        : correctEvidenceCount / totalCorrect;
     int xp = (baseXp * proportion).round();
 
     xp -= _hintsUsed;
@@ -196,26 +215,38 @@ class CaseEngine extends ChangeNotifier {
 
   List<XpBreakdownItem> xpBreakdown(int baseXp) {
     final totalCorrect = caseFile.correctEvidenceIds.length;
-    final double proportion =
-    totalCorrect == 0 ? 0.0 : correctEvidenceCount / totalCorrect;
+    final double proportion = totalCorrect == 0
+        ? 0.0
+        : correctEvidenceCount / totalCorrect;
     final int proportionalBase = (baseXp * proportion).round();
 
     final items = <XpBreakdownItem>[];
-    items.add(XpBreakdownItem(
+    items.add(
+      XpBreakdownItem(
         'Evidence found ($correctEvidenceCount/$totalCorrect)',
         proportionalBase,
-        positive: true));
+        positive: true,
+      ),
+    );
 
     if (_hintsUsed > 0) {
-      items.add(XpBreakdownItem(
-          'Hints used (×$_hintsUsed)', -_hintsUsed, positive: false));
+      items.add(
+        XpBreakdownItem(
+          'Hints used (×$_hintsUsed)',
+          -_hintsUsed,
+          positive: false,
+        ),
+      );
     }
 
     if (irrelevantEvidenceCount > 0) {
-      items.add(XpBreakdownItem(
+      items.add(
+        XpBreakdownItem(
           'Wrong evidence (×$irrelevantEvidenceCount)',
           -irrelevantEvidenceCount,
-          positive: false));
+          positive: false,
+        ),
+      );
     }
 
     if (hasTimer && timeLimitSeconds != null && timeLimitSeconds! > 0) {
@@ -223,9 +254,17 @@ class CaseEngine extends ChangeNotifier {
       if (ratio > 1.0) {
         items.add(const XpBreakdownItem('Time ran out', -6, positive: false));
       } else if (ratio > 0.9) {
-        items.add(const XpBreakdownItem('Tight finish (>90% time)', -4, positive: false));
+        items.add(
+          const XpBreakdownItem(
+            'Tight finish (>90% time)',
+            -4,
+            positive: false,
+          ),
+        );
       } else if (ratio > 0.6) {
-        items.add(const XpBreakdownItem('Slow solve (>60% time)', -2, positive: false));
+        items.add(
+          const XpBreakdownItem('Slow solve (>60% time)', -2, positive: false),
+        );
       }
     }
 
@@ -240,17 +279,19 @@ class CaseEngine extends ChangeNotifier {
 
     final panel = caseFile.panelById(panelId);
     final item = panel?.items.firstWhere(
-          (i) => i.id == itemId,
+      (i) => i.id == itemId,
       orElse: () => panel.hiddenItem ?? _sentinel,
     );
     if (item == null || item.id == '__sentinel__') return;
 
-    _collected.add(CollectedEvidence(
-      panelId: panelId,
-      itemId: itemId,
-      label: item.label,
-      collectedAt: DateTime.now(),
-    ));
+    _collected.add(
+      CollectedEvidence(
+        panelId: panelId,
+        itemId: itemId,
+        label: item.label,
+        collectedAt: DateTime.now(),
+      ),
+    );
 
     _branching.applyEvidenceEffects(itemId, _suspicion);
     notifyListeners();
@@ -286,8 +327,9 @@ class CaseEngine extends ChangeNotifier {
           _unlockedSuspects.add(hiddenSuspectId);
           final suspect = caseFile.suspectById(hiddenSuspectId);
           if (suspect != null && !_suspicion.containsKey(hiddenSuspectId)) {
-            _suspicion[hiddenSuspectId] = suspect.initialSuspicion
-                ?? _branching.initialSuspicion(suspect.riskLevel);
+            _suspicion[hiddenSuspectId] =
+                suspect.initialSuspicion ??
+                _branching.initialSuspicion(suspect.riskLevel);
           }
         }
         break;
@@ -329,8 +371,9 @@ class CaseEngine extends ChangeNotifier {
   void _initSuspicionLevels() {
     _suspicion.clear();
     for (final suspect in caseFile.suspects) {
-      _suspicion[suspect.id] = suspect.initialSuspicion
-          ?? _branching.initialSuspicion(suspect.riskLevel);
+      _suspicion[suspect.id] =
+          suspect.initialSuspicion ??
+          _branching.initialSuspicion(suspect.riskLevel);
     }
   }
 

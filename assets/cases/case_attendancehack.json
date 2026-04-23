@@ -163,17 +163,39 @@
         }
       ],
       "hiddenItem": {
-        "id": "file_hostelwifi",
-        "label": "hostel_wifi_log.txt",
-        "detail": "Hostel network DHCP and session log for Block C WiFi (gateway 10.20.33.41). At 01:11 AM, device hostname 'TANMAY-LAPTOP' was assigned lease 10.20.33.87. The device remained connected until 02:03 AM \u2014 covering the entire window of SIS database access. The device's MAC address resolves to an Intel Wi-Fi 6 AX201 adapter \u2014 consistent with a mid-range student laptop. Tanmay D's room is in Block C, Room 314, confirmed by hostel admission records. The DHCP lease timestamp predates the first SIS login by 3 minutes, consistent with the time needed to open a laptop, connect to WiFi, and launch the database tool. No other device in Block C was active on the SIS port during this window.",
+        "id": "file_credential_dump",
+        "label": "faculty_credentials_dump.log",
+        "detail": "Credential-forensics extract from the compromised faculty workstation. The dump captures Prof. Mehta's username and hash token at 00:58 AM, then shows replay authentication at 01:14 AM from hostel gateway 10.20.33.41. The replay tool fingerprint (script header + query batching delay pattern) matches artifacts recovered from TANMAY-LAPTOP. This links stolen credentials, breach timing, and execution tooling to the same operator.",
         "isKeyEvidence": true,
         "pointsToSuspect": "tanmay_d",
         "unlockedByMinigame": "hostel_decode",
         "metadata": {
-          "size": "0.2 MB",
-          "modifier": "Hostel Network",
+          "size": "0.3 MB",
+          "modifier": "Credential Forensics",
           "modifiedAt": "Auto-generated"
-        }
+        },
+        "rows": [
+          {
+            "key": "Credential Capture Time",
+            "value": "00:58 AM",
+            "highlight": true
+          },
+          {
+            "key": "Replay Login Time",
+            "value": "01:14 AM",
+            "highlight": true
+          },
+          {
+            "key": "Replay Source",
+            "value": "10.20.33.41 (Hostel Block C)",
+            "highlight": true
+          },
+          {
+            "key": "Tool Signature",
+            "value": "Matches TANMAY-LAPTOP script artifact",
+            "highlight": true
+          }
+        ]
       },
       "minigame": {
         "id": "hostel_decode",
@@ -196,7 +218,7 @@
         ],
         "onSuccess": {
           "unlocksHiddenItem": "file_credential_dump",
-          "message": "BREAKTHROUGH \u2014 hostel_wifi_log.txt confirmed. TANMAY-LAPTOP was connected from Block C at exactly the time of the database breach. Physical location is now proven."
+          "message": "BREAKTHROUGH \u2014 faculty_credentials_dump.log unlocked. Captured credentials were replayed from Block C during the breach window, matching Tanmay's tooling pattern."
         }
       }
     },
@@ -317,7 +339,7 @@
     "file_sqlqueries",
     "meta_credentials",
     "ip_hostel",
-    "file_hostelwifi"
+    "file_credential_dump"
   ],
   "outcomes": {
     "perfect": {

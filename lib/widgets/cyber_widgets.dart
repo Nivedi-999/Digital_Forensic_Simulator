@@ -89,12 +89,12 @@ class CyberButton extends StatelessWidget {
           ),
           boxShadow: onTap != null && !isOutlined
               ? [
-            BoxShadow(
-              color: color.withOpacity(0.18),
-              blurRadius: 12,
-              spreadRadius: 0,
-            ),
-          ]
+                  BoxShadow(
+                    color: color.withOpacity(0.18),
+                    blurRadius: 12,
+                    spreadRadius: 0,
+                  ),
+                ]
               : null,
         ),
         child: Row(
@@ -156,8 +156,10 @@ class _StatusChipState extends State<StatusChip>
       vsync: this,
       duration: const Duration(milliseconds: 1200),
     );
-    _anim = Tween<double>(begin: 0.4, end: 1.0)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
+    _anim = Tween<double>(
+      begin: 0.4,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut));
     if (widget.pulsing) _ctrl.repeat(reverse: true);
   }
 
@@ -175,11 +177,13 @@ class _StatusChipState extends State<StatusChip>
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
           color: widget.color.withOpacity(
-              widget.pulsing ? 0.08 * _anim.value + 0.06 : 0.1),
+            widget.pulsing ? 0.08 * _anim.value + 0.06 : 0.1,
+          ),
           borderRadius: CyberRadius.pill,
           border: Border.all(
             color: widget.color.withOpacity(
-                widget.pulsing ? 0.5 * _anim.value + 0.2 : 0.4),
+              widget.pulsing ? 0.5 * _anim.value + 0.2 : 0.4,
+            ),
             width: 1,
           ),
         ),
@@ -192,8 +196,7 @@ class _StatusChipState extends State<StatusChip>
                 height: 5,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: widget.color
-                      .withOpacity(0.6 * _anim.value + 0.4),
+                  color: widget.color.withOpacity(0.6 * _anim.value + 0.4),
                 ),
               ),
               const SizedBox(width: 5),
@@ -242,21 +245,15 @@ class CyberSectionHeader extends StatelessWidget {
             decoration: BoxDecoration(
               color: c,
               borderRadius: CyberRadius.pill,
-              boxShadow: [
-                BoxShadow(color: c.withOpacity(0.5), blurRadius: 6),
-              ],
+              boxShadow: [BoxShadow(color: c.withOpacity(0.5), blurRadius: 6)],
             ),
           ),
           const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                title,
-                style: CyberText.sectionTitle.copyWith(color: c),
-              ),
-              if (subtitle != null)
-                Text(subtitle!, style: CyberText.caption),
+              Text(title, style: CyberText.sectionTitle.copyWith(color: c)),
+              if (subtitle != null) Text(subtitle!, style: CyberText.caption),
             ],
           ),
         ],
@@ -275,6 +272,7 @@ class LogRow extends StatelessWidget {
   final String right;
   final bool highlighted; // kept for API compat — no longer drives amber colour
   final VoidCallback? onTap;
+
   /// When non-null, alternating rows get a subtle zebra stripe.
   /// Pass the item index from the parent list.
   final int? index;
@@ -356,50 +354,76 @@ class LogRow extends StatelessWidget {
 class FeedTabButton extends StatelessWidget {
   final String label;
   final bool isActive;
+  final bool isLocked;
   final VoidCallback? onTap;
 
   const FeedTabButton({
     super.key,
     required this.label,
     required this.isActive,
+    this.isLocked = false,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final bool disabled = isLocked || onTap == null;
     return GestureDetector(
-      onTap: onTap,
+      onTap: disabled ? null : onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive
+          color: isLocked
+              ? CyberColors.bgCard.withOpacity(0.55)
+              : isActive
               ? CyberColors.neonCyan.withOpacity(0.15)
               : CyberColors.bgCard,
           borderRadius: CyberRadius.pill,
           border: Border.all(
-            color: isActive
+            color: isLocked
+                ? CyberColors.textMuted.withOpacity(0.35)
+                : isActive
                 ? CyberColors.neonCyan
                 : CyberColors.borderSubtle,
             width: 1.5,
           ),
-          boxShadow: isActive
+          boxShadow: isActive && !isLocked
               ? [
-            BoxShadow(
-              color: CyberColors.neonCyan.withOpacity(0.2),
-              blurRadius: 8,
-            )
-          ]
+                  BoxShadow(
+                    color: CyberColors.neonCyan.withOpacity(0.2),
+                    blurRadius: 8,
+                  ),
+                ]
               : null,
         ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isActive ? CyberColors.neonCyan : CyberColors.textMuted,
-            fontSize: 12,
-            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-            letterSpacing: 0.5,
-          ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: isLocked
+                    ? CyberColors.textMuted.withOpacity(0.75)
+                    : isActive
+                    ? CyberColors.neonCyan
+                    : CyberColors.textMuted,
+                fontSize: 12,
+                fontWeight: isActive && !isLocked
+                    ? FontWeight.bold
+                    : FontWeight.normal,
+                letterSpacing: 0.5,
+              ),
+            ),
+            if (isLocked) ...[
+              const SizedBox(width: 6),
+              Icon(
+                Icons.lock_outline,
+                size: 12,
+                color: CyberColors.textMuted.withOpacity(0.75),
+              ),
+            ],
+          ],
         ),
       ),
     );
@@ -431,9 +455,12 @@ class SuspectCard extends StatelessWidget {
 
   Color get _riskColor {
     switch (riskLevel.toLowerCase()) {
-      case 'high':   return CyberColors.neonRed;
-      case 'medium': return CyberColors.neonAmber;
-      default:       return CyberColors.neonGreen;
+      case 'high':
+        return CyberColors.neonRed;
+      case 'medium':
+        return CyberColors.neonAmber;
+      default:
+        return CyberColors.neonGreen;
     }
   }
 
@@ -453,11 +480,17 @@ class SuspectCard extends StatelessWidget {
   /// Returns an icon that represents the suspect's role visually.
   IconData _avatarIcon() {
     final r = role.toLowerCase();
-    if (r.contains('engineer') || r.contains('developer') || r.contains('devops')) {
+    if (r.contains('engineer') ||
+        r.contains('developer') ||
+        r.contains('devops')) {
       return Icons.code;
-    } else if (r.contains('finance') || r.contains('analyst') || r.contains('account')) {
+    } else if (r.contains('finance') ||
+        r.contains('analyst') ||
+        r.contains('account')) {
       return Icons.account_balance_outlined;
-    } else if (r.contains('admin') || r.contains('manager') || r.contains('director')) {
+    } else if (r.contains('admin') ||
+        r.contains('manager') ||
+        r.contains('director')) {
       return Icons.manage_accounts_outlined;
     } else if (r.contains('hr') || r.contains('human')) {
       return Icons.people_outline;
@@ -498,11 +531,13 @@ class SuspectCard extends StatelessWidget {
               width: suspicionValue >= 0.35 ? 1.8 : 1.2,
             ),
             boxShadow: suspicionValue >= 0.65
-                ? [BoxShadow(
-              color: susColor.withOpacity(0.18),
-              blurRadius: 12,
-              spreadRadius: 1,
-            )]
+                ? [
+                    BoxShadow(
+                      color: susColor.withOpacity(0.18),
+                      blurRadius: 12,
+                      spreadRadius: 1,
+                    ),
+                  ]
                 : null,
           ),
           child: Column(
@@ -591,12 +626,16 @@ class SuspectCard extends StatelessWidget {
                   // ── Suspicion badge ──
                   Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 4),
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: susColor.withOpacity(0.12),
                       borderRadius: CyberRadius.pill,
                       border: Border.all(
-                          color: susColor.withOpacity(0.4), width: 1),
+                        color: susColor.withOpacity(0.4),
+                        width: 1,
+                      ),
                     ),
                     child: Text(
                       _suspicionLabel(suspicionValue),
@@ -609,8 +648,11 @@ class SuspectCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 6),
-                  Icon(Icons.chevron_right,
-                      color: riskColor.withOpacity(0.4), size: 18),
+                  Icon(
+                    Icons.chevron_right,
+                    color: riskColor.withOpacity(0.4),
+                    size: 18,
+                  ),
                 ],
               ),
 
@@ -650,10 +692,9 @@ class SuspectCard extends StatelessWidget {
                           child: LinearProgressIndicator(
                             value: suspicionValue,
                             minHeight: 5,
-                            backgroundColor:
-                            CyberColors.borderSubtle.withOpacity(0.5),
-                            valueColor:
-                            AlwaysStoppedAnimation(susColor),
+                            backgroundColor: CyberColors.borderSubtle
+                                .withOpacity(0.5),
+                            valueColor: AlwaysStoppedAnimation(susColor),
                           ),
                         ),
                       ],
@@ -708,8 +749,7 @@ class TimelineItem extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: color,
                     boxShadow: [
-                      BoxShadow(
-                          color: color.withOpacity(0.6), blurRadius: 8)
+                      BoxShadow(color: color.withOpacity(0.6), blurRadius: 8),
                     ],
                   ),
                 ),
@@ -770,36 +810,34 @@ class CyberProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = color ?? CyberColors.neonCyan;
-    return LayoutBuilder(builder: (_, constraints) {
-      return Container(
-        width: double.infinity,
-        height: height,
-        decoration: BoxDecoration(
-          color: c.withOpacity(0.1),
-          borderRadius: CyberRadius.pill,
-          border:
-          Border.all(color: c.withOpacity(0.25), width: 1),
-        ),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: FractionallySizedBox(
-            widthFactor: value.clamp(0.0, 1.0),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: CyberRadius.pill,
-                gradient: LinearGradient(
-                  colors: [c.withOpacity(0.7), c],
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        return Container(
+          width: double.infinity,
+          height: height,
+          decoration: BoxDecoration(
+            color: c.withOpacity(0.1),
+            borderRadius: CyberRadius.pill,
+            border: Border.all(color: c.withOpacity(0.25), width: 1),
+          ),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: value.clamp(0.0, 1.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: CyberRadius.pill,
+                  gradient: LinearGradient(colors: [c.withOpacity(0.7), c]),
+                  boxShadow: [
+                    BoxShadow(color: c.withOpacity(0.5), blurRadius: 6),
+                  ],
                 ),
-                boxShadow: [
-                  BoxShadow(
-                      color: c.withOpacity(0.5), blurRadius: 6)
-                ],
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -873,9 +911,7 @@ class ScanlineOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned.fill(
-      child: IgnorePointer(
-        child: CustomPaint(painter: _ScanlinePainter()),
-      ),
+      child: IgnorePointer(child: CustomPaint(painter: _ScanlinePainter())),
     );
   }
 }

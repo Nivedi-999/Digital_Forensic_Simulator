@@ -161,7 +161,7 @@
         "type": "timeline_reconstruct",
         "title": "Log Gap Reconstructor",
         "hint": "The server logs are missing for 10 minutes. Use the backup monitoring alerts to rebuild what happened inside the gap.",
-        "instruction": "Drag and place each backup alert into the correct time slot on the timeline to reconstruct the missing log window (21:10–21:20).",
+        "instruction": "Drag and place each backup alert into the correct time slot on the timeline to reconstruct the missing log window (21:10–21:20). Note: 21:12 has two separate events.",
         "events": [
           {
             "id": "evt_ssh_fail",
@@ -204,6 +204,7 @@
           "21:10",
           "21:11",
           "21:12",
+          "21:12",
           "21:13",
           "21:14",
           "21:15",
@@ -220,7 +221,7 @@
         ],
         "onSuccess": {
           "unlocksPanel": "timeline_events",
-          "message": "GAP RECONSTRUCTED — Activity confirmed during the missing window. Admin login and log deletion occurred within 2 minutes of each other. Timeline Events panel now unlocked."
+          "message": "GAP RECONSTRUCTED — Activity confirmed during the missing window, including two distinct 21:12 events. Unlocked: Timeline Events panel (Admin Login and Cleanup Command evidence)."
         }
       }
     },
@@ -335,14 +336,14 @@
             "isCorrect": true
           },
           {
-            "id": "session_user_match",
-            "label": "Executed under active admin session sysadmin_vsb",
-            "isCorrect": true
-          },
-          {
             "id": "gzip_match",
             "label": "Could match the 00:00 gzip task",
             "isCorrect": false
+          },
+          {
+            "id": "session_user_match",
+            "label": "Executed under active admin session sysadmin_vsb",
+            "isCorrect": true
           },
           {
             "id": "time_close_to_03am",
@@ -359,7 +360,7 @@
         ],
         "onSuccess": {
           "unlocksPanel": "admin_activity",
-          "message": "DELIBERATE DELETION CONFIRMED — Log cleanup was manually executed under an active admin session. No scheduled task matches this command or time. Admin Activity panel now unlocked."
+          "message": "DELIBERATE DELETION CONFIRMED — Log cleanup was manually executed under an active admin session. Unlocked: Admin Activity panel (Admin Session Record evidence)."
         }
       }
     },

@@ -191,6 +191,30 @@
             "modifier": "Unknown — no version record",
             "modifiedAt": "Within 48 hours of upload"
           }
+        },
+        {
+          "id": "file_shadow_copy_diff",
+          "label": "shadow_copy_diff.txt",
+          "detail": "A volume shadow-copy snapshot from 27 minutes after upload preserves the original report blocks. A block-level diff against the current file shows two rewritten regions and one deleted range that map directly to the missing paragraphs and altered totals. The write pattern matches direct storage overwrite behavior, not a normal in-app edit flow.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "it_admin",
+          "metadata": {
+            "size": "0.3 MB",
+            "modifier": "Snapshot Engine",
+            "modifiedAt": "Day 0 - 09:37 AM"
+          }
+        },
+        {
+          "id": "file_access_audit_gap",
+          "label": "docstore_access_audit_gap.csv",
+          "detail": "Backend storage audit export shows an 11-hour gap where object reads are logged but write-attribution fields are blank. The affected object ID maps to Neha's report. This anomaly appears only in buckets touched by privileged maintenance credentials, indicating tampering through admin-grade pathways.",
+          "isKeyEvidence": true,
+          "pointsToSuspect": "it_admin",
+          "metadata": {
+            "size": "0.15 MB",
+            "modifier": "Storage Audit Service",
+            "modifiedAt": "Day 1 - 08:22 PM"
+          }
         }
       ],
       "minigame": null
@@ -379,6 +403,8 @@
   },
   "correctEvidenceIds": [
     "file_comparison",
+    "file_shadow_copy_diff",
+    "file_access_audit_gap",
     "meta_timestamps",
     "hash_mismatch",
     "meta_service_account"

@@ -93,14 +93,25 @@
         "id": "pattern_analysis",
         "type": "pattern_match",
         "title": "Analyze Writing Style",
-        "description": "Compare sentence structure, emotional variation, and phrasing patterns across messages.",
+        "description": "Review the chat messages and decide whether the writing pattern is human, generated, or mixed.",
+        "instruction": "Pick the best label from the choices, or type it manually. Correct label: generated (AI-generated writing pattern).",
         "hint": "Look for missing human inconsistency \u2014 hesitation, emotional depth, natural variation.",
         "solution": "generated",
+        "acceptedAnswers": [
+          "generated",
+          "ai generated",
+          "ai-generated"
+        ],
+        "choices": [
+          "human",
+          "generated",
+          "mixed"
+        ],
         "maxHints": 3,
         "hints": [
-          "Compare sentence length across all messages.",
-          "Human writers vary their emotional tone \u2014 does this author?",
-          "Look for response templates \u2014 identical cadence repeated across different topics."
+          "Compare sentence length across all messages \u2014 variation is unusually low.",
+          "Human writers vary their emotional tone \u2014 this stream stays mechanically flat.",
+          "Look for response templates \u2014 identical cadence repeats across unrelated topics."
         ],
         "onSuccess": {
           "unlocksPanel": "device_logs",

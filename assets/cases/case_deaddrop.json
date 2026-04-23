@@ -230,7 +230,7 @@
       "label": "Metadata",
       "icon": "data_object",
       "evidenceType": "meta",
-      "unlockedBy": "binary_pattern",
+      "unlockedBy": "dead_drop_decode",
       "minigame": {
         "id": "meta_correlate_deaddrop",
         "type": "metadata_correlation",
@@ -395,7 +395,7 @@
       "label": "IP Traces",
       "icon": "wifi",
       "evidenceType": "ip",
-      "unlockedBy": "timeline_logic",
+      "unlockedBy": "meta_correlate_deaddrop",
       "minigame": {
         "id": "route_tracing",
         "type": "metadata_correlation",

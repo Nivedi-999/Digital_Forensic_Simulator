@@ -272,9 +272,41 @@
           "Four timestamps fall inside the 2 AM window: Modified and Accessed for both files."
         ],
         "onSuccess": {
-          "message": "ANOMALY CONFIRMED — Four timestamps cluster tightly in the 01:58–02:04 window. Both files were actively edited, not just opened. This is a working session, not a passive read.",
+          "message": "ANOMALY CONFIRMED — Four timestamps cluster tightly in the 01:58–02:04 window. Hidden evidence unlocked: 2 AM Anomaly Cluster Signature. This is a working session, not a passive read.",
           "unlocksPanel": "activity_timeline"
         }
+      },
+      "hiddenItem": {
+        "id": "meta_2am_cluster_signature",
+        "label": "2 AM Anomaly Cluster Signature",
+        "isKeyEvidence": true,
+        "isSuspect": true,
+        "isHidden": true,
+        "unlockedByMinigame": "timestamp_detector",
+        "detail": "Forensic correlation combines the four suspicious timestamps into a single anomaly signature: 01:58 (report modified), 02:01 (report accessed), 02:03 (budget modified), 02:04 (budget accessed). The low spread (6 minutes) and alternating modified/accessed pattern indicate deliberate, interactive edits by an active user session. This cluster is statistically inconsistent with background OS indexing or scheduled backup processes.",
+        "pointsToSuspect": "employee",
+        "rows": [
+          {
+            "key": "Cluster Window",
+            "value": "01:58–02:04 (6 minutes)",
+            "highlight": true
+          },
+          {
+            "key": "Events in Cluster",
+            "value": "4 suspicious timestamps across 2 files",
+            "highlight": true
+          },
+          {
+            "key": "Pattern",
+            "value": "Modified/Accessed alternation consistent with manual edits",
+            "highlight": true
+          },
+          {
+            "key": "Automated Task Match",
+            "value": "None — no scheduler or indexing job overlaps this signature",
+            "highlight": false
+          }
+        ]
       }
     },
     {
@@ -498,6 +530,7 @@
   },
   "correctEvidenceIds": [
     "meta_timestamps",
+    "meta_2am_cluster_signature",
     "file_accessed",
     "meta_activity",
     "ip_no_remote"
