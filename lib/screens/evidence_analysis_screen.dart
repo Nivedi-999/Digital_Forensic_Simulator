@@ -179,10 +179,10 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen> {
                     constraints: const BoxConstraints(minHeight: 200),
                     child: item != null
                         ? _EvidenceContent(
-                            item: item,
-                            panel: panel,
-                            allItems: visibleItems,
-                          )
+                      item: item,
+                      panel: panel,
+                      allItems: visibleItems,
+                    )
                         : const _EmptyContent(),
                   ),
                 ),
@@ -195,23 +195,23 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen> {
                     width: double.infinity,
                     child: isMinigameSolved
                         ? _AlreadyUnlockedBanner(
-                            message:
-                                minigame.successMessage ??
-                                'Hidden clue unlocked.',
-                          )
+                      message:
+                      minigame.successMessage ??
+                          'Hidden clue unlocked.',
+                    )
                         : CyberButton(
-                            label: minigame.title,
-                            icon: Icons.lock_open_outlined,
-                            accentColor: CyberColors.neonPurple,
-                            onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => DecryptionMiniGameScreen(
-                                  panelId: widget.panelId,
-                                ),
-                              ),
-                            ).then((_) => setState(() {})),
+                      label: minigame.title,
+                      icon: Icons.lock_open_outlined,
+                      accentColor: CyberColors.neonPurple,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => DecryptionMiniGameScreen(
+                            panelId: widget.panelId,
                           ),
+                        ),
+                      ).then((_) => setState(() {})),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   _MiniGameUnlockPreview(
@@ -228,11 +228,11 @@ class _EvidenceAnalysisScreenState extends State<EvidenceAnalysisScreen> {
                   child: isAlreadyCollected
                       ? const _AlreadyMarkedBanner()
                       : CyberButton(
-                          label: 'Mark as Evidence',
-                          icon: Icons.add_circle_outline,
-                          accentColor: CyberColors.neonGreen,
-                          onTap: () => _handleAddEvidence(context),
-                        ),
+                    label: 'Mark as Evidence',
+                    icon: Icons.add_circle_outline,
+                    accentColor: CyberColors.neonGreen,
+                    onTap: () => _handleAddEvidence(context),
+                  ),
                 ),
 
                 const SizedBox(height: 32),
@@ -307,7 +307,16 @@ class _TypeHeader extends StatelessWidget {
               ],
             ),
           ),
-          Text('Case #$caseNumber', style: CyberText.caption),
+          // FIX: constrain case number so it never overflows the header row
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100),
+            child: Text(
+              'Case #$caseNumber',
+              style: CyberText.caption,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+          ),
         ],
       ),
     );
@@ -371,22 +380,30 @@ class _ChatThread extends StatelessWidget {
                 size: 14,
               ),
               const SizedBox(width: 8),
-              Text(
-                'FULL CONVERSATION LOG',
-                style: GoogleFonts.shareTechMono(
-                  color: CyberColors.neonCyan,
-                  fontSize: 10,
-                  letterSpacing: 1.5,
-                  fontWeight: FontWeight.bold,
+              // FIX: wrap label so it never overflows on narrow screens
+              const Flexible(
+                child: Text(
+                  'FULL CONVERSATION LOG',
+                  style: TextStyle(
+                    color: CyberColors.neonCyan,
+                    fontSize: 10,
+                    letterSpacing: 1.5,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               const Spacer(),
-              Text(
-                '${allItems.length} MESSAGES',
-                style: GoogleFonts.shareTechMono(
-                  color: CyberColors.textMuted,
-                  fontSize: 9,
-                  letterSpacing: 1,
+              // FIX: message count in its own Flexible so long counts don't overflow
+              Flexible(
+                child: Text(
+                  '${allItems.length} MESSAGES',
+                  style: GoogleFonts.shareTechMono(
+                    color: CyberColors.textMuted,
+                    fontSize: 9,
+                    letterSpacing: 1,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -452,15 +469,15 @@ class _ChatBubble extends StatelessWidget {
           : const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: isSelected
           ? BoxDecoration(
-              color: color.withOpacity(0.07),
-              borderRadius: CyberRadius.medium,
-              border: Border.all(color: color.withOpacity(0.45), width: 1.5),
-            )
+        color: color.withOpacity(0.07),
+        borderRadius: CyberRadius.medium,
+        border: Border.all(color: color.withOpacity(0.45), width: 1.5),
+      )
           : null,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Avatar circle
+          // Avatar circle — fixed size, never shrinks
           Container(
             width: 30,
             height: 30,
@@ -484,19 +501,26 @@ class _ChatBubble extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 10),
+          // FIX: Expanded so the bubble content never overflows the row
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // FIX: sender name row uses Flexible + Wrap-friendly badges
                 Row(
                   children: [
-                    Text(
-                      sender,
-                      style: TextStyle(
-                        color: color,
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.3,
+                    // FIX: sender name in Flexible so long names don't push badges off screen
+                    Flexible(
+                      child: Text(
+                        sender,
+                        style: TextStyle(
+                          color: color,
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.3,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
                     ),
                     if (isSuspect) ...[
@@ -548,6 +572,7 @@ class _ChatBubble extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
+                // FIX: message text always soft-wraps; never clips
                 Text(
                   message,
                   style: GoogleFonts.shareTechMono(
@@ -557,6 +582,8 @@ class _ChatBubble extends StatelessWidget {
                     fontSize: 13,
                     height: 1.5,
                   ),
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
                 ),
               ],
             ),
@@ -584,13 +611,17 @@ class _SelectedMessageDetail extends StatelessWidget {
               size: 14,
             ),
             const SizedBox(width: 7),
-            Text(
-              'FORENSIC ANALYSIS',
-              style: GoogleFonts.shareTechMono(
-                color: CyberColors.neonCyan,
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.5,
+            // FIX: label in Flexible so it never overflows the header row
+            const Flexible(
+              child: Text(
+                'FORENSIC ANALYSIS',
+                style: TextStyle(
+                  color: CyberColors.neonCyan,
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -610,17 +641,21 @@ class _SelectedMessageDetail extends StatelessWidget {
     return paragraphs
         .map(
           (p) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(
-              p.trim(),
-              style: GoogleFonts.shareTechMono(
-                color: CyberColors.textSecondary,
-                fontSize: 12.5,
-                height: 1.6,
-              ),
-            ),
+        padding: const EdgeInsets.only(bottom: 8),
+        // FIX: softWrap + visible so long forensic strings (hashes, IPs)
+        // wrap rather than overflow
+        child: Text(
+          p.trim(),
+          style: GoogleFonts.shareTechMono(
+            color: CyberColors.textSecondary,
+            fontSize: 12.5,
+            height: 1.6,
           ),
-        )
+          softWrap: true,
+          overflow: TextOverflow.visible,
+        ),
+      ),
+    )
         .toList();
   }
 }
@@ -674,6 +709,7 @@ class _FileDocument extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // FIX: file name must ellipsis — can be a long path
                     Text(
                       item.label,
                       style: GoogleFonts.orbitron(
@@ -682,6 +718,8 @@ class _FileDocument extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.3,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                     if (meta != null) ...[
                       const SizedBox(height: 3),
@@ -693,11 +731,16 @@ class _FileDocument extends StatelessWidget {
                             size: 11,
                           ),
                           const SizedBox(width: 4),
-                          Text(
-                            '${meta.modifier}  ·  ${meta.modifiedAt}  ·  ${meta.size}',
-                            style: GoogleFonts.shareTechMono(
-                              color: CyberColors.neonAmber.withOpacity(0.75),
-                              fontSize: 10,
+                          // FIX: meta string can be long — wrap in Flexible
+                          Flexible(
+                            child: Text(
+                              '${meta.modifier}  ·  ${meta.modifiedAt}  ·  ${meta.size}',
+                              style: GoogleFonts.shareTechMono(
+                                color: CyberColors.neonAmber.withOpacity(0.75),
+                                fontSize: 10,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           ),
                         ],
@@ -813,9 +856,9 @@ class _DocParagraph extends StatelessWidget {
   // Detect lines that look like log entries
   bool get _isLogLine =>
       text.startsWith('[') ||
-      RegExp(r'^\d{2}:\d{2}').hasMatch(text) ||
-      text.startsWith('>') ||
-      text.startsWith('#');
+          RegExp(r'^\d{2}:\d{2}').hasMatch(text) ||
+          text.startsWith('>') ||
+          text.startsWith('#');
 
   @override
   Widget build(BuildContext context) {
@@ -837,6 +880,7 @@ class _DocParagraph extends StatelessWidget {
             ),
           ),
         ),
+        // FIX: key-line text must also wrap — can contain long hashes
         child: Text(
           text,
           style: GoogleFonts.shareTechMono(
@@ -844,6 +888,8 @@ class _DocParagraph extends StatelessWidget {
             fontSize: 12.5,
             height: 1.55,
           ),
+          softWrap: true,
+          overflow: TextOverflow.visible,
         ),
       );
     }
@@ -857,6 +903,8 @@ class _DocParagraph extends StatelessWidget {
           fontSize: 12.5,
           height: 1.6,
         ),
+        softWrap: true,
+        overflow: TextOverflow.visible,
       ),
     );
   }
@@ -871,6 +919,8 @@ class _LogEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isAlert ? CyberColors.neonRed : CyberColors.textSecondary;
     return Container(
+      // FIX: explicit full width so the container expands to parent, not text
+      width: double.infinity,
       margin: const EdgeInsets.only(bottom: 4),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
@@ -882,6 +932,8 @@ class _LogEntry extends StatelessWidget {
       child: Text(
         text,
         style: GoogleFonts.robotoMono(color: color, fontSize: 11, height: 1.5),
+        softWrap: true,
+        overflow: TextOverflow.visible,
       ),
     );
   }
@@ -944,20 +996,20 @@ class _RowDetail extends StatelessWidget {
                     color: row.highlight
                         ? CyberColors.neonAmber.withOpacity(0.05)
                         : (i.isOdd
-                              ? CyberColors.neonCyan.withOpacity(0.02)
-                              : Colors.transparent),
+                        ? CyberColors.neonCyan.withOpacity(0.02)
+                        : Colors.transparent),
                     border: isLast
                         ? null
                         : Border(
-                            bottom: BorderSide(
-                              color: CyberColors.borderSubtle,
-                              width: 1,
-                            ),
-                          ),
+                      bottom: BorderSide(
+                        color: CyberColors.borderSubtle,
+                        width: 1,
+                      ),
+                    ),
                     borderRadius: isLast
                         ? const BorderRadius.vertical(
-                            bottom: Radius.circular(10),
-                          )
+                      bottom: Radius.circular(10),
+                    )
                         : i == 0
                         ? const BorderRadius.vertical(top: Radius.circular(10))
                         : BorderRadius.zero,
@@ -965,6 +1017,7 @@ class _RowDetail extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Key column — fixed width, no overflow risk
                       SizedBox(
                         width: 110,
                         child: Text(
@@ -973,9 +1026,12 @@ class _RowDetail extends StatelessWidget {
                             color: CyberColors.textMuted,
                             fontSize: 11,
                           ),
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       const SizedBox(width: 12),
+                      // FIX: value column in Expanded so long IPs/hashes wrap
                       Expanded(
                         child: Text(
                           row.value,
@@ -988,13 +1044,18 @@ class _RowDetail extends StatelessWidget {
                                 ? FontWeight.w600
                                 : FontWeight.normal,
                           ),
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                       if (row.highlight)
-                        const Icon(
-                          Icons.flag,
-                          color: CyberColors.neonAmber,
-                          size: 13,
+                        const Padding(
+                          padding: EdgeInsets.only(left: 4),
+                          child: Icon(
+                            Icons.flag,
+                            color: CyberColors.neonAmber,
+                            size: 13,
+                          ),
                         ),
                     ],
                   ),
@@ -1040,17 +1101,19 @@ class _RowDetail extends StatelessWidget {
           .where((s) => s.trim().isNotEmpty)
           .map(
             (p) => Padding(
-              padding: const EdgeInsets.only(bottom: 6),
-              child: Text(
-                p.trim(),
-                style: GoogleFonts.shareTechMono(
-                  color: CyberColors.textSecondary,
-                  fontSize: 12,
-                  height: 1.6,
-                ),
-              ),
+          padding: const EdgeInsets.only(bottom: 6),
+          child: Text(
+            p.trim(),
+            style: GoogleFonts.shareTechMono(
+              color: CyberColors.textSecondary,
+              fontSize: 12,
+              height: 1.6,
             ),
+            softWrap: true,
+            overflow: TextOverflow.visible,
           ),
+        ),
+      ),
     ];
   }
 }
@@ -1074,6 +1137,8 @@ class _GenericDetail extends StatelessWidget {
           fontSize: 12.5,
           height: 1.6,
         ),
+        softWrap: true,
+        overflow: TextOverflow.visible,
       ),
     );
   }
@@ -1127,7 +1192,10 @@ class _AlreadyUnlockedBanner extends StatelessWidget {
           width: 1.5,
         ),
       ),
-      child: Row(
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 10,
+        runSpacing: 8,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
@@ -1135,32 +1203,23 @@ class _AlreadyUnlockedBanner extends StatelessWidget {
               color: CyberColors.neonGreen.withOpacity(0.12),
               borderRadius: CyberRadius.small,
             ),
-            child: const Icon(
-              Icons.lock_open,
-              color: CyberColors.neonGreen,
-              size: 20,
-            ),
+            child: const Icon(Icons.lock_open, color: CyberColors.neonGreen, size: 20),
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hidden Clue Already Unlocked',
-                  style: GoogleFonts.orbitron(
-                    color: CyberColors.neonGreen,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                  ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Hidden Clue Already Unlocked',
+                style: GoogleFonts.orbitron(
+                  color: CyberColors.neonGreen,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
                 ),
-                const SizedBox(height: 3),
-                Text(
-                  message,
-                  style: CyberText.bodySmall.copyWith(fontSize: 12),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 3),
+              Text(message, style: CyberText.bodySmall.copyWith(fontSize: 12)),
+            ],
           ),
           const StatusChip(label: 'UNLOCKED', color: CyberColors.neonGreen),
         ],
@@ -1192,12 +1251,16 @@ class _AlreadyMarkedBanner extends StatelessWidget {
             size: 20,
           ),
           const SizedBox(width: 12),
-          Text(
-            'Already marked as evidence',
-            style: GoogleFonts.shareTechMono(
-              color: CyberColors.neonGreen,
-              fontWeight: FontWeight.bold,
-              fontSize: 13,
+          // FIX: wrap in Flexible so long "already marked" text doesn't overflow
+          Flexible(
+            child: Text(
+              'Already marked as evidence',
+              style: GoogleFonts.shareTechMono(
+                color: CyberColors.neonGreen,
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -1277,7 +1340,7 @@ class _MiniGameUnlockPreview extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           ...rewards.map(
-            (reward) => Padding(
+                (reward) => Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
                 '- $reward',
@@ -1285,6 +1348,8 @@ class _MiniGameUnlockPreview extends StatelessWidget {
                   color: CyberColors.textSecondary,
                   fontSize: 12,
                 ),
+                softWrap: true,
+                overflow: TextOverflow.visible,
               ),
             ),
           ),

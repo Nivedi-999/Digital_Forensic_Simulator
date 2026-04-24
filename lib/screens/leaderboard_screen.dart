@@ -111,22 +111,29 @@ class _LeaderboardTopBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 14),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('LEADERBOARD',
-                style: GoogleFonts.orbitron(
-                    fontSize: 15,
-                    color: CyberColors.neonCyan,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 2)),
-            Text('CASE #$caseId — FASTEST SOLVERS',
+        // FIX: wrap title column in Flexible so long caseIds don't overflow
+        Flexible(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('LEADERBOARD',
+                  style: GoogleFonts.orbitron(
+                      fontSize: 15,
+                      color: CyberColors.neonCyan,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 2)),
+              Text(
+                'CASE #$caseId — FASTEST SOLVERS',
                 style: GoogleFonts.shareTechMono(
                     fontSize: 8,
                     color: CyberColors.textMuted,
-                    letterSpacing: 1.5)),
-          ],
+                    letterSpacing: 1.5),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ],
+          ),
         ),
         const Spacer(),
         // Live indicator
@@ -196,7 +203,7 @@ class _LeaderboardRow extends StatelessWidget {
             : null,
       ),
       child: Row(children: [
-        // Rank / medal
+        // Rank / medal — fixed width, never shrinks
         SizedBox(
           width: 40,
           child: medal != null
@@ -213,7 +220,7 @@ class _LeaderboardRow extends StatelessWidget {
 
         const SizedBox(width: 12),
 
-        // Avatar circle
+        // Avatar circle — fixed size
         Container(
           width: 38,
           height: 38,
@@ -235,20 +242,25 @@ class _LeaderboardRow extends StatelessWidget {
 
         const SizedBox(width: 12),
 
-        // Name + stars
+        // FIX: Name + stars in Expanded — long names were pushing time column off screen
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(children: [
-                Text(
-                  entry.displayName,
-                  style: GoogleFonts.orbitron(
-                      fontSize: 12,
-                      color: isCurrentUser
-                          ? CyberColors.neonCyan
-                          : CyberColors.textPrimary,
-                      fontWeight: FontWeight.w700),
+                // FIX: displayName in Flexible so it ellipsis before hitting the YOU badge
+                Flexible(
+                  child: Text(
+                    entry.displayName,
+                    style: GoogleFonts.orbitron(
+                        fontSize: 12,
+                        color: isCurrentUser
+                            ? CyberColors.neonCyan
+                            : CyberColors.textPrimary,
+                        fontWeight: FontWeight.w700),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
                 ),
                 if (isCurrentUser) ...[
                   const SizedBox(width: 6),
@@ -286,24 +298,31 @@ class _LeaderboardRow extends StatelessWidget {
           ),
         ),
 
-        // Time
-        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Text(
-            entry.formattedTime,
-            style: GoogleFonts.orbitron(
-                fontSize: 16,
-                color: accent,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 2,
-                shadows: rank == 1
-                    ? [Shadow(color: accent.withOpacity(0.6), blurRadius: 10)]
-                    : null),
-          ),
-          const SizedBox(height: 2),
-          Text('MM:SS',
-              style: GoogleFonts.shareTechMono(
-                  fontSize: 7, color: CyberColors.textMuted, letterSpacing: 1)),
-        ]),
+        const SizedBox(width: 8),
+
+        // FIX: time column constrained so it never overflows on narrow screens
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 90),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+            Text(
+              entry.formattedTime,
+              style: GoogleFonts.orbitron(
+                  fontSize: 16,
+                  color: accent,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2,
+                  shadows: rank == 1
+                      ? [Shadow(color: accent.withOpacity(0.6), blurRadius: 10)]
+                      : null),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+            ),
+            const SizedBox(height: 2),
+            Text('MM:SS',
+                style: GoogleFonts.shareTechMono(
+                    fontSize: 7, color: CyberColors.textMuted, letterSpacing: 1)),
+          ]),
+        ),
       ]),
     );
   }

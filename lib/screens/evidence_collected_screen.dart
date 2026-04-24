@@ -161,12 +161,13 @@ class _EvidencesCollectedScreenState
                             ),
                             const SizedBox(height: 4),
                             Row(children: [
-                              StatusChip(
-                                label: item.panelId.toUpperCase(),
-                                color: color,
+                              Flexible(
+                                child: StatusChip(
+                                  label: item.panelId.toUpperCase(),
+                                  color: color,
+                                ),
                               ),
                               const SizedBox(width: 8),
-                              // Show a subtle correct/incorrect indicator
                               Icon(
                                 isCorrect
                                     ? Icons.check_circle_outline
@@ -177,11 +178,12 @@ class _EvidencesCollectedScreenState
                                 size: 14,
                               ),
                               const SizedBox(width: 4),
-                              Text(
-                                item.collectedAt
-                                    .toString()
-                                    .substring(11, 19),
-                                style: CyberText.caption,
+                              Flexible(
+                                child: Text(
+                                  item.collectedAt.toString().substring(11, 19),
+                                  style: CyberText.caption,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ]),
                           ],

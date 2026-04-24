@@ -454,17 +454,24 @@ class _CaseHeader extends StatelessWidget {
               ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              StatusChip(
-                label: caseFile.status,
-                color: CyberColors.neonGreen,
-                pulsing: true,
-              ),
-              const SizedBox(height: 6),
-              Text(caseFile.estimatedDuration, style: CyberText.caption),
-            ],
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                StatusChip(
+                  label: caseFile.status,
+                  color: CyberColors.neonGreen,
+                  pulsing: true,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  caseFile.estimatedDuration,
+                  style: CyberText.caption,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ],
       ),
